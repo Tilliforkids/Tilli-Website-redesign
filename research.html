@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tilli for Research</title>
+<meta name="description" content="The research and measurement behind Tilli — how we measure impact across schools, and the science of social-emotional learning.">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
+<link rel="stylesheet" href="css/site.css?v=2">
+<style>
+  /* page-local */
+  .measure-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 8px; }
+  @media (max-width: 860px) { .measure-grid { grid-template-columns: 1fr; } }
+  .lens { text-align: center; padding: 30px 22px; }
+  .lens__ic { width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px; font-size: 26px; }
+  .reads { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  @media (max-width: 780px) { .reads { grid-template-columns: 1fr; } }
+  .read { display: flex; gap: 14px; align-items: flex-start; }
+  .read__src { font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--tl-cyan-700); }
+  .loop { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: step; }
+  @media (max-width: 780px) { .loop { grid-template-columns: 1fr; } }
+  .loop .tl-card { position: relative; }
+  .loop .tl-card::before { counter-increment: step; content: counter(step); position: absolute; top: -14px; left: 22px;
+    width: 30px; height: 30px; border-radius: 50%; background: var(--tl-pink-600); color: #fff; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; font-size: 15px; }
+</style>
+</head>
+<body class="tl-page">
+
+<div class="tl-topbar">
+  <div style="background: var(--tl-green-500);"></div>
+  <div style="background: var(--tl-pink-400);"></div>
+  <div style="background: var(--tl-cyan-500);"></div>
+  <div style="background: var(--tl-yellow-500);"></div>
+</div>
+
+<main class="tl-main">
+
+  <!-- Hero -->
+  <section class="tl-hero tl-hero--cyan">
+    <div class="tl-container tl-narrow" style="text-align:center">
+      <p class="tl-eyebrow">Tilli for Research</p>
+      <h1 class="tl-h1">Measurement is the point</h1>
+      <p class="tl-lead">Tilli is built on developmental science and behavioural research — and everything we do is measured.
+        Here’s the evidence behind the approach, and how Tilli turns it into impact you can see.</p>
+      <a class="tl-btn tl-btn--primary tl-btn--lg" href="#measures">See how Tilli measures</a>
+    </div>
+  </section>
+
+  <!-- TILLI MEASURES -->
+  <section class="tl-section" id="measures">
+    <div class="tl-container">
+      <div class="tl-section-head tl-center">
+        <p class="tl-eyebrow">Tilli Measures</p>
+        <h2 class="tl-h2">Impact, at the scale of a platform</h2>
+        <p class="tl-lead">Tilli isn’t a one-off workshop — it’s a measurement system running across a growing network of schools.</p>
+      </div>
+
+      <!-- live-ish platform numbers (from Platform Administration) -->
+      <div class="tl-statstrip" style="margin-bottom:56px">
+        <div class="tl-stat"><div class="tl-stat__num" style="--snum:var(--tl-green-600)">8</div><div class="tl-stat__lbl">School groups</div></div>
+        <div class="tl-stat"><div class="tl-stat__num" style="--snum:var(--tl-cyan-700)">61</div><div class="tl-stat__lbl">Active schools</div></div>
+        <div class="tl-stat"><div class="tl-stat__num" style="--snum:var(--tl-pink-600)">3,638</div><div class="tl-stat__lbl">Students across all schools</div></div>
+        <div class="tl-stat"><div class="tl-stat__num" style="--snum:var(--tl-orange-500)">400</div><div class="tl-stat__lbl">Teachers &amp; admins</div></div>
+      </div>
+
+      <!-- three lenses -->
+      <div class="tl-section-head tl-center">
+        <h3 class="tl-h3">We measure every child through three independent lenses</h3>
+      </div>
+      <div class="measure-grid">
+        <div class="tl-card lens"><div class="lens__ic" style="background:var(--tl-wash-green);color:var(--tl-green-600)">👨‍👩‍👧</div>
+          <h3 class="tl-h3">Parent</h3><p class="tl-body tl-muted">What growth looks like at home.</p></div>
+        <div class="tl-card lens"><div class="lens__ic" style="background:var(--tl-wash-cyan);color:var(--tl-cyan-700)">🍎</div>
+          <h3 class="tl-h3">Teacher</h3><p class="tl-body tl-muted">What the classroom sees, week to week.</p></div>
+        <div class="tl-card lens"><div class="lens__ic" style="background:var(--tl-wash-pink);color:var(--tl-pink-600)">🧩</div>
+          <h3 class="tl-h3">The child</h3><p class="tl-body tl-muted">Play-based tasks the child does themselves.</p></div>
+      </div>
+
+      <!-- measure → act → re-measure loop -->
+      <div class="tl-section-head tl-center" style="margin-top:64px">
+        <h3 class="tl-h3">From data to a concrete next step</h3>
+      </div>
+      <div class="loop">
+        <div class="tl-card"><h3 class="tl-h3">Assess</h3><p class="tl-body tl-muted">12 developmental skills captured across the three lenses — a baseline for every child.</p></div>
+        <div class="tl-card"><h3 class="tl-h3">Act</h3><p class="tl-body tl-muted">Teachers design a support plan and run Tilli intervention sessions with their class.</p></div>
+        <div class="tl-card"><h3 class="tl-h3">Re-measure</h3><p class="tl-body tl-muted">Growth shows up in the data at midline and endline — the plan gets redesigned from there.</p></div>
+      </div>
+      <!-- More Tilli Measures detail/metrics to be supplied by Kavi — extend here. -->
+    </div>
+  </section>
+
+  <!-- Why SEL -->
+  <section class="tl-section tl-section--tint">
+    <div class="tl-container">
+      <div class="tl-section-head tl-center">
+        <p class="tl-eyebrow">The evidence</p>
+        <h2 class="tl-h2">Why social-emotional learning matters</h2>
+      </div>
+      <div class="tl-statstrip">
+        <div class="tl-stat" style="grid-column: span 1;"><div class="tl-stat__num">13%</div><div class="tl-stat__lbl">Higher grades &amp; attendance through stronger social skills</div></div>
+        <div class="tl-stat"><div class="tl-stat__num" style="--snum:var(--tl-cyan-700)">42%</div><div class="tl-stat__lbl">Reduction in bullying &amp; aggression via empathy development</div></div>
+        <div class="tl-stat"><div class="tl-stat__num" style="--snum:var(--tl-green-600)">79%</div><div class="tl-stat__lbl">Employers seek SEL skills for future workforce readiness</div></div>
+        <div class="tl-stat" style="display:flex;align-items:center;justify-content:center">
+          <a class="tl-btn tl-btn--ghost" href="success.html">See it in schools →</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Research at Tilli -->
+  <section class="tl-section">
+    <div class="tl-container">
+      <div class="tl-section-head tl-center">
+        <p class="tl-eyebrow">Research at Tilli</p>
+        <h2 class="tl-h2">Playful learning, held to a research standard</h2>
+        <p class="tl-lead">When we combine playful learning, behavioural science, and data, children — and the adults around them — show up.</p>
+      </div>
+      <div class="tl-statstrip">
+        <div class="tl-stat"><div class="tl-stat__num" style="--snum:var(--tl-green-600)">95%</div><div class="tl-stat__lbl">Full completion &amp; engagement</div></div>
+        <div class="tl-stat"><div class="tl-stat__num" style="--snum:var(--tl-cyan-700)">96%</div><div class="tl-stat__lbl">Successful real-life application of learnings</div></div>
+        <div class="tl-stat"><div class="tl-stat__num" style="--snum:var(--tl-pink-600)">85%</div><div class="tl-stat__lbl">Adults had meaningful conversations with children after a module</div></div>
+        <div class="tl-stat" style="display:flex;align-items:center;justify-content:center">
+          <img src="assets/ds/stanford-gse.png" alt="Stanford Graduate School of Education" style="max-height:52px;width:auto"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Top SEL reads -->
+  <section class="tl-section tl-section--tint">
+    <div class="tl-container">
+      <div class="tl-section-head">
+        <p class="tl-eyebrow">Top SEL reads</p>
+        <h2 class="tl-h2">What we’re reading</h2>
+        <p class="tl-body tl-muted">Research we translate into bite-sized, practical video content for teachers and parents.</p>
+      </div>
+      <!-- NOTE: source links to be re-added once the canonical URLs are confirmed. -->
+      <div class="reads">
+        <div class="tl-card read"><div><div class="read__src">OSF Preprints</div>
+          <p class="tl-body">The role of the perceptual system in shaping the development of children’s conceptual understanding</p></div></div>
+        <div class="tl-card read"><div><div class="read__src">Child Development</div>
+          <p class="tl-body">Social-emotional development in the preschool years: a focus on the role of emotion regulation</p></div></div>
+        <div class="tl-card read"><div><div class="read__src">Springer</div>
+          <p class="tl-body">A Chinese-language SEL program for elementary students</p></div></div>
+        <div class="tl-card read"><div><div class="read__src">ScienceDirect</div>
+          <p class="tl-body">Parental engagement and communication in school-based social-emotional learning programs</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="tl-section tl-section--green">
+    <div class="tl-container tl-narrow" style="text-align:center">
+      <h2 class="tl-h2">Want the measurement in your school?</h2>
+      <p class="tl-lead">We’ll walk you through how Tilli baselines, supports, and re-measures every child.</p>
+      <a class="tl-btn tl-btn--primary tl-btn--lg" href="#" data-tl-open-form>Get in touch</a>
+    </div>
+  </section>
+
+</main>
+
+<script src="js/site-chrome.js?v=2"></script>
+</body>
+</html>

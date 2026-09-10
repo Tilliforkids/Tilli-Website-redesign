@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQs — Tilli</title>
+<meta name="description" content="Answers to common questions about Tilli: what it measures, who it's for, how it works in schools, and how student data is handled.">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
+<link rel="stylesheet" href="css/site.css?v=2">
+<style>
+  /* page-local: FAQ accordion */
+  .faq { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+  .faq__item { background: var(--tl-surface-card); border: 1px solid var(--tl-line-200); border-radius: 18px;
+    padding: 4px 24px; box-shadow: 0 4px 20px rgba(20,20,20,0.05); transition: border-color .2s ease; }
+  .faq__item[open] { border-color: var(--tl-pink-400); }
+  .faq__item summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 18px 0; font-size: 17px; font-weight: 700; color: var(--tl-ink-900); }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary::after { content: "+"; font-size: 24px; font-weight: 400; color: var(--tl-pink-600);
+    line-height: 1; transition: transform .25s ease; }
+  .faq__item[open] summary::after { transform: rotate(45deg); }
+  .faq__a { padding: 0 0 20px; font-size: 15.5px; line-height: 1.65; color: var(--tl-ink-600); }
+  .faq__a a { color: var(--tl-pink-600); font-weight: 700; }
+</style>
+</head>
+<body class="tl-page">
+
+<div class="tl-topbar">
+  <div style="background: var(--tl-green-500);"></div>
+  <div style="background: var(--tl-pink-400);"></div>
+  <div style="background: var(--tl-cyan-500);"></div>
+  <div style="background: var(--tl-yellow-500);"></div>
+</div>
+
+<main class="tl-main">
+
+  <!-- Hero -->
+  <section class="tl-hero tl-hero--green">
+    <div class="tl-container tl-narrow" style="text-align:center">
+      <p class="tl-eyebrow">FAQs</p>
+      <h1 class="tl-h1">Questions, answered</h1>
+      <p class="tl-lead">Everything schools and families ask us most often. Can't find what you need?
+        <a href="#" data-tl-open-form style="color:var(--tl-pink-600);font-weight:700">Get in touch</a>.</p>
+    </div>
+  </section>
+
+  <!-- FAQ list — Tilli-authored copy; edit freely as messaging evolves. -->
+  <section class="tl-section">
+    <div class="tl-container">
+      <div class="faq">
+
+        <details class="faq__item">
+          <summary>What is Tilli?</summary>
+          <div class="faq__a">Tilli is a whole-child development platform for schools. We measure the
+            foundational social-emotional and cognitive skills that shape how a child learns, relates, and
+            copes — and turn that into clear, term-by-term insight teachers can act on. The goal is simple:
+            every child developmentally on track by the time they reach middle school.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary>Who is Tilli for?</summary>
+          <div class="faq__a">Children ages 3–12, and the schools, teachers, and families who support them.
+            Teachers and coordinators use Tilli to see where each student stands; leaders use it to understand
+            whole cohorts; families get a window into how their child is growing beyond grades.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary>What exactly does Tilli measure?</summary>
+          <div class="faq__a">12 foundational skills across executive function and social-emotional learning —
+            attention, working memory, cognitive flexibility, inhibition (distraction and response), planning &amp;
+            organisation, emotion awareness, emotion regulation, empathy, relationship skills, metacognition, and
+            critical thinking. Each is measured from more than one perspective, term after term, so you see real
+            growth rather than a one-off snapshot.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary>How is this different from a regular test or survey?</summary>
+          <div class="faq__a">Tilli isn't an academic exam and it isn't a single questionnaire. It looks at the
+            developmental foundations that sit underneath academic performance, gathers evidence from multiple
+            angles, and tracks each child over time — so the result is a direction of travel and a next step, not
+            just a score.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary>How does Tilli work in a school?</summary>
+          <div class="faq__a">Schools begin with a short teacher training, then run brief measures each term.
+            Results appear on a dashboard alongside practical, classroom-ready next steps for each child and each
+            class — with baseline, midline, and endline points across the year to show progress.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary>How much time does it take?</summary>
+          <div class="faq__a">It's designed to fit real classrooms. Onboarding is a single short training, and
+            the termly measures are brief — Tilli fits around teaching rather than adding a heavy new workload.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary>Does Tilli fit our curriculum?</summary>
+          <div class="faq__a">Yes. Tilli complements IB, Cambridge / IGCSE, CBSE, ICSE, and state-board settings.
+            Because it measures developmental foundations rather than subject content, it works alongside whatever
+            curriculum your school already runs.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary>Is Tilli research-backed?</summary>
+          <div class="faq__a">Tilli is grounded in developmental psychology and the learning sciences, built with
+            researchers and refined through real partnerships with schools. See
+            <a href="research.html">Tilli for Research</a> for the approach, and
+            <a href="success.html">Success Stories</a> for what it looks like in practice.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary>Where does Tilli work, and in which languages?</summary>
+          <div class="faq__a">Tilli partners with schools across South Asia — including India and Sri Lanka — and
+            is built for multilingual, mixed-ability classrooms. If you're wondering whether Tilli fits your
+            context, <a href="#" data-tl-open-form>get in touch</a> and we'll talk specifics.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary>How is student data handled?</summary>
+          <div class="faq__a">Student data is kept private and used only to support the child's development —
+            never sold. You can read the full details in our
+            <a href="https://www.tillikids.com/privacypolicy" target="_blank" rel="noopener">Privacy Policy</a>.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary>How do we get started?</summary>
+          <div class="faq__a">Book a 30-minute conversation with our founding team and we'll walk you through
+            bringing Tilli to your school. <a href="#" data-tl-open-form>Get in touch</a> or email
+            <a href="mailto:info@tillikids.com">info@tillikids.com</a>.</div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="js/site-chrome.js?v=2"></script>
+</body>
+</html>

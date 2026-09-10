@@ -6,6 +6,7 @@
 <title>Tilli — Developmentally on track by 10</title>
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/fonts.css">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
+<link rel="stylesheet" href="css/site.css?v=2">
 <style>
   * { box-sizing: border-box; }
   html { scroll-behavior: auto; }
@@ -21,12 +22,19 @@
   .topbar div { flex: 1; }
 
   /* ── Quick section nav ────────────────────────────────────── */
-  #quicknav { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); z-index: 45;
+  #quicknav { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(8px); z-index: 45;
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s ease, transform .35s cubic-bezier(.4,0,.2,1);
     display: flex; gap: 2px; max-width: calc(100vw - 32px); padding: 5px;
     background: rgba(255,255,255,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--tl-line-200); border-radius: 999px; box-shadow: 0 4px 20px rgba(20,20,20,0.08);
     overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
   #quicknav::-webkit-scrollbar { display: none; }
+  /* quicknav only appears once the header has tucked away; fades out with it */
+  body.tl-chrome-hidden #quicknav { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+  /* …but on the final scene it stays hidden and the reserved space is released */
+  body.tl-at-end #quicknav { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(8px); }
+  body.tl-at-end .step { padding-bottom: 6vh; }
   #quicknav button { flex: 0 0 auto; border: 0; background: transparent; cursor: pointer;
     font-family: inherit; font-size: 12.5px; font-weight: 700; letter-spacing: 0.01em; white-space: nowrap;
     color: var(--tl-ink-450); padding: 7px 14px; border-radius: 999px; transition: color .2s ease, background .2s ease; }
@@ -49,7 +57,9 @@
   .content { position: relative; z-index: 2; }
   .scene { position: relative; }
   .stage { position: fixed; inset: 0; overflow: hidden; opacity: 0; visibility: hidden; pointer-events: none; }
-  .step { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 6vh 20px; opacity: 0; pointer-events: none; }
+  .step { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 6vh 20px; opacity: 0; pointer-events: none; transition: padding-bottom .35s cubic-bezier(.4,0,.2,1); }
+  /* while the bottom nav is showing, lift centered content clear of it */
+  body.tl-chrome-hidden .step { padding-bottom: calc(6vh + 84px); }
   .step-in { width: 100%; transform-origin: 50% 50%; }
   .stage-deco { position: absolute; inset: 0; pointer-events: none; }
 
@@ -474,7 +484,7 @@
           <div class="hero-beat" id="beatB">
             <p class="hero-sub">They measure — and they ask.<br><span id="stat">2,895</span><br>data points collected for that child.</p>
             <div style="display: flex; gap: 18px; justify-content: center; align-items: center; margin-top: min(34px, 4vh); flex-wrap: wrap;">
-              <a href="mailto:kavindya@tillikids.com" class="btn-pink">Book a demo</a>
+              <a href="#" data-tl-open-form class="btn-pink">Book a demo</a>
               <a href="#how" style="font-weight: 700; font-size: 16px;">See how it works →</a>
             </div>
             <div style="margin-top: min(56px, 6vh);">
@@ -531,7 +541,7 @@
           </div>
           <h2 style="font-size: min(40px, 5vh); font-weight: 800; letter-spacing: -0.02em; color: var(--tl-ink-900); max-width: 700px; margin: 0 auto 12px;">Teachers share reports <span style="color: var(--tl-green-600);">parents love to receive</span>.</h2>
           <p style="font-size: min(18px, 2.6vh); line-height: 1.6; max-width: 600px; margin: 0 auto min(30px, 3vh);">Term by term: strengths, growth areas, and small things to try at home — for every child.</p>
-          <a href="mailto:kavindya@tillikids.com" class="btn-pink">Book a demo</a>
+          <a href="#" data-tl-open-form class="btn-pink">Book a demo</a>
         </div>
       </div>
     </div>
@@ -771,7 +781,7 @@
             </div>
             <div class="atl-locked" data-atl-locked style="display: none;">
               <div class="atl-locked-t">That's your 2-question demo. On your real data, Ask-Tilli knows every child, class, and skill in your school.</div>
-              <a href="mailto:kavindya@tillikids.com?subject=Ask-Tilli%20demo">Book a demo →</a>
+              <a href="#" data-tl-open-form>Book a demo →</a>
             </div>
           </div>
           <div class="atl-chips" data-atl-chips>
@@ -949,7 +959,7 @@
           <h2 style="font-size: min(46px, 5.6vh); font-weight: 800; letter-spacing: -0.02em; color: var(--tl-ink-900); line-height: 1.12; margin: 0 0 20px;">Let Tilli help you understand your students' development better.</h2>
           <p style="font-size: min(19px, 2.6vh); line-height: 1.6; color: var(--tl-ink-600); max-width: 540px; margin: 0 auto 34px;">A 30-minute conversation with our founding team — about your school, your children, and what's possible.</p>
           <div style="display: flex; align-items: center; justify-content: center; gap: 28px; flex-wrap: wrap;">
-            <a href="mailto:kavindya@tillikids.com" class="btn-pink">Book a demo</a>
+            <a href="#" data-tl-open-form class="btn-pink">Book a demo</a>
             <a href="mailto:kavindya@tillikids.com" style="font-weight: 700; color: var(--tl-ink-700);">kavindya@tillikids.com</a>
           </div>
         </div>
@@ -957,18 +967,33 @@
     </div>
     <div class="stage-deco">
       <div class="foot">
-        <div style="max-width: 1140px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px;">
-          <div style="display: flex; align-items: center; gap: 16px;">
-            <img src="assets/ds/tilli-logo.png" alt="tilli" style="height: 26px; width: auto;">
-            <span style="font-size: 14px; font-style: italic; color: var(--tl-ink-450);">Developmentally on track by 10.</span>
+        <div style="max-width: 1140px; margin: 0 auto;">
+          <!-- tier 1: brand + primary links -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <img src="assets/ds/tilli-logo.png" alt="tilli" style="height: 26px; width: auto;">
+              <span style="font-size: 14px; font-style: italic; color: var(--tl-ink-450);">Developmentally on track by 10.</span>
+            </div>
+            <div style="display: flex; gap: 22px; font-size: 14px; font-weight: 600; flex-wrap: wrap;">
+              <a href="#how" style="color: var(--tl-ink-600);">How it works</a>
+              <a href="#skills" style="color: var(--tl-ink-600);">The 12 skills</a>
+              <a href="#impact" style="color: var(--tl-ink-600);">Impact</a>
+              <a href="faq.html" style="color: var(--tl-ink-600);">FAQs</a>
+              <a href="https://www.tillikids.com/privacypolicy" target="_blank" rel="noopener" style="color: var(--tl-ink-600);">Privacy Policy</a>
+            </div>
           </div>
-          <div style="display: flex; gap: 26px; font-size: 14px; font-weight: 600; flex-wrap: wrap;">
-            <a href="#how" style="color: var(--tl-ink-600);">How it works</a>
-            <a href="#skills" style="color: var(--tl-ink-600);">The 12 skills</a>
-            <a href="#impact" style="color: var(--tl-ink-600);">Impact</a>
-            <a href="mailto:kavindya@tillikids.com" style="color: var(--tl-ink-600);">Contact</a>
+          <!-- tier 2: reach out + socials + legal -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px 24px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--tl-line-200);">
+            <div style="font-size: 13px; color: var(--tl-ink-450);">Reach out: <a href="mailto:info@tillikids.com" style="color: var(--tl-ink-700); font-weight: 700;">info@tillikids.com</a></div>
+            <div style="display: flex; gap: 18px; font-size: 13px; font-weight: 600;">
+              <a href="https://www.linkedin.com/company/tillikids/" target="_blank" rel="noopener" style="color: var(--tl-ink-600);">LinkedIn</a>
+              <a href="https://www.instagram.com/tilliforkids/" target="_blank" rel="noopener" style="color: var(--tl-ink-600);">Instagram</a>
+              <a href="https://x.com/kidstilli" target="_blank" rel="noopener" style="color: var(--tl-ink-600);">X</a>
+              <a href="https://www.youtube.com/channel/UCmLhsI6wbyZ2yb-gqguzjmA" target="_blank" rel="noopener" style="color: var(--tl-ink-600);">YouTube</a>
+              <a href="https://www.facebook.com/TilliKids/" target="_blank" rel="noopener" style="color: var(--tl-ink-600);">Facebook</a>
+            </div>
+            <div style="font-size: 13px; color: var(--tl-ink-300);">© Tilli Kids Inc. · www.tillikids.com</div>
           </div>
-          <div style="font-size: 13px; color: var(--tl-ink-300);">© Tilli Kids Inc. · www.tillikids.com</div>
         </div>
       </div>
     </div>
@@ -981,5 +1006,6 @@
 <script src="js/impact-orbits.js?v=6"></script>
 <script src="js/impact-carousel.js?v=7"></script>
 <script type="module" src="js/main.js?v=117"></script>
+<script src="js/site-chrome.js?v=2"></script>
 </body>
 </html>

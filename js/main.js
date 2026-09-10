@@ -2453,6 +2453,8 @@ const NAV_ITEMS = [
     }
     if (cur === activeIdx) return;
     activeIdx = cur;
+    /* hide the quick-nav entirely once the final ("Let's talk") scene is reached */
+    document.body.classList.toggle('tl-at-end', cur === buttons.length - 1);
     buttons.forEach((b, k) => b.el.setAttribute('aria-current', k === cur ? 'true' : 'false'));
     buttons[cur].el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   };

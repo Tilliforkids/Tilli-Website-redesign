@@ -1,0 +1,188 @@
+/* ============================================================================
+   Tilli — shared site chrome + interior-page components
+   Uses the design-system tokens from _ds/.../tokens/colors.css (--tl-*).
+   Everything here is namespaced `.tl-` so it never collides with the
+   home page's bespoke seamless-scroll styles.
+   ========================================================================== */
+
+/* ── Interior page base ──────────────────────────────────────────────────── */
+.tl-page {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--tl-text-body);
+  background: var(--tl-surface-page);
+  -webkit-font-smoothing: antialiased;
+}
+.tl-page * { box-sizing: border-box; }
+.tl-container { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.tl-narrow { max-width: 780px; }
+
+/* Colour rail that runs along the very top of every page (matches home). */
+.tl-topbar { position: fixed; top: 0; left: 0; right: 0; height: 6px; display: flex; z-index: 60; }
+.tl-topbar > div { flex: 1; }
+
+/* ── Typography ──────────────────────────────────────────────────────────── */
+.tl-eyebrow { font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--tl-green-600); margin: 0 0 12px; }
+.tl-h1 { font-size: clamp(34px, 5.4vw, 60px); font-weight: 800; letter-spacing: -0.02em;
+  line-height: 1.05; color: var(--tl-text-heading); margin: 0 0 20px; }
+.tl-h2 { font-size: clamp(26px, 3.6vw, 40px); font-weight: 800; letter-spacing: -0.02em;
+  line-height: 1.12; color: var(--tl-text-heading); margin: 0 0 16px; }
+.tl-h3 { font-size: clamp(19px, 2vw, 23px); font-weight: 800; letter-spacing: -0.01em;
+  color: var(--tl-ink-800); margin: 0 0 10px; }
+.tl-lead { font-size: clamp(17px, 1.6vw, 20px); line-height: 1.65; color: var(--tl-ink-500); margin: 0 0 18px; }
+.tl-body { font-size: 16px; line-height: 1.7; color: var(--tl-text-body); }
+.tl-muted { color: var(--tl-text-muted); }
+
+/* ── Sections ────────────────────────────────────────────────────────────── */
+.tl-section { padding: clamp(56px, 8vw, 104px) 0; }
+.tl-section--tint { background: var(--tl-surface-100); }
+.tl-section--cyan { background: var(--tl-wash-cyan); }
+.tl-section--green { background: var(--tl-wash-green); }
+.tl-section--pink { background: var(--tl-wash-pink); }
+.tl-section-head { max-width: 720px; margin: 0 0 44px; }
+.tl-section-head.tl-center { margin-left: auto; margin-right: auto; text-align: center; }
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.tl-btn { display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 15px;
+  font-weight: 700; letter-spacing: 0.01em; padding: 13px 26px; border-radius: 999px; border: 2px solid transparent;
+  cursor: pointer; transition: transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+  text-decoration: none; white-space: nowrap; }
+.tl-btn:hover { transform: translateY(-2px); }
+.tl-btn--primary { background: var(--tl-pink-600); color: #fff; box-shadow: 0 6px 22px rgba(233,30,140,0.28); }
+.tl-btn--primary:hover { background: var(--tl-pink-500); color: #fff; }
+.tl-btn--green { background: var(--tl-green-500); color: #fff; box-shadow: 0 6px 22px rgba(86,192,43,0.28); }
+.tl-btn--green:hover { background: var(--tl-green-600); color: #fff; }
+.tl-btn--ghost { background: #fff; color: var(--tl-ink-800); border-color: var(--tl-line-200); }
+.tl-btn--ghost:hover { border-color: var(--tl-pink-600); color: var(--tl-pink-600); }
+.tl-btn--lg { padding: 16px 34px; font-size: 16px; }
+
+/* ── Header (interior pages) ─────────────────────────────────────────────── */
+.tl-header { position: fixed; top: 6px; left: 0; right: 0; z-index: 55;
+  background: rgba(255,255,255,0.82); backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid var(--tl-line-200);
+  transition: transform .35s cubic-bezier(.4,0,.2,1); will-change: transform; }
+/* scroll-down: tuck the bar up out of view (extra 8px clears the top strip) */
+.tl-header--hidden { transform: translateY(calc(-100% - 8px)); }
+/* final ("Let's talk") scene: always bring the header back down (beats --hidden) */
+body.tl-at-end .tl-header { transform: none; }
+.tl-header__inner { display: flex; align-items: center; justify-content: space-between;
+  height: 66px; }
+.tl-logo { display: flex; align-items: center; }
+.tl-logo img { height: 30px; width: auto; display: block; }
+.tl-nav { display: flex; align-items: center; gap: 6px; }
+.tl-nav a { font-size: 14.5px; font-weight: 700; color: var(--tl-ink-600); padding: 9px 14px;
+  border-radius: 999px; transition: color .2s ease, background .2s ease; }
+.tl-nav a:hover { color: var(--tl-ink-900); background: var(--tl-surface-100); }
+.tl-nav a[aria-current="page"] { color: var(--tl-pink-600); }
+.tl-nav__cta { margin-left: 8px; }
+.tl-burger { display: none; width: 42px; height: 42px; border: 1px solid var(--tl-line-200); border-radius: 12px;
+  background: #fff; cursor: pointer; align-items: center; justify-content: center; flex-direction: column; gap: 4px; }
+.tl-burger span { display: block; width: 18px; height: 2px; background: var(--tl-ink-800); border-radius: 2px; }
+/* push interior page content below the fixed header + rail */
+.tl-page .tl-main { padding-top: 72px; }
+
+/* keep the WhatsApp bubble clear of Home's prev/next arrows (bottom-right) */
+.tl-home .tl-wa { bottom: 130px; }
+
+@media (max-width: 860px) {
+  .tl-burger { display: flex; }
+  .tl-header .tl-nav { position: absolute; top: 66px; right: 12px; left: 12px; flex-direction: column;
+    align-items: stretch; gap: 4px; background: #fff; border: 1px solid var(--tl-line-200);
+    border-radius: 16px; padding: 10px; box-shadow: 0 18px 40px rgba(20,20,20,0.14); display: none; }
+  .tl-header .tl-nav--open { display: flex; }
+  .tl-header .tl-nav a { padding: 12px 14px; }
+  .tl-nav__cta { margin: 4px 0 0; text-align: center; }
+  .tl-home .tl-wa { bottom: 122px; }
+}
+
+/* ── Cards & grids ───────────────────────────────────────────────────────── */
+.tl-grid { display: grid; gap: 24px; }
+.tl-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.tl-grid--3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 860px) { .tl-grid--2, .tl-grid--3 { grid-template-columns: 1fr; } }
+.tl-card { background: var(--tl-surface-card); border: 1px solid var(--tl-line-200); border-radius: 22px;
+  padding: 28px; box-shadow: 0 4px 20px rgba(20,20,20,0.05); }
+.tl-card--pop { border: 2px solid var(--tl-green-500); }
+.tl-card__media { border-radius: 16px; overflow: hidden; margin: -28px -28px 22px; aspect-ratio: 16/9;
+  background: var(--tl-surface-150); display: flex; align-items: center; justify-content: center; }
+.tl-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ── Stat strip ──────────────────────────────────────────────────────────── */
+.tl-statstrip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+@media (max-width: 780px) { .tl-statstrip { grid-template-columns: repeat(2, 1fr); } }
+.tl-stat { text-align: center; padding: 18px 12px; }
+.tl-stat__num { font-size: clamp(34px, 4.4vw, 50px); font-weight: 800; letter-spacing: -0.02em;
+  color: var(--snum, var(--tl-pink-600)); line-height: 1; }
+.tl-stat__lbl { font-size: 13.5px; font-weight: 600; color: var(--tl-text-stat-label); margin-top: 8px; }
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.tl-footer { background: var(--tl-ink-900); color: #cfd3dc; padding: 56px 0 40px; }
+.tl-footer a { color: #cfd3dc; }
+.tl-footer a:hover { color: #fff; }
+.tl-footer__row { display: flex; flex-wrap: wrap; gap: 28px 40px; justify-content: space-between; align-items: flex-start; }
+.tl-footer__links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.tl-footer__links a { font-weight: 700; font-size: 14.5px; }
+.tl-footer__reach { font-size: 14px; color: #cfd3dc; }
+.tl-footer__reach a { font-weight: 700; }
+.tl-footer__legal { margin-top: 34px; font-size: 13px; color: #8A91A0; }
+.tl-footer img { height: 26px; }
+
+/* ── WhatsApp bubble + Kavi card ─────────────────────────────────────────── */
+.tl-wa { position: fixed; right: 22px; bottom: 22px; z-index: 70; }
+.tl-wa__bubble { width: 62px; height: 62px; border-radius: 50%; border: 0; cursor: pointer;
+  background: #25D366; color: #fff; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 10px 30px rgba(37,211,102,0.45); transition: transform .2s ease; }
+.tl-wa__bubble:hover { transform: scale(1.06); }
+.tl-wa__bubble svg { width: 32px; height: 32px; }
+.tl-wa__card { position: absolute; right: 0; bottom: 78px; width: 300px; border-radius: 22px; overflow: hidden;
+  background: #fff; box-shadow: 0 24px 60px rgba(20,20,20,0.28); transform-origin: bottom right;
+  transform: scale(0.9) translateY(10px); opacity: 0; pointer-events: none; transition: transform .22s ease, opacity .22s ease; }
+.tl-wa--open .tl-wa__card { transform: scale(1) translateY(0); opacity: 1; pointer-events: auto; }
+.tl-wa__head { background: var(--tl-green-500); padding: 26px 22px 24px; text-align: center; position: relative; color: #fff; }
+.tl-wa__close { position: absolute; top: 12px; right: 14px; background: none; border: 0; color: #fff;
+  font-size: 22px; line-height: 1; cursor: pointer; opacity: .9; }
+.tl-wa__avatar { width: 84px; height: 84px; border-radius: 50%; border: 3px solid #fff; object-fit: cover;
+  margin: 0 auto 12px; display: block; background: #fff; position: relative; }
+.tl-wa__avwrap { position: relative; width: 84px; margin: 0 auto 12px; }
+.tl-wa__dot { position: absolute; right: 4px; bottom: 4px; width: 16px; height: 16px; border-radius: 50%;
+  background: #34e07a; border: 3px solid var(--tl-green-500); }
+.tl-wa__name { font-size: 19px; font-weight: 800; margin: 0; }
+.tl-wa__role { font-size: 13.5px; opacity: .95; margin: 3px 0 0; }
+.tl-wa__foot { padding: 16px; }
+.tl-wa__start { width: 100%; justify-content: center; }
+
+/* ── Get-in-touch modal ──────────────────────────────────────────────────── */
+.tl-modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center;
+  padding: 20px; background: rgba(20,20,20,0.5); backdrop-filter: blur(3px); }
+.tl-modal--open { display: flex; }
+.tl-modal__panel { width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; background: #fff;
+  border-radius: 24px; padding: 30px; box-shadow: 0 30px 80px rgba(20,20,20,0.3); position: relative; }
+.tl-modal__close { position: absolute; top: 16px; right: 18px; background: none; border: 0; font-size: 26px;
+  line-height: 1; color: var(--tl-ink-400); cursor: pointer; }
+.tl-modal__close:hover { color: var(--tl-ink-900); }
+.tl-form { display: grid; gap: 15px; margin-top: 18px; }
+.tl-field { display: grid; gap: 6px; }
+.tl-field label { font-size: 13.5px; font-weight: 700; color: var(--tl-ink-700); }
+.tl-field label .tl-req { color: var(--tl-pink-600); }
+.tl-input, .tl-select, .tl-textarea { font-family: inherit; font-size: 15px; color: var(--tl-ink-800);
+  padding: 12px 14px; border: 1.5px solid var(--tl-line-200); border-radius: 12px; background: #fff; width: 100%; }
+.tl-input:focus, .tl-select:focus, .tl-textarea:focus { outline: none; border-color: var(--tl-cyan-500);
+  box-shadow: 0 0 0 3px rgba(38,189,226,0.15); }
+.tl-textarea { min-height: 92px; resize: vertical; }
+.tl-input--err, .tl-select--err { border-color: var(--tl-pink-600); }
+.tl-field__err { font-size: 12.5px; font-weight: 600; color: var(--tl-pink-600); display: none; }
+.tl-field__err--show { display: block; }
+.tl-form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+@media (max-width: 520px) { .tl-form__row { grid-template-columns: 1fr; } }
+.tl-form__submit { justify-content: center; margin-top: 4px; }
+.tl-form__note { font-size: 12px; color: var(--tl-text-muted); text-align: center; }
+.tl-form__ok { display: none; text-align: center; padding: 20px 0; }
+.tl-form__ok h3 { color: var(--tl-green-600); }
+.tl-modal--done .tl-form { display: none; }
+.tl-modal--done .tl-form__ok { display: block; }
+
+/* Hero helper for interior pages */
+.tl-hero { padding: clamp(96px, 12vw, 150px) 0 clamp(48px, 6vw, 76px); }
+.tl-hero--cyan { background: linear-gradient(180deg, var(--tl-wash-cyan), #fff); }
+.tl-hero--green { background: linear-gradient(180deg, var(--tl-wash-green), #fff); }
