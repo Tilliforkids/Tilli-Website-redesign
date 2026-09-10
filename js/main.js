@@ -2418,6 +2418,49 @@ function goToScene(i) { glideTo(sceneScrollTop(i)); }
 document.getElementById('goPrev').addEventListener('click', () => glideTo(adjacentStopY(window.scrollY, -1) ?? 0));
 document.getElementById('goNext').addEventListener('click', () => glideTo(adjacentStopY(window.scrollY, 1) ?? maxY));
 
+/* ── Quick section nav ───────────────────────────────────────────────
+   A pill row of shortcuts to the narrative sections. NAV_ITEMS maps a
+   scene's data-label → the short display name; transition-only screens
+   (Cross, Funnel, Collect, Ask-live) are intentionally left out. The
+   active pill tracks scroll by finding the last section we've reached. */
+const NAV_ITEMS = [
+  ['Start', 'Home'], ['Dashboard', 'Dashboard'], ['Reports', 'Reports'],
+  ['3 views', 'Views'], ['Measure', 'Measure'], ['12 skills', 'Skills'],
+  ['On track', 'Progress'], ['Ask-Tilli', 'Ask-Tilli'], ['Impact', 'Impact'],
+  ['Journey', 'Journey'], ["Let's talk", 'Contact'],
+];
+(function buildQuickNav() {
+  const nav = document.getElementById('quicknav');
+  if (!nav) return;
+  const entries = NAV_ITEMS
+    .map(([label, name]) => ({ i: ST[label], name }))
+    .filter((e) => e.i != null);
+  const buttons = entries.map(({ i, name }) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = name;
+    b.addEventListener('click', () => goToScene(i));
+    nav.appendChild(b);
+    return { i, el: b };
+  });
+  /* highlight the section whose top we've most recently passed */
+  let activeIdx = -1;
+  const syncActive = () => {
+    const y = window.scrollY + window.innerHeight * 0.4;
+    let cur = 0;
+    for (let k = 0; k < buttons.length; k++) {
+      if (y >= scenes[buttons[k].i].top) cur = k;
+    }
+    if (cur === activeIdx) return;
+    activeIdx = cur;
+    buttons.forEach((b, k) => b.el.setAttribute('aria-current', k === cur ? 'true' : 'false'));
+    buttons[cur].el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  };
+  window.addEventListener('scroll', syncActive, { passive: true });
+  window.addEventListener('resize', syncActive);
+  syncActive();
+})();
+
 /* in-page anchors must land inside a scene, not on its cold edge */
 document.querySelectorAll('a[href^="#"]').forEach((a) => {
   a.addEventListener('click', (e) => {
