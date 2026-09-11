@@ -66,7 +66,7 @@
       '<header class="tl-header">' +
         '<div class="tl-container tl-header__inner">' +
           '<a class="tl-logo" href="index.html" aria-label="Tilli home">' +
-            '<img src="' + CONFIG.ASSET_BASE + 'tilli-wordmark.png" alt="Tilli">' +
+            '<img src="' + CONFIG.ASSET_BASE + 'tilli-logo.png" alt="Tilli">' +
           '</a>' +
           '<button class="tl-burger" aria-label="Menu" aria-expanded="false">' +
             '<span></span><span></span><span></span></button>' +
@@ -93,13 +93,14 @@
       '<footer class="tl-footer">' +
         '<div class="tl-container">' +
           '<div class="tl-footer__row">' +
-            '<div><img src="' + CONFIG.ASSET_BASE + 'tilli-wordmark.png" alt="Tilli" style="filter:brightness(0) invert(1)"></div>' +
+            '<div class="tl-footer__brand"><img src="' + CONFIG.ASSET_BASE + 'tilli-logo.png" alt="Tilli">' +
+              '<span class="tl-footer__tag">Developmentally on track by 10.</span></div>' +
             '<nav class="tl-footer__links" aria-label="Footer">' +
               '<a href="index.html">Home</a>' +
               '<a href="research.html">Tilli for Research</a>' +
               '<a href="success.html">Success Stories</a>' +
               '<a href="faq.html">FAQs</a>' +
-              '<a href="https://www.tillikids.com/privacypolicy" target="_blank" rel="noopener">Privacy Policy</a>' +
+              '<a href="privacy-policy.html">Privacy Policy</a>' +
               '<a href="#" data-tl-open-form>Get in touch</a>' +
               '<a href="' + waLink() + '" target="_blank" rel="noopener">WhatsApp</a>' +
             '</nav>' +

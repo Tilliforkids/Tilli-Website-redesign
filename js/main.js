@@ -1474,10 +1474,17 @@ const bez3 = (a, b, c, d, t) => { const u = 1 - t; return u * u * u * a + 3 * u 
    they always line up. Each orb is a real 3-D SPHERE that turns on its own
    vertical axis (x–z rotation) at its own rate/direction — so they read as
    three spinning planets, not flat on-screen swirls. */
-const VIEWS_CX = [-9, 0, 9];
+/* On wide screens the three orbs sit at ±9 with radius 3.4. On portrait /
+   narrow viewports that overflows both edges (side orbs get clipped), so we
+   fit the spread + radius to the actual visible width at the orb plane (z=-4).
+   The clamps mean any desktop-ish aspect resolves back to the original values. */
+const _vwAsp  = Math.max(0.001, window.innerWidth / window.innerHeight);
+const _vwHalf = (CAM_DIST + 4) * Math.tan((50 * Math.PI / 180) / 2) * _vwAsp; // half visible world-width at z=-4
+const VIEWS_R = Math.min(3.4, Math.max(1.9, _vwHalf * 0.30));                  // shrink the sphere on narrow screens
+const _vwSpread = Math.min(9, Math.max(VIEWS_R + 0.6, _vwHalf * 0.92 - VIEWS_R)); // keep the outer edge ~92% of half-width
+const VIEWS_CX = [-_vwSpread, 0, _vwSpread];
 const VIEWS_CY = 0.8;
 const VIEWS_Z = -4;
-const VIEWS_R = 3.4;                       // sphere radius (world)
 const VIEWS_ZD = 1.0;                      // 1 = a true sphere (no z-stretch → no egg wobble)
 const VIEWS_SPIN = [0.26, -0.19, 0.32];    // rad/s per orb (sign = direction)
 
@@ -1488,6 +1495,9 @@ const VIEWS_HANDS = {
   left:  { x: 0.125, y: 0.690, scale: 0.245, flipX: true,  flipY: false, rotX: 0, rotY: 0, rotZ: 18 },
   right: { x: 0.875, y: 0.690, scale: 0.245, flipX: false, flipY: false, rotX: 0, rotY: 0, rotZ: -18 },
 };
+/* the framing hands are tuned to the wide layout; on narrow screens they land
+   in the clipped empty edges, so fold them away (scale 0 → zero-size mesh). */
+if (window.innerWidth < 820) { VIEWS_HANDS.left.scale = 0; VIEWS_HANDS.right.scale = 0; }
 
 function buildFormations() {
   const tmp = new THREE.Color();
