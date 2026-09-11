@@ -33,7 +33,7 @@
       'Grade 2': { focus: 'attention',            strong: 'working memory',       child: 'Meera',  note: 'the class needs the most support with sustained focus.' },
       'Grade 3': { focus: 'self-control',         strong: 'cognitive flexibility',child: 'Rehan',  note: 'quick to switch tasks, but interrupts during group work.' },
       'Grade 4': { focus: 'planning',             strong: 'attention',            child: 'Isha',   note: 'strong focus; needs scaffolding to plan multi-step tasks.' },
-      'Grade 5': { focus: 'working memory',       strong: 'planning',             child: 'Dhruv',  note: 'attention at Learner, working memory at Expert — leads recall well.' }
+      'Grade 5': { focus: 'working memory',       strong: 'planning',             child: 'Dhruv',  note: 'attention at Learner, working memory at Expert, and leads recall well.' }
     },
     // 12 skills Tilli measures (for skill-specific questions)
     skills: ['attention', 'working memory', 'cognitive flexibility', 'inhibition',
@@ -78,10 +78,10 @@
     if (has('how many', 'number of', 'total', 'cuánto', 'cuantos', 'combien', 'wie viele', 'कितने') &&
         has('student', 'kid', 'child', 'children', 'niñ', 'élève', 'eleve', 'schüler', 'बच्च', 'छात्र')) {
       return pick({
-        en: `<b>${school.name}</b> has <b>${school.totalStudents} students</b> — ${school.grades.length} grades (Pre-K to Grade 5), with ${school.studentsPerClass} children in each class.`,
+        en: `<b>${school.name}</b> has <b>${school.totalStudents} students</b>: ${school.grades.length} grades (Pre-K to Grade 5), with ${school.studentsPerClass} children in each class.`,
         es: `<b>${school.name}</b> tiene <b>${school.totalStudents} estudiantes</b>: ${school.grades.length} grados (Pre-K a Grado 5), con ${school.studentsPerClass} niños por clase.`,
         fr: `<b>${school.name}</b> compte <b>${school.totalStudents} élèves</b> : ${school.grades.length} niveaux (de Pre-K au Grade 5), avec ${school.studentsPerClass} enfants par classe.`,
-        hi: `<b>${school.name}</b> में <b>${school.totalStudents} छात्र</b> हैं — ${school.grades.length} कक्षाएँ (Pre-K से Grade 5), हर कक्षा में ${school.studentsPerClass} बच्चे।`
+        hi: `<b>${school.name}</b> में <b>${school.totalStudents} छात्र</b> हैं, ${school.grades.length} कक्षाएँ (Pre-K से Grade 5), हर कक्षा में ${school.studentsPerClass} बच्चे।`
       }, lang);
     }
 
@@ -113,10 +113,10 @@
     if (has('attention', 'focus', 'atención', 'concentr', 'ध्यान')) {
       const needy = Object.entries(school.snapshots).filter(([, s]) => s.focus === 'attention').map(([g]) => g);
       return pick({
-        en: `Across ${school.name}, <b>${needy.join(' and ')}</b> need the most support with <b>attention</b> — focus tends to dip later in the day. Grade 2's ${school.snapshots['Grade 2'].child} is a good example. Try a 2-minute attention warm-up before group tasks.`,
-        es: `En ${school.name}, <b>${needy.join(' y ')}</b> necesitan más apoyo con la <b>atención</b> — la concentración baja al final del día. Prueba un calentamiento de atención de 2 minutos antes de las tareas en grupo.`,
-        fr: `À ${school.name}, <b>${needy.join(' et ')}</b> ont le plus besoin de soutien en <b>attention</b> — la concentration baisse en fin de journée. Essayez un échauffement d'attention de 2 minutes avant les activités de groupe.`,
-        hi: `${school.name} में, <b>${needy.join(' और ')}</b> को <b>ध्यान</b> में सबसे अधिक सहायता चाहिए — दिन के अंत में एकाग्रता कम होती है। समूह कार्य से पहले 2 मिनट का ध्यान वार्म-अप आज़माएँ।`
+        en: `Across ${school.name}, <b>${needy.join(' and ')}</b> need the most support with <b>attention</b>. Focus tends to dip later in the day. Grade 2's ${school.snapshots['Grade 2'].child} is a good example. Try a 2-minute attention warm-up before group tasks.`,
+        es: `En ${school.name}, <b>${needy.join(' y ')}</b> necesitan más apoyo con la <b>atención</b>, la concentración baja al final del día. Prueba un calentamiento de atención de 2 minutos antes de las tareas en grupo.`,
+        fr: `À ${school.name}, <b>${needy.join(' et ')}</b> ont le plus besoin de soutien en <b>attention</b>, la concentration baisse en fin de journée. Essayez un échauffement d'attention de 2 minutes avant les activités de groupe.`,
+        hi: `${school.name} में, <b>${needy.join(' और ')}</b> को <b>ध्यान</b> में सबसे अधिक सहायता चाहिए, दिन के अंत में एकाग्रता कम होती है। समूह कार्य से पहले 2 मिनट का ध्यान वार्म-अप आज़माएँ।`
       }, lang);
     }
 
@@ -125,25 +125,25 @@
     if (namedSkill) {
       const cls = Object.entries(school.snapshots).find(([, s]) => s.strong === namedSkill || s.focus === namedSkill);
       const where = cls ? `${cls[0]} stands out here` : `it's tracked in every grade`;
-      return `Across ${school.name}, <b>${namedSkill}</b> is one of the 12 skills Tilli measures — ${where}. On real data I'd show you each child's level (Emerging → Expert) and a suggested activity.`;
+      return `Across ${school.name}, <b>${namedSkill}</b> is one of the 12 skills Tilli measures, and ${where}. On real data I'd show you each child's level (Emerging → Expert) and a suggested activity.`;
     }
 
     // what can you do / what is this
     if (has('what can you', 'what is tilli', 'help me', 'what do you', 'qué puedes', 'que peux')) {
       return pick({
-        en: `I answer questions about ${school.name} using each child's data — grade and class summaries, individual skill levels, and what to try next. Ask about a grade, a skill like attention, or a child.`,
-        es: `Respondo preguntas sobre ${school.name} usando los datos de cada niño — resúmenes por grado, niveles de habilidad y qué hacer después.`,
-        fr: `Je réponds aux questions sur ${school.name} à partir des données de chaque enfant — résumés par niveau, compétences et pistes d'action.`,
-        hi: `मैं ${school.name} के बारे में हर बच्चे के डेटा का उपयोग करके सवालों के जवाब देता हूँ — कक्षा सारांश, कौशल स्तर और आगे क्या करें।`
+        en: `I answer questions about ${school.name} using each child's data: grade and class summaries, individual skill levels, and what to try next. Ask about a grade, a skill like attention, or a child.`,
+        es: `Respondo preguntas sobre ${school.name} usando los datos de cada niño, resúmenes por grado, niveles de habilidad y qué hacer después.`,
+        fr: `Je réponds aux questions sur ${school.name} à partir des données de chaque enfant, résumés par niveau, compétences et pistes d'action.`,
+        hi: `मैं ${school.name} के बारे में हर बच्चे के डेटा का उपयोग करके सवालों के जवाब देता हूँ, कक्षा सारांश, कौशल स्तर और आगे क्या करें।`
       }, lang);
     }
 
     // fallback — still answers in the detected language
     return pick({
-      en: `In this demo I know sample data for <b>${school.name}</b> — its ${school.grades.length} grades, ${school.totalStudents} students, and the 12 skills Tilli measures. Try asking about a grade, attention, or a child like Dhruv.`,
-      es: `En esta demo conozco datos de ejemplo de <b>${school.name}</b> — sus ${school.grades.length} grados, ${school.totalStudents} estudiantes y las 12 habilidades que mide Tilli. Prueba a preguntar por un grado, la atención o un niño.`,
-      fr: `Dans cette démo, je connais des données d'exemple pour <b>${school.name}</b> — ses ${school.grades.length} niveaux, ${school.totalStudents} élèves et les 12 compétences mesurées par Tilli. Essayez une question sur un niveau, l'attention ou un enfant.`,
-      hi: `इस डेमो में मुझे <b>${school.name}</b> का नमूना डेटा पता है — इसकी ${school.grades.length} कक्षाएँ, ${school.totalStudents} छात्र, और Tilli द्वारा मापे जाने वाले 12 कौशल। किसी कक्षा, ध्यान या किसी बच्चे के बारे में पूछें।`
+      en: `In this demo I know sample data for <b>${school.name}</b>: its ${school.grades.length} grades, ${school.totalStudents} students, and the 12 skills Tilli measures. Try asking about a grade, attention, or a child like Dhruv.`,
+      es: `En esta demo conozco datos de ejemplo de <b>${school.name}</b>, sus ${school.grades.length} grados, ${school.totalStudents} estudiantes y las 12 habilidades que mide Tilli. Prueba a preguntar por un grado, la atención o un niño.`,
+      fr: `Dans cette démo, je connais des données d'exemple pour <b>${school.name}</b>, ses ${school.grades.length} niveaux, ${school.totalStudents} élèves et les 12 compétences mesurées par Tilli. Essayez une question sur un niveau, l'attention ou un enfant.`,
+      hi: `इस डेमो में मुझे <b>${school.name}</b> का नमूना डेटा पता है, इसकी ${school.grades.length} कक्षाएँ, ${school.totalStudents} छात्र, और Tilli द्वारा मापे जाने वाले 12 कौशल। किसी कक्षा, ध्यान या किसी बच्चे के बारे में पूछें।`
     }, lang);
   }
 

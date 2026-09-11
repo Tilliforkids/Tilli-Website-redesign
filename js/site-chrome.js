@@ -210,7 +210,7 @@
             '<p class="tl-form__note">We’ll only use these details to get in touch about Tilli.</p>' +
           '</form>' +
           '<div class="tl-form__ok">' +
-            '<h3 class="tl-h3">Thank you — we’ve got it! 🌱</h3>' +
+            '<h3 class="tl-h3">Thank you, we’ve got it! 🌱</h3>' +
             '<p class="tl-body tl-muted">Kavi’s team will be in touch soon. Prefer to chat now?</p>' +
             '<a class="tl-btn tl-btn--green" href="' + waLink() + '" target="_blank" rel="noopener" style="margin-top:10px">Message us on WhatsApp</a>' +
           '</div>' +
