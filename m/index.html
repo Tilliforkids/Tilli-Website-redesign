@@ -3,38 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<!-- ── Device Split gate (mobile side) ─────────────────────────────────────
-     Exact inverse of the gate in /index.html. If a desktop somehow lands here,
-     bounce back to the root desktop build. Detection logic is identical, so the
-     two never ping-pong. Override: ?view=mobile / ?view=desktop.
-     ───────────────────────────────────────────────────────────────────────── -->
-<script>
-(function () {
-  try {
-    var q = new URLSearchParams(location.search);
-    var forced = q.get('view');
-    if (forced === 'mobile' || forced === 'desktop') {
-      try { localStorage.setItem('tl-view', forced); } catch (e) {}
-    }
-    var pref = forced;
-    if (pref !== 'mobile' && pref !== 'desktop') {
-      try { pref = localStorage.getItem('tl-view'); } catch (e) { pref = null; }
-    }
-    var isMobile;
-    if (pref === 'mobile' || pref === 'desktop') {
-      isMobile = (pref === 'mobile');
-    } else {
-      var ua = navigator.userAgent || '';
-      var uaMobile = /Android|iPhone|iPod|Windows Phone|BlackBerry|Opera Mini|IEMobile/i.test(ua);
-      var iPad = /iPad/.test(ua) || (navigator.platform === 'MacIntel' && (navigator.maxTouchPoints || 0) > 1);
-      var narrow = Math.min(window.innerWidth || 9999, (window.screen && window.screen.width) || 9999) <= 820;
-      var touch = (navigator.maxTouchPoints || 0) > 0 || 'ontouchstart' in window;
-      isMobile = uaMobile || iPad || (narrow && touch);
-    }
-    if (!isMobile) { location.replace('../' + location.search + location.hash); }
-  } catch (e) {}
-})();
-</script>
+<!-- Device Split gate — MUST stay before any stylesheet. See ../js/device-split.js -->
+<script src="../js/device-split.js"></script>
 <title>Tilli — Developmentally on track by 10</title>
 <meta name="description" content="Tilli helps schools measure and grow 12 foundational skills in every child, term after term. 36 weeks of play-based lessons, 30 minutes a week.">
 <meta name="theme-color" content="#26BDE2">
