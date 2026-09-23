@@ -9,30 +9,30 @@
      • On the desktop build, a phone is sent to  m/
      • On the mobile build,  a desktop is sent to ../
 
-   Manual override (sticky via localStorage), handy for testing on one screen:
+   Manual override for testing / a "view other version" link — applies to THIS
+   load only, it is NOT remembered:
      ?view=mobile   ?view=desktop
+   (No persistence on purpose: a stored choice would override real device
+   detection forever — e.g. testing ?view=mobile once would strand every later
+   desktop visit on /m/.)
    ─────────────────────────────────────────────────────────────────────────── */
 (function () {
   try {
+    // Clear any preference stored by earlier versions of this gate, so visitors
+    // who got stuck on the wrong build are released on their next load.
+    try { localStorage.removeItem('tl-view'); } catch (e) {}
+
     // Which build are we on? Strip trailing "index.html" / slash, check last segment.
     var seg = location.pathname.replace(/\/index\.html$/i, '').replace(/\/+$/, '');
     var onMobileBuild = /(^|\/)m$/i.test(seg);
 
-    // Sticky override
-    var q = new URLSearchParams(location.search);
-    var forced = q.get('view');
-    if (forced === 'mobile' || forced === 'desktop') {
-      try { localStorage.setItem('tl-view', forced); } catch (e) {}
-    }
-    var pref = forced;
-    if (pref !== 'mobile' && pref !== 'desktop') {
-      try { pref = localStorage.getItem('tl-view'); } catch (e) { pref = null; }
-    }
+    // Per-load override
+    var forced = new URLSearchParams(location.search).get('view');
 
     // Decide: is this visitor "mobile"?
     var isMobile;
-    if (pref === 'mobile' || pref === 'desktop') {
-      isMobile = (pref === 'mobile');
+    if (forced === 'mobile' || forced === 'desktop') {
+      isMobile = (forced === 'mobile');
     } else {
       var ua = navigator.userAgent || '';
       var uaMobile = /Android|iPhone|iPod|Windows Phone|BlackBerry|Opera Mini|IEMobile/i.test(ua);
