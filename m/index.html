@@ -557,6 +557,18 @@
   sync();
 })();
 
+/* Shared live orb config. The tuner mutates these; the renderers read them
+   each frame. Bake by changing these defaults.
+     ballDot/fieldDot  dot-size multipliers (1 = baked base size)
+     depth of field — how strongly near vs far dots separate:
+       frontA/backA    dot opacity at the front / back of the orb
+       frontS/backS    dot size factor at the front / back of the orb
+       blur            far-dot softening (bokeh), px at the very back (0 = off) */
+window.HeroCfg = window.HeroCfg || {
+  ballDot: 1.5, fieldDot: 0.3,
+  frontA: 1.0, backA: 0, frontS: 1.2, backS: 0.7, blur: 0
+};
+
 /* ── Hero confetti ball — a filled 3-D sphere of colour dots that idle-spins,
       exactly the desktop orb beat: dots packed in a ball, rotating on the
       vertical axis and depth-shaded so it reads as a turning cluster. ── */
@@ -599,16 +611,21 @@
       p.px = p.x * cos - p.z * sin;
     }
     pts.sort(function (a, b) { return a.rz - b.rz; });
+    var C = window.HeroCfg, sz = C.ballDot, blur = C.blur || 0;
     for (var j = 0; j < pts.length; j++) {
       var q = pts[j];
       var depth = (q.rz + 1) / 2;        // 0 (back) → 1 (front)
-      ctx.globalAlpha = 0.45 + depth * 0.55;
+      // depth of field: lerp opacity + size between the back and front settings
+      ctx.globalAlpha = C.backA + depth * (C.frontA - C.backA);
+      ctx.shadowBlur = blur ? blur * (1 - depth) * dpr : 0;   // far dots soften
+      ctx.shadowColor = q.c;
       ctx.fillStyle = q.c;
       ctx.beginPath();
-      ctx.arc(cx + q.px * R, cy + q.y * R, q.s * dpr * (0.7 + depth * 0.5), 0, 6.2832);
+      ctx.arc(cx + q.px * R, cy + q.y * R,
+        q.s * dpr * sz * (C.backS + depth * (C.frontS - C.backS)), 0, 6.2832);
       ctx.fill();
     }
-    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0; ctx.globalAlpha = 1;
   }
   function loop(t) {
     if (!last) last = t;
@@ -649,7 +666,7 @@
     for (var i = 0; i < N; i++) {
       dots.push({
         x: Math.random() * W, y: Math.random() * H,
-        r: (Math.random() * 4 + 3) * dpr,
+        r0: (Math.random() * 4 + 3) * dpr,
         vx: (Math.random() - 0.5) * 0.12 * dpr, vy: (Math.random() - 0.5) * 0.12 * dpr,
         c: COLORS[i % COLORS.length], a: Math.random() * 0.18 + 0.06
       });
@@ -657,13 +674,14 @@
   }
   function draw() {
     ctx.clearRect(0, 0, W, H);
+    var sz = window.HeroCfg.fieldDot;
     for (var i = 0; i < dots.length; i++) {
       var d = dots[i];
       d.x += d.vx; d.y += d.vy;
       if (d.x < -20) d.x = W + 20; if (d.x > W + 20) d.x = -20;
       if (d.y < -20) d.y = H + 20; if (d.y > H + 20) d.y = -20;
       ctx.globalAlpha = d.a; ctx.fillStyle = d.c;
-      ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, 6.2832); ctx.fill();
+      ctx.beginPath(); ctx.arc(d.x, d.y, d.r0 * sz, 0, 6.2832); ctx.fill();
     }
     ctx.globalAlpha = 1;
   }
@@ -683,47 +701,22 @@
   });
 })();
 
-/* ── Hero-stage tuner — dev only. Add ?tune=1 to the URL to open a panel
-      with size / x / y / rotateX-Y-Z sliders for each arm and the ball.
-      Nothing renders for real visitors. "Log values" prints the config to
-      the console so the chosen numbers can be baked into the CSS above. ── */
+/* ── Orb depth-of-field tuner — dev only. Add ?tune=1 to the URL for a panel
+      that tunes how the spinning orb reads in depth: front/back dot opacity,
+      front/back dot size, and a far-dot blur (bokeh). Changes are live and
+      write straight into window.HeroCfg; "Log values" prints them to bake. ── */
 (function () {
   if (!/tune/.test(location.search + location.hash)) return;
-  console.log('[hero tuner] active');
+  var C = window.HeroCfg;
 
-  var L = document.querySelector('.hero-arm.left');
-  var Rr = document.querySelector('.hero-arm.right');
-  var B = document.getElementById('heroBall');
-  if (!L || !Rr || !B) return;
+  var fields = [
+    ['frontA', 'front opacity', 0, 1, 0.02],
+    ['backA',  'back opacity',  0, 1, 0.02],
+    ['frontS', 'front size',    0.2, 2.5, 0.05],
+    ['backS',  'back size',     0.2, 2.5, 0.05],
+    ['blur',   'far blur px',   0, 14, 0.5]
+  ];
 
-  // model — defaults match the CSS above. arm.x is the corner-anchor offset
-  // (left arm → left%, right arm → right%). flip encodes each arm's base mirror.
-  var M = {
-    left:  { w: 50, x: -25, y: -2, rx: 0, ry: 0, rz: 0, flipX: -1, flipY: -1 },
-    right: { w: 50, x: -25, y: -2, rx: 0, ry: 0, rz: 0, flipX:  1, flipY: -1 },
-    ball:  { w: 193, x: 50, y: 50 }
-  };
-
-  function applyArm(el, side, m) {
-    el.style.width = m.w + '%';
-    el.style[side] = m.x + '%';
-    el.style.top = m.y + '%';
-    el.style.transform =
-      'rotateX(' + m.rx + 'deg) rotateY(' + m.ry + 'deg) rotateZ(' + m.rz + 'deg)' +
-      ' scaleX(' + m.flipX + ') scaleY(' + m.flipY + ')';
-  }
-  function applyBall(m) {
-    B.style.width = m.w + 'px'; B.style.height = m.w + 'px';
-    B.style.left = m.x + '%'; B.style.top = m.y + '%';
-    B.style.transform = 'translate(-50%, -50%)';
-  }
-  function applyAll() {
-    applyArm(L, 'left', M.left); applyArm(Rr, 'right', M.right); applyBall(M.ball);
-  }
-
-  // ── panel UI ──
-  // docked bottom-LEFT: arms live at the top, the chat bubble at bottom-right,
-  // so this corner stays clear. Collapsible so it never blocks the hero.
   var css = '#tuner{position:fixed;bottom:10px;left:10px;z-index:9999;width:210px;' +
     'background:#111;color:#eee;font:11px/1.4 ui-monospace,monospace;' +
     'border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.45)}' +
@@ -733,10 +726,8 @@
     '#tuner .hd span{color:#888}' +
     '#tuner .bd{padding:8px 10px;max-height:44vh;overflow:auto}' +
     '#tuner.min .bd{display:none}' +
-    '#tuner h4{margin:8px 0 4px;color:#26BDE2;font-size:11px;letter-spacing:.05em}' +
-    '#tuner h4:first-child{margin-top:0}' +
-    '#tuner .row{display:flex;align-items:center;gap:6px;margin:3px 0}' +
-    '#tuner .row label{width:26px;color:#F99B1C}' +
+    '#tuner .row{display:flex;align-items:center;gap:6px;margin:5px 0}' +
+    '#tuner .row label{width:66px;color:#F99B1C;white-space:nowrap}' +
     '#tuner input[type=range]{flex:1;min-width:0}' +
     '#tuner .val{width:34px;text-align:right;color:#E866B0}' +
     '#tuner button{width:100%;margin-top:8px;padding:6px;background:#26BDE2;color:#000;' +
@@ -744,39 +735,31 @@
     '#tuner .hint{margin-top:6px;color:#888}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 
-  var groups = [
-    ['LEFT ARM', 'left',  [['w','size %',0,100],['x','x %',-40,40],['y','y %',-40,40],['rx','rotX',-90,90],['ry','rotY',-90,90],['rz','rotZ',-90,90]]],
-    ['RIGHT ARM','right', [['w','size %',0,100],['x','x %',-40,40],['y','y %',-40,40],['rx','rotX',-90,90],['ry','rotY',-90,90],['rz','rotZ',-90,90]]],
-    ['BALL',     'ball',  [['w','size px',60,260],['x','x %',0,100],['y','y %',0,100]]]
-  ];
-
   var panel = document.createElement('div'); panel.id = 'tuner';
   var hd = document.createElement('div'); hd.className = 'hd';
-  hd.innerHTML = '<b>HERO TUNER</b><span>collapse ▾</span>';
+  hd.innerHTML = '<b>ORB DEPTH</b><span>collapse ▾</span>';
   hd.addEventListener('click', function () {
     var min = panel.classList.toggle('min');
     hd.querySelector('span').textContent = min ? 'expand ▸' : 'collapse ▾';
   });
   panel.appendChild(hd);
+
   var body = document.createElement('div'); body.className = 'bd';
-  groups.forEach(function (g) {
-    var h = document.createElement('h4'); h.textContent = g[0]; body.appendChild(h);
-    g[2].forEach(function (f) {
-      var key = f[0], min = f[2], max = f[3];
-      var row = document.createElement('div'); row.className = 'row';
-      var lab = document.createElement('label'); lab.textContent = key;
-      var inp = document.createElement('input');
-      inp.type = 'range'; inp.min = min; inp.max = max; inp.step = 1; inp.value = M[g[1]][key];
-      var val = document.createElement('span'); val.className = 'val'; val.textContent = M[g[1]][key];
-      inp.addEventListener('input', function () {
-        M[g[1]][key] = +inp.value; val.textContent = inp.value; applyAll();
-      });
-      row.appendChild(lab); row.appendChild(inp); row.appendChild(val); body.appendChild(row);
-    });
+  fields.forEach(function (f) {
+    var key = f[0];
+    var row = document.createElement('div'); row.className = 'row';
+    var lab = document.createElement('label'); lab.textContent = f[1];
+    var inp = document.createElement('input');
+    inp.type = 'range'; inp.min = f[2]; inp.max = f[3]; inp.step = f[4]; inp.value = C[key];
+    var val = document.createElement('span'); val.className = 'val'; val.textContent = C[key];
+    inp.addEventListener('input', function () { C[key] = +inp.value; val.textContent = inp.value; });
+    row.appendChild(lab); row.appendChild(inp); row.appendChild(val); body.appendChild(row);
   });
   var btn = document.createElement('button'); btn.textContent = 'Log values';
   btn.addEventListener('click', function () {
-    console.log('HERO STAGE CONFIG →', JSON.stringify(M, null, 2));
+    console.log('ORB DEPTH →', JSON.stringify({
+      frontA: C.frontA, backA: C.backA, frontS: C.frontS, backS: C.backS, blur: C.blur
+    }, null, 2));
   });
   body.appendChild(btn);
   var hint = document.createElement('div'); hint.className = 'hint';
@@ -784,9 +767,8 @@
   body.appendChild(hint);
   panel.appendChild(body);
   document.body.appendChild(panel);
-
-  applyAll();
 })();
+
 </script>
 
 </body>
