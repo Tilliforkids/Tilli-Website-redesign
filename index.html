@@ -154,13 +154,26 @@
     line-height: 1.0; color: var(--tl-ink-900); }
   .sch-sub { font-size: min(23px,2.9vh); font-weight: 600; color: var(--tl-ink-450);
     line-height: 1.35; margin-top: 16px; }
-  .sch-grid { flex: 1 1 auto; display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: min(20px,1.8vw); }
-  .sch-logo { aspect-ratio: 5 / 2.7; border: 2px solid var(--tl-line-200);
-    border-radius: 16px; background: var(--tl-surface-100);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--tl-ink-300); font-size: 14px; font-weight: 700; overflow: hidden; }
-  .sch-logo img { max-width: 74%; max-height: 62%; object-fit: contain; display: block; }
+  /* Each box hugs its logo: fixed HEIGHT (--sch-h), width auto — square logos get
+     square boxes, wide logos get wide boxes. .sch-break puts the square group on its
+     own row; the wide logos wrap below it. */
+  /* Uniform "boxed" tiles in three sizes, arranged 2 / 2 / 2 / 3 to match the deck.
+     Box dimensions are fixed per tier; each logo is contained + centred inside. */
+  .sch-grid { flex: 1 1 auto; display: flex; flex-wrap: wrap;
+    justify-content: center; align-items: center; align-content: center;
+    gap: min(16px,1.7vh) min(18px,1.6vw); }
+  .sch-break { flex-basis: 100%; height: 0; margin: 0; }
+  .sch-logo { width: min(212px,20.5vw); height: min(86px,10.5vh);
+    padding: min(12px,1.4vh) min(16px,1.5vw); box-sizing: border-box;
+    border: 2px solid var(--tl-line-200); border-radius: 16px; background: var(--tl-surface-100);
+    display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .sch-logo img { max-width: 100%; max-height: 100%; width: auto; height: auto;
+    object-fit: contain; display: block; }
+  /* featured crests (NMAJS + Musaeus) — big, near-square top row */
+  .sch-logo--lg { width: min(196px,19vw); height: min(152px,18.5vh);
+    border-radius: 22px; padding: min(18px,2vh) min(20px,1.9vw); }
+  /* compact logos on the last row */
+  .sch-logo--sm { width: min(132px,13vw); height: min(86px,10.5vh); }
   /* empty slot → hide the broken <img>, show the text label; once a real src is
      pasted in, the image shows and the placeholder label hides itself. */
   .sch-logo img:not([src]), .sch-logo img[src=""] { display: none; }
@@ -387,8 +400,10 @@
     /* impact testimonial: stack the quote mark above the text */
     .impact-quote { flex-direction: column; gap: 10px; padding: 20px 22px; }
 
-    /* school-logo grid: 3 tiles are too cramped at 375px */
-    .sch-grid { grid-template-columns: repeat(2, 1fr); }
+    /* school-logo wall: shrink each tier of box on small screens */
+    .sch-logo { width: min(200px, 42vw); height: 74px; }
+    .sch-logo--lg { width: min(160px, 40vw); height: 124px; }
+    .sch-logo--sm { width: min(120px, 27vw); height: 74px; }
   }
   /* Ask-Tilli chat "typing" indicator — three bouncing dots */
   .tdot { width: 6px; height: 6px; border-radius: 50%; background: var(--tl-ink-300); display: inline-block; animation: tbounce 1.25s infinite ease-in-out; }
@@ -878,15 +893,21 @@
             <!-- paste a real path into each src="" (e.g. src="assets/ds/school-x.png");
                  the box size/shape is fixed, the label hides once a src is set. -->
             <div class="sch-grid">
-              <div class="sch-logo"><img src="" alt="School logo 1"><span>school logo 1</span></div>
-              <div class="sch-logo"><img src="" alt="School logo 2"><span>school logo 2</span></div>
-              <div class="sch-logo"><img src="" alt="School logo 3"><span>school logo 3</span></div>
-              <div class="sch-logo"><img src="" alt="School logo 4"><span>school logo 4</span></div>
-              <div class="sch-logo"><img src="" alt="School logo 5"><span>school logo 5</span></div>
-              <div class="sch-logo"><img src="" alt="School logo 6"><span>school logo 6</span></div>
-              <div class="sch-logo"><img src="" alt="School logo 7"><span>school logo 7</span></div>
-              <div class="sch-logo"><img src="" alt="School logo 8"><span>school logo 8</span></div>
-              <div class="sch-logo"><img src="" alt="School logo 9"><span>school logo 9</span></div>
+              <!-- tier 1: featured square crests, big -->
+              <div class="sch-logo sch-logo--lg"><img src="assets/ds/school-nmajs.png" alt="Nita Mukesh Ambani Junior School"></div>
+              <div class="sch-logo sch-logo--lg"><img src="assets/ds/school-musaeus.png" alt="Musaeus College"></div>
+              <div class="sch-break"></div>
+              <!-- tier 2: wide wordmark logos, two per row -->
+              <div class="sch-logo"><img src="assets/ds/school-hippocampus.png" alt="Hippocampus Learning Centres"></div>
+              <div class="sch-logo"><img src="assets/ds/school-pathways.png" alt="Pathways School"></div>
+              <div class="sch-break"></div>
+              <div class="sch-logo"><img src="assets/ds/school-kai.png" alt="Kai"></div>
+              <div class="sch-logo"><img src="assets/ds/school-gig.png" alt="GiG"></div>
+              <div class="sch-break"></div>
+              <!-- tier 3: compact logos, three across -->
+              <div class="sch-logo sch-logo--sm"><img src="assets/ds/school-arugam-bay.png" alt="Arugam Bay"></div>
+              <div class="sch-logo sch-logo--sm"><img src="assets/ds/school-vega.png" alt="Vega"></div>
+              <div class="sch-logo sch-logo--sm"><img src="assets/ds/school-leeds.png" alt="Leeds School"></div>
             </div>
           </div>
         </div>
