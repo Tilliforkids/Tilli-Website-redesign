@@ -152,20 +152,6 @@
     background: #fff; }
   .shot video, .shot img { width: 100%; display: block; }
 
-  /* ── Reports: stacked cards ─────────────────────────── */
-  .reports-stack { display: flex; justify-content: center; gap: 0; margin-bottom: 30px; }
-  .reports-stack img { width: 40%; border-radius: 12px; border: 1px solid var(--tl-line-200);
-    box-shadow: 0 14px 30px rgba(20,20,20,0.16); }
-  .reports-stack img:nth-child(1) { transform: rotate(-6deg) translateX(12px); z-index: 1; }
-  .reports-stack img:nth-child(2) { transform: scale(1.08); z-index: 3; }
-  .reports-stack img:nth-child(3) { transform: rotate(6deg) translateX(-12px); z-index: 1; }
-
-  /* ── 3 views ────────────────────────────────────────── */
-  .views { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
-  .view { background: #fff; border: 1px solid var(--tl-line-200); border-radius: 16px; padding: 18px; }
-  .view .n { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 18px; }
-  .view .d { margin-top: 4px; font-size: 14.5px; color: var(--tl-ink-500); }
-
   /* ── Measure: strands + sample cards ────────────────── */
   .strands { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
   .strand .h { font-size: 14px; font-weight: 800; }
@@ -226,10 +212,15 @@
   .imp-stats { display: flex; justify-content: center; gap: 40px; margin-top: 32px; }
   .imp-stats .num { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 34px; color: var(--tl-cyan-700); }
   .imp-stats .lbl { font-size: 13px; font-weight: 600; color: var(--tl-ink-450); margin-top: 4px; }
-  .imp-quote { margin-top: 34px; text-align: left; background: #fff; border: 1px solid var(--tl-line-200);
-    border-radius: 20px; padding: 24px; }
-  .imp-quote p { font-size: 16px; line-height: 1.55; color: var(--tl-ink-700); }
-  .imp-quote footer { margin-top: 14px; font-size: 13px; font-weight: 700; color: var(--tl-ink-450); }
+  .imp-quote { position: relative; margin: 30px auto 0; max-width: 420px; text-align: center;
+    padding: 8px 6px; }
+  .imp-quote .qmark { display: block; font-family: 'Montserrat', sans-serif; font-weight: 800;
+    font-size: 34px; line-height: 0.5; color: var(--tl-green-500); opacity: 0.55; margin-bottom: 12px; }
+  .imp-quote p { font-size: 16.5px; font-weight: 500; line-height: 1.6; color: var(--tl-ink-700); }
+  .imp-quote footer { margin-top: 18px; }
+  .imp-quote .qwho b { font-weight: 700; font-size: 13.5px; color: var(--tl-ink-800); }
+  .imp-quote .qwho span { display: block; font-size: 12.5px; font-weight: 500; color: var(--tl-ink-400);
+    line-height: 1.4; margin-top: 3px; }
 
   /* ── Journey ────────────────────────────────────────── */
   .j-steps { display: flex; gap: 8px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
@@ -273,13 +264,91 @@
   .ft .switch { display: inline-block; margin-top: 18px; font-size: 13px; font-weight: 600; color: var(--tl-cyan-700); }
   .ft .copy { margin-top: 16px; font-size: 12px; color: var(--tl-ink-300); }
 
-  /* ── Floating WhatsApp ──────────────────────────────── */
-  .wa { position: fixed; right: 16px; bottom: calc(74px + env(safe-area-inset-bottom)); z-index: 56;
-    width: 52px; height: 52px; border-radius: 50%; background: #25D366;
-    box-shadow: 0 8px 22px rgba(37,211,102,0.4); display: flex; align-items: center; justify-content: center; }
-  .wa svg { width: 28px; height: 28px; fill: #fff; }
+  /* ── Floating WhatsApp + Kavi card ──────────────────── */
+  .wa { position: fixed; right: 16px; bottom: calc(74px + env(safe-area-inset-bottom)); z-index: 56; }
+  .wa-bubble { width: 52px; height: 52px; border-radius: 50%; border: 0; cursor: pointer; margin-left: auto;
+    background: #25D366; box-shadow: 0 8px 22px rgba(37,211,102,0.4);
+    display: flex; align-items: center; justify-content: center; }
+  .wa-bubble svg { width: 28px; height: 28px; fill: #fff; }
+  .wa-card { position: absolute; right: 0; bottom: 64px; width: 260px; border-radius: 22px; overflow: hidden;
+    background: #fff; box-shadow: 0 20px 50px rgba(20,20,20,0.28); transform-origin: bottom right;
+    transform: scale(0.9) translateY(10px); opacity: 0; pointer-events: none;
+    transition: transform .22s ease, opacity .22s ease; }
+  .wa.open .wa-card { transform: scale(1) translateY(0); opacity: 1; pointer-events: auto; }
+  .wa-card__head { background: var(--tl-green-500); padding: 26px 22px 22px; text-align: center;
+    position: relative; color: #fff; }
+  .wa-card__close { position: absolute; top: 10px; right: 12px; background: none; border: 0; color: #fff;
+    font-size: 22px; line-height: 1; cursor: pointer; opacity: .9; padding: 4px; }
+  .wa-card__avwrap { position: relative; width: 84px; margin: 0 auto 12px; }
+  .wa-card__avatar { width: 84px; height: 84px; border-radius: 50%; border: 3px solid #fff; object-fit: cover;
+    display: block; background: #fff; }
+  .wa-card__dot { position: absolute; right: 4px; bottom: 4px; width: 16px; height: 16px; border-radius: 50%;
+    background: #34e07a; border: 3px solid var(--tl-green-500); }
+  .wa-card__name { font-size: 19px; font-weight: 800; margin: 0; }
+  .wa-card__role { font-size: 13.5px; opacity: .95; margin: 3px 0 0; }
+  .wa-card__foot { padding: 16px; }
+  .wa-card__start { display: flex; width: 100%; justify-content: center; align-items: center;
+    background: var(--tl-green-500); color: #fff; font-weight: 700; font-size: 15px;
+    padding: 13px 22px; border-radius: 999px; }
 
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  /* ── Reports: swipeable card deck ───────────────────── */
+  .rdeck { position: relative; width: 200px; height: 296px; margin: 0 auto 34px; touch-action: pan-y; user-select: none; }
+  .rdeck-card { position: absolute; top: 4px; left: 50%; width: 190px; aspect-ratio: 892 / 1262;
+    border-radius: 12px; overflow: hidden; border: 1px solid var(--tl-line-200);
+    box-shadow: 0 14px 30px rgba(20,20,20,0.16); background: #fff;
+    transform-origin: 50% 60%; transform: translateX(-50%);
+    transition: transform .42s cubic-bezier(.22,.61,.36,1), opacity .42s ease; }
+  .rdeck-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .rdeck-card.dragging { transition: none; }
+  .rdeck-hint { font-size: 12.5px; font-weight: 600; color: var(--tl-ink-300); margin: -18px 0 30px;
+    display: flex; align-items: center; justify-content: center; gap: 7px; }
+
+  /* ── 12 skills: per-skill icon ──────────────────────── */
+  .skill-card .sk-top { display: flex; align-items: flex-start; gap: 9px; }
+  .sk-ic { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center; }
+  .sk-ic svg { width: 17px; height: 17px; fill: none; stroke: currentColor;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .sk-ic.t-cyan { background: var(--tl-wash-cyan); color: var(--tl-cyan-700); }
+  .sk-ic.t-green { background: var(--tl-wash-green); color: var(--tl-green-600); }
+  .sk-ic.t-pink { background: var(--tl-wash-pink); color: var(--tl-pink-600); }
+  .sk-ic.t-orange { background: rgba(249,155,28,0.14); color: var(--tl-orange-500); }
+
+  /* ── On-track kids — static echo of the desktop dot-children ── */
+  .kids-row { display: flex; justify-content: center; align-items: flex-end; gap: 7px;
+    margin-top: 30px; }
+  .kid { flex: 0 0 auto; width: 46px; height: 60px; display: block; fill: var(--kc); }
+  .kid-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+  @media (max-width: 360px) { .kid { width: 40px; height: 52px; } }
+
+  /* ── Impact: school-logo marquee (slow continuous scroll) ── */
+  .school-logos { margin-top: 30px; overflow: hidden;
+    -webkit-mask: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    mask: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+  .school-track { display: flex; gap: 12px; width: max-content;
+    animation: logoscroll 38s linear infinite; }
+  .school-track:hover { animation-play-state: paused; }
+  .school-track .tile { flex: 0 0 auto; width: 176px; height: 118px;
+    background: #fff; border: 1px solid var(--tl-line-200); border-radius: 16px;
+    display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .school-track .tile img { max-width: 100%; max-height: 100%; width: auto; object-fit: contain; }
+  @keyframes logoscroll { to { transform: translateX(-50%); } }
+
+  /* ── Journey: clickable step pills ──────────────────── */
+  .j-pill { cursor: pointer; background: #fff; transition: background .2s ease, color .2s ease, transform .12s ease; }
+  .j-pill:active { transform: scale(0.96); }
+  .j-pill.on { color: #fff !important; }
+  .j-pill.on[data-step="measure"]   { background: var(--tl-green-500); }
+  .j-pill.on[data-step="ask"]       { background: var(--tl-cyan-500); }
+  .j-pill.on[data-step="intervene"] { background: var(--tl-yellow-500); }
+  .j-cards .j-card { display: none; }
+  .j-cards .j-card.show { display: block; animation: jfade .28s ease; }
+  @keyframes jfade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .school-track { animation: none; }
+  }
 </style>
 </head>
 <body>
@@ -332,7 +401,6 @@
       <a class="btn btn-pink btn-block"
          href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school."
          target="_blank" rel="noopener">Book a demo</a>
-      <a class="textlink" href="#dashboard">See how it works →</a>
     </div>
     <div class="badges">
       <div class="k">INCUBATED AT STANFORD · SCALED WITH UNICEF INNOVATION</div>
@@ -355,10 +423,15 @@
 
   <!-- 3 · REPORTS -->
   <section id="reports" class="wash-green wrap" style="text-align:center">
-    <div class="reports-stack">
-      <img src="../assets/report-page-1.png" alt="Tilli parent report: cover" loading="lazy">
-      <img src="../assets/report-page-3.png" alt="Tilli parent report: skill levels" loading="lazy">
-      <img src="../assets/report-page-4.png" alt="Tilli parent report: what to try at home" loading="lazy">
+    <div class="rdeck" id="reportDeck" aria-label="Tilli parent report pages — swipe to browse">
+      <div class="rdeck-card"><img src="../assets/report-page-1.png" alt="Tilli parent report: cover" loading="lazy"></div>
+      <div class="rdeck-card"><img src="../assets/report-page-3.png" alt="Tilli parent report: skill levels" loading="lazy"></div>
+      <div class="rdeck-card"><img src="../assets/report-page-4.png" alt="Tilli parent report: what to try at home" loading="lazy"></div>
+    </div>
+    <div class="rdeck-hint" aria-hidden="true">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Swipe to browse
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
     <h2 class="title">Teachers share reports <span class="c-green">parents love to receive</span>.</h2>
     <p class="lede">Term by term: strengths, growth areas, and small things to try at home, for every child.</p>
@@ -366,16 +439,6 @@
       <a class="btn btn-pink btn-block" style="max-width:320px"
          href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school."
          target="_blank" rel="noopener">Book a demo</a>
-    </div>
-  </section>
-
-  <!-- 4 · 3 VIEWS -->
-  <section id="views" class="wash-cyan wrap">
-    <h2 class="title">Every data point comes from the <span class="c-cyan">3 people who matter most</span>.</h2>
-    <div class="views">
-      <div class="view"><div class="n c-green">Teacher</div><div class="d">What they observe in the classroom</div></div>
-      <div class="view"><div class="n" style="color:#C79600">The student themselves</div><div class="d">Direct tasks, in the child's own voice</div></div>
-      <div class="view"><div class="n c-cyan">Parents</div><div class="d">What home sees that school can't</div></div>
     </div>
   </section>
 
@@ -419,18 +482,54 @@
     <h2 class="title">Get a <span class="c-pink">360° view</span> of the student.</h2>
     <p class="lede">12 foundational skills, measured from every side, term after term.</p>
     <div class="skills-grid" style="text-align:left">
-      <div class="skill-card"><div class="n c-cyan">01 · Attention</div><div class="d">Focusing on relevant information and sustaining it on a task.</div></div>
-      <div class="skill-card"><div class="n" style="color:var(--tl-orange-500)">02 · Working Memory</div><div class="d">Holding and using information over short periods.</div></div>
-      <div class="skill-card"><div class="n c-green">03 · Cognitive Flexibility</div><div class="d">Shifting between tasks, perspectives, and strategies.</div></div>
-      <div class="skill-card"><div class="n c-pink">04 · Inhibition: Distraction</div><div class="d">Resisting distractions to stay on task.</div></div>
-      <div class="skill-card"><div class="n c-cyan">05 · Inhibition: Response</div><div class="d">Pausing and thinking before acting.</div></div>
-      <div class="skill-card"><div class="n" style="color:var(--tl-orange-500)">06 · Planning &amp; Organisation</div><div class="d">Setting goals, planning steps, and structuring tasks.</div></div>
-      <div class="skill-card"><div class="n c-green">07 · Emotion Awareness</div><div class="d">Recognising and understanding one's own emotions.</div></div>
-      <div class="skill-card"><div class="n c-pink">08 · Emotion Regulation</div><div class="d">Managing and responding to emotions appropriately.</div></div>
-      <div class="skill-card"><div class="n c-cyan">09 · Empathy</div><div class="d">Understanding and sharing the feelings of others.</div></div>
-      <div class="skill-card"><div class="n" style="color:var(--tl-orange-500)">10 · Relationship Skills</div><div class="d">Building and maintaining positive interactions with others.</div></div>
-      <div class="skill-card"><div class="n c-green">11 · Metacognition</div><div class="d">Reflecting on and understanding one's own thinking.</div></div>
-      <div class="skill-card"><div class="n c-pink">12 · Critical Thinking</div><div class="d">Analysing and evaluating information to form judgments.</div></div>
+      <div class="skill-card">
+        <div class="sk-top"><span class="sk-ic t-cyan"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/></svg></span><div class="n c-cyan">01 · Attention</div></div>
+        <div class="d">Focusing on relevant information and sustaining it on a task.</div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-top"><span class="sk-ic t-orange"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span><div class="n" style="color:var(--tl-orange-500)">02 · Working Memory</div></div>
+        <div class="d">Holding and using information over short periods.</div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-top"><span class="sk-ic t-green"><svg viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg></span><div class="n c-green">03 · Cognitive Flexibility</div></div>
+        <div class="d">Shifting between tasks, perspectives, and strategies.</div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-top"><span class="sk-ic t-pink"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><div class="n c-pink">04 · Inhibition: Distraction</div></div>
+        <div class="d">Resisting distractions to stay on task.</div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-top"><span class="sk-ic t-cyan"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg></span><div class="n c-cyan">05 · Inhibition: Response</div></div>
+        <div class="d">Pausing and thinking before acting.</div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-top"><span class="sk-ic t-orange"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></span><div class="n" style="color:var(--tl-orange-500)">06 · Planning &amp; Organisation</div></div>
+        <div class="d">Setting goals, planning steps, and structuring tasks.</div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-top"><span class="sk-ic t-green"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span><div class="n c-green">07 · Emotion Awareness</div></div>
+        <div class="d">Recognising and understanding one's own emotions.</div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-top"><span class="sk-ic t-pink"><svg viewBox="0 0 24 24"><polyline points="3 12 7 12 10 5 14 19 17 12 21 12"/></svg></span><div class="n c-pink">08 · Emotion Regulation</div></div>
+        <div class="d">Managing and responding to emotions appropriately.</div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-top"><span class="sk-ic t-cyan"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></span><div class="n c-cyan">09 · Empathy</div></div>
+        <div class="d">Understanding and sharing the feelings of others.</div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-top"><span class="sk-ic t-orange"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div class="n" style="color:var(--tl-orange-500)">10 · Relationship Skills</div></div>
+        <div class="d">Building and maintaining positive interactions with others.</div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-top"><span class="sk-ic t-green"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/><polyline points="21 3 21 9 15 9"/><circle cx="12" cy="12" r="2.5"/></svg></span><div class="n c-green">11 · Metacognition</div></div>
+        <div class="d">Reflecting on and understanding one's own thinking.</div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-top"><span class="sk-ic t-pink"><svg viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg></span><div class="n c-pink">12 · Critical Thinking</div></div>
+        <div class="d">Analysing and evaluating information to form judgments.</div>
+      </div>
     </div>
   </section>
 
@@ -443,6 +542,15 @@
       <span class="pop c">3× a year</span>
       <span class="pop p">2,895 data points per child</span>
       <span class="pop y">Growth visible, not guessed</span>
+    </div>
+    <div class="kids-row" aria-hidden="true">
+      <svg class="kid-defs"><defs><g id="kidOutline"><path transform="matrix(1,0,0,1,-567.895188,-30.276341)" d="M1149.96,219.512C1149.019,246.122 1141.684,310.796 1103.86,340.94C1093.3,349.356 1103.626,350.143 1112.313,353.916C1242.067,410.276 1342.59,446.8 1351.701,510.478C1352.443,515.66 1354.355,588.435 1252.474,573.674C1204.701,566.753 1139.44,539.641 1137.518,540.577C1136.148,541.244 1137.312,546.487 1142.714,587.469C1145.751,610.51 1150.778,648.643 1187.927,874.431C1190.372,889.291 1190.969,889.107 1193.754,908.458C1194.178,911.411 1227.311,1049.427 1118.498,1049.765C1035.468,1050.024 1013.256,942.461 997.735,893.427C995.717,887.051 971.279,809.851 961.869,817.924C945.303,832.135 933.826,885.992 916.071,939.361C907.449,965.279 892.486,1015.793 849.396,1039.306C818.209,1056.322 742.078,1060.458 730.032,981.563C724.389,944.61 731.088,930.23 749.716,796.532C757.363,741.645 781.126,569.221 783.64,553.51C784.392,548.813 778.952,554.197 730.421,565.137C721.568,567.132 657.133,583.453 607.73,560.022C555.986,535.479 554.948,473.064 606.663,442.779C647.488,418.871 733.874,389.921 782.321,368.088C814.625,353.53 829.399,352.634 818.499,341.501C768.385,290.314 768.948,217.276 777.978,172.588C818.229,-26.596 1154.592,-20.426 1149.96,219.512Z"/></g></defs></svg>
+      <svg class="kid" viewBox="0 0 785 1020" style="--kc:#56C02B"><use href="#kidOutline"/></svg>
+      <svg class="kid" viewBox="0 0 785 1020" style="--kc:#FCC30B"><use href="#kidOutline"/></svg>
+      <svg class="kid" viewBox="0 0 785 1020" style="--kc:#26BDE2"><use href="#kidOutline"/></svg>
+      <svg class="kid" viewBox="0 0 785 1020" style="--kc:#E866B0"><use href="#kidOutline"/></svg>
+      <svg class="kid" viewBox="0 0 785 1020" style="--kc:#F99B1C"><use href="#kidOutline"/></svg>
+      <svg class="kid" viewBox="0 0 785 1020" style="--kc:#56C02B"><use href="#kidOutline"/></svg>
     </div>
   </section>
 
@@ -471,38 +579,65 @@
   <section id="impact" class="wrap impact">
     <div class="big"><span>30+</span> schools</div>
     <div class="sub">have joined to understand their students</div>
+    <blockquote class="imp-quote">
+      <span class="qmark" aria-hidden="true">&ldquo;</span>
+      <p>What makes this work so powerful is the way it brings research, data and classroom practice together, turning evidence into insights that can genuinely support teachers and children.</p>
+      <footer>
+        <span class="qwho"><b>Abhimanyu Basu</b><span>Dean &amp; CEO · Dhirubhai Ambani International School</span></span>
+      </footer>
+    </blockquote>
+    <div class="school-logos">
+      <div class="school-track">
+        <!-- set 1 -->
+        <div class="tile"><img src="../assets/ds/school-nmajs.png" alt="Nita Mukesh Ambani Junior School" loading="lazy"></div>
+        <div class="tile"><img src="../assets/ds/school-musaeus.png" alt="Musaeus College" loading="lazy"></div>
+        <div class="tile"><img src="../assets/ds/school-hippocampus.png" alt="Hippocampus Learning Centres" loading="lazy"></div>
+        <div class="tile"><img src="../assets/ds/school-pathways.png" alt="Pathways School" loading="lazy"></div>
+        <div class="tile"><img src="../assets/ds/school-kai.png" alt="Kai" loading="lazy"></div>
+        <div class="tile"><img src="../assets/ds/school-gig.png" alt="GiG" loading="lazy"></div>
+        <div class="tile"><img src="../assets/ds/school-arugam-bay.png" alt="Arugam Bay" loading="lazy"></div>
+        <div class="tile"><img src="../assets/ds/school-vega.png" alt="Vega" loading="lazy"></div>
+        <div class="tile"><img src="../assets/ds/school-leeds.png" alt="Leeds School" loading="lazy"></div>
+        <!-- set 2 (duplicate for a seamless loop) -->
+        <div class="tile" aria-hidden="true"><img src="../assets/ds/school-nmajs.png" alt="" loading="lazy"></div>
+        <div class="tile" aria-hidden="true"><img src="../assets/ds/school-musaeus.png" alt="" loading="lazy"></div>
+        <div class="tile" aria-hidden="true"><img src="../assets/ds/school-hippocampus.png" alt="" loading="lazy"></div>
+        <div class="tile" aria-hidden="true"><img src="../assets/ds/school-pathways.png" alt="" loading="lazy"></div>
+        <div class="tile" aria-hidden="true"><img src="../assets/ds/school-kai.png" alt="" loading="lazy"></div>
+        <div class="tile" aria-hidden="true"><img src="../assets/ds/school-gig.png" alt="" loading="lazy"></div>
+        <div class="tile" aria-hidden="true"><img src="../assets/ds/school-arugam-bay.png" alt="" loading="lazy"></div>
+        <div class="tile" aria-hidden="true"><img src="../assets/ds/school-vega.png" alt="" loading="lazy"></div>
+        <div class="tile" aria-hidden="true"><img src="../assets/ds/school-leeds.png" alt="" loading="lazy"></div>
+      </div>
+    </div>
     <div class="imp-stats">
       <div><div class="num">12,510</div><div class="lbl">Students<br>understood</div></div>
       <div><div class="num">4,541</div><div class="lbl">Educators<br>trained</div></div>
     </div>
-    <blockquote class="imp-quote">
-      <p>“What makes this work so powerful is the way it brings research, data and classroom practice together, turning evidence into insights that can genuinely support teachers and children.”</p>
-      <footer>Abhimanyu Basu, Dean and CEO, Dhirubhai Ambani International School</footer>
-    </blockquote>
   </section>
 
   <!-- 10 · JOURNEY -->
   <section id="journey" class="wrap" style="text-align:center">
     <h2 class="title">What our partner schools did</h2>
     <div class="j-steps">
-      <span class="j-pill" style="border-color:#56C02B;color:#348C11">1 — Measure</span>
-      <span class="j-pill" style="border-color:#26BDE2;color:#0F94B5">2 — Ask</span>
-      <span class="j-pill" style="border-color:#F0B400;color:#C79600">3 — Intervene</span>
+      <button class="j-pill on" type="button" data-step="measure"   style="border-color:#56C02B;color:#348C11">1 — Measure</button>
+      <button class="j-pill" type="button" data-step="ask"       style="border-color:#26BDE2;color:#0F94B5">2 — Ask</button>
+      <button class="j-pill" type="button" data-step="intervene" style="border-color:#F0B400;color:#C79600">3 — Intervene</button>
     </div>
     <div class="j-cards" style="text-align:left">
-      <div class="j-card g">
+      <div class="j-card g show" id="j-measure" data-step="measure">
         <div class="top"><div class="ic"><img src="../assets/ds/icon-clipboard-check.png" alt=""></div><div class="kicker c-green">MEASURE</div></div>
         <h3>Start with a real baseline</h3>
         <p>In the first weeks, every child is assessed across all 12 skills: teacher observation, parent report, and direct tasks. We repeat it three times a year, so growth shows up in the data instead of being guessed at.</p>
         <div class="data">2,895 data points per child.</div>
         <img class="rep" src="../assets/report-page-3.png" alt="Skill levels from a Tilli report" loading="lazy">
       </div>
-      <div class="j-card c">
+      <div class="j-card c" id="j-ask" data-step="ask">
         <div class="top"><div class="ic"><img src="../assets/ds/icon-robot.png" alt=""></div><div class="kicker c-cyan">ASK</div></div>
         <h3>Ask-Tilli, on WhatsApp</h3>
         <p>Teachers ask about a child or a class and get lesson plans, behaviour guidance, and that child's own data, in the middle of a school day, in seconds.</p>
       </div>
-      <div class="j-card y">
+      <div class="j-card y" id="j-intervene" data-step="intervene">
         <div class="top"><div class="ic"><img src="../assets/ds/icon-book.png" alt=""></div><div class="kicker" style="color:#C79600">INTERVENE</div></div>
         <h3>A curriculum, not a workshop</h3>
         <p>36 weeks of play-based lessons for every class: Feelings Time workbooks, Teacher's Guidebooks, and the SEL Teaching Kit. 30 minutes a week. No new period, no extra prep.</p>
@@ -546,11 +681,28 @@
   </main>
 
 
-  <a class="wa" aria-label="Chat on WhatsApp"
-     href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school."
-     target="_blank" rel="noopener">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.477-.907zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-  </a>
+  <div class="wa">
+    <div class="wa-card" role="dialog" aria-label="Chat with Kavi">
+      <div class="wa-card__head">
+        <button class="wa-card__close" aria-label="Close">&times;</button>
+        <div class="wa-card__avwrap">
+          <img class="wa-card__avatar" src="../assets/ds/kavi.jpg" alt="Kavi"
+               onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'wa-card__avatar',style:'display:flex;align-items:center;justify-content:center;font-weight:800;color:#348C11;font-size:30px',textContent:'KT'}))">
+          <span class="wa-card__dot"></span>
+        </div>
+        <p class="wa-card__name">Kavindya</p>
+        <p class="wa-card__role">Stanford Researcher · CEO, Tilli</p>
+      </div>
+      <div class="wa-card__foot">
+        <a class="wa-card__start"
+           href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school."
+           target="_blank" rel="noopener">Start Chat</a>
+      </div>
+    </div>
+    <button class="wa-bubble" aria-label="Chat with us on WhatsApp" aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.477-.907zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+    </button>
+  </div>
 
 <script>
 /* ── Header burger — opens the nav drawer; closes on link tap / outside tap ── */
@@ -562,6 +714,99 @@
   burger.addEventListener('click', function (e) { e.stopPropagation(); set(!hdr.classList.contains('nav-open')); });
   hdr.querySelectorAll('.navdrawer a').forEach(function (a) { a.addEventListener('click', function () { set(false); }); });
   document.addEventListener('click', function (e) { if (!hdr.contains(e.target)) set(false); });
+})();
+
+/* ── WhatsApp bubble — toggles the Kavi card; closes on close / outside tap ── */
+(function () {
+  var wa = document.querySelector('.wa');
+  var bubble = wa && wa.querySelector('.wa-bubble');
+  if (!wa || !bubble) return;
+  function set(open) { wa.classList.toggle('open', open); bubble.setAttribute('aria-expanded', String(open)); }
+  bubble.addEventListener('click', function (e) { e.stopPropagation(); set(!wa.classList.contains('open')); });
+  wa.querySelector('.wa-card__close').addEventListener('click', function () { set(false); });
+  document.addEventListener('click', function (e) { if (!wa.contains(e.target)) set(false); });
+})();
+
+/* ── Report card deck — swipe the front card off (either direction) and it
+      tucks behind the stack, revealing the next page. Pointer + touch. ── */
+(function () {
+  var deck = document.getElementById('reportDeck');
+  if (!deck) return;
+  var cards = Array.prototype.slice.call(deck.querySelectorAll('.rdeck-card'));
+  if (cards.length < 2) return;
+  var order = cards.slice();          // order[0] = front
+  var busy = false;
+
+  // depth layout: front flat, cards behind fan out + shrink
+  function layout() {
+    order.forEach(function (c, i) {
+      var rot = [0, 6, -6, 5][i] || 0;
+      var tx  = [0, 12, -12, 8][i] || 0;
+      var sc  = 1 - i * 0.05;
+      c.style.zIndex = String(order.length - i);
+      c.style.opacity = i > 2 ? '0' : '1';
+      c.style.transform = 'translateX(calc(-50% + ' + tx + 'px)) rotate(' + rot + 'deg) scale(' + sc + ')';
+    });
+  }
+
+  // fling the front card out, then send it to the back of the order
+  function advance(dir) {
+    if (busy) return; busy = true;
+    var front = order[0];
+    front.style.transform = 'translateX(calc(-50% + ' + (dir * 460) + 'px)) rotate(' + (dir * 22) + 'deg) scale(1)';
+    front.style.opacity = '0';
+    setTimeout(function () {
+      order.push(order.shift());
+      layout();
+      setTimeout(function () { busy = false; }, 20);
+    }, 320);
+  }
+
+  layout();
+
+  // drag handling on the whole deck (front card is always on top)
+  var startX = 0, dx = 0, dragging = false;
+  function down(e) {
+    if (busy) return;
+    dragging = true; dx = 0;
+    startX = (e.touches ? e.touches[0].clientX : e.clientX);
+    order[0].classList.add('dragging');
+  }
+  function move(e) {
+    if (!dragging) return;
+    dx = (e.touches ? e.touches[0].clientX : e.clientX) - startX;
+    order[0].style.transform = 'translateX(calc(-50% + ' + dx + 'px)) rotate(' + (dx * 0.05) + 'deg) scale(1)';
+  }
+  function up() {
+    if (!dragging) return;
+    dragging = false;
+    order[0].classList.remove('dragging');
+    if (Math.abs(dx) > 55) { advance(dx > 0 ? 1 : -1); }
+    else { layout(); }                // snap back
+  }
+  deck.addEventListener('mousedown', down);
+  window.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', up);
+  deck.addEventListener('touchstart', down, { passive: true });
+  deck.addEventListener('touchmove', move, { passive: true });
+  deck.addEventListener('touchend', up);
+  // a plain tap (no real drag) also advances
+  deck.addEventListener('click', function () { if (Math.abs(dx) < 6) advance(1); });
+})();
+
+/* ── Journey step pills — tabs: tap a chip to switch which card shows
+      (in place, no scroll). ── */
+(function () {
+  var pills = Array.prototype.slice.call(document.querySelectorAll('.j-pill[data-step]'));
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.j-cards .j-card[data-step]'));
+  if (!pills.length || !cards.length) return;
+  function show(step) {
+    pills.forEach(function (p) { p.classList.toggle('on', p.dataset.step === step); });
+    cards.forEach(function (c) { c.classList.toggle('show', c.dataset.step === step); });
+  }
+  pills.forEach(function (p) {
+    p.addEventListener('click', function () { show(p.dataset.step); });
+  });
 })();
 
 /* Shared live orb config. The tuner mutates these; the renderers read them
