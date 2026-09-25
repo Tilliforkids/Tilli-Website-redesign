@@ -27,7 +27,7 @@
         desktop colour order), delivered as a normal scroll instead of a
         scroll-jacked canvas. Same story, same look — lighter runtime. ── */
   *, *::before, *::after { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; overflow-x: clip; }
   body {
     margin: 0; padding-top: 6px;
     font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
