@@ -665,8 +665,12 @@ window.HeroCfg = window.HeroCfg || {
   var N = window.innerWidth < 480 ? 22 : 30;
 
   function resize() {
-    W = canvas.width = innerWidth * dpr; H = canvas.height = innerHeight * dpr;
-    canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px';
+    // clientWidth respects html{overflow-x:clip}; innerWidth can report the
+    // overflow-inflated width and lock this fixed canvas wider than the screen.
+    var vw = document.documentElement.clientWidth;
+    var vh = window.innerHeight;
+    W = canvas.width = vw * dpr; H = canvas.height = vh * dpr;
+    canvas.style.width = vw + 'px'; canvas.style.height = vh + 'px';
   }
   function seed() {
     dots = [];
