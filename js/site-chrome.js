@@ -24,7 +24,7 @@
     WHATSAPP_NUMBER: "94741889706",
     WHATSAPP_PREFILL: "Hi Kavi! I'd love to learn more about bringing Tilli to our school.",
     FORM_ENDPOINT: "",
-    KAVI_PHOTO: "assets/ds/kavi.jpg",
+    KAVI_PHOTO: "",   /* set to "assets/ds/kavi.jpg" once the headshot is added; empty = initials monogram, no 404 */
     ASSET_BASE: "assets/ds/",
     SCHOOL_TYPES: [
       "IB", "Cambridge / IGCSE", "CBSE", "ICSE", "State board",
@@ -126,13 +126,20 @@
   function buildWhatsApp() {
     var waIcon = '<svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.6c1.7.9 3.6 1.4 5.6 1.4h.2c6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-4.9 1 1-4.8-.3-.5c-1-1.6-1.5-3.4-1.5-5.3C5 9.5 9.9 4.9 16 4.9c5.6 0 10.1 4.5 10.1 10.1S21.6 24.8 16 24.8zm5.6-7.6c-.3-.2-1.8-.9-2.1-1s-.5-.2-.7.2-.8 1-1 1.2-.4.3-.7.1c-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1s0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.5s.1-.4 0-.6l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.1 1.1-1.1 2.7 1.2 3.1 1.3 3.3c.2.2 2.3 3.6 5.6 5 .8.3 1.4.5 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>';
     var initials = "KT";
+    /* Render the photo only when KAVI_PHOTO is set; otherwise draw the initials
+       monogram directly so no missing-image request (404) is ever made. The img
+       keeps an onerror fallback for the case where the path is set but fails. */
+    var monogram = '<div class="tl-wa__avatar" style="display:flex;align-items:center;justify-content:center;font-weight:800;color:#348C11;font-size:30px">' + initials + '</div>';
+    var avatarMarkup = CONFIG.KAVI_PHOTO
+      ? '<img class="tl-wa__avatar" src="' + CONFIG.KAVI_PHOTO + '" alt="Kavi"' +
+          ' onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'tl-wa__avatar\',style:\'display:flex;align-items:center;justify-content:center;font-weight:800;color:#348C11;font-size:30px\',textContent:\'' + initials + '\'}))">'
+      : monogram;
     var card =
       '<div class="tl-wa__card" role="dialog" aria-label="Chat with Kavi">' +
         '<div class="tl-wa__head">' +
           '<button class="tl-wa__close" aria-label="Close">&times;</button>' +
           '<div class="tl-wa__avwrap">' +
-            '<img class="tl-wa__avatar" src="' + CONFIG.KAVI_PHOTO + '" alt="Kavi"' +
-              ' onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'tl-wa__avatar\',style:\'display:flex;align-items:center;justify-content:center;font-weight:800;color:#348C11;font-size:30px\',textContent:\'' + initials + '\'}))">' +
+            avatarMarkup +
             '<span class="tl-wa__dot"></span>' +
           '</div>' +
           '<p class="tl-wa__name">Kavindya</p>' +

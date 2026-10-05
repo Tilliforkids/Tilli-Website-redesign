@@ -417,7 +417,7 @@
     <h2 class="title">Schools see every data point in <span class="c-cyan">one simple dashboard</span>.</h2>
     <p class="lede">Easy to use, easy to navigate. Built for teachers, not analysts.</p>
     <div class="shot">
-      <video src="../uploads/assets_dashboard-1785392844586.mp4" muted autoplay loop playsinline preload="metadata"></video>
+      <video src="../uploads/assets_dashboard-1785392844586.mp4" poster="../assets/ds/dashboard-poster.png" muted autoplay loop playsinline preload="metadata"></video>
     </div>
   </section>
 
@@ -686,8 +686,10 @@
       <div class="wa-card__head">
         <button class="wa-card__close" aria-label="Close">&times;</button>
         <div class="wa-card__avwrap">
-          <img class="wa-card__avatar" src="../assets/ds/kavi.jpg" alt="Kavi"
-               onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'wa-card__avatar',style:'display:flex;align-items:center;justify-content:center;font-weight:800;color:#348C11;font-size:30px',textContent:'KT'}))">
+          <!-- Kavi headshot: once assets/ds/kavi.jpg exists, swap this div back to
+               <img class="wa-card__avatar" src="../assets/ds/kavi.jpg" alt="Kavi"> (keep an onerror fallback).
+               Rendered as the initials monogram for now so no 404 fires. -->
+          <div class="wa-card__avatar" style="display:flex;align-items:center;justify-content:center;font-weight:800;color:#348C11;font-size:30px">KT</div>
           <span class="wa-card__dot"></span>
         </div>
         <p class="wa-card__name">Kavindya</p>
@@ -957,73 +959,6 @@ window.HeroCfg = window.HeroCfg || {
   });
 })();
 
-/* ── Orb depth-of-field tuner — dev only. Add ?tune=1 to the URL for a panel
-      that tunes how the spinning orb reads in depth: front/back dot opacity,
-      front/back dot size, and a far-dot blur (bokeh). Changes are live and
-      write straight into window.HeroCfg; "Log values" prints them to bake. ── */
-(function () {
-  if (!/tune/.test(location.search + location.hash)) return;
-  var C = window.HeroCfg;
-
-  var fields = [
-    ['frontA', 'front opacity', 0, 1, 0.02],
-    ['backA',  'back opacity',  0, 1, 0.02],
-    ['frontS', 'front size',    0.2, 2.5, 0.05],
-    ['backS',  'back size',     0.2, 2.5, 0.05],
-    ['blur',   'far blur px',   0, 14, 0.5]
-  ];
-
-  var css = '#tuner{position:fixed;bottom:10px;left:10px;z-index:9999;width:210px;' +
-    'background:#111;color:#eee;font:11px/1.4 ui-monospace,monospace;' +
-    'border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.45)}' +
-    '#tuner .hd{display:flex;align-items:center;justify-content:space-between;' +
-    'padding:8px 10px;cursor:pointer;border-bottom:1px solid #333}' +
-    '#tuner .hd b{color:#FCC30B;font-size:11px;letter-spacing:.06em}' +
-    '#tuner .hd span{color:#888}' +
-    '#tuner .bd{padding:8px 10px;max-height:44vh;overflow:auto}' +
-    '#tuner.min .bd{display:none}' +
-    '#tuner .row{display:flex;align-items:center;gap:6px;margin:5px 0}' +
-    '#tuner .row label{width:66px;color:#F99B1C;white-space:nowrap}' +
-    '#tuner input[type=range]{flex:1;min-width:0}' +
-    '#tuner .val{width:34px;text-align:right;color:#E866B0}' +
-    '#tuner button{width:100%;margin-top:8px;padding:6px;background:#26BDE2;color:#000;' +
-    'border:0;border-radius:6px;font-weight:700;cursor:pointer}' +
-    '#tuner .hint{margin-top:6px;color:#888}';
-  var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
-
-  var panel = document.createElement('div'); panel.id = 'tuner';
-  var hd = document.createElement('div'); hd.className = 'hd';
-  hd.innerHTML = '<b>ORB DEPTH</b><span>collapse ▾</span>';
-  hd.addEventListener('click', function () {
-    var min = panel.classList.toggle('min');
-    hd.querySelector('span').textContent = min ? 'expand ▸' : 'collapse ▾';
-  });
-  panel.appendChild(hd);
-
-  var body = document.createElement('div'); body.className = 'bd';
-  fields.forEach(function (f) {
-    var key = f[0];
-    var row = document.createElement('div'); row.className = 'row';
-    var lab = document.createElement('label'); lab.textContent = f[1];
-    var inp = document.createElement('input');
-    inp.type = 'range'; inp.min = f[2]; inp.max = f[3]; inp.step = f[4]; inp.value = C[key];
-    var val = document.createElement('span'); val.className = 'val'; val.textContent = C[key];
-    inp.addEventListener('input', function () { C[key] = +inp.value; val.textContent = inp.value; });
-    row.appendChild(lab); row.appendChild(inp); row.appendChild(val); body.appendChild(row);
-  });
-  var btn = document.createElement('button'); btn.textContent = 'Log values';
-  btn.addEventListener('click', function () {
-    console.log('ORB DEPTH →', JSON.stringify({
-      frontA: C.frontA, backA: C.backA, frontS: C.frontS, backS: C.backS, blur: C.blur
-    }, null, 2));
-  });
-  body.appendChild(btn);
-  var hint = document.createElement('div'); hint.className = 'hint';
-  hint.textContent = 'dev only · ?tune=1';
-  body.appendChild(hint);
-  panel.appendChild(body);
-  document.body.appendChild(panel);
-})();
 
 </script>
 

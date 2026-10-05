@@ -37,6 +37,11 @@
 
   /* ── Fixed layers ─ ────────────────────────────────────────── */
   #wash { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  /* Boot veil — hides the first paints (scene init / scroll reset) so there's no
+     flash of a half-set scene. Lifts when main.js adds .tl-ready to <body>. */
+  #boot { position: fixed; inset: 0; z-index: 9999; background: #FFFFFF; pointer-events: none;
+    opacity: 1; transition: opacity .45s ease; }
+  body.tl-ready #boot { opacity: 0; }
   #world { position: fixed; inset: 0; z-index: 1; pointer-events: none; width: 100vw; height: 100vh; display: block; }
   .topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 40; display: flex; height: 8px; }
   .topbar div { flex: 1; }
@@ -513,6 +518,7 @@
 </head>
 <body>
 
+<div id="boot"></div>
 <div id="wash"></div>
 <canvas id="world"></canvas>
 
@@ -589,7 +595,7 @@
           <h2 style="font-size: min(40px, 5vh); font-weight: 800; letter-spacing: -0.02em; color: var(--tl-ink-900); margin: 14px auto 12px; max-width: 720px;">Schools see every data point in <span style="color: var(--tl-cyan-700);">one simple dashboard</span>.</h2>
           <p style="font-size: min(18px, 2.6vh); line-height: 1.6; max-width: 620px; margin: 0 auto min(34px, 4vh);">Easy to use, easy to navigate. Built for teachers, not analysts.</p>
           <div data-zoom style="max-width: 940px; margin: 0 auto; background: #fff; border: 1px solid var(--tl-line-200); border-radius: 24px; padding: 14px; box-shadow: 0 2px 10px rgba(20,20,20,0.06); will-change: transform;">
-            <video src="uploads/assets_dashboard-1785392844586.mp4" muted autoplay loop playsinline preload="auto" style="width: 100%; max-height: 52vh; object-fit: cover; border-radius: 14px; display: block; min-height: 200px; background: var(--tl-surface-100);"></video>
+            <video src="uploads/assets_dashboard-1785392844586.mp4" poster="assets/ds/dashboard-poster.png" muted autoplay loop playsinline preload="auto" style="width: 100%; max-height: 52vh; object-fit: cover; border-radius: 14px; display: block; min-height: 200px; background: var(--tl-surface-100);"></video>
           </div>
         </div>
       </div>
@@ -886,16 +892,12 @@
     <div class="step">
       <div class="step-in" style="position:relative; z-index:1;">
         <div id="impactCard" style="width: 100%; margin: 0 auto; text-align: center; position: relative;">
-          <!-- image-1 layout: heading block (left) + 3×3 school-logo grid (right),
-               inside one rounded card. Replace a placeholder by dropping an
-               <img src="…"> inside its .sch-logo tile. -->
+          <!-- heading block (left) + 3-tier school-logo grid (right), in one rounded card. -->
           <div class="sch-panel">
             <div class="sch-copy" id="schCopy" style="--tx: -88px; --ty: 0px; --tsc: 1.65;">
               <h2 class="sch-head"><span style="color: var(--tl-pink-600);">30+</span> schools</h2>
               <p class="sch-sub">have joined to understand their students</p>
             </div>
-            <!-- paste a real path into each src="" (e.g. src="assets/ds/school-x.png");
-                 the box size/shape is fixed, the label hides once a src is set. -->
             <div class="sch-grid">
               <!-- tier 1: featured square crests, big -->
               <div class="sch-logo sch-logo--lg"><img src="assets/ds/school-nmajs.png" alt="Nita Mukesh Ambani Junior School"></div>

@@ -28,6 +28,24 @@ const easeOutBack = (t) => { const c = 1.70158, c3 = c + 1; const u = t - 1; ret
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* Debug flag — gates the window.__tilli* live-tuning hooks (below) so they never
+   ship to visitors. Append ?debug=1 to the URL to expose them for console tuning. */
+const DEBUG = /[?&]debug=1\b/.test(location.search);
+
+/* Boot — a scroll-jacked narrative must always open on the hero, so we take over
+   scroll restoration (browsers otherwise restore a mid-experience scroll on
+   reload / back-forward and flash a half-set scene — e.g. the dashboard card).
+   A white veil (#boot) covers the first paints and lifts after two frames, with
+   a hard timeout fallback so it can never stay stuck if init ever throws. */
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+(function revealWhenPainted() {
+  let done = false;
+  const reveal = () => { if (done || !document.body) return; done = true; document.body.classList.add('tl-ready'); };
+  requestAnimationFrame(() => requestAnimationFrame(reveal));
+  setTimeout(reveal, 1500);
+})();
+
 /* ═══════════════════════════════════════════════════════════════════
    THE STAGE SYSTEM — a true single page
 
@@ -374,84 +392,6 @@ function updateJar(dt, f) {
   renderMarbles();
 }
 
-/* ── Jar GUI ───────────────────────────────────────────────────────
-   Live controls for the marble jar. "Marble size" rebuilds the jar with a
-   new radius but the same fill height (the poured count scales with size, so
-   the filled area is unchanged). "Fill" sets how full it pours. "Replay"
-   empties and re-pours. Changing a slider rebuilds + replays so you see it
-   immediately. Toggle the panel with M. Scroll to the Journey section to
-   watch. Remove the buildJarGUI() call in init to ship. */
-function buildJarGUI() {
-  if (document.getElementById('jarGUI')) return;
-
-  const rebuild = () => { jar = null; buildJar(); replayJar(); };
-
-  const panel = document.createElement('div');
-  panel.id = 'jarGUI';
-  panel.style.cssText = 'position:fixed;right:16px;top:16px;z-index:99999;width:230px;' +
-    'font:12px/1.4 system-ui,-apple-system,sans-serif;color:#e9e9ee;background:rgba(22,22,28,.93);' +
-    'border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px 13px;' +
-    'box-shadow:0 10px 34px rgba(0,0,0,.4);backdrop-filter:blur(7px);user-select:none;';
-
-  const bar = document.createElement('div');
-  bar.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:600;';
-  const title = document.createElement('span'); title.textContent = 'Marble jar';
-  const hide = document.createElement('button');
-  hide.textContent = '×'; hide.title = 'hide (press M)';
-  hide.style.cssText = 'all:unset;cursor:pointer;font-size:17px;line-height:1;padding:0 4px;color:#9a9aa6;';
-  hide.onclick = () => { panel.style.display = 'none'; };
-  bar.append(title, hide);
-  panel.appendChild(bar);
-
-  // one labelled slider bound to a JAR key; onDone runs after the value changes
-  const slider = (label, key, min, max, step, onDone) => {
-    const row = document.createElement('label');
-    row.style.cssText = 'display:block;margin:8px 0;';
-    const cap = document.createElement('span'); cap.textContent = label;
-    const val = document.createElement('span');
-    const fmt = (v) => (step < 1 ? v.toFixed(step < 0.01 ? 3 : 2) : v.toFixed(0));
-    val.textContent = fmt(JAR[key]);
-    val.style.cssText = 'float:right;color:#7fe0a8;font-variant-numeric:tabular-nums;';
-    const inp = document.createElement('input');
-    inp.type = 'range'; inp.min = min; inp.max = max; inp.step = step; inp.value = JAR[key];
-    inp.style.cssText = 'width:100%;margin-top:3px;accent-color:#26BDE2;cursor:pointer;';
-    inp.oninput = () => { JAR[key] = parseFloat(inp.value); val.textContent = fmt(JAR[key]); };
-    inp.onchange = onDone;            // rebuild on release, not on every pixel
-    row.append(cap, val, inp);
-    panel.appendChild(row);
-  };
-
-  slider('Marble size', 'rFrac', 0.02, 0.09, 0.001, rebuild);
-  slider('Fill',        'fillFrac', 0.4, 1.0, 0.01, rebuild);
-
-  // sound toggle
-  const sndRow = document.createElement('label');
-  sndRow.style.cssText = 'display:flex;align-items:center;gap:7px;margin:10px 0 4px;cursor:pointer;';
-  const snd = document.createElement('input');
-  snd.type = 'checkbox'; snd.checked = JAR.sound;
-  snd.style.cssText = 'accent-color:#26BDE2;cursor:pointer;';
-  snd.onchange = () => { JAR.sound = snd.checked; };
-  const sndCap = document.createElement('span'); sndCap.textContent = 'Marble sound';
-  sndRow.append(snd, sndCap);
-  panel.appendChild(sndRow);
-
-  // replay button
-  const replay = document.createElement('button');
-  replay.textContent = '↻ Replay pour';
-  replay.style.cssText = 'all:unset;display:block;text-align:center;cursor:pointer;margin-top:9px;padding:7px 0;' +
-    'border-radius:7px;background:rgba(38,189,226,.22);color:#bfeaf6;font-weight:600;';
-  replay.onmouseenter = () => (replay.style.background = 'rgba(38,189,226,.34)');
-  replay.onmouseleave = () => (replay.style.background = 'rgba(38,189,226,.22)');
-  replay.onclick = () => replayJar();
-  panel.appendChild(replay);
-
-  document.body.appendChild(panel);
-  window.addEventListener('keydown', (e) => {
-    if (e.target.closest('input, textarea, select, button, a, [contenteditable]')) return;
-    if (e.key === 'm' || e.key === 'M') panel.style.display = panel.style.display === 'none' ? '' : 'none';
-  });
-}
-
 /* ── Jar burst → ring (Journey → Let's talk) ────────────────────────
    As you scroll off "What our partner schools did", the marble jar lifts off
    the left, flies to the centre of the screen and BURSTS: the marbles fly out
@@ -731,65 +671,6 @@ function updateBurst(dt, f) {
     else if (jarEl.dataset.burstHidden) { jarEl.style.opacity = ''; delete jarEl.dataset.burstHidden; }
   }
   renderBurst(bt);
-}
-
-/* ── Burst GUI ─────────────────────────────────────────────────────
-   Live controls for the jar-burst ring. Scroll to the "What our partner
-   schools did" → "Let Tilli help…" boundary so the ring is on screen while
-   you tune. Toggle with B. Remove the buildBurstGUI() call in init to ship. */
-function buildBurstGUI() {
-  if (document.getElementById('burstGUI')) return;
-  const panel = document.createElement('div');
-  panel.id = 'burstGUI';
-  panel.style.cssText = 'position:fixed;left:16px;top:16px;z-index:99999;width:236px;' +
-    'font:12px/1.4 system-ui,-apple-system,sans-serif;color:#e9e9ee;background:rgba(22,22,28,.93);' +
-    'border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px 13px;' +
-    'box-shadow:0 10px 34px rgba(0,0,0,.4);backdrop-filter:blur(7px);user-select:none;';
-  const bar = document.createElement('div');
-  bar.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;font-weight:600;';
-  const title = document.createElement('span'); title.textContent = 'Jar burst → ring';
-  const hide = document.createElement('button');
-  hide.textContent = '×'; hide.title = 'hide (press B)';
-  hide.style.cssText = 'all:unset;cursor:pointer;font-size:17px;line-height:1;padding:0 4px;color:#9a9aa6;';
-  hide.onclick = () => { panel.style.display = 'none'; };
-  bar.append(title, hide); panel.appendChild(bar);
-  const note = document.createElement('div');
-  note.textContent = 'Scroll to the closing CTA to preview.';
-  note.style.cssText = 'color:#8a8a96;margin:2px 0 4px;font-size:11px;';
-  panel.appendChild(note);
-
-  // relinks: recompute threads (ring geometry changed). rebuild: new dot count.
-  const relink = () => computeBurstLinks();
-  const rebuild = () => buildBurst();
-  const slider = (label, key, min, max, step, onDone) => {
-    const row = document.createElement('label'); row.style.cssText = 'display:block;margin:8px 0;';
-    const cap = document.createElement('span'); cap.textContent = label;
-    const val = document.createElement('span');
-    const fmt = (v) => (step < 1 ? v.toFixed(step < 0.1 ? 2 : 1) : v.toFixed(0));
-    val.textContent = fmt(BURST[key]);
-    val.style.cssText = 'float:right;color:#7fe0a8;font-variant-numeric:tabular-nums;';
-    const inp = document.createElement('input');
-    inp.type = 'range'; inp.min = min; inp.max = max; inp.step = step; inp.value = BURST[key];
-    inp.style.cssText = 'width:100%;margin-top:3px;accent-color:#EC2C8F;cursor:pointer;';
-    inp.oninput = () => { BURST[key] = parseFloat(inp.value); val.textContent = fmt(BURST[key]); if (onDone) onDone(); };
-    row.append(cap, val, inp); panel.appendChild(row);
-  };
-  slider('Dots',          'dots',      40,  500,  1,    rebuild);
-  slider('Ring spread',   'spread',    0,   0.7,  0.01, relink);
-  slider('Ring width',    'ringW',     0.2, 0.55, 0.01, relink);
-  slider('Ring height',   'ringH',     0.2, 0.55, 0.01, relink);
-  slider('Angle scatter', 'angJit',    0,   0.6,  0.01, relink);
-  slider('Dot size',      'dotSize',   2,   14,   0.5,  null);
-  slider('Thread reach',  'linkDist',  0.05, 0.28, 0.005, relink);
-  slider('Threads / dot', 'linkMax',   0,   6,    1,    relink);
-  slider('Jar grow',      'jarGrow',   1,   1.9,  0.01, null);
-  slider('Burst pop',     'overshoot', 0,   0.3,  0.01, null);
-
-  document.body.appendChild(panel);
-  window.addEventListener('keydown', (e) => {
-    if (e.target.closest('input, textarea, select, button, a, [contenteditable]')) return;
-    if (e.key === 'b' || e.key === 'B') panel.style.display = panel.style.display === 'none' ? '' : 'none';
-  });
 }
 
 /* Set the Cross-scene height (vh) — the scroll length of the dedicated
@@ -2305,7 +2186,7 @@ const SNAP = {
   fieldLag: 6,     // particle/scene interpolation rate — LOWER = dots ease between states more softly
                    //   during a transition; raise toward 40+ to make them track the scroll 1:1
 };
-window.__tilliSnap = SNAP;   // tune any of these live from the console
+if (DEBUG) window.__tilliSnap = SNAP;   // ?debug=1 to tune these from the console
 
 /* ── Section HOLDS ───────────────────────────────────────────────────
    There's no magnetic snapping — you free-scroll with soft easing. But
@@ -3085,8 +2966,10 @@ function buildAskPathEditor() {
 /* The live "Kids controls" panel was removed once its values were baked
    into KID and STATE_TEXT above. The console hooks below still dump the
    current values (__tilliKids / __tilliText) if you want to retune + rebake. */
-window.__tilliKids = () => ({ ...KID, colors: KID.colors.slice() });
-window.__tilliText = () => ({ ...STATE_TEXT });
+if (DEBUG) {
+  window.__tilliKids = () => ({ ...KID, colors: KID.colors.slice() });
+  window.__tilliText = () => ({ ...STATE_TEXT });
+}
 
 if (reduced) {
   document.getElementById('world').style.display = 'none';
@@ -3111,7 +2994,7 @@ if (reduced) {
   /* NOTE: no 'scroll' listener here — the render loop drives onScroll every
      frame with the smoothed renderF, so a raw scroll-event call would fight
      it. (The reduced-motion branch keeps its own raw scroll listener.) */
-  window.__tilliScroll = onScroll;
+  if (DEBUG) window.__tilliScroll = onScroll;
 
   // hero entrance: the question fades in over the scattered dots
   beatA.querySelectorAll('[data-hb]').forEach((el, k) => setTimeout(() => el.classList.add('in'), 300 + k * 180));
@@ -3808,610 +3691,16 @@ if (reduced) {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  window.__tilliStep = step;
-  window.__tilliThree = () => three;
-  window.__tilliNet = () => ({ cfg: HERO_CFG, net: heroNet, manual: three ? three.getManual() : [] });
-  window.__tilliPaths = () => ({ paths: DASH_PATHS, text: pathsText() });
-  window.__tilliCollectArcs = () => ({ arcs: COLLECT_ARC, text: collectArcsText() });
-  window.__tilliAskFlow = () => ({ flow: ASK_FLOW, text: askFlowText() });
-  window.__tilliViewsHands = () => VIEWS_HANDS;
-  window.__tilliViewsHead = () => VIEWS_HEAD;
-  window.__tilliDrain = () => drainAmt;
-  window.__tilliCarry = () => ({ ...ASK_CARRY });
-  // Dev tuning panels — all disabled for production. Re-enable a call to tune live.
-  // buildTuneGUI(() => three);   // kids walk-in bake (toggle with G)
-  // buildAskLiveGUI();           // Ask-live carry/plug + prompt-colour controls (toggle with W)
-  // buildImpactGUI();            // "30+ schools" text mover (toggle with I, or drag on page)
-  // buildStep2GUI();             // Impact carousel: orbit move/rotate + text move/scale (toggle with K)
-  // buildJourneyGUI();           // Journey: heading position/scale + jar offset/size (toggle with J)
-  // buildJarGUI();               // Marble jar: marble size + fill + sound + replay (toggle with M)
-  // buildBurstGUI();             // Jar burst → ring: dot count + ring spread + threads (toggle with B)
-}
-
-/* ── Impact step-2 GUI ────────────────────────────────────────────────
-   Live tuning for the full-bleed carousel screen. Two groups of sliders:
-     • ORBIT — moves & rotates the dot ring (writes window.__impactOrbits.cfg,
-       plus __orbitRise.topY for the ring's landing Y). Scroll to the carousel
-       screen so the ring is at its top position while you tune.
-     • TEXT — X / Y / scale for each text group (the two stats and the quote),
-       written as inline --x/--y/--sc. Drag a text group on the page too.
-   "Log values" prints the orbit cfg + each element's inline style so the tuned
-   look can be baked in. Starts visible; toggle with K. Remove the call above to
-   ship. */
-function buildStep2GUI() {
-  if (document.getElementById('step2GUI')) return;
-  const oc = window.__impactOrbits && window.__impactOrbits.cfg;
-  const rise = window.__orbitRise || (window.__orbitRise = { topY: -292 });
-  const statEls = Array.from(document.querySelectorAll('#impact .imp2-stat'));
-  const quoteEl = document.querySelector('#impact .imp2-quote');
-  const carEl = document.querySelector('#impact .imp2-carousel');
-  if (!oc || statEls.length < 2 || !quoteEl || !carEl) return;
-  const [stat1, stat2] = statEls;
-
-  /* spec rows: ['section'] label, OR
-     ['obj', label, obj, key, min, max, step, unit], OR
-     ['var', label, el, cssVar, min, max, step, unit, init] */
-  const ROWS = [
-    ['sec', '— Orbit · move & rotate —'],
-    ['obj', 'Ring X',       oc,   'offX',      -800, 800, 1,    'px'],
-    ['obj', 'Ring Y (top)', rise, 'topY',      -700, 400, 1,    'px'],
-    ['obj', 'Ring depth Z', oc,   'offZ',      -700, 700, 1,    'px'],
-    ['obj', 'Rotate X (top)', rise, 'rotTopX',  -90,  90, 1,    '°'],
-    ['obj', 'Rotate Y',     oc,   'rotY',       -90,  90, 1,    '°'],
-    ['obj', 'Rotate Z',     oc,   'rotZ',       -90,  90, 1,    '°'],
-    ['obj', 'Ring scale',   oc,   'ringScale',  0.4, 2.4, 0.01, ''],
-    ['sec', '— Carousel —'],
-    ['var', 'Image scale', carEl, '--imp2-scale', 0.4, 2.5, 0.01, '', 1],
-    ['sec', '— Stat 1 (12,510) · drag on page —'],
-    ['var', 'X',     stat1, '--x',  -900, 900, 1,    'px', 0],
-    ['var', 'Y',     stat1, '--y',  -500, 500, 1,    'px', 0],
-    ['var', 'Scale', stat1, '--sc',  0.4,   3, 0.01, '',   1],
-    ['sec', '— Stat 2 (4,541) · drag on page —'],
-    ['var', 'X',     stat2, '--x',  -900, 900, 1,    'px', 0],
-    ['var', 'Y',     stat2, '--y',  -500, 500, 1,    'px', 0],
-    ['var', 'Scale', stat2, '--sc',  0.4,   3, 0.01, '',   1],
-    ['sec', '— Quote · drag on page —'],
-    ['var', 'X',     quoteEl, '--x',  -900, 900, 1,    'px', 0],
-    ['var', 'Y',     quoteEl, '--y',  -500, 500, 1,    'px', 0],
-    ['var', 'Scale', quoteEl, '--sc',  0.4,   3, 0.01, '',   1],
-  ];
-  const fmt = (v, step) => (step < 1 ? v.toFixed(2) : v.toFixed(0));
-
-  const panel = document.createElement('div');
-  panel.id = 'step2GUI';
-  panel.style.cssText = 'position:fixed;left:16px;top:16px;z-index:99999;width:250px;max-height:92vh;overflow:auto;' +
-    'font:12px/1.4 system-ui,-apple-system,sans-serif;color:#e9e9ee;background:rgba(22,22,28,.93);' +
-    'border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px 13px;' +
-    'box-shadow:0 10px 34px rgba(0,0,0,.4);backdrop-filter:blur(7px);user-select:none;';
-
-  const bar = document.createElement('div');
-  bar.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:600;';
-  const title = document.createElement('span'); title.textContent = 'Carousel screen';
-  const hide = document.createElement('button');
-  hide.textContent = '×'; hide.title = 'hide (press K)';
-  hide.style.cssText = 'all:unset;cursor:pointer;font-size:17px;line-height:1;padding:0 4px;color:#9a9aa6;';
-  hide.onclick = () => { panel.style.display = 'none'; };
-  bar.append(title, hide);
-  panel.appendChild(bar);
-
-  // registry so page-drags can sync the matching X/Y sliders: key = el + cssVar
-  const varInputs = new Map();
-  const keyOf = (el, css) => (el.dataset.g2 || (el.dataset.g2 = String(Math.random()).slice(2))) + css;
-
-  ROWS.forEach((r) => {
-    if (r[0] === 'sec') {
-      const s = document.createElement('div');
-      s.textContent = r[1];
-      s.style.cssText = 'margin:11px 0 2px;color:#8f8fa0;font-size:11px;';
-      panel.appendChild(s);
-      return;
-    }
-    const kind = r[0];
-    const [, label, target, key, min, max, step, unit, init] = r;
-    // 'var' sliders READ the element's current (baked) value so opening the GUI
-    // never clobbers a baked --x/--y/--sc; fall back to `init` only if unset.
-    let cur;
-    if (kind === 'obj') {
-      cur = target[key] != null ? target[key] : min;
-    } else {
-      const raw = target.style.getPropertyValue(key) ||
-                  getComputedStyle(target).getPropertyValue(key);
-      const n = parseFloat(raw);
-      cur = isNaN(n) ? (init != null ? init : 0) : n;
-    }
-    if (kind === 'var') target.style.setProperty(key, cur + unit);
-
-    const row = document.createElement('label');
-    row.style.cssText = 'display:block;margin:6px 0;';
-    const cap = document.createElement('span'); cap.textContent = label;
-    const val = document.createElement('span');
-    val.textContent = fmt(cur, step);
-    val.style.cssText = 'float:right;color:#7fe0a8;font-variant-numeric:tabular-nums;';
-    const inp = document.createElement('input');
-    inp.type = 'range'; inp.min = min; inp.max = max; inp.step = step; inp.value = cur;
-    inp.style.cssText = 'width:100%;margin-top:3px;accent-color:#26BDE2;cursor:pointer;';
-    inp.oninput = () => {
-      const v = parseFloat(inp.value);
-      if (kind === 'obj') target[key] = v;
-      else target.style.setProperty(key, v + unit);
-      val.textContent = fmt(v, step);
-    };
-    row.append(cap, val, inp);
-    panel.appendChild(row);
-    if (kind === 'var') varInputs.set(keyOf(target, key), { inp, val, step });
-  });
-
-  /* drag any text group directly on the page → updates its --x/--y + sliders */
-  [stat1, stat2, quoteEl].forEach((el) => {
-    el.style.cursor = 'grab';
-    let d = null;
-    const sync = (css, v) => {
-      const rec = varInputs.get(keyOf(el, css));
-      if (rec) { rec.inp.value = v; rec.val.textContent = fmt(v, rec.step); }
-    };
-    el.addEventListener('pointerdown', (e) => {
-      d = { x: e.clientX, y: e.clientY,
-            ox: parseFloat(el.style.getPropertyValue('--x')) || 0,
-            oy: parseFloat(el.style.getPropertyValue('--y')) || 0 };
-      el.setPointerCapture(e.pointerId); el.style.cursor = 'grabbing'; e.preventDefault();
-    });
-    el.addEventListener('pointermove', (e) => {
-      if (!d) return;
-      const nx = Math.round(d.ox + (e.clientX - d.x)), ny = Math.round(d.oy + (e.clientY - d.y));
-      el.style.setProperty('--x', nx + 'px'); el.style.setProperty('--y', ny + 'px');
-      sync('--x', nx); sync('--y', ny);
-    });
-    const end = () => { if (d) { d = null; el.style.cursor = 'grab'; } };
-    el.addEventListener('pointerup', end);
-    el.addEventListener('pointercancel', end);
-  });
-
-  const logBtn = document.createElement('button');
-  logBtn.textContent = 'Log values';
-  logBtn.style.cssText = 'all:unset;display:block;text-align:center;cursor:pointer;margin-top:11px;padding:6px 0;' +
-    'border-radius:7px;background:rgba(255,255,255,.09);';
-  logBtn.onmouseenter = () => (logBtn.style.background = 'rgba(255,255,255,.17)');
-  logBtn.onmouseleave = () => (logBtn.style.background = 'rgba(255,255,255,.09)');
-  logBtn.onclick = () => {
-    console.log('ORBIT cfg →', { offX: oc.offX, offZ: oc.offZ, rotY: oc.rotY,
-      rotZ: oc.rotZ, ringScale: oc.ringScale, topY: rise.topY, rotTopX: rise.rotTopX });
-    console.log('Carousel →', carEl.getAttribute('style'));
-    console.log('Stat 1 →', stat1.getAttribute('style'));
-    console.log('Stat 2 →', stat2.getAttribute('style'));
-    console.log('Quote →', quoteEl.getAttribute('style'));
-  };
-  panel.appendChild(logBtn);
-
-  document.body.appendChild(panel);
-  window.addEventListener('keydown', (e) => {
-    if (e.target.closest('input, textarea, select, button, a, [contenteditable]')) return;
-    if (e.key === 'k' || e.key === 'K') panel.style.display = panel.style.display === 'none' ? '' : 'none';
-  });
-}
-
-/* ── Journey GUI ──────────────────────────────────────────────────────
-   Live tuning for the "What our partner schools did" scene: X / Y / scale
-   for the top-centre heading, and X / Y / size for the glass jar on the
-   left. Both write inline CSS vars (--x/--y/--sc, --jx/--jy/--jsize) so the
-   look can be baked straight into the markup. Drag the heading on the page
-   too. "Log values" dumps both elements' inline styles. Toggle with J. */
-function buildJourneyGUI() {
-  if (document.getElementById('journeyGUI')) return;
-  const headEl = document.querySelector('.j-heading');
-  const jarEl  = document.querySelector('.j-jar');
-  if (!headEl || !jarEl) return;
-
-  const ROWS = [
-    ['sec', '— Heading · drag on page —'],
-    ['var', 'X',     headEl, '--x',  -900, 900, 1,    'px', 0],
-    ['var', 'Y',     headEl, '--y',  -400, 600, 1,    'px', 0],
-    ['var', 'Scale', headEl, '--sc',  0.4,   3, 0.01, '',   1],
-    ['sec', '— Jar —'],
-    ['var', 'X',     jarEl,  '--jx',    -600, 900, 1, 'px', 0],
-    ['var', 'Y',     jarEl,  '--jy',    -500, 500, 1, 'px', 0],
-    ['var', 'Size',  jarEl,  '--jsize',   60, 700, 1, 'px', 300],
-  ];
-  const fmt = (v, step) => (step < 1 ? v.toFixed(2) : v.toFixed(0));
-
-  const panel = document.createElement('div');
-  panel.id = 'journeyGUI';
-  panel.style.cssText = 'position:fixed;right:16px;top:16px;z-index:99999;width:230px;max-height:92vh;overflow:auto;' +
-    'font:12px/1.4 system-ui,-apple-system,sans-serif;color:#e9e9ee;background:rgba(22,22,28,.93);' +
-    'border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px 13px;' +
-    'box-shadow:0 10px 34px rgba(0,0,0,.4);backdrop-filter:blur(7px);user-select:none;';
-
-  const bar = document.createElement('div');
-  bar.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:600;';
-  const title = document.createElement('span'); title.textContent = 'Journey heading + jar';
-  const hide = document.createElement('button');
-  hide.textContent = '×'; hide.title = 'hide (press J)';
-  hide.style.cssText = 'all:unset;cursor:pointer;font-size:17px;line-height:1;padding:0 4px;color:#9a9aa6;';
-  hide.onclick = () => { panel.style.display = 'none'; };
-  bar.append(title, hide);
-  panel.appendChild(bar);
-
-  // registry so page-drags can sync the matching X/Y sliders: key = el + cssVar
-  const varInputs = new Map();
-  const keyOf = (el, css) => (el.dataset.jg || (el.dataset.jg = String(Math.random()).slice(2))) + css;
-
-  ROWS.forEach((r) => {
-    if (r[0] === 'sec') {
-      const s = document.createElement('div');
-      s.textContent = r[1];
-      s.style.cssText = 'margin:11px 0 2px;color:#8f8fa0;font-size:11px;';
-      panel.appendChild(s);
-      return;
-    }
-    const [, label, target, key, min, max, step, unit, init] = r;
-    // read the element's current (baked) var so opening the GUI never clobbers it
-    const raw = target.style.getPropertyValue(key) || getComputedStyle(target).getPropertyValue(key);
-    const n = parseFloat(raw);
-    const cur = isNaN(n) ? (init != null ? init : 0) : n;
-    target.style.setProperty(key, cur + unit);
-
-    const row = document.createElement('label');
-    row.style.cssText = 'display:block;margin:6px 0;';
-    const cap = document.createElement('span'); cap.textContent = label;
-    const val = document.createElement('span');
-    val.textContent = fmt(cur, step);
-    val.style.cssText = 'float:right;color:#7fe0a8;font-variant-numeric:tabular-nums;';
-    const inp = document.createElement('input');
-    inp.type = 'range'; inp.min = min; inp.max = max; inp.step = step; inp.value = cur;
-    inp.style.cssText = 'width:100%;margin-top:3px;accent-color:#26BDE2;cursor:pointer;';
-    inp.oninput = () => {
-      const v = parseFloat(inp.value);
-      target.style.setProperty(key, v + unit);
-      val.textContent = fmt(v, step);
-    };
-    row.append(cap, val, inp);
-    panel.appendChild(row);
-    varInputs.set(keyOf(target, key), { inp, val, step });
-  });
-
-  /* drag the heading directly on the page → updates its --x/--y + sliders */
-  {
-    const el = headEl;
-    el.style.cursor = 'grab'; el.style.pointerEvents = 'auto';
-    let d = null;
-    const sync = (css, v) => {
-      const rec = varInputs.get(keyOf(el, css));
-      if (rec) { rec.inp.value = v; rec.val.textContent = fmt(v, rec.step); }
-    };
-    el.addEventListener('pointerdown', (e) => {
-      d = { x: e.clientX, y: e.clientY,
-            ox: parseFloat(el.style.getPropertyValue('--x')) || 0,
-            oy: parseFloat(el.style.getPropertyValue('--y')) || 0 };
-      el.setPointerCapture(e.pointerId); el.style.cursor = 'grabbing'; e.preventDefault();
-    });
-    el.addEventListener('pointermove', (e) => {
-      if (!d) return;
-      const nx = Math.round(d.ox + (e.clientX - d.x)), ny = Math.round(d.oy + (e.clientY - d.y));
-      el.style.setProperty('--x', nx + 'px'); el.style.setProperty('--y', ny + 'px');
-      sync('--x', nx); sync('--y', ny);
-    });
-    const end = () => { if (d) { d = null; el.style.cursor = 'grab'; } };
-    el.addEventListener('pointerup', end);
-    el.addEventListener('pointercancel', end);
+  if (DEBUG) {
+    window.__tilliStep = step;
+    window.__tilliThree = () => three;
+    window.__tilliNet = () => ({ cfg: HERO_CFG, net: heroNet, manual: three ? three.getManual() : [] });
+    window.__tilliPaths = () => ({ paths: DASH_PATHS, text: pathsText() });
+    window.__tilliCollectArcs = () => ({ arcs: COLLECT_ARC, text: collectArcsText() });
+    window.__tilliAskFlow = () => ({ flow: ASK_FLOW, text: askFlowText() });
+    window.__tilliViewsHands = () => VIEWS_HANDS;
+    window.__tilliViewsHead = () => VIEWS_HEAD;
+    window.__tilliDrain = () => drainAmt;
+    window.__tilliCarry = () => ({ ...ASK_CARRY });
   }
-
-  const logBtn = document.createElement('button');
-  logBtn.textContent = 'Log values';
-  logBtn.style.cssText = 'all:unset;display:block;text-align:center;cursor:pointer;margin-top:11px;padding:6px 0;' +
-    'border-radius:7px;background:rgba(255,255,255,.09);';
-  logBtn.onmouseenter = () => (logBtn.style.background = 'rgba(255,255,255,.17)');
-  logBtn.onmouseleave = () => (logBtn.style.background = 'rgba(255,255,255,.09)');
-  logBtn.onclick = () => {
-    console.log('Heading →', headEl.getAttribute('style'));
-    console.log('Jar →', jarEl.getAttribute('style'));
-  };
-  panel.appendChild(logBtn);
-
-  document.body.appendChild(panel);
-  window.addEventListener('keydown', (e) => {
-    if (e.target.closest('input, textarea, select, button, a, [contenteditable]')) return;
-    if (e.key === 'j' || e.key === 'J') panel.style.display = panel.style.display === 'none' ? '' : 'none';
-  });
-}
-
-/* ── Ask-live carry/plug + prompt controls ────────────────────────────
-   A small live panel for the "Ask Tilli anything…" screen: sliders for the
-   cursor-carry swarm + socket plug (ASK_CARRY, read every frame by the
-   step() carry block) plus colour pickers for the suggested-prompt chips.
-   Starts visible; press W to hide/show. Chip colours are pushed onto the
-   --atl-chip-* CSS vars so the DOM recolours instantly. */
-function buildAskLiveGUI() {
-  if (document.getElementById('waveGUI')) return;
-  const ROWS = [
-    ['Cloud size',      ASK_CARRY, 'cloud',      0.5, 6,   0.1],
-    ['Trail tightness', ASK_CARRY, 'lag',        1,   14,  0.5],
-    ['Swirl speed',     ASK_CARRY, 'spin',       0,   3,   0.05],
-    ['Plug distance',   ASK_CARRY, 'plugRadius', 60,  600, 10],
-    ['Plug speed',      ASK_CARRY, 'plugSpeed',  0.5, 6,   0.1],
-  ];
-  const fmt = (v, step) => (step < 1 ? v.toFixed(step < 0.01 ? 3 : 2) : v.toFixed(0));
-  const panel = document.createElement('div');
-  panel.id = 'waveGUI';
-  panel.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:99999;width:230px;' +
-    'font:12px/1.4 system-ui,-apple-system,sans-serif;color:#e9e9ee;background:rgba(22,22,28,.93);' +
-    'border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px 13px;' +
-    'box-shadow:0 10px 34px rgba(0,0,0,.4);backdrop-filter:blur(7px);user-select:none;';
-
-  const head = document.createElement('div');
-  head.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:600;letter-spacing:.02em;';
-  const title = document.createElement('span'); title.textContent = 'Ask-live carry';
-  const hide = document.createElement('button');
-  hide.textContent = '×'; hide.title = 'hide (press W)';
-  hide.style.cssText = 'all:unset;cursor:pointer;font-size:17px;line-height:1;padding:0 4px;color:#9a9aa6;';
-  hide.onclick = () => { panel.style.display = 'none'; };
-  head.append(title, hide);
-  panel.appendChild(head);
-
-  ROWS.forEach(([label, obj, key, min, max, step]) => {
-    const row = document.createElement('label');
-    row.style.cssText = 'display:block;margin:8px 0;';
-    const cap = document.createElement('span'); cap.textContent = label;
-    const val = document.createElement('span');
-    val.textContent = fmt(obj[key], step);
-    val.style.cssText = 'float:right;color:#7fe0a8;font-variant-numeric:tabular-nums;';
-    const inp = document.createElement('input');
-    inp.type = 'range'; inp.min = min; inp.max = max; inp.step = step; inp.value = obj[key];
-    inp.style.cssText = 'width:100%;margin-top:4px;accent-color:#26BDE2;cursor:pointer;';
-    inp.oninput = () => { obj[key] = parseFloat(inp.value); val.textContent = fmt(obj[key], step); };
-    row.append(cap, val, inp);
-    panel.appendChild(row);
-  });
-
-  /* colour pickers: prompt-chip text / background */
-  const colorRow = (label, get, set) => {
-    const row = document.createElement('label');
-    row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin:9px 0 2px;';
-    const cap = document.createElement('span'); cap.textContent = label;
-    const inp = document.createElement('input');
-    inp.type = 'color'; inp.value = get();
-    inp.style.cssText = 'width:44px;height:22px;padding:0;border:none;background:none;cursor:pointer;';
-    inp.oninput = () => set(inp.value);
-    row.append(cap, inp);
-    panel.appendChild(row);
-  };
-  const rootStyle = document.documentElement.style;
-  rootStyle.setProperty('--atl-chip-text', '#6b7280');
-  rootStyle.setProperty('--atl-chip-bg', '#eef1f4');
-  colorRow('Prompt text',   () => '#6b7280',      (v) => rootStyle.setProperty('--atl-chip-text', v));
-  colorRow('Prompt bg',     () => '#eef1f4',      (v) => rootStyle.setProperty('--atl-chip-bg', v));
-
-  const logBtn = document.createElement('button');
-  logBtn.textContent = 'Log values';
-  logBtn.style.cssText = 'all:unset;display:block;text-align:center;cursor:pointer;margin-top:9px;padding:6px 0;' +
-    'border-radius:7px;background:rgba(255,255,255,.09);transition:background .15s;';
-  logBtn.onmouseenter = () => (logBtn.style.background = 'rgba(255,255,255,.17)');
-  logBtn.onmouseleave = () => (logBtn.style.background = 'rgba(255,255,255,.09)');
-  logBtn.onclick = () => console.log('ASK_CARRY', { ...ASK_CARRY });
-  panel.appendChild(logBtn);
-
-  document.body.appendChild(panel);
-  window.addEventListener('keydown', (e) => {
-    if (e.target.closest('input, textarea, select, button, a, [contenteditable]')) return;
-    if (e.key === 'w' || e.key === 'W') panel.style.display = panel.style.display === 'none' ? '' : 'none';
-  });
-}
-
-/* ── Impact stats GUI ─────────────────────────────────────────────────
-   Live controls for the "30+ schools" section: each heading/stat's position,
-   scale, and colour. Values are written straight onto the elements as CSS vars, so the
-   DOM updates instantly. Starts visible; toggle with I. "Log values" dumps each
-   element's inline style so the tuned look can be baked into the HTML. */
-function buildImpactGUI() {
-  if (document.getElementById('impactGUI')) return;
-  const el = document.getElementById('schCopy');
-  if (!el) return;
-
-  /* [label, target, cssVar, min, max, step, unit, initial] — a 1-tuple is a section label */
-  const SLIDERS = [
-    ['— "30+ schools" text —'],
-    ['Text X',     el, '--tx',  -900, 900, 1,    'px', -88],
-    ['Text Y',     el, '--ty',  -600, 600, 1,    'px', 0],
-    ['Text scale', el, '--tsc', 0.4,  2.2, 0.01, '',   1.65],
-  ];
-  const COLORS = [];
-  const fmt = (v, step) => (step < 1 ? v.toFixed(2) : v.toFixed(0));
-  const inputs = {};
-
-  const panel = document.createElement('div');
-  panel.id = 'impactGUI';
-  panel.style.cssText = 'position:fixed;left:16px;top:16px;z-index:99999;width:238px;max-height:90vh;overflow:auto;' +
-    'font:12px/1.4 system-ui,-apple-system,sans-serif;color:#e9e9ee;background:rgba(22,22,28,.93);' +
-    'border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px 13px;' +
-    'box-shadow:0 10px 34px rgba(0,0,0,.4);backdrop-filter:blur(7px);user-select:none;';
-
-  const bar = document.createElement('div');
-  bar.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:600;letter-spacing:.02em;';
-  const title = document.createElement('span'); title.textContent = '"30+ schools" text';
-  const hide = document.createElement('button');
-  hide.textContent = '×'; hide.title = 'hide (press I)';
-  hide.style.cssText = 'all:unset;cursor:pointer;font-size:17px;line-height:1;padding:0 4px;color:#9a9aa6;';
-  hide.onclick = () => { panel.style.display = 'none'; };
-  bar.append(title, hide);
-  panel.appendChild(bar);
-
-  const section = (txt) => {
-    const s = document.createElement('div');
-    s.textContent = txt;
-    s.style.cssText = 'margin:11px 0 2px;color:#8f8fa0;font-size:11px;letter-spacing:.03em;';
-    panel.appendChild(s);
-  };
-
-  SLIDERS.forEach((r) => {
-    if (r.length === 1) { section(r[0]); return; }
-    const [label, target, cssVar, min, max, step, unit, init] = r;
-    target.style.setProperty(cssVar, init + unit);
-    const row = document.createElement('label');
-    row.style.cssText = 'display:block;margin:7px 0;';
-    const cap = document.createElement('span'); cap.textContent = label;
-    const val = document.createElement('span');
-    val.textContent = fmt(init, step);
-    val.style.cssText = 'float:right;color:#7fe0a8;font-variant-numeric:tabular-nums;';
-    const inp = document.createElement('input');
-    inp.type = 'range'; inp.min = min; inp.max = max; inp.step = step; inp.value = init;
-    inp.style.cssText = 'width:100%;margin-top:4px;accent-color:#26BDE2;cursor:pointer;';
-    inp.oninput = () => { const v = parseFloat(inp.value); target.style.setProperty(cssVar, v + unit); val.textContent = fmt(v, step); };
-    row.append(cap, val, inp);
-    panel.appendChild(row);
-    inputs[cssVar] = { inp, val, step };
-  });
-
-  /* drag the text block directly on the page — updates the same vars + sliders */
-  el.style.cursor = 'grab';
-  let drag = null;
-  const setVar = (cssVar, v) => {
-    el.style.setProperty(cssVar, v + 'px');
-    const r = inputs[cssVar]; if (r) { r.inp.value = v; r.val.textContent = fmt(v, r.step); }
-  };
-  el.addEventListener('pointerdown', (e) => {
-    drag = { x: e.clientX, y: e.clientY,
-             tx: parseFloat(el.style.getPropertyValue('--tx')) || 0,
-             ty: parseFloat(el.style.getPropertyValue('--ty')) || 0 };
-    el.setPointerCapture(e.pointerId); el.style.cursor = 'grabbing'; e.preventDefault();
-  });
-  el.addEventListener('pointermove', (e) => {
-    if (!drag) return;
-    setVar('--tx', Math.round(drag.tx + (e.clientX - drag.x)));
-    setVar('--ty', Math.round(drag.ty + (e.clientY - drag.y)));
-  });
-  const endDrag = () => { if (drag) { drag = null; el.style.cursor = 'grab'; } };
-  el.addEventListener('pointerup', endDrag);
-  el.addEventListener('pointercancel', endDrag);
-
-  if (COLORS.length) section('— Colours —');
-  COLORS.forEach(([label, target, cssVar, init]) => {
-    target.style.setProperty(cssVar, init);
-    const row = document.createElement('label');
-    row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin:8px 0 2px;';
-    const cap = document.createElement('span'); cap.textContent = label;
-    const inp = document.createElement('input');
-    inp.type = 'color'; inp.value = init;
-    inp.style.cssText = 'width:44px;height:22px;padding:0;border:none;background:none;cursor:pointer;';
-    inp.oninput = () => target.style.setProperty(cssVar, inp.value);
-    row.append(cap, inp);
-    panel.appendChild(row);
-  });
-
-  const logBtn = document.createElement('button');
-  logBtn.textContent = 'Log values';
-  logBtn.style.cssText = 'all:unset;display:block;text-align:center;cursor:pointer;margin-top:11px;padding:6px 0;' +
-    'border-radius:7px;background:rgba(255,255,255,.09);transition:background .15s;';
-  logBtn.onmouseenter = () => (logBtn.style.background = 'rgba(255,255,255,.17)');
-  logBtn.onmouseleave = () => (logBtn.style.background = 'rgba(255,255,255,.09)');
-  logBtn.onclick = () => console.log('schCopy →', el.getAttribute('style'));
-  panel.appendChild(logBtn);
-
-  document.body.appendChild(panel);
-  window.addEventListener('keydown', (e) => {
-    if (e.target.closest('input, textarea, select, button, a, [contenteditable]')) return;
-    if (e.key === 'i' || e.key === 'I') panel.style.display = panel.style.display === 'none' ? '' : 'none';
-  });
-}
-
-/* ── Dev tuning panel ─────────────────────────────────────────────────
-   A tiny dependency-free slider GUI wired straight to the live WALK /
-   SKILLS_EXIT config objects — drag a slider and the next frame reads it.
-   Starts visible; press G to hide/show. `Replay` rewinds the walk so you can
-   watch it again without scrolling; `Log` prints the current values so you can
-   bake them into the consts. Remove the buildTuneGUI() call above to ship. */
-function buildTuneGUI(getThree) {
-  if (document.getElementById('tuneGUI')) return;
-  const ROWS = [
-    ['Walk speed',     WALK,        'speed',   0.1, 2,  0.05],
-    ['Bob intensity',  WALK,        'bob',     0,   3,  0.05],
-    ['Bob steps/freq', WALK,        'bobFreq', 1,   20, 0.5],
-    ['Walk distance',  WALK,        'slideL',  10,  80, 1],
-    ['DNA exit start', SKILLS_EXIT, 'start',   0.3, 0.9, 0.01],
-    ['DNA exit dist',  SKILLS_EXIT, 'slideR',  10,  50, 1],
-    ['Kids exit dist', ONTRACK_EXIT,'dist',    10,  70, 1],
-    ['On-track zoom',  ONTRACK_EXIT,'textZoom',0.2, 1,  0.05],
-    ['Chat stagger',   ASK,         'stagger',   0, 800, 20],
-    ['Prompt delay',   ASK,         'promptAt',  0, 1500, 50],
-    ['Flow gap',       ASK,         'flowGap',   0, 2000, 50],
-    ['Grey flow speed',ASK_FLOW.red, 'speed',  0.2, 2.5, 0.05],
-    ['Colour flow spd',ASK_FLOW.blue,'speed',  0.2, 2.5, 0.05],
-  ];
-  const fmt = (v, step) => (step < 1 ? v.toFixed(2) : v.toFixed(0));
-  const panel = document.createElement('div');
-  panel.id = 'tuneGUI';
-  panel.style.cssText = 'position:fixed;left:16px;bottom:16px;z-index:99999;width:232px;' +
-    'font:12px/1.4 system-ui,-apple-system,sans-serif;color:#e9e9ee;background:rgba(22,22,28,.93);' +
-    'border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px 13px;' +
-    'box-shadow:0 10px 34px rgba(0,0,0,.4);backdrop-filter:blur(7px);user-select:none;';
-
-  const head = document.createElement('div');
-  head.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:600;letter-spacing:.02em;';
-  const title = document.createElement('span'); title.textContent = 'Kids walk-in';
-  const hide = document.createElement('button');
-  hide.textContent = '×'; hide.title = 'hide (press G)';
-  hide.style.cssText = 'all:unset;cursor:pointer;font-size:17px;line-height:1;padding:0 4px;color:#9a9aa6;';
-  hide.onclick = () => { panel.style.display = 'none'; };
-  head.append(title, hide);
-  panel.appendChild(head);
-
-  ROWS.forEach(([label, obj, key, min, max, step]) => {
-    const row = document.createElement('label');
-    row.style.cssText = 'display:block;margin:8px 0;';
-    const cap = document.createElement('span'); cap.textContent = label;
-    const val = document.createElement('span');
-    val.textContent = fmt(obj[key], step);
-    val.style.cssText = 'float:right;color:#7fe0a8;font-variant-numeric:tabular-nums;';
-    const inp = document.createElement('input');
-    inp.type = 'range'; inp.min = min; inp.max = max; inp.step = step; inp.value = obj[key];
-    inp.style.cssText = 'width:100%;margin-top:4px;accent-color:#56C02B;cursor:pointer;';
-    inp.oninput = () => { obj[key] = parseFloat(inp.value); val.textContent = fmt(obj[key], step); };
-    row.append(cap, val, inp);
-    panel.appendChild(row);
-  });
-
-  /* grey-dot colour picker */
-  const crow = document.createElement('label');
-  crow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin:10px 0 4px;';
-  const ccap = document.createElement('span'); ccap.textContent = 'Grey dot colour';
-  const cin = document.createElement('input');
-  cin.type = 'color'; cin.value = ASK_FLOW.gray;
-  cin.style.cssText = 'width:44px;height:22px;padding:0;border:none;background:none;cursor:pointer;';
-  cin.oninput = () => { ASK_FLOW.gray = cin.value; };
-  crow.append(ccap, cin);
-  panel.appendChild(crow);
-
-  const editor = buildAskPathEditor();
-  let editing = false;
-
-  const bar = document.createElement('div');
-  bar.style.cssText = 'display:flex;gap:6px;margin-top:9px;';
-  const mkBtn = (txt, fn) => {
-    const b = document.createElement('button');
-    b.textContent = txt;
-    b.style.cssText = 'flex:1;all:unset;text-align:center;cursor:pointer;padding:6px 0;border-radius:7px;' +
-      'background:rgba(255,255,255,.09);transition:background .15s;';
-    b.onmouseenter = () => (b.style.background = 'rgba(255,255,255,.17)');
-    b.onmouseleave = () => (b.style.background = 'rgba(255,255,255,.09)');
-    b.onclick = fn;
-    return b;
-  };
-  const editBtn = mkBtn('✎ Edit ask paths', () => {
-    editing = !editing;
-    editor.toggle(editing);
-    editBtn.style.background = editing ? 'rgba(120,190,255,.32)' : 'rgba(255,255,255,.09)';
-  });
-  editBtn.onmouseleave = () => (editBtn.style.background = editing ? 'rgba(120,190,255,.32)' : 'rgba(255,255,255,.09)');
-  bar.append(
-    mkBtn('▶ Replay', () => { const t = getThree && getThree(); if (t) t.kidWalk = 0; }),
-    mkBtn('Log', () => console.log('WALK', { ...WALK }, 'SKILLS_EXIT', { ...SKILLS_EXIT }, 'ONTRACK_EXIT', { ...ONTRACK_EXIT }, 'ASK', { ...ASK }, '\nASK_FLOW\n' + askFlowText())),
-  );
-  panel.appendChild(bar);
-  const bar2 = document.createElement('div');
-  bar2.style.cssText = 'display:flex;gap:6px;margin-top:6px;';
-  bar2.append(editBtn);
-  panel.appendChild(bar2);
-  document.body.appendChild(panel);
-
-  window.addEventListener('keydown', (e) => {
-    if (e.target.closest('input, textarea, select, button, a, [contenteditable]')) return;
-    if (e.key === 'g' || e.key === 'G') panel.style.display = panel.style.display === 'none' ? '' : 'none';
-  });
 }
