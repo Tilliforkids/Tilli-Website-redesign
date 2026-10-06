@@ -62,7 +62,7 @@ differs.
 
 ## 3. PRIORITY 1 — Global fixes (one change, every page; do first)
 
-### CHG-09 · Unify navigation / hamburger menu
+### CHG-09 · Unify navigation / hamburger menu — ⬜ TODO
 - **Pages:** all (reported on Research vs Home)
 - **Scope:** global
 - **Current:** Research page hamburger menu differs from Home.
@@ -73,7 +73,7 @@ differs.
     order, and CTA.
   - Changing nav in one place changes it everywhere.
 
-### CHG-07 + CHG-19 · Unify footer (= Home/hero footer)
+### CHG-07 + CHG-19 · Unify footer (= Home/hero footer) — ⬜ TODO
 - **Pages:** all (reported on mobile generally, and Research)
 - **Scope:** global
 - **Current:** footer differs between mobile and desktop, and Research ≠ Home.
@@ -83,7 +83,7 @@ differs.
   - Home, Research, School Success footers are byte-identical in content/links/order.
   - Mobile footer carries the full desktop content, reflowed, not a reduced variant.
 
-### CHG-10 · Remove Fredoka; enforce font system
+### CHG-10 · Remove Fredoka; enforce font system — ⬜ TODO
 - **Pages:** all
 - **Scope:** global
 - **Current:** Fredoka used in places.
@@ -92,7 +92,7 @@ differs.
   - Grep/inspect shows zero `Fredoka` references in CSS/theme/font config.
   - No rendered text uses a font outside the desktop set.
 
-### CHG-06 · Remove "Ask-Tilli on WhatsApp" copy
+### CHG-06 · Remove "Ask-Tilli on WhatsApp" copy — ⬜ TODO
 - **Pages:** all
 - **Scope:** global
 - **Current:** multiple references to "Ask-Tilli on WhatsApp".
@@ -107,7 +107,7 @@ differs.
 
 ## 4. PRIORITY 2 — Content accuracy (fix before any school sees the page)
 
-### CHG-05 · "30+ schools" block — number, order, RPP credit
+### CHG-05 · "30+ schools" block — number, order, RPP credit — ⬜ TODO
 - **Page:** Home · **Scope:** mobile (verify desktop parity)
 - **Current:** "30+ schools have joined…"; stat sits above the quote; no RPP credit.
 - **Change:**
@@ -116,7 +116,7 @@ differs.
   3. Inside the quote block, state this was an **RPP with Stanford and NMAJS**.
 - **Acceptance:** reads "53", quote precedes stat, RPP credit visible in the block.
 
-### CHG-02 · Brain/heart icons over the two skill columns
+### CHG-02 · Brain/heart icons over the two skill columns — ⬜ TODO
 - **Page:** Home · 360° section ("Get a 360-degree view of a student — 12 foundational
   skills, measured from each side, term after term.")
 - **Scope:** mobile
@@ -136,12 +136,12 @@ differs.
 
 ## 5. PRIORITY 3 — Quick mobile wins (low effort, visible)
 
-### CHG-08 · Remove "View full desktop experience"
+### CHG-08 · Remove "View full desktop experience" — ⬜ TODO
 - **Page:** all (mobile) · **Scope:** mobile-only
 - **Change:** Delete the "view full desktop experience" link/prompt on phones.
 - **Acceptance:** element absent at mobile widths; no layout gap left behind.
 
-### CHG-04 · Add Ask-Tilli demo to mobile
+### CHG-04 · Add Ask-Tilli demo to mobile — ⬜ TODO
 - **Page:** Home · directly after the "any AI can answer" / Ask-Tilli comparison
 - **Scope:** mobile
 - **Current:** interactive Ask-Tilli demo exists on desktop, missing on mobile.
@@ -150,13 +150,13 @@ differs.
 - **Depends-on:** respect CHG-06 (no WhatsApp framing).
 - **Acceptance:** demo present and usable on a phone, placed right after the comparison.
 
-### CHG-11 · Fix Research hero photo framing
+### CHG-11 · Fix Research hero photo framing — ⬜ TODO
 - **Page:** Research · opening/landing
 - **Scope:** mobile
 - **Change:** Fix crop/focal point so the hero photo frames correctly at phone width.
 - **Acceptance:** subject correctly framed, no awkward crop/overflow at ≤430px.
 
-### CHG-17 · Remove "high-density behavioural stream" line
+### CHG-17 · Remove "high-density behavioural stream" line — ⬜ TODO
 - **Page:** Research · **Scope:** global (wherever it appears)
 - **Change:** Delete "Our high-density behavioural stream enables researchers to build
   the next generation of AI" (and the section if it exists only for that line).
@@ -166,7 +166,7 @@ differs.
 
 ## 6. PRIORITY 4 — Layout rebuilds (real work)
 
-### CHG-01 · 360° strands — bind each box to its strand
+### CHG-01 · 360° strands — bind each box to its strand — ⬜ TODO
 - **Page:** Home · 360° MEASURE section (teacher / parent / child strands)
 - **Scope:** mobile
 - **Current:** all strand text stacks together, all boxes stack together — pairing lost.
@@ -178,7 +178,7 @@ differs.
 - **Acceptance:** each strand's example box is visually attached to that strand; no
   orphaned boxes.
 
-### CHG-03 · Match child illustrations to dashboard style
+### CHG-03 · Match child illustrations to dashboard style — ⬜ TODO
 - **Page:** Home · "Every child walks into middle school developmentally on track"
 - **Scope:** mobile (confirm desktop)
 - **Current:** child figures here use a different illustration style than the dashboard
@@ -186,7 +186,7 @@ differs.
 - **Change:** unify to one illustration style across this section and the dashboard.
 - **Acceptance:** consistent character/illustration style; no style clash in one scroll.
 
-### CHG-15 · Rebuild triadic assessment protocol in code
+### CHG-15 · Rebuild triadic assessment protocol in code — ⬜ TODO
 - **Page:** Research · "How we measure" (triadic proto assessment protocol)
 - **Scope:** mobile (likely global)
 - **Current:** built from images.
@@ -194,33 +194,33 @@ differs.
 - **Acceptance:** section is live DOM, responsive, legible on mobile; zero raster images
   of the protocol.
 
-### CHG-16 · Redesign "What we measure" data-structure folders
+### CHG-16 · Redesign "What we measure" data-structure folders — ⬜ TODO
 - **Page:** Research · "What we measure" (data structure)
 - **Scope:** mobile
 - **Change:** redesign the folder visuals — much stronger, on-brand.
 - **Acceptance:** folders read clearly on mobile and match the design system.
 
-### CHG-13 · New mobile layout for the six cognitive skills
+### CHG-13 · New mobile layout for the six cognitive skills — ⛔ BLOCKED (B5)
 - **Page:** Research · six cognitive skills
 - **Scope:** mobile · **Blocked-by:** B5 (plan first)
 - **Change:** design a new mobile layout (current one not working). Agree layout before
   building.
 - **Acceptance:** six skills laid out per the agreed plan; legible, on-brand on mobile.
 
-### CHG-14 · Domain/parameter chips mimic homepage buttons
+### CHG-14 · Domain/parameter chips mimic homepage buttons — ⛔ BLOCKED (B5)
 - **Page:** Research · other domains & parameters
 - **Scope:** mobile · **Blocked-by:** B5 (discuss first)
 - **Change:** chip size/shape/padding/layout should mirror the **homepage buttons**
   (not the hero).
 - **Acceptance:** chips visually match the homepage button spec once agreed.
 
-### CHG-18 · Redesign "AI use cases: research → action"
+### CHG-18 · Redesign "AI use cases: research → action" — ⛔ BLOCKED (B5)
 - **Page:** Research (and anywhere it appears) · **Scope:** global
 - **Blocked-by:** B5 (plan first)
 - **Change:** new design direction for this section, applied everywhere it appears.
 - **Acceptance:** redesigned per agreed direction; consistent across all instances.
 
-### CHG-12 · Restore Research "Why" section to original HTML
+### CHG-12 · Restore Research "Why" section to original HTML — ⛔ BLOCKED (B3)
 - **Page:** Research · "Why" section
 - **Scope:** mobile · **Blocked-by:** B3
 - **Current:** drifted from the originally shared HTML.
@@ -231,29 +231,29 @@ differs.
 
 ## 7. PRIORITY 5 — School Success page overhaul
 
-### CHG-21 · Make the page enticing / on-brand
+### CHG-21 · Make the page enticing / on-brand — ⬜ TODO
 - **Current:** plain, reads AI-generated.
 - **Change:** add Tilli character, warmth, and brand texture; bring it up to the other
   pages' standard.
 - **Acceptance:** page uses the Tilli design system; no longer reads as a plain template.
 
-### CHG-22 · Schools & trainings photo carousel (landing element)
+### CHG-22 · Schools & trainings photo carousel (landing element) — ⛔ BLOCKED (B4)
 - **Scope:** mobile (and desktop) · **Blocked-by:** B4
 - **Change:** add a carousel of real school + training photos as the first element
   (above or below the hero).
 - **Acceptance:** carousel present, swipeable on mobile, using real photos from B4.
 
-### CHG-24 · Add an offerings section
+### CHG-24 · Add an offerings section — ⬜ TODO
 - **Change:** add an "offerings" section consistent with how offerings appear elsewhere.
 - **Acceptance:** offerings section present and consistent with site pattern.
 
-### CHG-23 · Content review by Masoomi
+### CHG-23 · Content review by Masoomi — ⬜ TODO (process)
 - **Type:** process, not code.
 - **Change:** route School Success copy to Masoomi (Learning Lead) for sign-off before
   ship.
 - **Acceptance:** copy reviewed/approved before this page goes live.
 
-### CHG-20 + CHG-25 · WhatsApp icon consistency
+### CHG-20 + CHG-25 · WhatsApp icon consistency — ⬜ TODO
 - **Pages:** Research (CHG-20), School Success (CHG-25)
 - **Scope:** global
 - **Current:** WhatsApp icon differs from the homepage landing icon.
