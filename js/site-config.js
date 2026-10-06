@@ -33,11 +33,12 @@
       { label: "Success Stories", href: "success.html" }
     ],
 
-    /* Footer link column (mirrors desktop footer; mobile reflows the same set). */
+    /* Footer links (canonical = Home footer). First three are home-section anchors;
+       mobile keeps them in-build via the hash-aware mHref() + the m/index #how anchor. */
     FOOTER_LINKS: [
-      { label: "Home", href: "index.html" },
-      { label: "Tilli for Research", href: "research.html" },
-      { label: "Success Stories", href: "success.html" },
+      { label: "How it works", href: "index.html#how" },
+      { label: "The 12 skills", href: "index.html#skills" },
+      { label: "Impact", href: "index.html#impact" },
       { label: "FAQs", href: "faq.html" },
       { label: "Privacy Policy", href: "privacy-policy.html" }
     ],

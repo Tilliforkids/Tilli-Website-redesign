@@ -1,4 +1,4 @@
-/* Type — Montserrat everywhere (CHG-10: Fredoka removed).
+/* Type — Montserrat everywhere (CHG-10: single type family, no accent face).
    px sizes are authored for the deck's 1920×1080 canvas (pt×1.333 from the source). */
 :root{
   --tl-font-core:'Montserrat',system-ui,-apple-system,'Segoe UI',sans-serif;

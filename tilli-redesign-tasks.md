@@ -62,7 +62,7 @@ differs.
 
 ## 3. PRIORITY 1 — Global fixes (one change, every page; do first)
 
-### CHG-09 · Unify navigation / hamburger menu — ⬜ TODO
+### CHG-09 · Unify navigation / hamburger menu — ✅ DONE
 - **Pages:** all (reported on Research vs Home)
 - **Scope:** global
 - **Current:** Research page hamburger menu differs from Home.
@@ -73,7 +73,7 @@ differs.
     order, and CTA.
   - Changing nav in one place changes it everywhere.
 
-### CHG-07 + CHG-19 · Unify footer (= Home/hero footer) — ⬜ TODO
+### CHG-07 + CHG-19 · Unify footer (= Home/hero footer) — ✅ DONE
 - **Pages:** all (reported on mobile generally, and Research)
 - **Scope:** global
 - **Current:** footer differs between mobile and desktop, and Research ≠ Home.
@@ -83,7 +83,7 @@ differs.
   - Home, Research, School Success footers are byte-identical in content/links/order.
   - Mobile footer carries the full desktop content, reflowed, not a reduced variant.
 
-### CHG-10 · Remove Fredoka; enforce font system — ⬜ TODO
+### CHG-10 · Remove Fredoka; enforce font system — ✅ DONE
 - **Pages:** all
 - **Scope:** global
 - **Current:** Fredoka used in places.

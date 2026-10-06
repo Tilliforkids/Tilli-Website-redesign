@@ -27,7 +27,8 @@
   /* Rewrite a root-relative config href for an /m/ page. */
   function mHref(href) {
     if (/^(https?:|mailto:|tel:|#)/i.test(href)) return href;       // absolute / anchor
-    return FORKED[href] ? href : "../" + href;                       // /m/ twin vs ../
+    var base = href.split("#")[0];                                   // ignore hash for the twin check
+    return FORKED[base] ? href : "../" + href;                       // /m/ twin (keeps #anchor) vs ../
   }
   function waLink() {
     return "https://wa.me/" + (T.WHATSAPP_NUMBER || "") +
@@ -71,8 +72,9 @@
       /* Footer */
       ".ft{padding:32px 20px calc(84px + env(safe-area-inset-bottom));border-top:1px solid var(--tl-line-200);" +
         "text-align:center;background:#fff}" +
-      ".ft .fbrand{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px;color:var(--tl-ink-900)}" +
-      ".ft .tag{font-size:13px;font-style:italic;color:var(--tl-ink-450);margin-top:4px}" +
+      ".ft .fbrand img{height:28px;width:auto;display:inline-block}" +
+      ".ft .tag{font-size:13px;font-style:italic;color:var(--tl-ink-450);margin-top:6px}" +
+      ".ft .mail{font-size:14px;color:var(--tl-ink-450);margin-top:4px}" +
       ".ft nav{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:20px 0 14px}" +
       ".ft nav a{font-size:14px;font-weight:600;color:var(--tl-ink-600)}" +
       ".ft .social{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:0 0 16px}" +
@@ -145,20 +147,18 @@
     var year = new Date().getFullYear();
     var links = (T.FOOTER_LINKS || []).map(function (n) {
       return '<a href="' + mHref(n.href) + '">' + n.label + "</a>";
-    }).join("") +
-      '<a href="' + waLink() + '" target="_blank" rel="noopener">Get in touch</a>' +
-      '<a href="' + waLink() + '" target="_blank" rel="noopener">WhatsApp</a>';
+    }).join("");
     var social = (T.SOCIAL || []).map(function (s) {
       return '<a href="' + s.href + '" target="_blank" rel="noopener">' + s.label + "</a>";
     }).join("");
     var mail = T.EMAIL || "info@tillikids.com";
     var footer = el(
       '<footer class="ft">' +
-        '<div class="fbrand">Tilli.</div>' +
+        '<div class="fbrand"><img src="../' + (T.ASSET_BASE || "assets/ds/") + 'tilli-logo.png" alt="Tilli"></div>' +
         '<div class="tag">Developmentally on track by 10.</div>' +
         '<nav aria-label="Footer">' + links + "</nav>" +
         '<div class="social" aria-label="Social">' + social + "</div>" +
-        '<div class="mail"><a href="mailto:' + mail + '">' + mail + "</a></div>" +
+        '<div class="mail">Reach out: <a href="mailto:' + mail + '">' + mail + "</a></div>" +
         '<div class="copy">© ' + year + " Tilli Kids Inc. · www.tillikids.com</div>" +
       "</footer>"
     );

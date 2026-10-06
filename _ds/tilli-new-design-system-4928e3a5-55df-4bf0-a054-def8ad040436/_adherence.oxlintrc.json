@@ -37,8 +37,8 @@
         "message": "Raw px value — use a design-system spacing token via var()."
       },
       {
-        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Fredoka|Montserrat))/i]",
-        "message": "Font not provided by the design system. Available: Fredoka, Montserrat."
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Montserrat))/i]",
+        "message": "Font not provided by the design system. Available: Montserrat."
       },
       {
         "selector": "JSXOpeningElement[name.name='AssessmentPanel'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|title|art|children|panelWidth|color|style|key|ref|className|style|children)$/]",
@@ -505,7 +505,6 @@
       "--tl-press-scale": "other"
     },
     "fontFamilies": [
-      "Fredoka",
       "Montserrat"
     ]
   }

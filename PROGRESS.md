@@ -4,31 +4,31 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-06 — CHG-12 done; B3 resolved (no "Why" section existed)
+> **Last updated:** 2026-10-06 — CHG-10 done (Fredoka removed; Montserrat enforced). P1 complete.
 
 ## At a glance
 
-- **Done:** 1 / 23
+- **Done:** 4 / 23
 - **In progress:** 0
 - **Blocked:** 4  (CHG-13, CHG-14, CHG-18 → B5 · CHG-22 → B4)
-- **Unblocked & remaining:** 18
+- **Unblocked & remaining:** 15
 
 ```
-[██                                      ]  4%
+[███████                                 ]  17%
 ```
 
 ## Next up
 
-→ **CHG-09 · Unify navigation / hamburger menu** (P1, global)
+→ **CHG-05 · "53 schools" + quote order + RPP credit** (P2, Home)
 
 ---
 
 ## P1 — Global (do first)
 | Status | ID | Task |
 |--------|----|------|
-| ⬜ | CHG-09 | Unify nav / hamburger menu |
-| ⬜ | CHG-07+19 | Unify footer (= Home/hero) |
-| ⬜ | CHG-10 | Remove Fredoka; enforce font system |
+| ✅ | CHG-09 | Unify nav / hamburger menu |
+| ✅ | CHG-07+19 | Unify footer (= Home/hero) |
+| ✅ | CHG-10 | Remove Fredoka; enforce font system |
 | ⬜ | CHG-06 | Remove "Ask-Tilli on WhatsApp" copy |
 
 ## P2 — Content accuracy
@@ -68,6 +68,11 @@
 
 ---
 
+## Follow-ups (deferred cleanup)
+- **Fredoka leftovers (from CHG-10)** — user chose to keep for now; delete when ready:
+  - `_ds/.../assets/fonts/fredoka-normal-latin.woff2` + `-ext.woff2` (orphaned, unreferenced)
+  - `Dataset _ Tilli.html` + `Dataset _ Tilli_files/` (old Wix site export, repo root)
+
 ## Blockers (clear these to unblock the ⛔ tasks)
 | # | Needed | Unblocks |
 |---|--------|----------|
@@ -78,3 +83,6 @@
 ## Change log
 - 2026-10-06 — Tracker created; baseline set, all tasks ⬜/⛔, none confirmed done.
 - 2026-10-06 — CHG-12 ✅ done; B3 resolved (no separate "Why" section — the Research WEIRD band was restyled with an arc + fade instead). Also done ad-hoc (not a CHG): WEIRD band arc/fade redesign on desktop + mobile.
+- 2026-10-06 — CHG-09 ✅ done. Shared nav was already single-source; hardened `.tl-nav a` / `.navdrawer a` (text-decoration + Montserrat) so interior pages stop inheriting page base styles (fixes underline/font). Fixed Home boot-veil z-index so the nav no longer fades in on landing. `version.json` → …-3.
+- 2026-10-06 — CHG-07+19 ✅ done. Footer unified to the Home/hero canonical (image 1): FOOTER_LINKS → How it works/12 skills/Impact/FAQs/Privacy (no Get-in-touch/WhatsApp); interior + mobile rebuilt to match (mobile logo image, "Reach out:" prefix, hash-aware mHref, #how anchor on m/index); dynamic year everywhere incl. Home.
+- 2026-10-06 — CHG-10 ✅ done. Live font config already Montserrat-only; reworded token comments, set the DS lint allow-list to Montserrat-only, scrubbed Fredoka from _ds_manifest.json. Grep Fredoka-free except deferred leftovers (see Follow-ups). P1 (global fixes) complete.

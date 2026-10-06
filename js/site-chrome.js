@@ -72,12 +72,9 @@
   /* ── Footer (interior pages only; home keeps its own) ───────────────────── */
   function buildFooter() {
     if (IS_HOME) return;
-    var year = new Date().getFullYear();
     var navLinks = (CONFIG.FOOTER_LINKS || []).map(function (n) {
       return '<a href="' + n.href + '">' + n.label + '</a>';
-    }).join("") +
-      '<a href="#" data-tl-open-form>Get in touch</a>' +
-      '<a href="' + waLink() + '" target="_blank" rel="noopener">WhatsApp</a>';
+    }).join("");
     var social = (CONFIG.SOCIAL || []).map(function (s) {
       return '<a href="' + s.href + '" target="_blank" rel="noopener">' + s.label + '</a>';
     }).join("");
@@ -89,11 +86,11 @@
               '<span class="tl-footer__tag">Developmentally on track by 10.</span></div>' +
             '<nav class="tl-footer__links" aria-label="Footer">' + navLinks + '</nav>' +
           '</div>' +
-          '<div class="tl-footer__row" style="margin-top:22px">' +
+          '<div class="tl-footer__row tl-footer__row--meta">' +
             '<div class="tl-footer__reach">Reach out: <a href="mailto:' + CONFIG.EMAIL + '">' + CONFIG.EMAIL + '</a></div>' +
-            '<nav class="tl-footer__links" aria-label="Social">' + social + '</nav>' +
+            '<nav class="tl-footer__links tl-footer__social" aria-label="Social">' + social + '</nav>' +
+            '<div class="tl-footer__legal">© <span data-tl-year>2026</span> Tilli Kids Inc. · www.tillikids.com</div>' +
           '</div>' +
-          '<div class="tl-footer__legal">© ' + year + ' Tilli Kids Inc. · www.tillikids.com</div>' +
         '</div>' +
       '</footer>'
     );
@@ -296,6 +293,9 @@
     buildWhatsApp();
     buildForm();
     initHideOnScroll();
+    // Dynamic copyright year — fills [data-tl-year] placeholders (interior footer + Home's static .foot).
+    var year = String(new Date().getFullYear());
+    document.querySelectorAll("[data-tl-year]").forEach(function (e) { e.textContent = year; });
   }
 
   if (document.readyState === "loading") {
