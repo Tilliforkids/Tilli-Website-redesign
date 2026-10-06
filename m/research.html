@@ -82,10 +82,13 @@
   .r-pcard h3 { font-weight: 800; color: #1C2E7A; font-size: 17px; margin: 0 0 8px; }
   .r-pcard p { color: var(--tl-ink-500); font-size: 14px; line-height: 1.55; }
   .r-pcard__ic { position: absolute; right: 14px; bottom: 10px; font-size: 26px; }
-  .r-weird { background: #04C1FF; border-radius: 28px; margin: 28px 0 24px; padding: 34px 20px; text-align: center; }
-  .r-weird__pre { font-weight: 800; color: #1C2E7A; font-size: 15px; }
-  .r-weird__big { font-weight: 800; color: #1C2E7A; font-size: clamp(52px,17vw,80px); line-height: 1; margin: 6px 0; }
-  .r-weird__post { font-weight: 600; color: #1C2E7A; font-size: 13px; }
+  .r-weird { position: relative; margin: 28px -22px 24px; overflow: hidden; }
+  .r-weird__art { display: block; width: 100%; height: clamp(300px,74vw,460px); }
+  .r-weird__inner { position: absolute; inset: 0; display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: center; text-align: center; padding: clamp(34px,11vw,66px) 20px 0; }
+  .r-weird__pre { font-weight: 800; color: #10233F; font-size: 15px; }
+  .r-weird__big { font-weight: 800; color: #FFFFFF; font-size: clamp(52px,17vw,80px); line-height: 1; margin: 6px 0; text-shadow: 0 2px 12px rgba(16,35,63,.28); }
+  .r-weird__post { font-weight: 600; color: #10233F; font-size: 13px; }
   .r-blind { text-align: center; }
   .r-blind__pre { font-weight: 700; color: #04C1FF; font-size: 15px; margin-bottom: 4px; }
   .r-blind__big { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #fff; font-size: clamp(26px,7vw,34px); line-height: 1.15; }
@@ -193,9 +196,19 @@
       <div class="r-pcard"><h3>3. Expensive Protocols</h3><p>Standardized assessments require high-cost, in-person trained assessors, leaving resource-poor communities out of the AI evolution.</p><span class="r-pcard__ic">💰</span></div>
     </div>
     <div class="r-weird">
-      <p class="r-weird__pre">Current educational AI models are predominantly trained on data from</p>
-      <p class="r-weird__big">W.E.I.R.D.</p>
-      <p class="r-weird__post">Western, Educated, Industrialized, Rich, and Democratic populations.</p>
+      <svg class="r-weird__art" viewBox="0 0 1440 660" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <g fill="none" stroke-width="300">
+          <circle cx="720" cy="1640" r="1450" stroke="#26406E"/>
+          <circle cx="720" cy="2040" r="1850" stroke="#2A6FA6"/>
+          <circle cx="720" cy="2490" r="2300" stroke="#1C9FD8"/>
+          <circle cx="720" cy="3000" r="2810" stroke="#04C1FF"/>
+        </g>
+      </svg>
+      <div class="r-weird__inner">
+        <p class="r-weird__pre">Current educational AI models are predominantly trained on data from</p>
+        <p class="r-weird__big">W.E.I.R.D.</p>
+        <p class="r-weird__post">Western, Educated, Industrialized, Rich, and Democratic populations.</p>
+      </div>
     </div>
     <div class="r-blind">
       <p class="r-blind__pre">This creates a</p>
