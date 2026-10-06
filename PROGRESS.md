@@ -4,17 +4,17 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-06 — baseline set (nothing confirmed done yet)
+> **Last updated:** 2026-10-06 — CHG-12 done; B3 resolved (no "Why" section existed)
 
 ## At a glance
 
-- **Done:** 0 / 23
+- **Done:** 1 / 23
 - **In progress:** 0
-- **Blocked:** 5  (CHG-13, CHG-14, CHG-18 → B5 · CHG-12 → B3 · CHG-22 → B4)
+- **Blocked:** 4  (CHG-13, CHG-14, CHG-18 → B5 · CHG-22 → B4)
 - **Unblocked & remaining:** 18
 
 ```
-[                                        ]  0%
+[██                                      ]  4%
 ```
 
 ## Next up
@@ -55,7 +55,7 @@
 | ⛔ | CHG-13 | Six cognitive skills layout — **B5** (plan first) |
 | ⛔ | CHG-14 | Domain/parameter chips — **B5** (discuss first) |
 | ⛔ | CHG-18 | AI use cases redesign — **B5** (plan first) |
-| ⛔ | CHG-12 | Restore Research "Why" — **B3** (original HTML) |
+| ✅ | CHG-12 | Restore Research "Why" — done (no "Why" section existed; covered by WEIRD band work) |
 
 ## P5 — School Success
 | Status | ID | Task |
@@ -71,9 +71,10 @@
 ## Blockers (clear these to unblock the ⛔ tasks)
 | # | Needed | Unblocks |
 |---|--------|----------|
-| B3 | Original HTML for Research "Why" section | CHG-12 |
+| ~~B3~~ | ~~Original HTML for Research "Why" section~~ — RESOLVED, no such section | ~~CHG-12~~ |
 | B4 | Drive folder of school + training photos | CHG-22 |
 | B5 | Working session on layout/direction | CHG-13, CHG-14, CHG-18 |
 
 ## Change log
 - 2026-10-06 — Tracker created; baseline set, all tasks ⬜/⛔, none confirmed done.
+- 2026-10-06 — CHG-12 ✅ done; B3 resolved (no separate "Why" section — the Research WEIRD band was restyled with an arc + fade instead). Also done ad-hoc (not a CHG): WEIRD band arc/fade redesign on desktop + mobile.

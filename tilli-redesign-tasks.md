@@ -30,7 +30,7 @@
 |---|---|---|
 | B1 | ~~WhatsApp: remove or keep?~~ **RESOLVED:** rename "Ask-Tilli on WhatsApp" → "Ask-Tilli" everywhere (copy only). The WhatsApp icon itself stays — just make it consistent with Home (CHG-20/25). | CHG-06 |
 | B2 | ~~Brain/heart columns: skill→column mapping~~ **RESOLVED:** 2 buckets — brain = Executive Function, heart = Social-Emotional (full lists in §2 / CHG-02). | CHG-02 |
-| B3 | **Original HTML** for the Research "Why" section, to diff against live. | CHG-12 |
+| B3 | ~~Original HTML for the Research "Why" section~~ **RESOLVED:** there was no separate "Why" section; CHG-12 done via the WEIRD band work. | CHG-12 |
 | B4 | **Drive folder** with school + training photos for the carousel. | CHG-22 |
 | B5 | **Working session** on layout/direction before build. | CHG-13, CHG-14, CHG-18 |
 
@@ -220,7 +220,7 @@ differs.
 - **Change:** new design direction for this section, applied everywhere it appears.
 - **Acceptance:** redesigned per agreed direction; consistent across all instances.
 
-### CHG-12 · Restore Research "Why" section to original HTML — ⛔ BLOCKED (B3)
+### CHG-12 · Restore Research "Why" section to original HTML — ✅ DONE
 - **Page:** Research · "Why" section
 - **Scope:** mobile · **Blocked-by:** B3
 - **Current:** drifted from the originally shared HTML.

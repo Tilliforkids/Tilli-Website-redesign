@@ -40,12 +40,15 @@
   /* ── Fixed layers ─ ────────────────────────────────────────── */
   #wash { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
   /* Boot veil — hides the first paints (scene init / scroll reset) so there's no
-     flash of a half-set scene. Lifts when main.js adds .tl-ready to <body>. */
-  #boot { position: fixed; inset: 0; z-index: 9999; background: #FFFFFF; pointer-events: none;
+     flash of a half-set scene. Lifts when main.js adds .tl-ready to <body>.
+     z-index 51 sits ABOVE the scene + scene-nav aids (arrows z50, world z1) but
+     BELOW the chrome (topbar z52, header z55, WhatsApp z70) so the nav bar stays
+     put on landing instead of fading in with the scene. */
+  #boot { position: fixed; inset: 0; z-index: 51; background: #FFFFFF; pointer-events: none;
     opacity: 1; transition: opacity .45s ease; }
   body.tl-ready #boot { opacity: 0; }
   #world { position: fixed; inset: 0; z-index: 1; pointer-events: none; width: 100vw; height: 100vh; display: block; }
-  .topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 40; display: flex; height: 8px; }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 52; display: flex; height: 8px; }
   .topbar div { flex: 1; }
 
   /* ── Quick section nav ────────────────────────────────────── */
