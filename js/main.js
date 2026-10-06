@@ -2163,7 +2163,7 @@ const SNAP_SKIP = new Set(['Cross', 'Funnel']);
 /* Snap stops are {i: sceneIndex, frac: fraction into that scene}. Most
    scenes are one stop at REST, but the hero scene holds TWO beats in its
    240vh — the orb ("How do schools decide?") and the ring it bursts into
-   ("They measure… 2,895 data points") — so it gets its own two stops.
+   ("They measure… 579 data points") — so it gets its own two stops.
    Cross + Funnel are transition-only screens and contribute no stop. */
 const HERO = ST['Start'];
 const snapStops = [];
@@ -2435,7 +2435,7 @@ function countUp() {
   const t0 = performance.now(), dur = 1400;
   const step = (t) => {
     const p = clamp((t - t0) / dur);
-    statEl.textContent = Math.round(2895 * ease(p)).toLocaleString('en-US');
+    statEl.textContent = Math.round(579 * ease(p)).toLocaleString('en-US');
     if (p < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
@@ -2975,7 +2975,7 @@ if (reduced) {
   document.getElementById('world').style.display = 'none';
   beatA.querySelectorAll('[data-hb]').forEach((el) => el.classList.add('in'));
   document.querySelectorAll('.skill-card, .view-label, .rv').forEach((el) => el.classList.add('in'));
-  statEl.textContent = '2,895';
+  statEl.textContent = '579';
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 } else {

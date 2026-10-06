@@ -10,31 +10,15 @@
   "use strict";
 
   /* ── CONFIG ─────────────────────────────────────────────────────────────
-     WHATSAPP_NUMBER  digits only, country code first (no +, spaces, or dashes)
-     WHATSAPP_PREFILL text pre-typed into WhatsApp when "Start Chat" is tapped
-     FORM_ENDPOINT    Google Apps Script Web App URL. "" = stubbed (no backend
-                      yet): the form still validates and confirms, nothing is
-                      sent. Paste the deployed /exec URL here to go live.
-     KAVI_PHOTO       headshot for the chat card (drop the file at this path)
-     SCHOOL_TYPES     options in the "kind of school" dropdown (used as email
-                      context by the Cowork routine)
-     NAV_ITEMS        header links, in order. Add/remove/reorder here only.
+     All shared content now lives in js/site-config.js (window.TILLI) so the
+     desktop and mobile skins never drift. This file only renders the desktop /
+     static-page markup from it. Load site-config.js before this script.
      ─────────────────────────────────────────────────────────────────────── */
-  var CONFIG = {
+  var CONFIG = window.TILLI || {
     WHATSAPP_NUMBER: "94741889706",
     WHATSAPP_PREFILL: "Hi Kavi! I'd love to learn more about bringing Tilli to our school.",
-    FORM_ENDPOINT: "",
-    KAVI_PHOTO: "",   /* set to "assets/ds/kavi.jpg" once the headshot is added; empty = initials monogram, no 404 */
-    ASSET_BASE: "assets/ds/",
-    SCHOOL_TYPES: [
-      "IB", "Cambridge / IGCSE", "CBSE", "ICSE", "State board",
-      "Public / Government", "NGO / Non-profit", "Other"
-    ],
-    NAV_ITEMS: [
-      { label: "Home", href: "index.html" },
-      { label: "Tilli for Research", href: "research.html" },
-      { label: "Success Stories", href: "success.html" }
-    ]
+    FORM_ENDPOINT: "", KAVI_PHOTO: "", ASSET_BASE: "assets/ds/", EMAIL: "info@tillikids.com",
+    SCHOOL_TYPES: [], NAV_ITEMS: [], FOOTER_LINKS: [], SOCIAL: [], WA_ICON: ""
   };
 
   var IS_HOME = !!document.getElementById("world") || document.body.hasAttribute("data-tl-home");
@@ -89,31 +73,25 @@
   function buildFooter() {
     if (IS_HOME) return;
     var year = new Date().getFullYear();
+    var navLinks = (CONFIG.FOOTER_LINKS || []).map(function (n) {
+      return '<a href="' + n.href + '">' + n.label + '</a>';
+    }).join("") +
+      '<a href="#" data-tl-open-form>Get in touch</a>' +
+      '<a href="' + waLink() + '" target="_blank" rel="noopener">WhatsApp</a>';
+    var social = (CONFIG.SOCIAL || []).map(function (s) {
+      return '<a href="' + s.href + '" target="_blank" rel="noopener">' + s.label + '</a>';
+    }).join("");
     var footer = el(
       '<footer class="tl-footer">' +
         '<div class="tl-container">' +
           '<div class="tl-footer__row">' +
             '<div class="tl-footer__brand"><img src="' + CONFIG.ASSET_BASE + 'tilli-logo.png" alt="Tilli">' +
               '<span class="tl-footer__tag">Developmentally on track by 10.</span></div>' +
-            '<nav class="tl-footer__links" aria-label="Footer">' +
-              '<a href="index.html">Home</a>' +
-              '<a href="research.html">Tilli for Research</a>' +
-              '<a href="success.html">Success Stories</a>' +
-              '<a href="faq.html">FAQs</a>' +
-              '<a href="privacy-policy.html">Privacy Policy</a>' +
-              '<a href="#" data-tl-open-form>Get in touch</a>' +
-              '<a href="' + waLink() + '" target="_blank" rel="noopener">WhatsApp</a>' +
-            '</nav>' +
+            '<nav class="tl-footer__links" aria-label="Footer">' + navLinks + '</nav>' +
           '</div>' +
           '<div class="tl-footer__row" style="margin-top:22px">' +
-            '<div class="tl-footer__reach">Reach out: <a href="mailto:info@tillikids.com">info@tillikids.com</a></div>' +
-            '<nav class="tl-footer__links" aria-label="Social">' +
-              '<a href="https://www.linkedin.com/company/tillikids/" target="_blank" rel="noopener">LinkedIn</a>' +
-              '<a href="https://www.instagram.com/tilliforkids/" target="_blank" rel="noopener">Instagram</a>' +
-              '<a href="https://x.com/kidstilli" target="_blank" rel="noopener">X</a>' +
-              '<a href="https://www.youtube.com/channel/UCmLhsI6wbyZ2yb-gqguzjmA" target="_blank" rel="noopener">YouTube</a>' +
-              '<a href="https://www.facebook.com/TilliKids/" target="_blank" rel="noopener">Facebook</a>' +
-            '</nav>' +
+            '<div class="tl-footer__reach">Reach out: <a href="mailto:' + CONFIG.EMAIL + '">' + CONFIG.EMAIL + '</a></div>' +
+            '<nav class="tl-footer__links" aria-label="Social">' + social + '</nav>' +
           '</div>' +
           '<div class="tl-footer__legal">© ' + year + ' Tilli Kids Inc. · www.tillikids.com</div>' +
         '</div>' +
@@ -124,7 +102,7 @@
 
   /* ── WhatsApp bubble + Kavi card ────────────────────────────────────────── */
   function buildWhatsApp() {
-    var waIcon = '<svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.6c1.7.9 3.6 1.4 5.6 1.4h.2c6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-4.9 1 1-4.8-.3-.5c-1-1.6-1.5-3.4-1.5-5.3C5 9.5 9.9 4.9 16 4.9c5.6 0 10.1 4.5 10.1 10.1S21.6 24.8 16 24.8zm5.6-7.6c-.3-.2-1.8-.9-2.1-1s-.5-.2-.7.2-.8 1-1 1.2-.4.3-.7.1c-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1s0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.5s.1-.4 0-.6l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.1 1.1-1.1 2.7 1.2 3.1 1.3 3.3c.2.2 2.3 3.6 5.6 5 .8.3 1.4.5 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>';
+    var waIcon = CONFIG.WA_ICON || '';
     var initials = "KT";
     /* Render the photo only when KAVI_PHOTO is set; otherwise draw the initials
        monogram directly so no missing-image request (404) is ever made. The img

@@ -6,8 +6,13 @@
 
    It figures out which build it's running on from the URL, so the two sides can
    never disagree and cause a redirect loop.
-     • On the desktop build, a phone is sent to  m/
-     • On the mobile build,  a desktop is sent to ../
+     • On the desktop build, a phone is sent to  m/<page>
+     • On the mobile build,  a desktop is sent to ../<page>
+
+   Forked pages (each has a desktop file at root AND a mobile twin in /m/):
+     index.html · research.html · success.html
+   Pages NOT listed here (faq, privacy-policy) are responsive-only and never
+   redirected — they serve the same file to every device.
 
    Manual override for testing / a "view other version" link — applies to THIS
    load only, it is NOT remembered:
@@ -22,9 +27,17 @@
     // who got stuck on the wrong build are released on their next load.
     try { localStorage.removeItem('tl-view'); } catch (e) {}
 
-    // Which build are we on? Strip trailing "index.html" / slash, check last segment.
-    var seg = location.pathname.replace(/\/index\.html$/i, '').replace(/\/+$/, '');
-    var onMobileBuild = /(^|\/)m$/i.test(seg);
+    // Pages that have both a desktop (root) and a mobile (/m/) build.
+    var FORKED = { 'index.html': 1, 'research.html': 1, 'success.html': 1 };
+
+    // Split the path into directory segments + the page file.
+    var parts = location.pathname.split('/');
+    var file = parts.pop() || 'index.html';        // "" (dir root) → index.html
+    if (!/\.html$/i.test(file)) file = 'index.html';
+    var onMobileBuild = parts[parts.length - 1] === 'm';
+
+    // Only the forked pages redirect; everything else is responsive-only.
+    if (!FORKED[file]) return;
 
     // Per-load override
     var forced = new URLSearchParams(location.search).get('view');
@@ -42,11 +55,14 @@
       isMobile = uaMobile || iPad || (narrow && touch);
     }
 
+    // Target keeps the page name (Home collapses to the directory for clean URLs).
+    var page = (file === 'index.html') ? '' : file;
+
     // Fork. Redirect targets are relative to the PAGE, so they hold on both sides.
     if (onMobileBuild && !isMobile) {
-      location.replace('../' + location.search + location.hash);
+      location.replace('../' + page + location.search + location.hash);
     } else if (!onMobileBuild && isMobile) {
-      location.replace('m/' + location.search + location.hash);
+      location.replace('m/' + page + location.search + location.hash);
     }
   } catch (e) {}
 })();

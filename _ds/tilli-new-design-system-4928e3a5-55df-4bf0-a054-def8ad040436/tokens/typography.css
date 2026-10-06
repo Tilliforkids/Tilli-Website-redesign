@@ -1,8 +1,8 @@
-/* Type — Montserrat everywhere, Fredoka for the occasional playful accent.
+/* Type — Montserrat everywhere (CHG-10: Fredoka removed).
    px sizes are authored for the deck's 1920×1080 canvas (pt×1.333 from the source). */
 :root{
   --tl-font-core:'Montserrat',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --tl-font-accent:'Fredoka','Montserrat',system-ui,sans-serif;
+  --tl-font-accent:'Montserrat',system-ui,sans-serif;
 
   --tl-weight-light:300;
   --tl-weight-regular:400;
