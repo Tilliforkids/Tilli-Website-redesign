@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Device Split gate — MUST stay before any stylesheet. See ../js/device-split.js -->
 <script src="../js/device-split.js?v=2"></script>
+<!-- HTML cache self-heal — forces a fresh shell when /version.json bumps. See ../js/cache-guard.js -->
+<script src="../js/cache-guard.js"></script>
 <title>Tilli — Developmentally on track by 10</title>
 <meta name="description" content="How do schools make a decision for their students? They measure — 12 foundational skills, from every side, term after term — then they ask Tilli what to do next.">
 <meta name="theme-color" content="#26BDE2">
@@ -126,7 +128,28 @@
   .strands { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
   .strand .h { font-size: 14px; font-weight: 800; }
   .strand .b { font-size: 14.5px; line-height: 1.5; margin-top: 5px; color: var(--tl-ink-500); }
-  .samples { display: flex; flex-direction: column; gap: 14px; margin-top: 24px; }
+  /* 360° swipe rail — each strand bound to its own example box (CHG-01).
+     Full-bleed: negative inline margin cancels .wrap's 22px padding so the
+     rail scrolls edge-to-edge while the page itself never overflows. */
+  .mrail { display: flex; gap: 14px; margin: 24px -22px 0; padding: 4px 22px 16px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .mrail::-webkit-scrollbar { display: none; }
+  .mcard { flex: 0 0 85%; max-width: 340px; scroll-snap-align: center;
+    display: flex; flex-direction: column; gap: 14px; }
+  .mcard__lead .h { font-size: 15px; font-weight: 800; }
+  .mcard__lead .b { font-size: 14px; line-height: 1.5; margin-top: 5px; color: var(--tl-ink-500); }
+  .mcard .sample { flex: 1; }                         /* boxes stretch to equal card height */
+  .mcard.recap { background: var(--tl-wash-cyan); border-radius: 20px; padding: 22px;
+    justify-content: center; gap: 14px; }
+  .mcard.recap .rtitle { font-family: 'Montserrat', sans-serif; font-weight: 800;
+    font-size: 19px; line-height: 1.15; color: var(--tl-ink-900); margin-bottom: 2px; }
+  .mcard.recap .strand { padding-left: 12px; border-left: 3px solid var(--tl-line-200); }
+  .mcard.recap .strand.g { border-color: var(--tl-green-500); }
+  .mcard.recap .strand.c { border-color: var(--tl-cyan-500); }
+  .mcard.recap .strand.o { border-color: var(--tl-orange-500); }
+  .mrail-hint { font-size: 12.5px; font-weight: 600; color: var(--tl-ink-300);
+    margin-top: 12px; text-align: center; }
   .sample { background: #fff; border-radius: 20px; padding: 22px; }
   .sample.g { border: 2px solid var(--tl-green-500); }
   .sample.c { border: 2px solid var(--tl-cyan-500); }
@@ -409,35 +432,47 @@
   <section id="measure" class="wrap">
     <div class="eyebrow">Measure · 360° View</div>
     <h2 class="title">Three strands, one measurement.</h2>
-    <div class="strands">
-      <div class="strand"><div class="h c-green">01 · The teacher's strand</div><div class="b">Structured observation of each child, right in the classroom.</div></div>
-      <div class="strand"><div class="h c-cyan">02 · The parent's strand</div><div class="b">A short survey on what home sees: behaviour, emotions, relationships.</div></div>
-      <div class="strand"><div class="h" style="color:var(--tl-orange-500)">03 · The child connects them</div><div class="b">Direct tasks completed by the child tie both strands together.</div></div>
-    </div>
-    <div class="samples">
-      <div class="sample g">
-        <div class="lab">TEACHER OBSERVATION</div>
-        <div class="q">"Stays focused during group tasks."</div>
-        <div class="chips"><span class="chip">Rarely</span><span class="chip">Sometimes</span><span class="chip on-g">Often</span></div>
-        <div class="meta">3× a year · 5 minutes per child</div>
+    <!-- CHG-01 · each strand bound to its own example box, one per swipe card -->
+    <div class="mrail">
+      <div class="mcard">
+        <div class="mcard__lead"><div class="h c-green">01 · The teacher's strand</div><div class="b">Structured observation of each child, right in the classroom.</div></div>
+        <div class="sample g">
+          <div class="lab">TEACHER OBSERVATION</div>
+          <div class="q">"Stays focused during group tasks."</div>
+          <div class="chips"><span class="chip">Rarely</span><span class="chip">Sometimes</span><span class="chip on-g">Often</span></div>
+          <div class="meta">3× a year · 5 minutes per child</div>
+        </div>
       </div>
-      <div class="sample c">
-        <div class="lab">PARENT SURVEY</div>
-        <div class="q">"Talks about their feelings at home."</div>
-        <div class="chips"><span class="chip">Never</span><span class="chip on-c">Sometimes</span><span class="chip">Often</span></div>
-        <div class="meta">On WhatsApp · 10 minutes, once a term</div>
+      <div class="mcard">
+        <div class="mcard__lead"><div class="h c-cyan">02 · The parent's strand</div><div class="b">A short survey on what home sees: behaviour, emotions, relationships.</div></div>
+        <div class="sample c">
+          <div class="lab">PARENT SURVEY</div>
+          <div class="q">"Talks about their feelings at home."</div>
+          <div class="chips"><span class="chip">Never</span><span class="chip on-c">Sometimes</span><span class="chip">Often</span></div>
+          <div class="meta">On WhatsApp · 10 minutes, once a term</div>
+        </div>
       </div>
-      <div class="sample o">
-        <div class="lab">DIRECT-FROM-CHILD TASK</div>
-        <div class="row">
-          <img src="../uploads/assets_assessment-1785392873763.png" alt="Tilli child task: breathing activity" loading="lazy">
-          <div>
-            <div class="q" style="font-size:15px">Play-based tasks the child completes themselves.</div>
-            <div class="meta">Emotion Matching · Hearts &amp; Flowers · Memory Game</div>
+      <div class="mcard">
+        <div class="mcard__lead"><div class="h" style="color:var(--tl-orange-500)">03 · The child connects them</div><div class="b">Direct tasks completed by the child tie both strands together.</div></div>
+        <div class="sample o">
+          <div class="lab">DIRECT-FROM-CHILD TASK</div>
+          <div class="row">
+            <img src="../uploads/assets_assessment-1785392873763.png" alt="Tilli child task: breathing activity" loading="lazy">
+            <div>
+              <div class="q" style="font-size:15px">Play-based tasks the child completes themselves.</div>
+              <div class="meta">Emotion Matching · Hearts &amp; Flowers · Memory Game</div>
+            </div>
           </div>
         </div>
       </div>
+      <div class="mcard recap">
+        <div class="rtitle">All three,<br>together.</div>
+        <div class="strand g"><div class="h c-green">Teacher</div><div class="b">What the classroom sees.</div></div>
+        <div class="strand c"><div class="h c-cyan">Parent</div><div class="b">What home sees.</div></div>
+        <div class="strand o"><div class="h" style="color:var(--tl-orange-500)">Child</div><div class="b">Direct tasks that tie both strands together.</div></div>
+      </div>
     </div>
+    <div class="mrail-hint">Swipe through the three strands →</div>
   </section>
 
   <!-- 6 · 12 SKILLS -->
