@@ -4,22 +4,22 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-07 — CHG-02 done (brain/heart PNGs on mobile skill buckets). P2 complete.
+> **Last updated:** 2026-10-07 — CHG-04 done (demo already built; fixed clipped input placeholder on mobile).
 
 ## At a glance
 
-- **Done:** 7 / 23
+- **Done:** 9 / 23
 - **In progress:** 0
 - **Blocked:** 4  (CHG-13, CHG-14, CHG-18 → B5 · CHG-22 → B4)
-- **Unblocked & remaining:** 12
+- **Unblocked & remaining:** 10
 
 ```
-[████████████                            ]  30%
+[████████████████                        ]  39%
 ```
 
 ## Next up
 
-→ **CHG-08 · Remove "View full desktop experience"** (P3, mobile)
+→ **CHG-11 · Fix Research hero photo framing** (P3, mobile)
 
 ---
 
@@ -40,8 +40,8 @@
 ## P3 — Quick mobile wins
 | Status | ID | Task |
 |--------|----|------|
-| ⬜ | CHG-08 | Remove "View full desktop experience" |
-| ⬜ | CHG-04 | Ask-Tilli demo on mobile |
+| ✅ | CHG-08 | Remove "View full desktop experience" |
+| ✅ | CHG-04 | Ask-Tilli demo on mobile |
 | ⬜ | CHG-11 | Research hero photo framing |
 | ⬜ | CHG-17 | Remove "high-density behavioural stream" line |
 

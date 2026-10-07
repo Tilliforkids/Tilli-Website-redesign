@@ -136,12 +136,15 @@ differs.
 
 ## 5. PRIORITY 3 — Quick mobile wins (low effort, visible)
 
-### CHG-08 · Remove "View full desktop experience" — ⬜ TODO
+### CHG-08 · Remove "View full desktop experience" — ✅ DONE
 - **Page:** all (mobile) · **Scope:** mobile-only
 - **Change:** Delete the "view full desktop experience" link/prompt on phones.
 - **Acceptance:** element absent at mobile widths; no layout gap left behind.
+- **Done:** the `<a class="switch" href="../?view=desktop">` link was already removed
+  during the `m/index.html` rewrite (commit 6af0bfb); no `.switch` CSS or layout gap
+  remains anywhere in the mobile build.
 
-### CHG-04 · Add Ask-Tilli demo to mobile — ⬜ TODO
+### CHG-04 · Add Ask-Tilli demo to mobile — ✅ DONE
 - **Page:** Home · directly after the "any AI can answer" / Ask-Tilli comparison
 - **Scope:** mobile
 - **Current:** interactive Ask-Tilli demo exists on desktop, missing on mobile.
@@ -149,6 +152,9 @@ differs.
   desktop block).
 - **Depends-on:** respect CHG-06 (no WhatsApp framing).
 - **Acceptance:** demo present and usable on a phone, placed right after the comparison.
+- **Done:** demo was already built in the `m/index.html` rewrite (commit 6af0bfb) —
+  phone-appropriate layout, right after the comparison cards. This pass fixed the input
+  placeholder clipping ("Ask about Sunrise Academy…" wrapped/clipped → "Ask about your school…").
 
 ### CHG-11 · Fix Research hero photo framing — ⬜ TODO
 - **Page:** Research · opening/landing
