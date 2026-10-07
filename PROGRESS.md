@@ -4,22 +4,22 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-07 — CHG-03 reworked (dot-OUTLINED row of children matching desktop; awaiting sign-off).
+> **Last updated:** 2026-10-07 — CHG-15 complete: desktop uses `assets/Triad.svg` (no raster PNGs) with the lead-in lines extended full-bleed and responsive. Mobile keeps its own live-HTML build.
 
 ## At a glance
 
-- **Done:** 12 / 23
-- **In progress:** 1  (CHG-03)
+- **Done:** 14 / 23
+- **In progress:** 0
 - **Blocked:** 4  (CHG-13, CHG-14, CHG-18 → B5 · CHG-22 → B4)
-- **Unblocked & remaining:** 6
+- **Unblocked & remaining:** 4
 
 ```
-[█████████████████████                   ]  52%
+[████████████████████████                ]  61%
 ```
 
 ## Next up
 
-→ **CHG-03 · Match child illustrations to desktop** (P4) — reworked, verifying
+→ **CHG-16 · Redesign data-structure folders** (P4, layout rebuild)
 
 ---
 
@@ -49,8 +49,8 @@
 | Status | ID | Task |
 |--------|----|------|
 | ✅ | CHG-01 | 360° strands — bind box to strand (swipe + dots) |
-| 🔵 | CHG-03 | Match child illustrations to desktop |
-| ⬜ | CHG-15 | Rebuild triadic protocol in code |
+| ✅ | CHG-03 | Match child illustrations to desktop |
+| ✅ | CHG-15 | Triadic protocol — desktop uses Triad.svg vector, lines extended full-bleed |
 | ⬜ | CHG-16 | Redesign data-structure folders |
 | ⛔ | CHG-13 | Six cognitive skills layout — **B5** (plan first) |
 | ⛔ | CHG-14 | Domain/parameter chips — **B5** (discuss first) |
