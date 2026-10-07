@@ -4,22 +4,22 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-07 — CHG-11 done (research hero rebuilt to text-first "Image 1" layout; focal baked 75%/62%).
+> **Last updated:** 2026-10-07 — CHG-01 done (360° swipe already paired; added swipe dots + removed dead `.strands` CSS).
 
 ## At a glance
 
-- **Done:** 10 / 23
+- **Done:** 12 / 23
 - **In progress:** 0
 - **Blocked:** 4  (CHG-13, CHG-14, CHG-18 → B5 · CHG-22 → B4)
-- **Unblocked & remaining:** 9
+- **Unblocked & remaining:** 7
 
 ```
-[██████████████████                      ]  43%
+[█████████████████████                   ]  52%
 ```
 
 ## Next up
 
-→ **CHG-17 · Remove "high-density behavioural stream" line** (P3, global)
+→ **CHG-03 · Match child illustrations to dashboard** (P4, layout rebuild)
 
 ---
 
@@ -43,12 +43,12 @@
 | ✅ | CHG-08 | Remove "View full desktop experience" |
 | ✅ | CHG-04 | Ask-Tilli demo on mobile |
 | ✅ | CHG-11 | Research hero photo framing |
-| ⬜ | CHG-17 | Remove "high-density behavioural stream" line |
+| ✅ | CHG-17 | Remove "high-density behavioural stream" line |
 
 ## P4 — Layout rebuilds
 | Status | ID | Task |
 |--------|----|------|
-| ⬜ | CHG-01 | 360° strands — bind box to strand |
+| ✅ | CHG-01 | 360° strands — bind box to strand (swipe + dots) |
 | ⬜ | CHG-03 | Match child illustrations to dashboard |
 | ⬜ | CHG-15 | Rebuild triadic protocol in code |
 | ⬜ | CHG-16 | Redesign data-structure folders |

@@ -166,17 +166,21 @@ differs.
   Baked focal `75% 62%`, height 220px (user-tuned via `?debug=1`). Photo height/focal stay
   tunable via `?debug=1`. Previous "Image 2" photo-hero+card variant preserved in git @79213fa.
 
-### CHG-17 · Remove "high-density behavioural stream" line — ⬜ TODO
+### CHG-17 · Remove "high-density behavioural stream" line — ✅ DONE
 - **Page:** Research · **Scope:** global (wherever it appears)
 - **Change:** Delete "Our high-density behavioural stream enables researchers to build
   the next generation of AI" (and the section if it exists only for that line).
 - **Acceptance:** phrase absent site-wide; surrounding layout still coherent.
+- **Done:** already removed from both live builds during the CHG-16 Research rebuild —
+  desktop research.html has no trace; m/research.html:293 notes "CHG-17 banner removed",
+  no orphaned section. Only remaining copy is in the legacy Wix dump `Dataset _ Tilli.html`
+  (not served; slated for deletion under deferred CHG-10 cleanup).
 
 ---
 
 ## 6. PRIORITY 4 — Layout rebuilds (real work)
 
-### CHG-01 · 360° strands — bind each box to its strand — ⬜ TODO
+### CHG-01 · 360° strands — bind each box to its strand — ✅ DONE
 - **Page:** Home · 360° MEASURE section (teacher / parent / child strands)
 - **Scope:** mobile
 - **Current:** all strand text stacks together, all boxes stack together — pairing lost.
@@ -187,6 +191,9 @@ differs.
     text2→box2, text3→box3).
 - **Acceptance:** each strand's example box is visually attached to that strand; no
   orphaned boxes.
+- **Done:** Option A (swipe rail, each strand + its box per `.mcard` + recap card) was already
+  in place from the rewrite. This pass added swipe dot indicators (`.mrail-dots`, one per card,
+  synced via IntersectionObserver + tap-to-scroll) and removed the dead `.strands` CSS rule.
 
 ### CHG-03 · Match child illustrations to dashboard style — ⬜ TODO
 - **Page:** Home · "Every child walks into middle school developmentally on track"
