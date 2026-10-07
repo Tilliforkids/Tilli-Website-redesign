@@ -4,14 +4,14 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-07 — CHG-04 done (demo already built; fixed clipped input placeholder on mobile).
+> **Last updated:** 2026-10-07 — CHG-11 reopened (hero framing needs rework; awaiting user details).
 
 ## At a glance
 
 - **Done:** 9 / 23
-- **In progress:** 0
+- **In progress:** 1  (CHG-11)
 - **Blocked:** 4  (CHG-13, CHG-14, CHG-18 → B5 · CHG-22 → B4)
-- **Unblocked & remaining:** 10
+- **Unblocked & remaining:** 9
 
 ```
 [████████████████                        ]  39%
@@ -19,7 +19,7 @@
 
 ## Next up
 
-→ **CHG-11 · Fix Research hero photo framing** (P3, mobile)
+→ **CHG-11 · Fix Research hero photo framing** (P3, mobile) — reworking
 
 ---
 
@@ -42,7 +42,7 @@
 |--------|----|------|
 | ✅ | CHG-08 | Remove "View full desktop experience" |
 | ✅ | CHG-04 | Ask-Tilli demo on mobile |
-| ⬜ | CHG-11 | Research hero photo framing |
+| 🔵 | CHG-11 | Research hero photo framing |
 | ⬜ | CHG-17 | Remove "high-density behavioural stream" line |
 
 ## P4 — Layout rebuilds

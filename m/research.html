@@ -63,10 +63,12 @@
   .btn-block { display: flex; width: 100%; }
   .cta-col { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
 
-  /* ── HERO (CHG-11: photo framed for phone, card below) ── */
+  /* ── HERO (CHG-11: full banner at screen width — no zoom/crop; card tucks below) ── */
   .r-hero { padding: 0 0 0; }
-  .r-hero__photo { height: 300px; background: url('../assets/dataset/hero-children.jpg') center 28%/cover no-repeat; }
-  .r-hero__card { margin: -56px 22px 0; position: relative; z-index: 2;
+  /* aspect-ratio matches the 1905×453 source, so the whole photo shows edge-to-edge
+     with no cropping or zoom. Height derives from screen width (~W/4.2). */
+  .r-hero__photo { width: 100%; aspect-ratio: 1905 / 453; background: url('../assets/dataset/hero-children.jpg') center/cover no-repeat; }
+  .r-hero__card { margin: -20px 22px 0; position: relative; z-index: 2;
     background: linear-gradient(140deg,#F4F1FF 0%,#FFFFFF 45%,#FFF4E6 100%);
     border-radius: 22px; box-shadow: 0 20px 50px rgba(0,0,0,.22); padding: 28px 24px 30px; }
   .r-hero__ttl { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(34px,10vw,46px);
