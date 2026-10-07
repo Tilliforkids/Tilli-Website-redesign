@@ -63,19 +63,20 @@
   .btn-block { display: flex; width: 100%; }
   .cta-col { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
 
-  /* ── HERO (CHG-11: fixed-height crop + focal point — tune live with ?debug=1) ──
-     Values are CSS vars so the on-page tuner can adjust them by eye. The defaults
-     below are the shipped values; whatever you set in the tuner just overrides them. */
-  .r-hero { padding: 0 0 0; }
-  .r-hero__photo { height: var(--hero-h, 300px);
-    background: url('../assets/dataset/hero-children.jpg') var(--hero-x, 72%) var(--hero-y, 32%)/cover no-repeat; }
-  .r-hero__card { margin: var(--hero-ov, -56px) 22px 0; position: relative; z-index: 2;
-    background: linear-gradient(140deg,#F4F1FF 0%,#FFFFFF 45%,#FFF4E6 100%);
-    border-radius: 22px; box-shadow: 0 20px 50px rgba(0,0,0,.22); padding: 28px 24px 30px; }
+  /* ── HERO (CHG-11: text-first, photo band below — "Image 1" layout) ──
+     Photo height + focal point are CSS vars, tunable live with ?debug=1.
+     Previous "Image 2" variant (photo hero + card pulled up) lives in git @79213fa. */
+  .r-hero { padding: 0; text-align: center; }
+  .r-hero__text { padding-block: 34px 28px; }
   .r-hero__ttl { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(34px,10vw,46px);
     color: var(--tl-cyan-700); line-height: 1; }
-  .r-hero__st { font-weight: 800; color: #1C2E7A; font-size: 19px; line-height: 1.15; margin: 10px 0 14px; }
-  .r-hero__desc { color: var(--tl-ink-600); font-size: 15px; line-height: 1.6; margin: 0 0 20px; }
+  .r-hero__st { font-weight: 800; color: #1C2E7A; font-size: 19px; line-height: 1.15; margin: 12px 0 14px; }
+  .r-hero__desc { color: var(--tl-ink-600); font-size: 15px; line-height: 1.6; margin: 0 auto 22px; max-width: 34ch; }
+  .r-hero .cta-col { align-items: center; }
+  .r-hero .cta-col .btn-block { max-width: 300px; }
+  /* full-bleed photo band at the bottom of the hero */
+  .r-hero__photo { height: var(--hero-h, 220px);
+    background: url('../assets/dataset/hero-children.jpg') var(--hero-x, 62%) var(--hero-y, 40%)/cover no-repeat; }
 
   /* ── PROBLEM (dark) · CHG-12 deferred (B3): ported as-is ── */
   .r-dark { background: #2A2A2A; color: #fff; }
@@ -176,10 +177,10 @@
 
   <main class="content">
 
-  <!-- HERO (CHG-11) -->
+  <!-- HERO (CHG-11) · text-first, photo band below -->
   <section class="r-hero">
-    <div class="r-hero__photo" role="img" aria-label="Children learning"></div>
-    <div class="r-hero__card">
+    <div class="r-hero__text wrap">
+      <div class="eyebrow cyan">Tilli for Research</div>
       <h1 class="r-hero__ttl">Tilli Measures!</h1>
       <p class="r-hero__st">The 360-degree Foundational Skills Dataset</p>
       <p class="r-hero__desc">Unlocking longitudinal, multi-informant insights into cognitive and social-emotional development for non-WEIRD populations.</p>
@@ -188,6 +189,7 @@
         <a class="btn btn-green btn-block" href="https://drive.google.com/drive/folders/1lnV730XYbq1U8BbJ4031M_BSKqjxFaP2?usp=drive_link" target="_blank" rel="noopener">Access Data Repository</a>
       </div>
     </div>
+    <div class="r-hero__photo" role="img" aria-label="Children learning"></div>
   </section>
 
   <!-- PROBLEM + WEIRD (dark) · CHG-12 deferred (B3) -->
@@ -364,8 +366,8 @@
     if (!hero) return;
 
     // Defaults mirror the CSS var fallbacks in the hero stylesheet above.
-    var DEF = { h: 300, x: 72, y: 32, ov: -56 };
-    var LS = { h: 'tl-hero-h', x: 'tl-hero-x', y: 'tl-hero-y', ov: 'tl-hero-ov' };
+    var DEF = { h: 220, x: 62, y: 40 };
+    var LS = { h: 'tl-hero-h', x: 'tl-hero-x', y: 'tl-hero-y' };
     var v = {};
     Object.keys(DEF).forEach(function (k) {
       var s = null; try { s = localStorage.getItem(LS[k]); } catch (e) {}
@@ -373,17 +375,15 @@
     });
 
     function apply() {
-      hero.style.setProperty('--hero-h',  v.h  + 'px');
-      hero.style.setProperty('--hero-x',  v.x  + '%');
-      hero.style.setProperty('--hero-y',  v.y  + '%');
-      hero.style.setProperty('--hero-ov', v.ov + 'px');
+      hero.style.setProperty('--hero-h', v.h + 'px');
+      hero.style.setProperty('--hero-x', v.x + '%');
+      hero.style.setProperty('--hero-y', v.y + '%');
       try {
         localStorage.setItem(LS.h, v.h); localStorage.setItem(LS.x, v.x);
-        localStorage.setItem(LS.y, v.y); localStorage.setItem(LS.ov, v.ov);
+        localStorage.setItem(LS.y, v.y);
       } catch (e) {}
       if (code) code.textContent =
-        '.r-hero__photo { height: ' + v.h + 'px; background-position: ' + v.x + '% ' + v.y + '%; }\n' +
-        '.r-hero__card  { margin-top: ' + v.ov + 'px; }';
+        '.r-hero__photo { height: ' + v.h + 'px; background-position: ' + v.x + '% ' + v.y + '%; }';
     }
 
     var css = '#heroTuner{position:fixed;left:10px;right:10px;bottom:10px;z-index:99999;'
@@ -406,8 +406,7 @@
     var sliders = [
       { k: 'h',  label: 'Height',  min: 140, max: 440, step: 2, unit: 'px' },
       { k: 'x',  label: 'Focal X', min: 0,   max: 100, step: 1, unit: '%'  },
-      { k: 'y',  label: 'Focal Y', min: 0,   max: 100, step: 1, unit: '%'  },
-      { k: 'ov', label: 'Card overlap', min: -140, max: 0, step: 2, unit: 'px' }
+      { k: 'y',  label: 'Focal Y', min: 0,   max: 100, step: 1, unit: '%'  }
     ];
     var rows = sliders.map(function (s) {
       return '<div class="row"><label>' + s.label + '</label>'
