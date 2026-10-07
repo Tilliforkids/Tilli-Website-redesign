@@ -116,7 +116,7 @@ differs.
   3. Inside the quote block, state this was an **RPP with Stanford and NMAJS**.
 - **Acceptance:** reads "53", quote precedes stat, RPP credit visible in the block.
 
-### CHG-02 · Brain/heart icons over the two skill columns — ⬜ TODO
+### CHG-02 · Brain/heart icons over the two skill columns — ✅ DONE
 - **Page:** Home · 360° section ("Get a 360-degree view of a student — 12 foundational
   skills, measured from each side, term after term.")
 - **Scope:** mobile

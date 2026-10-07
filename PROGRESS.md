@@ -4,22 +4,22 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-07 — CHG-05 done (53 + RPP credit above quote). P2 content accuracy underway.
+> **Last updated:** 2026-10-07 — CHG-02 done (brain/heart PNGs on mobile skill buckets). P2 complete.
 
 ## At a glance
 
-- **Done:** 6 / 23
+- **Done:** 7 / 23
 - **In progress:** 0
 - **Blocked:** 4  (CHG-13, CHG-14, CHG-18 → B5 · CHG-22 → B4)
-- **Unblocked & remaining:** 13
+- **Unblocked & remaining:** 12
 
 ```
-[██████████                              ]  26%
+[████████████                            ]  30%
 ```
 
 ## Next up
 
-→ **CHG-02 · Brain/heart icons on skill columns** (P2, Home)
+→ **CHG-08 · Remove "View full desktop experience"** (P3, mobile)
 
 ---
 
@@ -35,7 +35,7 @@
 | Status | ID | Task |
 |--------|----|------|
 | ✅ | CHG-05 | "53 schools" + quote order + RPP credit |
-| ⬜ | CHG-02 | Brain/heart icons on skill columns |
+| ✅ | CHG-02 | Brain/heart icons on skill columns |
 
 ## P3 — Quick mobile wins
 | Status | ID | Task |
@@ -88,3 +88,4 @@
 - 2026-10-06 — CHG-10 ✅ done. Live font config already Montserrat-only; reworded token comments, set the DS lint allow-list to Montserrat-only, scrubbed Fredoka from _ds_manifest.json. Grep Fredoka-free except deferred leftovers (see Follow-ups). P1 (global fixes) complete.
 - 2026-10-06 — CHG-06 ✅ done. Live Ask-Tilli copy was already channel-neutral; stripped "on WhatsApp" from parent-survey captions (index/m/index) + FAQ, and cleaned the .dc.html comps ("Ask-Tilli", "ASK-TILLI", "In seconds."). Kept "Book a demo on WhatsApp" CTA + functional WhatsApp (bubble/links/form field/"Message us on WhatsApp").
 - 2026-10-07 — CHG-05 ✅ done. Mobile already compliant (53, quote-above-stat, RPP credit). Desktop: number already 53; added "Research-Practice Partnership with Stanford & NMAJS" as a full-width eyebrow ABOVE the imp2 quote (grid row 1; qmark/qtext→row2, cite→row3). Kept the choreographed scroll order per user.
+- 2026-10-07 — CHG-02 ✅ done. Mobile #skills buckets already existed with correct 6+6 mapping; swapped the placeholder SVG icons for user's assets/Brain.png + Heart.png, standalone (no tinted box). Mobile-only (desktop has no bucket layout). Was a cache issue on first view.
