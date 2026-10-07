@@ -156,15 +156,15 @@ differs.
   phone-appropriate layout, right after the comparison cards. This pass fixed the input
   placeholder clipping ("Ask about Sunrise Academy…" wrapped/clipped → "Ask about your school…").
 
-### CHG-11 · Fix Research hero photo framing — 🔵 IN PROGRESS
+### CHG-11 · Fix Research hero photo framing — ✅ DONE
 - **Page:** Research · opening/landing
 - **Scope:** mobile
 - **Change:** Fix crop/focal point so the hero photo frames correctly at phone width.
 - **Acceptance:** subject correctly framed, no awkward crop/overflow at ≤430px.
-- **Progress:** hero rebuilt to "Image 1" layout — text-first (eyebrow, H1, subtitle, desc,
+- **Done:** hero rebuilt to "Image 1" layout — text-first (eyebrow, H1, subtitle, desc,
   two CTAs) with the children photo as a full-bleed band below, at m/research.html:67.
-  Photo height/focal still tunable via `?debug=1` (height / focal X / focal Y). Previous
-  "Image 2" photo-hero+card variant preserved in git @79213fa. Awaiting user sign-off.
+  Baked focal `75% 62%`, height 220px (user-tuned via `?debug=1`). Photo height/focal stay
+  tunable via `?debug=1`. Previous "Image 2" photo-hero+card variant preserved in git @79213fa.
 
 ### CHG-17 · Remove "high-density behavioural stream" line — ⬜ TODO
 - **Page:** Research · **Scope:** global (wherever it appears)
