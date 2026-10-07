@@ -213,7 +213,7 @@ differs.
 - **Acceptance:** section is live DOM, responsive, legible on mobile; zero raster images
   of the protocol.
 
-### CHG-16 · Redesign "What we measure" data-structure folders — ⬜ TODO
+### CHG-16 · Redesign "What we measure" data-structure folders — ✅ DONE
 - **Page:** Research · "What we measure" (data structure)
 - **Scope:** mobile
 - **Change:** redesign the folder visuals — much stronger, on-brand.

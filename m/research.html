@@ -144,16 +144,17 @@
   .r-ds-sub { text-align: center; margin: 12px auto 0; max-width: 520px; }
   .r-ds-sub code { background: var(--tl-surface-100); padding: 1px 6px; border-radius: 6px; font-size: 13px; }
   .r-folders { display: flex; flex-direction: column; gap: 16px; margin-top: 30px; }
-  .r-folder { position: relative; border-radius: 16px; padding: 22px 20px; color: #fff; overflow: hidden; }
-  .r-folder::before { content: ""; position: absolute; top: -13px; left: 22px; width: 76px; height: 18px;
-    background: inherit; border-radius: 8px 8px 0 0; }
-  .r-folder__n { font-size: 12px; font-weight: 800; opacity: .8; letter-spacing: .08em; }
-  .r-folder h3 { font-weight: 800; font-size: 18px; margin: 4px 0 8px; line-height: 1.15; }
-  .r-folder p { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,.94); }
-  .r-folder--pink  { background: var(--tl-pink-600); }
-  .r-folder--green { background: var(--tl-green-500); }
-  .r-folder--cyan  { background: var(--tl-cyan-500); }
-  .r-folder--red   { background: #FF5A5F; }
+  .r-folder { position: relative; aspect-ratio: 304 / 294; }
+  .r-folder__body { position: absolute; top: 25%; left: 3%; right: 3%; bottom: 4%; display: block; color: var(--body); }
+  .r-folder__frame { position: absolute; inset: 0; width: 100%; height: 100%; display: block; color: var(--frame);
+    filter: drop-shadow(0 8px 20px rgba(20,20,20,.14)); }
+  .r-folder__text { position: absolute; z-index: 2; left: 9%; right: 7%; top: 34%; }
+  .r-folder__t { font-family: 'Montserrat', sans-serif; font-weight: 700; color: #000; font-size: 22px; line-height: 1.2; margin: 0 0 10px; }
+  .r-folder__d { font-family: 'Montserrat', sans-serif; font-weight: 700; color: #FCFCFC; font-size: 14px; line-height: 1.35; margin: 0; }
+  .r-folder--pink  { --frame: #DD3B96; --body: #FF66BC; }
+  .r-folder--green { --frame: #508A0F; --body: #78DC09; }
+  .r-folder--cyan  { --frame: #3D9BE9; --body: #04C1FF; }
+  .r-folder--red   { --frame: #FF4040; --body: #FF8484; }
 
   /* ── AI USE CASES · CHG-18 deferred (B5): ported ── */
   .r-ai__arrow { font-size: 30px; color: var(--tl-pink-600); margin: 8px 0 18px; }
@@ -295,10 +296,10 @@
     <h2 class="title">What we measure: data structure</h2>
     <p class="lede r-ds-sub">Four interoperable CSV files, linked by a unique <code>subject_id</code>.</p>
     <div class="r-folders" style="text-align:left">
-      <div class="r-folder r-folder--pink"><div class="r-folder__n">01 · CSV</div><h3>Demographics &amp; Ecology</h3><p>Equity markers, home environment, family structure, and special-needs status.</p></div>
-      <div class="r-folder r-folder--green"><div class="r-folder__n">02 · CSV</div><h3>Direct Assessments</h3><p>Behavioural interaction streams, raw latency, task-switching performance, and foundational literacy/numeracy readiness.</p></div>
-      <div class="r-folder r-folder--cyan"><div class="r-folder__n">03 · CSV</div><h3>Caregiver Report</h3><p>Home-based emotional symptoms, behavioural outcomes, and executive-function ratings.</p></div>
-      <div class="r-folder r-folder--red"><div class="r-folder__n">04 · CSV</div><h3>Teacher / Classroom Report</h3><p>Pedagogical context, concentration/distractibility ratings, and interpersonal assessments.</p></div>
+      <div class="r-folder r-folder--pink"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Demographics &amp; Ecology</div><div class="r-folder__d">Equity markers, home environment, family structure, and special-needs status.</div></div></div>
+      <div class="r-folder r-folder--green"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Direct Assessments</div><div class="r-folder__d">Behavioural interaction streams, raw latency, task-switching performance, and foundational literacy/numeracy readiness.</div></div></div>
+      <div class="r-folder r-folder--cyan"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Caregiver Report</div><div class="r-folder__d">Home-based emotional symptoms, behavioural outcomes, and executive-function ratings.</div></div></div>
+      <div class="r-folder r-folder--red"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Teacher / Classroom Report</div><div class="r-folder__d">Pedagogical context, concentration/distractibility ratings, and interpersonal assessments.</div></div></div>
     </div>
   </section>
 

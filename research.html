@@ -133,14 +133,18 @@
   .ds-folders{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
   @media(max-width:920px){ .ds-folders{ grid-template-columns:repeat(2,1fr); } }
   @media(max-width:520px){ .ds-folders{ grid-template-columns:1fr; } }
-  .ds-folder{ position:relative; border-radius:16px; padding:30px 22px 26px; color:#fff; min-height:172px; margin-top:16px; }
-  .ds-folder::before{ content:""; position:absolute; top:-15px; left:20px; width:78px; height:20px; background:inherit; border-radius:9px 9px 0 0; }
-  .ds-folder h3{ font-family:'Montserrat',sans-serif; font-weight:600; font-size:20px; margin:0 0 10px; line-height:1.1; }
-  .ds-folder p{ font-family:'Montserrat',sans-serif; font-size:13px; line-height:1.5; margin:0; color:rgba(255,255,255,.92); }
-  .ds-folder--pink{ background:var(--tl-pink-600); }
-  .ds-folder--green{ background:var(--tl-green-500); }
-  .ds-folder--cyan{ background:var(--tl-cyan-500); }
-  .ds-folder--red{ background:var(--ds-red); }
+  /* folder shape = glyph frame (+tab) filling the card over a lighter inner body rect; text on top */
+  .ds-folder{ position:relative; aspect-ratio:304 / 294; }
+  .ds-folder__body{ position:absolute; top:25%; left:3%; right:3%; bottom:4%; display:block; color:var(--body); }
+  .ds-folder__frame{ position:absolute; inset:0; width:100%; height:100%; display:block; color:var(--frame);
+    filter:drop-shadow(0 8px 20px rgba(20,20,20,.14)); }
+  .ds-folder__text{ position:absolute; z-index:2; left:9%; right:7%; top:34%; }
+  .ds-folder__t{ font-family:'Montserrat',sans-serif; font-weight:700; color:#000; font-size:22px; line-height:1.2; margin:0 0 10px; }
+  .ds-folder__d{ font-family:'Montserrat',sans-serif; font-weight:700; color:#FCFCFC; font-size:14px; line-height:1.35; margin:0; }
+  .ds-folder--pink{ --frame:#DD3B96; --body:#FF66BC; }
+  .ds-folder--green{ --frame:#508A0F; --body:#78DC09; }
+  .ds-folder--cyan{ --frame:#3D9BE9; --body:#04C1FF; }
+  .ds-folder--red{ --frame:#FF4040; --body:#FF8484; }
 
   /* cyan banner */
   .ds-banner{ background:var(--ds-cyan); border-radius:50% / 60px; margin:56px 0 0; padding:44px 24px; text-align:center; }
@@ -323,10 +327,26 @@
         <p class="ds-sub">Our dataset is composed of four interoperable CSV files linked by a unique <code>subject_id</code>.</p>
       </div>
       <div class="ds-folders">
-        <div class="ds-folder ds-folder--pink"><h3>Demographics &amp; Ecology</h3><p>Equity markers, home environment, family structure, and special needs status.</p></div>
-        <div class="ds-folder ds-folder--green"><h3>Direct Assessments</h3><p>Behavioral interaction streams, raw latency, task-switching performance, and foundational literacy/numeracy readiness.</p></div>
-        <div class="ds-folder ds-folder--cyan"><h3>Caregiver Report</h3><p>Home-based emotional symptoms, behavioral outcomes, and executive function ratings.</p></div>
-        <div class="ds-folder ds-folder--red"><h3>Teacher / Classroom Report</h3><p>Pedagogical context, concentration/distractibility ratings, and interpersonal assessments.</p></div>
+        <div class="ds-folder ds-folder--pink">
+          <svg class="ds-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg>
+          <svg class="ds-folder__frame" viewBox="33 38 133.333 125" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg>
+          <div class="ds-folder__text"><div class="ds-folder__t">Demographics &amp; Ecology</div><div class="ds-folder__d">Equity markers, home environment, family structure, and special needs status.</div></div>
+        </div>
+        <div class="ds-folder ds-folder--green">
+          <svg class="ds-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg>
+          <svg class="ds-folder__frame" viewBox="33 38 133.333 125" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg>
+          <div class="ds-folder__text"><div class="ds-folder__t">Direct Assessments</div><div class="ds-folder__d">Behavioral interaction streams, raw latency, task-switching performance, and foundational literacy/numeracy readiness.</div></div>
+        </div>
+        <div class="ds-folder ds-folder--cyan">
+          <svg class="ds-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg>
+          <svg class="ds-folder__frame" viewBox="33 38 133.333 125" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg>
+          <div class="ds-folder__text"><div class="ds-folder__t">Caregiver Report</div><div class="ds-folder__d">Home-based emotional symptoms, behavioral outcomes, and executive function ratings.</div></div>
+        </div>
+        <div class="ds-folder ds-folder--red">
+          <svg class="ds-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg>
+          <svg class="ds-folder__frame" viewBox="33 38 133.333 125" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg>
+          <div class="ds-folder__text"><div class="ds-folder__t">Teacher / Classroom Report</div><div class="ds-folder__d">Pedagogical context, concentration/distractibility ratings, and interpersonal assessments.</div></div>
+        </div>
       </div>
     </div>
   </section>

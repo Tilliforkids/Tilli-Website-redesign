@@ -4,22 +4,22 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-07 — CHG-15 complete: desktop uses `assets/Triad.svg` (no raster PNGs) with the lead-in lines extended full-bleed and responsive. Mobile keeps its own live-HTML build.
+> **Last updated:** 2026-10-07 — CHG-16: folders rebuilt to the supplied Wix structure — colored rounded-rect card (bg svg) + folder-outline glyph + black title + near-white body. Both builds.
 
 ## At a glance
 
-- **Done:** 14 / 23
+- **Done:** 15 / 23
 - **In progress:** 0
 - **Blocked:** 4  (CHG-13, CHG-14, CHG-18 → B5 · CHG-22 → B4)
-- **Unblocked & remaining:** 4
+- **Unblocked & remaining:** 3
 
 ```
-[████████████████████████                ]  61%
+[██████████████████████████              ]  65%
 ```
 
 ## Next up
 
-→ **CHG-16 · Redesign data-structure folders** (P4, layout rebuild)
+→ **CHG-21 · Make School Success page enticing / on-brand** (P5)
 
 ---
 
@@ -51,7 +51,7 @@
 | ✅ | CHG-01 | 360° strands — bind box to strand (swipe + dots) |
 | ✅ | CHG-03 | Match child illustrations to desktop |
 | ✅ | CHG-15 | Triadic protocol — desktop uses Triad.svg vector, lines extended full-bleed |
-| ⬜ | CHG-16 | Redesign data-structure folders |
+| ✅ | CHG-16 | Redesign data-structure folders (white cards + folder glyph, both builds) |
 | ⛔ | CHG-13 | Six cognitive skills layout — **B5** (plan first) |
 | ⛔ | CHG-14 | Domain/parameter chips — **B5** (discuss first) |
 | ⛔ | CHG-18 | AI use cases redesign — **B5** (plan first) |
