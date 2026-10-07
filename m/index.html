@@ -186,9 +186,10 @@
   .skill-card .n { font-size: 13px; font-weight: 800; line-height: 1.2; }
   .skill-card .d { font-size: 12px; color: var(--tl-ink-500); margin-top: 5px; line-height: 1.4; }
 
-  /* ── On track: dot-filled child silhouette + pills ──── */
-  .ot-kid { display: block; height: 210px; width: auto; margin: 26px auto 2px; }
+  /* ── On track: pills + dot-outlined children row ─────── */
   .pops { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 28px; }
+  .ot-kids { margin: 34px -22px 0; overflow: hidden; line-height: 0; }
+  .ot-kids svg { display: block; width: 100%; height: auto; }
   .pop { border: 2px solid var(--tl-green-500); border-radius: 999px; padding: 11px 20px;
     font-size: 14px; font-weight: 700; color: var(--tl-ink-800); background: rgba(255,255,255,0.85); }
   .pop.c { border-color: var(--tl-cyan-500); } .pop.p { border-color: var(--tl-pink-400); }
@@ -555,24 +556,15 @@
   <section id="progress" class="wash-green wrap" style="text-align:center">
     <h2 class="title">Every child walks into middle school <span class="c-green">developmentally on track</span>.</h2>
     <p class="lede">It's a measurement, not a promise. You can see exactly where each child stands, term by term, and what to do about it.</p>
-    <!-- CHG-03 · child silhouette filled with dots — mobile echo of the desktop
-         "dots become a child" moment (traces assets/Student Outline.svg). -->
-    <svg class="ot-kid" viewBox="0 0 785 1020" role="img" aria-label="A child, developmentally on track">
-      <defs>
-        <pattern id="otKidDots" width="64" height="64" patternUnits="userSpaceOnUse">
-          <circle cx="32" cy="32" r="13" fill="var(--tl-green-500)"></circle>
-        </pattern>
-      </defs>
-      <g transform="matrix(1,0,0,1,-567.895188,-30.276341)">
-        <path d="M1149.96,219.512C1149.019,246.122 1141.684,310.796 1103.86,340.94C1093.3,349.356 1103.626,350.143 1112.313,353.916C1242.067,410.276 1342.59,446.8 1351.701,510.478C1352.443,515.66 1354.355,588.435 1252.474,573.674C1204.701,566.753 1139.44,539.641 1137.518,540.577C1136.148,541.244 1137.312,546.487 1142.714,587.469C1145.751,610.51 1150.778,648.643 1187.927,874.431C1190.372,889.291 1190.969,889.107 1193.754,908.458C1194.178,911.411 1227.311,1049.427 1118.498,1049.765C1035.468,1050.024 1013.256,942.461 997.735,893.427C995.717,887.051 971.279,809.851 961.869,817.924C945.303,832.135 933.826,885.992 916.071,939.361C907.449,965.279 892.486,1015.793 849.396,1039.306C818.209,1056.322 742.078,1060.458 730.032,981.563C724.389,944.61 731.088,930.23 749.716,796.532C757.363,741.645 781.126,569.221 783.64,553.51C784.392,548.813 778.952,554.197 730.421,565.137C721.568,567.132 657.133,583.453 607.73,560.022C555.986,535.479 554.948,473.064 606.663,442.779C647.488,418.871 733.874,389.921 782.321,368.088C814.625,353.53 829.399,352.634 818.499,341.501C768.385,290.314 768.948,217.276 777.978,172.588C818.229,-26.596 1154.592,-20.426 1149.96,219.512Z" fill="url(#otKidDots)"></path>
-      </g>
-    </svg>
     <div class="pops">
       <span class="pop">12 skills measured</span>
       <span class="pop c">3× a year</span>
       <span class="pop p">579 data points per child, per year</span>
       <span class="pop y">Growth visible, not guessed</span>
     </div>
+    <!-- CHG-03 · row of children, outline traced by multi-colour dots — mirrors the
+         desktop on-track scene (6 kids tracing assets/Student Outline.svg). JS-built. -->
+    <div class="ot-kids" data-ot-kids role="img" aria-label="A row of children, developmentally on track"></div>
   </section>
 
   <!-- 8 · ASK-TILLI -->
@@ -842,6 +834,62 @@
       setActive(Math.max(0, Math.min(cards.length - 1, i)));
     }, { passive: true });
   }
+})();
+
+/* ── ON-TRACK — row of children, outline traced by dots (CHG-03). Mirrors the
+      desktop scene: walk the Student Outline path with getPointAtLength and place
+      palette-cycled dots along the outline, repeated across a full-bleed row. ── */
+(function () {
+  var host = document.querySelector('[data-ot-kids]');
+  if (!host) return;
+  var NS = 'http://www.w3.org/2000/svg';
+  // assets/Student Outline.svg — single closed path + its <g> transform.
+  var D = 'M1149.96,219.512C1149.019,246.122 1141.684,310.796 1103.86,340.94C1093.3,349.356 1103.626,350.143 1112.313,353.916C1242.067,410.276 1342.59,446.8 1351.701,510.478C1352.443,515.66 1354.355,588.435 1252.474,573.674C1204.701,566.753 1139.44,539.641 1137.518,540.577C1136.148,541.244 1137.312,546.487 1142.714,587.469C1145.751,610.51 1150.778,648.643 1187.927,874.431C1190.372,889.291 1190.969,889.107 1193.754,908.458C1194.178,911.411 1227.311,1049.427 1118.498,1049.765C1035.468,1050.024 1013.256,942.461 997.735,893.427C995.717,887.051 971.279,809.851 961.869,817.924C945.303,832.135 933.826,885.992 916.071,939.361C907.449,965.279 892.486,1015.793 849.396,1039.306C818.209,1056.322 742.078,1060.458 730.032,981.563C724.389,944.61 731.088,930.23 749.716,796.532C757.363,741.645 781.126,569.221 783.64,553.51C784.392,548.813 778.952,554.197 730.421,565.137C721.568,567.132 657.133,583.453 607.73,560.022C555.986,535.479 554.948,473.064 606.663,442.779C647.488,418.871 733.874,389.921 782.321,368.088C814.625,353.53 829.399,352.634 818.499,341.501C768.385,290.314 768.948,217.276 777.978,172.588C818.229,-26.596 1154.592,-20.426 1149.96,219.512Z';
+  var MX = [1, 0, 0, 1, -567.895188, -30.276341];  // matrix(a,b,c,d,e,f)
+  var VW = 785, VH = 1020;                          // viewBox
+  var COLORS = ['#56C02B', '#FCC30B', '#26BDE2'];   // green, yellow, cyan (desktop KID.colors)
+  var DOTS_PER = 72;        // dots traced around each outline
+  var FIG_H    = 150;       // figure height, px
+  var SPACING  = 1.12;      // centre-to-centre = figW * SPACING (desktop gap/width)
+  var DOT_R    = 3.4;       // dot radius, px
+
+  var meas = document.createElementNS(NS, 'svg');
+  meas.setAttribute('width', '0'); meas.setAttribute('height', '0');
+  meas.style.cssText = 'position:absolute;left:-9999px;top:-9999px';
+  var mp = document.createElementNS(NS, 'path'); mp.setAttribute('d', D);
+  meas.appendChild(mp); document.body.appendChild(meas);
+  var L = mp.getTotalLength();
+  if (!L) return;
+
+  function build() {
+    var W = host.clientWidth || window.innerWidth;
+    var figW = FIG_H * (VW / VH);
+    var step = figW * SPACING;
+    var count = Math.ceil(W / step) + 1;                 // +1 → bleed off both edges
+    var x0 = (W - count * step) / 2 + (step - figW) / 2;  // centre the row
+    var svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('width', W); svg.setAttribute('height', FIG_H);
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + FIG_H);
+    for (var k = 0; k < count; k++) {
+      var ox = x0 + k * step;
+      for (var m = 0; m < DOTS_PER; m++) {
+        var p = mp.getPointAtLength((m / DOTS_PER) * L);
+        var px = MX[0] * p.x + MX[2] * p.y + MX[4];
+        var py = MX[1] * p.x + MX[3] * p.y + MX[5];
+        var c = document.createElementNS(NS, 'circle');
+        c.setAttribute('cx', (ox + (px / VW) * figW).toFixed(1));
+        c.setAttribute('cy', ((py / VH) * FIG_H).toFixed(1));
+        c.setAttribute('r', DOT_R);
+        c.setAttribute('fill', COLORS[m % COLORS.length]);
+        svg.appendChild(c);
+      }
+    }
+    host.innerHTML = ''; host.appendChild(svg);
+  }
+  build();
+  var t; window.addEventListener('resize', function () {
+    clearTimeout(t); t = setTimeout(build, 200);
+  }, { passive: true });
 })();
 
 /* Shared live orb config. The tuner mutates these; the renderers read them

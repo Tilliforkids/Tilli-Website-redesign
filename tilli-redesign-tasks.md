@@ -195,15 +195,16 @@ differs.
   in place from the rewrite. This pass added swipe dot indicators (`.mrail-dots`, one per card,
   synced via IntersectionObserver + tap-to-scroll) and removed the dead `.strands` CSS rule.
 
-### CHG-03 · Match child illustrations to desktop — ✅ DONE
+### CHG-03 · Match child illustrations to desktop — 🔵 IN PROGRESS
 - **Page:** Home · "Every child walks into middle school developmentally on track"
 - **Scope:** mobile
 - **Current:** the child illustrations on mobile differ from the desktop version of this section.
 - **Change:** make the mobile child illustrations match the desktop ones (same artwork/style).
 - **Acceptance:** mobile child illustrations match desktop; no style clash in one scroll.
-- **Done:** desktop forms a child from dots tracing `assets/Student Outline.svg`; mobile had no
-  figure. Added that same silhouette to mobile `#progress`, filled with green dots (inline SVG
-  `<pattern>`) to echo the desktop "dots become a child" moment. CSS `.ot-kid` (m/index.html:190).
+- **Progress:** first attempt (one green dot-FILLED figure) was wrong. Rebuilt to mirror desktop:
+  a full-bleed ROW of children whose OUTLINE is traced by dots cycling green/yellow/cyan
+  (`.ot-kids` band + JS IIFE walking `assets/Student Outline.svg` via getPointAtLength,
+  m/index.html:567 + :838). Awaiting user sign-off on the look.
 
 ### CHG-15 · Rebuild triadic assessment protocol in code — ⬜ TODO
 - **Page:** Research · "How we measure" (triadic proto assessment protocol)
