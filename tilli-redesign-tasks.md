@@ -161,8 +161,10 @@ differs.
 - **Scope:** mobile
 - **Change:** Fix crop/focal point so the hero photo frames correctly at phone width.
 - **Acceptance:** subject correctly framed, no awkward crop/overflow at ≤430px.
-- **Progress:** first pass shifted focal `center 28%` → `72% 32%` at m/research.html:68.
-  User says this isn't right yet — reworking (awaiting details on what to change).
+- **Progress:** hero reverted to fixed-height + focal-point crop, driven by CSS vars
+  (`--hero-h/x/y/ov`) at m/research.html:67. Added a `?debug=1` on-page tuner
+  (sliders for height / focal X / focal Y / card overlap + CSS readout) so the user can
+  frame it by eye. User to pick final values, then bake them into the var defaults.
 
 ### CHG-17 · Remove "high-density behavioural stream" line — ⬜ TODO
 - **Page:** Research · **Scope:** global (wherever it appears)
