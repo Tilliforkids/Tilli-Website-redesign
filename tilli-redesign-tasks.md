@@ -107,7 +107,7 @@ differs.
 
 ## 4. PRIORITY 2 — Content accuracy (fix before any school sees the page)
 
-### CHG-05 · "30+ schools" block — number, order, RPP credit — ⬜ TODO
+### CHG-05 · "30+ schools" block — number, order, RPP credit — ✅ DONE
 - **Page:** Home · **Scope:** mobile (verify desktop parity)
 - **Current:** "30+ schools have joined…"; stat sits above the quote; no RPP credit.
 - **Change:**

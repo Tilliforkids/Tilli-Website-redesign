@@ -4,22 +4,22 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-06 — CHG-06 done (Ask-Tilli channel phrasing removed site-wide)
+> **Last updated:** 2026-10-07 — CHG-05 done (53 + RPP credit above quote). P2 content accuracy underway.
 
 ## At a glance
 
-- **Done:** 5 / 23
+- **Done:** 6 / 23
 - **In progress:** 0
 - **Blocked:** 4  (CHG-13, CHG-14, CHG-18 → B5 · CHG-22 → B4)
-- **Unblocked & remaining:** 14
+- **Unblocked & remaining:** 13
 
 ```
-[████████                                ]  22%
+[██████████                              ]  26%
 ```
 
 ## Next up
 
-→ **CHG-05 · "53 schools" + quote order + RPP credit** (P2, Home)
+→ **CHG-02 · Brain/heart icons on skill columns** (P2, Home)
 
 ---
 
@@ -34,7 +34,7 @@
 ## P2 — Content accuracy
 | Status | ID | Task |
 |--------|----|------|
-| ⬜ | CHG-05 | "53 schools" + quote order + RPP credit |
+| ✅ | CHG-05 | "53 schools" + quote order + RPP credit |
 | ⬜ | CHG-02 | Brain/heart icons on skill columns |
 
 ## P3 — Quick mobile wins
@@ -87,3 +87,4 @@
 - 2026-10-06 — CHG-07+19 ✅ done. Footer unified to the Home/hero canonical (image 1): FOOTER_LINKS → How it works/12 skills/Impact/FAQs/Privacy (no Get-in-touch/WhatsApp); interior + mobile rebuilt to match (mobile logo image, "Reach out:" prefix, hash-aware mHref, #how anchor on m/index); dynamic year everywhere incl. Home.
 - 2026-10-06 — CHG-10 ✅ done. Live font config already Montserrat-only; reworded token comments, set the DS lint allow-list to Montserrat-only, scrubbed Fredoka from _ds_manifest.json. Grep Fredoka-free except deferred leftovers (see Follow-ups). P1 (global fixes) complete.
 - 2026-10-06 — CHG-06 ✅ done. Live Ask-Tilli copy was already channel-neutral; stripped "on WhatsApp" from parent-survey captions (index/m/index) + FAQ, and cleaned the .dc.html comps ("Ask-Tilli", "ASK-TILLI", "In seconds."). Kept "Book a demo on WhatsApp" CTA + functional WhatsApp (bubble/links/form field/"Message us on WhatsApp").
+- 2026-10-07 — CHG-05 ✅ done. Mobile already compliant (53, quote-above-stat, RPP credit). Desktop: number already 53; added "Research-Practice Partnership with Stanford & NMAJS" as a full-width eyebrow ABOVE the imp2 quote (grid row 1; qmark/qtext→row2, cite→row3). Kept the choreographed scroll order per user.
