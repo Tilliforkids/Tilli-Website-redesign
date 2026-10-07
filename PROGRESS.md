@@ -4,17 +4,17 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-06 — CHG-10 done (Fredoka removed; Montserrat enforced). P1 complete.
+> **Last updated:** 2026-10-06 — CHG-06 done (Ask-Tilli channel phrasing removed site-wide)
 
 ## At a glance
 
-- **Done:** 4 / 23
+- **Done:** 5 / 23
 - **In progress:** 0
 - **Blocked:** 4  (CHG-13, CHG-14, CHG-18 → B5 · CHG-22 → B4)
-- **Unblocked & remaining:** 15
+- **Unblocked & remaining:** 14
 
 ```
-[███████                                 ]  17%
+[████████                                ]  22%
 ```
 
 ## Next up
@@ -29,7 +29,7 @@
 | ✅ | CHG-09 | Unify nav / hamburger menu |
 | ✅ | CHG-07+19 | Unify footer (= Home/hero) |
 | ✅ | CHG-10 | Remove Fredoka; enforce font system |
-| ⬜ | CHG-06 | Remove "Ask-Tilli on WhatsApp" copy |
+| ✅ | CHG-06 | Remove "Ask-Tilli on WhatsApp" copy |
 
 ## P2 — Content accuracy
 | Status | ID | Task |
@@ -86,3 +86,4 @@
 - 2026-10-06 — CHG-09 ✅ done. Shared nav was already single-source; hardened `.tl-nav a` / `.navdrawer a` (text-decoration + Montserrat) so interior pages stop inheriting page base styles (fixes underline/font). Fixed Home boot-veil z-index so the nav no longer fades in on landing. `version.json` → …-3.
 - 2026-10-06 — CHG-07+19 ✅ done. Footer unified to the Home/hero canonical (image 1): FOOTER_LINKS → How it works/12 skills/Impact/FAQs/Privacy (no Get-in-touch/WhatsApp); interior + mobile rebuilt to match (mobile logo image, "Reach out:" prefix, hash-aware mHref, #how anchor on m/index); dynamic year everywhere incl. Home.
 - 2026-10-06 — CHG-10 ✅ done. Live font config already Montserrat-only; reworded token comments, set the DS lint allow-list to Montserrat-only, scrubbed Fredoka from _ds_manifest.json. Grep Fredoka-free except deferred leftovers (see Follow-ups). P1 (global fixes) complete.
+- 2026-10-06 — CHG-06 ✅ done. Live Ask-Tilli copy was already channel-neutral; stripped "on WhatsApp" from parent-survey captions (index/m/index) + FAQ, and cleaned the .dc.html comps ("Ask-Tilli", "ASK-TILLI", "In seconds."). Kept "Book a demo on WhatsApp" CTA + functional WhatsApp (bubble/links/form field/"Message us on WhatsApp").

@@ -92,7 +92,7 @@ differs.
   - Grep/inspect shows zero `Fredoka` references in CSS/theme/font config.
   - No rendered text uses a font outside the desktop set.
 
-### CHG-06 · Remove "Ask-Tilli on WhatsApp" copy — ⬜ TODO
+### CHG-06 · Remove "Ask-Tilli on WhatsApp" copy — ✅ DONE
 - **Pages:** all
 - **Scope:** global
 - **Current:** multiple references to "Ask-Tilli on WhatsApp".
