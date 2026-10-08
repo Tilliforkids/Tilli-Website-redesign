@@ -219,7 +219,7 @@ differs.
 - **Change:** redesign the folder visuals — much stronger, on-brand.
 - **Acceptance:** folders read clearly on mobile and match the design system.
 
-### CHG-13 · New mobile layout for the six cognitive skills — ⛔ BLOCKED (B5)
+### CHG-13 · New mobile layout for the six cognitive skills — ✅ DONE
 - **Page:** Research · six cognitive skills
 - **Scope:** mobile · **Blocked-by:** B5 (plan first)
 - **Change:** design a new mobile layout (current one not working). Agree layout before

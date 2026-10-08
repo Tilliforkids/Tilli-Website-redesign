@@ -98,11 +98,17 @@
   .r-blind__big { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #fff; font-size: clamp(26px,7vw,34px); line-height: 1.15; }
   .r-blind__post { color: #c7c7c7; font-size: 14px; margin-top: 12px; }
 
-  /* ── COMPETENCIES · CHG-13 deferred (B5): images kept in a scroll strip ── */
+  /* ── COMPETENCIES · CHG-13: live 2-col skill grid (no image strips) ── */
   .r-comp__label { font-weight: 800; text-align: center; font-size: 17px; margin: 0 0 16px; }
-  .r-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -22px; padding: 0 22px; }
-  .r-skillimg { min-width: 560px; width: 560px; height: auto; margin: 0 auto; border-radius: 12px; }
-  .r-dna { width: 100%; max-width: 420px; height: auto; margin: 14px auto; opacity: .9; }
+  .r-skills { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; text-align: left; }
+  .r-skill { background: #fff; border: 1px solid var(--tl-line-200); border-top: 4px solid var(--sk); border-radius: 14px; padding: 14px 14px 16px; }
+  .r-skill__ic { width: 40px; height: 40px; border-radius: 11px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; background: color-mix(in srgb, var(--sk) 15%, #fff); margin-bottom: 10px; }
+  .r-skill__n { font-weight: 800; color: var(--tl-ink-900); font-size: 14.5px; line-height: 1.2; }
+  .r-skill__d { color: var(--tl-ink-500); font-size: 12.5px; line-height: 1.45; margin-top: 5px; }
+  .r-skill--cyan { --sk: var(--tl-cyan-500); } .r-skill--orange { --sk: var(--tl-orange-500); }
+  .r-skill--green { --sk: var(--tl-green-500); } .r-skill--pink { --sk: var(--tl-pink-600); }
+  .r-skills-div { height: 1px; background: var(--tl-line-200); margin: 30px 10%; }
 
   /* ── OTHER DOMAINS (tabs) · CHG-14 deferred (B5): ported ── */
   .r-tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 22px; }
@@ -223,15 +229,29 @@
     </div>
   </section>
 
-  <!-- COMPETENCIES · CHG-13 deferred (B5) -->
+  <!-- COMPETENCIES · CHG-13: live 2-col skill grid -->
   <section class="wrap" style="text-align:center">
     <h2 class="title">We provide a unified view of <span class="c-green">child development</span>.</h2>
     <p class="lede">Across 12 core competencies, in two critical domains.</p>
     <p class="r-comp__label c-cyan" style="margin-top:28px">6 Cognitive Skills</p>
-    <div class="r-scroll"><img class="r-skillimg" src="../assets/dataset/skills-cognitive.png" alt="Six cognitive skills: Attention, Working Memory, Cognitive Flexibility, Inhibition Control, Response Suppression, Planning and Organization"></div>
-    <img class="r-dna" src="../assets/dataset/dna-helix.png" alt="">
-    <div class="r-scroll"><img class="r-skillimg" src="../assets/dataset/skills-sel.png" alt="Six social-emotional skills: Emotion Awareness, Emotion Regulation, Relationship Skills, Metacognition, Empathy, Critical Thinking"></div>
-    <p class="r-comp__label c-pink" style="margin-top:16px">6 Social-Emotional (SEL) Skills</p>
+    <div class="r-skills">
+      <div class="r-skill r-skill--cyan"><span class="r-skill__ic">🎯</span><div class="r-skill__n">Attention</div><div class="r-skill__d">Focusing on relevant information and sustaining it on a task.</div></div>
+      <div class="r-skill r-skill--orange"><span class="r-skill__ic">🧠</span><div class="r-skill__n">Working Memory</div><div class="r-skill__d">Holding and using information over short periods.</div></div>
+      <div class="r-skill r-skill--green"><span class="r-skill__ic">🔄</span><div class="r-skill__n">Cognitive Flexibility</div><div class="r-skill__d">Shifting between tasks, perspectives, and strategies.</div></div>
+      <div class="r-skill r-skill--pink"><span class="r-skill__ic">🛡️</span><div class="r-skill__n">Inhibition (Distraction)</div><div class="r-skill__d">Resisting distractions to stay on task.</div></div>
+      <div class="r-skill r-skill--cyan"><span class="r-skill__ic">✋</span><div class="r-skill__n">Inhibition (Response)</div><div class="r-skill__d">Pausing and thinking before acting.</div></div>
+      <div class="r-skill r-skill--orange"><span class="r-skill__ic">🗂️</span><div class="r-skill__n">Planning &amp; Organisation</div><div class="r-skill__d">Setting goals, planning steps, and structuring tasks.</div></div>
+    </div>
+    <div class="r-skills-div" aria-hidden="true"></div>
+    <p class="r-comp__label c-pink">6 Social-Emotional (SEL) Skills</p>
+    <div class="r-skills">
+      <div class="r-skill r-skill--green"><span class="r-skill__ic">😌</span><div class="r-skill__n">Emotion Awareness</div><div class="r-skill__d">Recognising and understanding one's own emotions.</div></div>
+      <div class="r-skill r-skill--pink"><span class="r-skill__ic">🧘</span><div class="r-skill__n">Emotion Regulation</div><div class="r-skill__d">Managing and responding to emotions appropriately.</div></div>
+      <div class="r-skill r-skill--cyan"><span class="r-skill__ic">🤗</span><div class="r-skill__n">Empathy</div><div class="r-skill__d">Understanding and sharing the feelings of others.</div></div>
+      <div class="r-skill r-skill--orange"><span class="r-skill__ic">🤝</span><div class="r-skill__n">Relationship Skills</div><div class="r-skill__d">Building and maintaining positive interactions with others.</div></div>
+      <div class="r-skill r-skill--green"><span class="r-skill__ic">💭</span><div class="r-skill__n">Metacognition</div><div class="r-skill__d">Reflecting on and understanding one's own thinking.</div></div>
+      <div class="r-skill r-skill--pink"><span class="r-skill__ic">🔍</span><div class="r-skill__n">Critical Thinking</div><div class="r-skill__d">Analysing and evaluating information to form judgments.</div></div>
+    </div>
   </section>
 
   <!-- OTHER DOMAINS (tabs) · CHG-14 deferred (B5) -->

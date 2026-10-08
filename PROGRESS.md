@@ -4,17 +4,17 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-07 — CHG-16: folders rebuilt to the supplied Wix structure — colored rounded-rect card (bg svg) + folder-outline glyph + black title + near-white body. Both builds.
+> **Last updated:** 2026-10-08 — CHG-13 done (B5 agreed): mobile six cognitive + six SEL skills rebuilt as live 2-col card grids (emoji placeholders, swappable), replacing the sideways-scroll PNG strips.
 
 ## At a glance
 
-- **Done:** 15 / 23
+- **Done:** 16 / 23
 - **In progress:** 0
-- **Blocked:** 4  (CHG-13, CHG-14, CHG-18 → B5 · CHG-22 → B4)
+- **Blocked:** 3  (CHG-14, CHG-18 → B5 · CHG-22 → B4)
 - **Unblocked & remaining:** 3
 
 ```
-[██████████████████████████              ]  65%
+[████████████████████████████            ]  70%
 ```
 
 ## Next up
@@ -52,7 +52,7 @@
 | ✅ | CHG-03 | Match child illustrations to desktop |
 | ✅ | CHG-15 | Triadic protocol — desktop uses Triad.svg vector, lines extended full-bleed |
 | ✅ | CHG-16 | Redesign data-structure folders (white cards + folder glyph, both builds) |
-| ⛔ | CHG-13 | Six cognitive skills layout — **B5** (plan first) |
+| ✅ | CHG-13 | Six cognitive + SEL skills — mobile 2-col live card grids (B5 agreed) |
 | ⛔ | CHG-14 | Domain/parameter chips — **B5** (discuss first) |
 | ⛔ | CHG-18 | AI use cases redesign — **B5** (plan first) |
 | ✅ | CHG-12 | Restore Research "Why" — done (no "Why" section existed; covered by WEIRD band work) |
