@@ -15,6 +15,9 @@
 
 ## Workflow
 
+- **When you're confused or unsure about something, always ask me to
+  clarify before planning or executing — don't just go ahead on an
+  assumption.** A quick question is cheaper than an undone change.
 - **Do not start a preview server or verify in the browser.** I check
   the site myself. Write the change, explain it, and stop. I will ask
   for a verification pass when I want one.

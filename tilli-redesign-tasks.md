@@ -35,8 +35,8 @@
 | B5 | **Working session** on layout/direction before build. | CHG-13, CHG-14, CHG-18 |
 | B6 | **E4 chart data.** Choose **Option A** (reach/growth per year — traction) vs **Option B** (baseline→endline outcome lift per skill — efficacy; recommended) **and** supply the real underlying numbers. Real data only; label source + n under the chart. | CHG-29 |
 | B7 | **School proof assets.** Real school photos + approved pull-quotes + named roles + (recommended) school logos & permission to display — NMAJS, Hippocampus, GIG. | CHG-30, CHG-32 (shared w/ CHG-22) |
-| B8 | **E3 Top Results numbers.** Either (a) a genuine pooled cross-school aggregate from the master assessment dataset, or (b) the real scoped figures reworded to their true scope (e.g. "% of classrooms/learners/teachers who improved" — NOT "average % increase"). No fabricated averages. | CHG-28 |
-| B9 | **"+28%" collision.** Same figure, two meanings on one page: E3 (Jordan teacher readiness) vs E7 (Hippocampus impulse control). Keep only one "+28%" or change one metric. | CHG-28, CHG-32 |
+| ~~B8~~ | ~~**E3 Top Results numbers.**~~ RESOLVED (2026-10-09) — user supplied: 95% teachers rate training effective · 9 in 10 children improved emotion regulation/term · built at Stanford, backed by UNICEF, validated w/ 12,510 children. | ~~CHG-28~~ |
+| ~~B9~~ | ~~**"+28%" collision.**~~ RESOLVED (2026-10-09) — E3 uses none of the clashing figures; "+28%" stays unique to Hippocampus (E7). Still applies to CHG-32 if that card keeps its "+28%". | CHG-32 |
 
 ---
 
@@ -268,9 +268,15 @@ differs.
   (above or below the hero).
 - **Acceptance:** carousel present, swipeable on mobile, using real photos from B4.
 
-### CHG-24 · Add an offerings section — ⬜ TODO
+### CHG-24 · Add an offerings section — ✅ DONE
 - **Change:** add an "offerings" section consistent with how offerings appear elsewhere.
 - **Acceptance:** offerings section present and consistent with site pattern.
+- **Resolution (2026-10-09):** desktop parity — mobile (`m/success.html`) already had the
+  "What schools get → Measure. Ask. Intervene." block; added the matching section to desktop
+  `success.html` between the hero and the first case study, using DS primitives
+  (`tl-section--tint`, `tl-section-head tl-center`, `tl-grid tl-grid--3`, `tl-card`) plus a
+  small page-local step-accent treatment (`.o-card` green/cyan/yellow top border + `.o-kicker`)
+  mirroring the mobile `.s-ocard` colour coding. Copy copied verbatim from mobile for parity.
 
 ### CHG-23 · Content review by Masoomi — ⬜ TODO (process)
 - **Type:** process, not code.
@@ -307,7 +313,7 @@ differs.
 > section intros (small eyebrow + big headline). **No gradient** — gradient is Home-only;
 > every other page gets a flat/clean background.
 
-### CHG-26 · (E1) Clean centered intro header + de-crowd the whole page — ⬜ TODO
+### CHG-26 · (E1) Clean centered intro header + de-crowd the whole page — ✅ DONE
 - **Current:** page feels busy / "AI-generated"; too many elements per screen.
 - **Change:** top intro band = small coloured uppercase eyebrow (`OUR IMPACT` / `SCHOOL
   SUCCESS`, accent, letter-spaced ~12–13px), one large bold rounded headline beneath
@@ -316,8 +322,14 @@ differs.
   birthday."* (confirm copy). This density principle governs every section below.
 - **Acceptance:** intro band matches the clean/spacious spec; the whole page reads
   one-idea-per-section, not crowded.
+- **Resolution (2026-10-09):** done with CHG-31 as one header. Existing copy kept verbatim
+  (eyebrow "Success Stories", headline "Schools that measure the whole child" — the spec's
+  alternate headline was *not* used per user). Page-local `.s-hero-flat` in `success.html`
+  gives the hero a flat `--tl-wash-green` fill (no gradient) + extra top/bottom whitespace and
+  the E1 headline clamp (40–64px). Mobile already compliant. The de-crowd density principle is
+  now the governing look; later P6 elements inherit it as they land.
 
-### CHG-27 · (E2) Grouped "get in touch" contact block — icons + Tilli character — ⬜ TODO
+### CHG-27 · (E2) Grouped "get in touch" contact block — icons + Tilli character — ✅ DONE
 - **Change:** two-column band. Left: a **custom Tilli character** (girl with yellow
   headband), NOT Duo. Right: contact points grouped by purpose; each group = plain label +
   one or two bold links, each prefixed by a small accent icon showing HOW to reach out
@@ -330,8 +342,17 @@ differs.
   move there (confirm home). Mobile: illustration stacks above the groups.
 - **Acceptance:** spacious grouped contact band present with method icons + Tilli character;
   links route correctly.
+- **Resolution (2026-10-09):** built on both success builds, after the case studies / before the
+  existing closing CTA (home confirmed = this page, not the Newsroom page). Character =
+  `assets/ds/tilli-girl-waving.png` (yellow headband). 3 confirmed groups: Partner/book a demo
+  (demo + kavindya@tillikids.com), Press & media (info@tillikids.com), General (info@tillikids.com +
+  tel +1 650-334-7904). Method icons are inline stroke SVGs (calendar/envelope/phone) in colour-coded
+  wash chips (green/cyan/pink) — page-local `.rk*` classes. Book-a-demo reuses the per-skin
+  convention: desktop `data-tl-open-form` modal, mobile `wa.me` (no Calendly exists). **Impact
+  Report / Fact Sheet link omitted** — no confirmed PDF asset yet (orphaned `uploads/*.pdf` not
+  wired); add later when an approved report exists.
 
-### CHG-28 · (E3) "Tilli works" — headline + intro + Top Results checklist — ⛔ BLOCKED (B8, B9)
+### CHG-28 · (E3) "Tilli works" — headline + intro + Top Results checklist — ✅ DONE
 - **Where:** high on the page, right after the CHG-26 intro band (the "why my school needs
   this" moment).
 - **Change:** two-column band. Left: big bold *"Tilli works"* headline; 2–3 line intro with
@@ -348,6 +369,15 @@ differs.
   +20%, conflict mgmt +23%, impulse control +28%) belong on the E7 card, NOT here.
 - **Acceptance:** 3 confirmed, correctly-scoped outcome lines; figures trace to source; no
   place names; no number reused elsewhere with a different meaning.
+- **Resolution (2026-10-09):** built on both success builds, high on the page (after the hero,
+  before offerings). Two-column desktop (`.tw`), stacked mobile (illustration below). Three
+  user-confirmed, place-name-free, cross-school lines with a green check + accent figure:
+  Adoption — **95%** of teachers rate Tilli's training highly effective; Outcome — **9 in 10**
+  children improved emotion regulation in a single term; Credibility — built at Stanford, backed
+  by UNICEF, validated with **12,510 children**. Intro links `assessment`/`the evidence`/
+  `Stanford research` → research.html. **B8 resolved** (real figures supplied). **B9 resolved** —
+  E3 reuses no clashing figure; "+28%" stays unique to the Hippocampus card (E7). Illustration =
+  placeholder tile pending a real Tilli asset.
 
 ### CHG-29 · (E4) Statistical bar-chart band ("the impact, in a graph") — ⛔ BLOCKED (B6)
 - **Where:** mid page, after CHG-28. E3 states outcomes in words; this shows them as a chart.
@@ -372,7 +402,7 @@ differs.
 - **Acceptance:** at least one real, named, consented school story; spacious; swipeable on
   mobile.
 
-### CHG-31 · (E6) Fix the current hero — remove gradient, keep content + CTA — ⬜ TODO
+### CHG-31 · (E6) Fix the current hero — remove gradient, keep content + CTA — ✅ DONE
 - **Current:** existing Success Story hero sits on a gradient background.
 - **Keep:** eyebrow `SUCCESS STORIES` (green accent), headline *"Schools that measure the
   whole child"* (Montserrat family, not Fredoka), the intro paragraph, and the pink pill
@@ -381,6 +411,10 @@ differs.
   and spacious per CHG-26. This de-gradient rule applies to the whole page. This band IS the
   real intro header — treat CHG-26 + CHG-31 as one header.
 - **Acceptance:** hero content/CTA preserved, gradient gone, flat clean background.
+- **Resolution (2026-10-09):** see CHG-26 — done as one header. Dropped `tl-hero--green` from
+  the `success.html` hero in favour of a page-local flat `.s-hero-flat`; the shared
+  `.tl-hero--green` rule stays, so faq.html + privacy-policy.html keep their gradient (de-gradient
+  scoped to this page per user).
 
 ### CHG-32 · (E7) Case-study card — photo album + stat-pill align + logos — ⛔ BLOCKED (B7)
 - **Keep (user likes the layout):** location eyebrow → school name → highlighted stat pill

@@ -105,6 +105,41 @@
   .cs-source { font-size: 12.5px; color: var(--tl-ink-400); border-left: 3px solid var(--tl-line-200);
     padding-left: 13px; margin-top: 16px; line-height: 1.5; }
 
+  /* Reach-out band (CHG-27 E2) — illustration stacks above groups */
+  .rk-art { display: flex; justify-content: center; margin-bottom: 22px; }
+  .rk-art img { width: 160px; height: auto; }
+  .rk-groups { display: flex; flex-direction: column; gap: 22px; text-align: left;
+    max-width: 320px; margin: 22px auto 0; }
+  .rk-label { font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--tl-ink-500); margin-bottom: 10px; }
+  .rk-link { display: flex; align-items: center; gap: 11px; font-weight: 700; font-size: 15.5px;
+    color: var(--tl-ink-900); text-decoration: none; }
+  .rk-link + .rk-link { margin-top: 9px; }
+  .rk-ic { flex: none; display: inline-flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px; border-radius: 11px; }
+  .rk-ic svg { width: 19px; height: 19px; }
+  .rk-ic.g { background: var(--tl-wash-green); color: var(--tl-green-600); }
+  .rk-ic.c { background: var(--tl-wash-cyan);  color: var(--tl-cyan-700); }
+  .rk-ic.p { background: var(--tl-wash-pink);  color: var(--tl-pink-600); }
+
+  /* "Tilli works" Top Results (CHG-28 E3) — illustration stacks below text */
+  .s-tw a { color: var(--tl-cyan-700); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+  .tw-sub { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--tl-ink-500); margin: 20px 0 14px; }
+  .tw-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; text-align: left; }
+  .tw-list li { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
+  .tw-check { flex: none; width: 24px; height: 24px; border-radius: 999px; margin-top: 1px;
+    background: var(--tl-wash-green); color: var(--tl-green-600);
+    display: inline-flex; align-items: center; justify-content: center; }
+  .tw-check svg { width: 14px; height: 14px; }
+  .tw-cat { display: block; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--tl-cyan-700); margin-bottom: 2px; }
+  .tw-line { font-size: 15.5px; line-height: 1.5; color: var(--tl-ink-800); margin: 0; }
+  .tw-fig { color: var(--tl-green-600); font-weight: 800; }
+  .tw-art { margin-top: 22px; aspect-ratio: 4/3; border-radius: 20px; background: var(--tl-surface-150);
+    border: 1px solid var(--tl-line-200); display: flex; align-items: center; justify-content: center;
+    color: var(--tl-ink-400); font-weight: 600; font-size: 13px; text-align: center; padding: 18px; }
+
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
@@ -122,6 +157,37 @@
     <div class="cta-col">
       <a class="btn btn-pink btn-block" href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school." target="_blank" rel="noopener">Bring Tilli to your school</a>
     </div>
+  </section>
+
+  <!-- TILLI WORKS (CHG-28 E3): headline + intro + Top Results checklist -->
+  <section class="s-tw wrap" style="text-align:center">
+    <h2 class="title">Tilli works</h2>
+    <p class="lede">See how Tilli's research-backed approach delivers measurable results. Explore our <a href="research.html">assessment</a>, <a href="research.html">the evidence</a>, and our <a href="research.html">Stanford research</a>.</p>
+    <p class="tw-sub">Top results</p>
+    <ul class="tw-list">
+      <li>
+        <span class="tw-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+        <div>
+          <span class="tw-cat">Adoption</span>
+          <p class="tw-line"><b class="tw-fig">95%</b> of teachers rate Tilli's training highly effective — adoption built in, not bolted on.</p>
+        </div>
+      </li>
+      <li>
+        <span class="tw-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+        <div>
+          <span class="tw-cat">Outcome</span>
+          <p class="tw-line"><b class="tw-fig">9 in 10</b> children improved emotion regulation in a single term.</p>
+        </div>
+      </li>
+      <li>
+        <span class="tw-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+        <div>
+          <span class="tw-cat">Credibility</span>
+          <p class="tw-line">Built at <strong>Stanford</strong>, backed by <strong>UNICEF</strong>, validated with <b class="tw-fig">12,510 children</b>.</p>
+        </div>
+      </li>
+    </ul>
+    <div class="tw-art">Tilli illustration</div>
   </section>
 
   <!-- SCHOOLS & TRAININGS CAROUSEL — CHG-22 deferred (B4: real photos needed) -->
@@ -190,6 +256,46 @@
         <div class="cs-name">Musaeus College</div>
         <p class="cs-text">One of Sri Lanka's most respected girls' schools has brought SEL into Grade 1 with Tilli. What won them over was a model where teachers don't just receive data, they <strong>use</strong> it — each teacher designs a support plan for her class, sees multi-informant data on those same children, then redesigns it.</p>
         <p class="cs-source">Newest partner (started July 2026). This story leads on the approach and why they joined; outcomes follow after their first assessment window.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- REACH OUT (CHG-27 E2): grouped contact block + Tilli character -->
+  <section class="s-hero wash-green wrap">
+    <div class="rk-art">
+      <img src="../assets/ds/tilli-girl-waving.png" alt="Tilli character waving" loading="lazy">
+    </div>
+    <div class="eyebrow">Get in touch</div>
+    <h2 class="title">Let’s talk about your <span class="c-green">school</span></h2>
+    <div class="rk-groups">
+      <div class="rk-group">
+        <p class="rk-label">Partner with us / book a demo</p>
+        <a class="rk-link" href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school." target="_blank" rel="noopener">
+          <span class="rk-ic g" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg></span>
+          Book a demo
+        </a>
+        <a class="rk-link" href="mailto:kavindya@tillikids.com">
+          <span class="rk-ic g" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg></span>
+          kavindya@tillikids.com
+        </a>
+      </div>
+      <div class="rk-group">
+        <p class="rk-label">Press &amp; media</p>
+        <a class="rk-link" href="mailto:info@tillikids.com">
+          <span class="rk-ic c" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg></span>
+          info@tillikids.com
+        </a>
+      </div>
+      <div class="rk-group">
+        <p class="rk-label">General enquiries</p>
+        <a class="rk-link" href="mailto:info@tillikids.com">
+          <span class="rk-ic p" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg></span>
+          info@tillikids.com
+        </a>
+        <a class="rk-link" href="tel:+16503347904">
+          <span class="rk-ic p" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 11.6a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2z"></path></svg></span>
+          +1 650-334-7904
+        </a>
       </div>
     </div>
   </section>
