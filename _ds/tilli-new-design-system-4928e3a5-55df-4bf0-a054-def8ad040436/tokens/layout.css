@@ -11,8 +11,9 @@
   --tl-space-8:96px;
   --tl-space-9:120px;          /* slide left margin */
 
-  --tl-radius-sm:8px;
-  --tl-radius-md:16px;
+  --tl-radius-xs:4px;          /* chat-bubble tails, bars */
+  --tl-radius-sm:8px;          /* small media, code */
+  --tl-radius-md:16px;         /* inputs, tiles, compact cards */
   --tl-radius-lg:24px;         /* the standard card */
   --tl-radius-xl:40px;         /* divider panels, big washes */
   --tl-radius-pill:999px;
@@ -20,8 +21,17 @@
   --tl-border-width:2px;       /* outlined cards */
   --tl-border-width-strong:4px;/* phone frames, emphasis cards */
 
-  --tl-shadow-card:0 2px 10px rgba(20,20,20,.06);
-  --tl-shadow-raised:0 8px 28px rgba(20,20,20,.10);
+  --tl-shadow-card:0 4px 20px rgba(20,20,20,.06);     /* resting cards */
+  --tl-shadow-raised:0 12px 30px rgba(20,20,20,.12);  /* lifted media, report pages, menus */
+  --tl-shadow-overlay:0 24px 60px rgba(20,20,20,.28); /* modals, popovers, hero cards */
+  /* coloured glow under brand buttons / pills / bubbles */
+  --tl-shadow-glow-pink:0 6px 18px color-mix(in srgb, var(--tl-pink-600) 30%, transparent);
+  --tl-shadow-glow-cyan:0 6px 18px color-mix(in srgb, var(--tl-cyan-500) 30%, transparent);
+  --tl-shadow-glow-green:0 6px 18px color-mix(in srgb, var(--tl-green-500) 30%, transparent);
+  --tl-shadow-glow-orange:0 6px 18px color-mix(in srgb, var(--tl-orange-500) 30%, transparent);
+  --tl-shadow-glow-whatsapp:0 8px 24px color-mix(in srgb, var(--tl-whatsapp) 42%, transparent);
+  /* focus ring for inputs */
+  --tl-ring:0 0 0 3px color-mix(in srgb, var(--tl-cyan-500) 18%, transparent);
   --tl-shadow-none:none;
 
   /* Slide geometry */

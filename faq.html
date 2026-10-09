@@ -20,20 +20,22 @@
 <meta name="twitter:image" content="https://tillinewwebsite.ishanirai.com/assets/ds/tilli-wordmark.png">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/fonts.css">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
-<link rel="stylesheet" href="css/site.css?v=2">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
+<link rel="stylesheet" href="css/site.css?v=3">
 <style>
   /* page-local: FAQ accordion */
   .faq { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-  .faq__item { background: var(--tl-surface-card); border: 1px solid var(--tl-line-200); border-radius: 18px;
-    padding: 4px 24px; box-shadow: 0 4px 20px rgba(20,20,20,0.05); transition: border-color .2s ease; }
+  .faq__item { background: var(--tl-surface-card); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-md);
+    padding: 4px 24px; box-shadow: var(--tl-shadow-card); transition: border-color .2s ease; }
   .faq__item[open] { border-color: var(--tl-pink-400); }
   .faq__item summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; padding: 18px 0; font-size: 17px; font-weight: 700; color: var(--tl-ink-900); }
+    gap: 16px; padding: 18px 0; font-size: var(--tl-fs-base); font-weight: 700; color: var(--tl-ink-900); }
   .faq__item summary::-webkit-details-marker { display: none; }
-  .faq__item summary::after { content: "+"; font-size: 24px; font-weight: 400; color: var(--tl-pink-600);
+  .faq__item summary::after { content: "+"; font-size: var(--tl-fs-lg); font-weight: 400; color: var(--tl-pink-600);
     line-height: 1; transition: transform .25s ease; }
   .faq__item[open] summary::after { transform: rotate(45deg); }
-  .faq__a { padding: 0 0 20px; font-size: 15.5px; line-height: 1.65; color: var(--tl-ink-600); }
+  .faq__a { padding: 0 0 20px; font-size: var(--tl-fs-base); line-height: 1.65; color: var(--tl-ink-600); }
   .faq__a p { margin: 0 0 12px; }
   .faq__a p:last-child { margin-bottom: 0; }
   .faq__a p.faq__lead { font-weight: 700; color: var(--tl-ink-900); }
@@ -172,6 +174,6 @@
 </main>
 
 <script src="js/site-config.js?v=1"></script>
-<script src="js/site-chrome.js?v=3"></script>
+<script src="js/site-chrome.js?v=4"></script>
 </body>
 </html>

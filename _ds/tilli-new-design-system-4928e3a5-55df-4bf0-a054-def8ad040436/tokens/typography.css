@@ -26,13 +26,16 @@
   --tl-size-caption:23px;
   --tl-size-micro:21px;
 
-  /* UI scale (screens, docs, web) */
-  --tl-ui-h1:44px;
-  --tl-ui-h2:32px;
-  --tl-ui-h3:24px;
-  --tl-ui-body:17px;
-  --tl-ui-small:15px;
-  --tl-ui-micro:13px;
+  /* Website scale — every piece of web text uses one of these 7 steps.
+     xl / 2xl / display are fluid (375px phone → 1440px desktop) so the
+     desktop and /m/ builds share the same token names. */
+  --tl-fs-xs:12px;                                   /* kickers, meta, legal */
+  --tl-fs-sm:14px;                                   /* secondary text, labels, chips, nav */
+  --tl-fs-base:16px;                                 /* body, buttons, inputs */
+  --tl-fs-lg:20px;                                   /* card titles, leads, h3 */
+  --tl-fs-xl:clamp(28px, 1.4vw + 22px, 42px);        /* section headings (h2) */
+  --tl-fs-2xl:clamp(34px, 2.4vw + 26px, 60px);       /* page / hero headings (h1) */
+  --tl-fs-display:clamp(40px, 3vw + 28px, 72px);     /* hero stat numerals only */
 
   --tl-leading-tight:1.02;     /* hero + display */
   --tl-leading-snug:1.15;      /* headlines */
@@ -43,4 +46,5 @@
   --tl-tracking-tight:-0.02em;
   --tl-tracking-normal:0;
   --tl-tracking-wide:0.04em;   /* small caps-ish award strips */
+  --tl-tracking-kicker:0.14em; /* every uppercase kicker / eyebrow label */
 }

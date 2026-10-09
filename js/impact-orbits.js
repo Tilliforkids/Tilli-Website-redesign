@@ -47,8 +47,15 @@
   const BOB_SPEED  = 0.9;   // vertical bob rate (rad/s)
   const CHAOS_AMP  = 42;    // px of positional wander (world) at cfg.chaos = 1
   const BG         = [202, 240, 254];   // faint dots blend toward this (matches the glow)
+  /* brand dots read from the CSS tokens (colors.css); hex = fallback only */
+  const TOKENS = getComputedStyle(document.documentElement);
+  const tokRGB = (name, fallback) => {
+    const n = parseInt((TOKENS.getPropertyValue(name).trim() || fallback).slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  };
   const PALETTE    = [
-    [252, 195, 11], [38, 189, 226], [86, 192, 43], [249, 155, 28], [232, 102, 176],
+    tokRGB('--tl-yellow-500', '#FCC30B'), tokRGB('--tl-cyan-500', '#26BDE2'), tokRGB('--tl-green-500', '#56C02B'),
+    tokRGB('--tl-orange-500', '#F99B1C'), tokRGB('--tl-pink-400', '#E866B0'),
   ];
 
   const MAX_DIST = 150, FADE_DIST = 78, MAX_LINKS = 3, DENSITY = 0.72,

@@ -1,55 +1,53 @@
-/* Tilli deck palette — hex values lifted verbatim from the 2026 Master Deck */
+/* Tilli palette — one fixed set shared by the deck and the website.
+   Hex values lifted from the 2026 Master Deck; near-duplicates merged in the
+   CSS/HTML audit (Oct 2026). The website must only use the tokens in the
+   first four blocks — see "Deck-only aliases" at the bottom. */
 :root{
-  /* ── Brand core: the four rail colours ───────────────────────────── */
-  --tl-green-500:#56C02B;      /* rail 1, eyebrow labels, divider slides */
-  --tl-green-400:#5FBF3F;      /* icon circles */
+  /* ── Brand core ─────────────────────────────────────────────────── */
+  --tl-green-500:#56C02B;      /* fills, rail 1, borders */
   --tl-green-600:#348C11;      /* green text on white */
-  --tl-lime-400:#9BDE1D;       /* wash blocks, highlight marker */
-  --tl-pink-400:#E866B0;       /* rail 2 */
-  --tl-pink-600:#E91E8C;       /* magenta — stat numerals, icon circles */
-  --tl-pink-500:#DD3B96;
-  --tl-pink-300:#EB4A81;
-  --tl-yellow-500:#FCC30B;     /* rail 3, divider slides */
-  --tl-yellow-400:#FBBF1A;     /* icon circles */
-  --tl-yellow-300:#FAD202;
-  --tl-peach-300:#FFD699;
-  --tl-cyan-500:#26BDE2;       /* rail 4, section titles, assessment panels */
-  --tl-cyan-400:#2BB3E6;       /* icon circles */
-  --tl-cyan-300:#00C2FF;
-  --tl-cyan-700:#0F94B5;       /* cyan text on white */
-  --tl-orange-500:#F99B1C;     /* brush strokes, 4th accent */
+  --tl-pink-400:#E866B0;       /* rail 2, soft borders */
+  --tl-pink-600:#E91E8C;       /* primary — buttons, stat numerals */
+  --tl-pink-700:#C4147A;       /* primary hover / pressed */
+  --tl-cyan-500:#26BDE2;       /* fills, rail 3, Ask-Tilli */
+  --tl-cyan-700:#0F94B5;       /* cyan text on white, links */
+  --tl-yellow-500:#FCC30B;     /* fills, rail 4 */
+  --tl-yellow-700:#C79600;     /* yellow text on white (500 fails contrast) */
+  --tl-orange-500:#F99B1C;     /* 5th accent */
 
-  /* ── Ink ─────────────────────────────────────────────────────────── */
-  --tl-ink-900:#141414;        /* headlines */
-  --tl-ink-800:#3D3D3D;
-  --tl-ink-700:#474747;        /* card titles */
-  --tl-ink-600:#545454;        /* dominant body colour */
-  --tl-ink-500:#656565;        /* secondary body */
-  --tl-ink-450:#5B6170;        /* stat labels (cool grey) */
-  --tl-ink-400:#737373;
-  --tl-ink-300:#8A91A0;        /* muted / meta */
+  /* ── Ink (text) ─────────────────────────────────────────────────── */
+  --tl-ink-900:#141414;        /* headings, dark bands */
+  --tl-ink-700:#3D3D3D;        /* emphasis text, card titles */
+  --tl-ink-600:#545454;        /* body */
+  --tl-ink-500:#656565;        /* secondary text, stat labels */
+  --tl-ink-300:#8A91A0;        /* muted / meta / placeholders */
 
   /* ── Surfaces & lines ───────────────────────────────────────────── */
   --tl-white:#FFFFFF;
-  --tl-surface-50:#FAFAFA;
-  --tl-surface-100:#F8F9FB;    /* stat strip background */
-  --tl-surface-150:#F5F5F5;
-  --tl-line-200:#ECEEF2;
+  --tl-surface-100:#F8F9FB;    /* subtle section / strip background */
+  --tl-surface-200:#EEF1F4;    /* chips, media placeholders */
+  --tl-line-200:#ECEEF2;       /* hairlines, card borders */
+  --tl-line-300:#C7CDD8;       /* stronger borders, inactive dots */
+  --tl-glass:rgba(255,255,255,.86);        /* frosted bars / pills over the scene */
+  --tl-glass-strong:rgba(255,255,255,.96); /* drawers that must fully cover content */
+  --tl-scrim:rgba(20,20,20,.5);            /* modal backdrop */
 
   /* ── Tint washes (card and section fills) ───────────────────────── */
-  --tl-wash-yellow:#FFF6A8;
-  --tl-wash-yellow-soft:#FFFDE9;
   --tl-wash-cyan:#D9F5FF;
   --tl-wash-green:#F1FFEC;
   --tl-wash-pink:#FFF6FB;
-  --tl-wash-pink-strong:#FFDCF0;
+  --tl-wash-yellow-soft:#FFFDE9;
+  --tl-wash-orange:#FEF1DF;
+
+  /* ── Third-party brand ──────────────────────────────────────────── */
+  --tl-whatsapp:#25D366;
 
   /* ── Semantic aliases ───────────────────────────────────────────── */
   --tl-text-heading:var(--tl-ink-900);
   --tl-text-body:var(--tl-ink-600);
   --tl-text-secondary:var(--tl-ink-500);
   --tl-text-title:var(--tl-ink-700);
-  --tl-text-stat-label:var(--tl-ink-450);
+  --tl-text-stat-label:var(--tl-ink-500);
   --tl-text-muted:var(--tl-ink-300);
   --tl-text-on-color:var(--tl-white);
 
@@ -72,11 +70,23 @@
 
   /* the four skill families named on the title slide */
   --tl-skill-emotional-strength:var(--tl-green-600);
-  --tl-skill-focus-self-control:var(--tl-pink-500);
+  --tl-skill-focus-self-control:var(--tl-pink-600);
   --tl-skill-resilience:var(--tl-cyan-700);
   --tl-skill-independent-thinking:var(--tl-orange-500);
 
   /* link colours (undefined links must never render browser blue) */
   --tl-link:var(--tl-cyan-700);
   --tl-link-hover:var(--tl-pink-600);
+
+  /* ── Deck-only aliases ──────────────────────────────────────────────
+     Kept so the deck components in _ds_bundle.js still resolve. They point
+     at the merged palette above; the website must not reference them. */
+  --tl-green-400:var(--tl-green-500);
+  --tl-cyan-400:var(--tl-cyan-500);
+  --tl-yellow-400:var(--tl-yellow-500);
+  --tl-pink-300:var(--tl-pink-400);
+  --tl-surface-150:var(--tl-surface-200);
+  --tl-lime-400:#9BDE1D;       /* deck highlight marker */
+  --tl-wash-yellow:#FFF6A8;    /* deck highlight wash */
+  --tl-wash-pink-strong:#FFDCF0;
 }

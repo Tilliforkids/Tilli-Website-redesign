@@ -48,60 +48,60 @@
       ".topbar div{flex:1}" +
       /* Header */
       ".hdr{position:sticky;top:6px;z-index:50;display:flex;align-items:center;justify-content:space-between;" +
-        "padding:12px 20px;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);" +
+        "padding:12px 20px;background:var(--tl-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);" +
         "border-bottom:1px solid var(--tl-line-200)}" +
       ".hdr .brand{display:flex;align-items:center}" +
       ".hdr .brand img{height:30px;width:auto}" +
       ".burger{display:flex;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;" +
         "padding:9px 8px;margin:-8px;background:none;border:0;cursor:pointer}" +
-      ".burger span{display:block;height:2.5px;width:100%;border-radius:2px;background:var(--tl-ink-800);" +
+      ".burger span{display:block;height:2.5px;width:100%;border-radius:var(--tl-radius-xs);background:var(--tl-ink-700);" +
         "transition:transform .25s ease,opacity .2s ease}" +
       ".hdr.nav-open .burger span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}" +
       ".hdr.nav-open .burger span:nth-child(2){opacity:0}" +
       ".hdr.nav-open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}" +
       ".navdrawer{position:absolute;top:100%;left:0;right:0;display:flex;flex-direction:column;gap:4px;" +
-        "padding:10px 20px 18px;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);" +
-        "border-bottom:1px solid var(--tl-line-200);box-shadow:0 14px 24px rgba(20,20,20,.08);" +
+        "padding:10px 20px 18px;background:var(--tl-glass-strong);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);" +
+        "border-bottom:1px solid var(--tl-line-200);box-shadow:var(--tl-shadow-raised);" +
         "opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .22s ease,transform .22s ease,visibility .22s}" +
       ".hdr.nav-open .navdrawer{opacity:1;visibility:visible;transform:translateY(0)}" +
-      ".navdrawer a{font-family:'Montserrat',sans-serif;text-decoration:none;font-weight:700;font-size:16px;color:var(--tl-ink-800);padding:12px 4px;border-bottom:1px solid var(--tl-line-200)}" +
+      ".navdrawer a{font-family: var(--tl-font-core);text-decoration:none;font-weight:700;font-size:var(--tl-fs-base);color:var(--tl-ink-700);padding:12px 4px;border-bottom:1px solid var(--tl-line-200)}" +
       ".navdrawer a[aria-current=page]{color:var(--tl-pink-600)}" +
-      ".navdrawer .navdrawer-cta{border:0;margin-top:12px;color:#fff;justify-content:center;display:flex;width:100%;" +
-        "align-items:center;gap:8px;font-weight:700;font-size:15px;padding:13px 22px;border-radius:999px;" +
-        "background:var(--tl-pink-600);box-shadow:0 6px 18px rgba(233,30,140,.28)}" +
+      ".navdrawer .navdrawer-cta{border:0;margin-top:12px;color:var(--tl-white);justify-content:center;display:flex;width:100%;" +
+        "align-items:center;gap:8px;font-weight:700;font-size:var(--tl-fs-base);padding:13px 22px;border-radius:var(--tl-radius-pill);" +
+        "background:var(--tl-pink-600);box-shadow:var(--tl-shadow-glow-pink)}" +
       /* Footer */
       ".ft{padding:32px 20px calc(84px + env(safe-area-inset-bottom));border-top:1px solid var(--tl-line-200);" +
-        "text-align:center;background:#fff}" +
+        "text-align:center;background:var(--tl-white)}" +
       ".ft .fbrand img{height:28px;width:auto;display:inline-block}" +
-      ".ft .tag{font-size:13px;font-style:italic;color:var(--tl-ink-450);margin-top:6px}" +
-      ".ft .mail{font-size:14px;color:var(--tl-ink-450);margin-top:4px}" +
+      ".ft .tag{font-size:var(--tl-fs-sm);font-style:italic;color:var(--tl-ink-500);margin-top:6px}" +
+      ".ft .mail{font-size:var(--tl-fs-sm);color:var(--tl-ink-500);margin-top:4px}" +
       ".ft nav{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:20px 0 14px}" +
-      ".ft nav a{font-size:14px;font-weight:600;color:var(--tl-ink-600)}" +
+      ".ft nav a{font-size:var(--tl-fs-sm);font-weight:600;color:var(--tl-ink-600)}" +
       ".ft .social{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:0 0 16px}" +
-      ".ft .social a{font-size:13px;font-weight:600;color:var(--tl-ink-500)}" +
-      ".ft .mail a{font-size:14px;color:var(--tl-ink-500)}" +
-      ".ft .copy{margin-top:16px;font-size:12px;color:var(--tl-ink-300)}" +
+      ".ft .social a{font-size:var(--tl-fs-sm);font-weight:600;color:var(--tl-ink-500)}" +
+      ".ft .mail a{font-size:var(--tl-fs-sm);color:var(--tl-ink-500)}" +
+      ".ft .copy{margin-top:16px;font-size:var(--tl-fs-xs);color:var(--tl-ink-300)}" +
       /* WhatsApp bubble + card */
       ".wa{position:fixed;right:16px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:56}" +
       ".wa-bubble{width:52px;height:52px;border-radius:50%;border:0;cursor:pointer;margin-left:auto;" +
-        "background:#25D366;box-shadow:0 8px 22px rgba(37,211,102,.4);display:flex;align-items:center;justify-content:center}" +
-      ".wa-bubble svg{width:28px;height:28px;fill:#fff}" +
-      ".wa-card{position:absolute;right:0;bottom:64px;width:260px;border-radius:22px;overflow:hidden;background:#fff;" +
-        "box-shadow:0 20px 50px rgba(20,20,20,.28);transform-origin:bottom right;transform:scale(.9) translateY(10px);" +
+        "background:var(--tl-whatsapp);box-shadow:var(--tl-shadow-glow-whatsapp);display:flex;align-items:center;justify-content:center}" +
+      ".wa-bubble svg{width:28px;height:28px;fill:var(--tl-white)}" +
+      ".wa-card{position:absolute;right:0;bottom:64px;width:260px;border-radius:var(--tl-radius-lg);overflow:hidden;background:var(--tl-white);" +
+        "box-shadow:var(--tl-shadow-overlay);transform-origin:bottom right;transform:scale(.9) translateY(10px);" +
         "opacity:0;pointer-events:none;transition:transform .22s ease,opacity .22s ease}" +
       ".wa.open .wa-card{transform:scale(1) translateY(0);opacity:1;pointer-events:auto}" +
-      ".wa-card__head{background:var(--tl-green-500);padding:26px 22px 22px;text-align:center;position:relative;color:#fff}" +
-      ".wa-card__close{position:absolute;top:10px;right:12px;background:none;border:0;color:#fff;font-size:22px;" +
+      ".wa-card__head{background:var(--tl-green-500);padding:26px 22px 22px;text-align:center;position:relative;color:var(--tl-white)}" +
+      ".wa-card__close{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--tl-white);font-size:var(--tl-fs-lg);" +
         "line-height:1;cursor:pointer;opacity:.9;padding:4px}" +
       ".wa-card__avwrap{position:relative;width:84px;margin:0 auto 12px}" +
-      ".wa-card__avatar{width:84px;height:84px;border-radius:50%;border:3px solid #fff;object-fit:cover;display:block;background:#fff}" +
+      ".wa-card__avatar{width:84px;height:84px;border-radius:50%;border:3px solid var(--tl-white);object-fit:cover;display:block;background:var(--tl-white)}" +
       ".wa-card__dot{position:absolute;right:4px;bottom:4px;width:16px;height:16px;border-radius:50%;" +
-        "background:#34e07a;border:3px solid var(--tl-green-500)}" +
-      ".wa-card__name{font-size:19px;font-weight:800;margin:0}" +
-      ".wa-card__role{font-size:13.5px;opacity:.95;margin:3px 0 0}" +
+        "background:var(--tl-whatsapp);border:3px solid var(--tl-green-500)}" +
+      ".wa-card__name{font-size:var(--tl-fs-lg);font-weight:800;margin:0}" +
+      ".wa-card__role{font-size:var(--tl-fs-sm);opacity:.95;margin:3px 0 0}" +
       ".wa-card__foot{padding:16px}" +
       ".wa-card__start{display:flex;width:100%;justify-content:center;align-items:center;background:var(--tl-green-500);" +
-        "color:#fff;font-weight:700;font-size:15px;padding:13px 22px;border-radius:999px}";
+        "color:var(--tl-white);font-weight:700;font-size:var(--tl-fs-base);padding:13px 22px;border-radius:var(--tl-radius-pill)}";
     var style = document.createElement("style");
     style.id = "m-chrome-css";
     style.textContent = css;
@@ -171,8 +171,8 @@
     var initials = "KT";
     var avatar = T.KAVI_PHOTO
       ? '<img class="wa-card__avatar" src="../' + T.KAVI_PHOTO + '" alt="Kavi"' +
-          ' onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'wa-card__avatar\',style:\'display:flex;align-items:center;justify-content:center;font-weight:800;color:#348C11;font-size:30px\',textContent:\'' + initials + '\'}))">'
-      : '<div class="wa-card__avatar" style="display:flex;align-items:center;justify-content:center;font-weight:800;color:#348C11;font-size:30px">' + initials + "</div>";
+          ' onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'wa-card__avatar\',style:\'display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--tl-green-600);font-size:var(--tl-fs-xl)\',textContent:\'' + initials + '\'}))">'
+      : '<div class="wa-card__avatar" style="display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--tl-green-600);font-size:var(--tl-fs-xl)">' + initials + "</div>";
     var wrap = el(
       '<div class="wa">' +
         '<div class="wa-card" role="dialog" aria-label="Chat with Kavi">' +

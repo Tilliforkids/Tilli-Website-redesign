@@ -20,38 +20,40 @@
 <meta name="twitter:image" content="https://tillinewwebsite.ishanirai.com/assets/ds/tilli-wordmark.png">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/fonts.css">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
-<link rel="stylesheet" href="css/site.css?v=2">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
+<link rel="stylesheet" href="css/site.css?v=3">
 <style>
   /* page-local: legal / long-form prose */
   .legal { max-width: 760px; margin: 0 auto; }
-  .legal__intro { font-size: 16.5px; line-height: 1.7; color: var(--tl-ink-600); }
+  .legal__intro { font-size: var(--tl-fs-base); line-height: 1.7; color: var(--tl-ink-600); }
   .legal__intro p { margin: 0 0 14px; }
   .legal__intro p:last-child { margin-bottom: 0; }
 
   .legal__note { background: var(--tl-wash-yellow-soft); border: 1px solid var(--tl-line-200);
-    border-radius: 16px; padding: 18px 22px; margin: 22px 0 0; font-size: 15px; line-height: 1.6;
+    border-radius: var(--tl-radius-md); padding: 18px 22px; margin: 22px 0 0; font-size: var(--tl-fs-base); line-height: 1.6;
     color: var(--tl-ink-700); }
 
   .legal__section { margin-top: 40px; }
-  .legal__section h2 { font-size: 21px; font-weight: 800; color: var(--tl-ink-900); margin: 0 0 14px;
+  .legal__section h2 { font-size: var(--tl-fs-lg); font-weight: 800; color: var(--tl-ink-900); margin: 0 0 14px;
     padding-top: 20px; border-top: 1px solid var(--tl-line-200); }
   .legal__section:first-of-type h2 { border-top: none; padding-top: 0; }
-  .legal__section h3 { font-size: 16px; font-weight: 800; color: var(--tl-ink-900); margin: 22px 0 8px; }
-  .legal__section p { font-size: 15.5px; line-height: 1.7; color: var(--tl-ink-600); margin: 0 0 12px; }
+  .legal__section h3 { font-size: var(--tl-fs-base); font-weight: 800; color: var(--tl-ink-900); margin: 22px 0 8px; }
+  .legal__section p { font-size: var(--tl-fs-base); line-height: 1.7; color: var(--tl-ink-600); margin: 0 0 12px; }
   .legal__section p:last-child { margin-bottom: 0; }
   .legal__section ul { margin: 0 0 14px; padding-left: 22px; }
-  .legal__section li { font-size: 15.5px; line-height: 1.65; color: var(--tl-ink-600); margin: 0 0 8px; }
+  .legal__section li { font-size: var(--tl-fs-base); line-height: 1.65; color: var(--tl-ink-600); margin: 0 0 8px; }
   .legal__section a { color: var(--tl-pink-600); font-weight: 700; }
 
   /* contact block reused three times in the source policy */
   .legal__contact { background: var(--tl-surface-subtle); border: 1px solid var(--tl-line-200);
-    border-radius: 16px; padding: 18px 22px; margin: 8px 0 4px; }
-  .legal__contact p { margin: 0 0 6px; font-size: 15px; }
+    border-radius: var(--tl-radius-md); padding: 18px 22px; margin: 8px 0 4px; }
+  .legal__contact p { margin: 0 0 6px; font-size: var(--tl-fs-base); }
   .legal__contact p:last-child { margin-bottom: 0; }
   .legal__contact strong { color: var(--tl-ink-900); }
 
-  .legal__updated { display: inline-block; margin-top: 14px; font-size: 13.5px; font-weight: 700;
-    letter-spacing: .02em; color: var(--tl-ink-500); }
+  .legal__updated { display: inline-block; margin-top: 14px; font-size: var(--tl-fs-sm); font-weight: 700;
+    letter-spacing: var(--tl-tracking-normal); color: var(--tl-ink-500); }
 </style>
 </head>
 <body class="tl-page">
@@ -432,6 +434,6 @@
 </main>
 
 <script src="js/site-config.js?v=1"></script>
-<script src="js/site-chrome.js?v=3"></script>
+<script src="js/site-chrome.js?v=4"></script>
 </body>
 </html>

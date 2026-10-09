@@ -1,0 +1,64 @@
+/* ============================================================================
+   Tilli — shared base for the MOBILE build (/m/*.html)
+   Reset, type, buttons and wash sections every /m/ page uses. Page-specific
+   sections stay in each page's <style>; chrome (topbar, header, footer,
+   WhatsApp) is injected by js/m-chrome.js. Tokens: _ds/.../tokens/*.css.
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; overflow-x: clip; }
+body {
+  margin: 0; padding-top: 6px;
+  font-family: var(--tl-font-core);
+  color: var(--tl-ink-600); background: var(--tl-white);
+  line-height: 1.55; -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+h1, h2, h3, p { margin: 0; }
+a { color: var(--tl-link); text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+.content { position: relative; z-index: 1; }
+.wrap { padding-inline: 22px; }
+section { padding-block: 52px; position: relative; }
+
+/* ── Type ────────────────────────────────────────────────────────────────── */
+.eyebrow { font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
+  text-transform: uppercase; color: var(--tl-cyan-700); margin-bottom: 14px; }
+.eyebrow.cyan  { color: var(--tl-cyan-700); }
+.eyebrow.green { color: var(--tl-green-600); }
+.eyebrow.pink  { color: var(--tl-pink-600); }
+.eyebrow.grey  { color: var(--tl-ink-300); }
+h1.title { font-weight: 800; font-size: var(--tl-fs-2xl); line-height: 1.1;
+  color: var(--tl-ink-900); letter-spacing: var(--tl-tracking-tight); }
+h2.title { font-weight: 800; font-size: var(--tl-fs-xl); line-height: 1.14;
+  color: var(--tl-ink-900); letter-spacing: var(--tl-tracking-tight); }
+.lede { margin-top: 15px; font-size: var(--tl-fs-base); color: var(--tl-ink-500); }
+.body { margin-top: 14px; font-size: var(--tl-fs-base); color: var(--tl-ink-600); line-height: 1.6; }
+.c-pink { color: var(--tl-pink-600); } .c-cyan { color: var(--tl-cyan-700); }
+.c-green { color: var(--tl-green-600); } .c-ink { color: var(--tl-ink-900); }
+
+/* ── Buttons (same sizes/colours as the desktop .tl-btn family) ──────────── */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: inherit; font-weight: 700; font-size: var(--tl-fs-base);
+  padding: 13px 26px; border-radius: var(--tl-radius-pill); border: 0; cursor: pointer;
+  transition: transform .15s ease; }
+.btn:active { transform: var(--tl-press-scale); }
+.btn-pink   { background: var(--tl-pink-600);   color: var(--tl-white); box-shadow: var(--tl-shadow-glow-pink); }
+.btn-pink:active { background: var(--tl-pink-700); }
+.btn-cyan   { background: var(--tl-cyan-500);   color: var(--tl-white); box-shadow: var(--tl-shadow-glow-cyan); }
+.btn-green  { background: var(--tl-green-500);  color: var(--tl-white); box-shadow: var(--tl-shadow-glow-green); }
+.btn-orange { background: var(--tl-orange-500); color: var(--tl-white); box-shadow: var(--tl-shadow-glow-orange); }
+.btn-ghost  { background: transparent; color: var(--tl-ink-700); border: 1.5px solid var(--tl-line-200); }
+.btn-sm { padding: 9px 16px; font-size: var(--tl-fs-sm); }
+.btn-block { display: flex; width: 100%; }
+.cta-col { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+.textlink { font-weight: 700; font-size: var(--tl-fs-base); }
+
+/* ── Wash sections ───────────────────────────────────────────────────────── */
+.wash-cyan  { background: var(--tl-wash-cyan); }
+.wash-green { background: var(--tl-wash-green); }
+.wash-pink  { background: var(--tl-wash-pink); }
+.wash-grey  { background: var(--tl-surface-100); }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

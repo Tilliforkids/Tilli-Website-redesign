@@ -1,0 +1,112 @@
+/* ============================================================================
+   Tilli — Ask-Tilli live demo chat (js/ask-tilli-demo.js)
+   Shared by the desktop home (index.html) and the mobile home (m/index.html).
+   The socket / guide / drop-zone rules only match markup the desktop 3JS
+   scene injects, so they are inert on mobile. Phone sizing overrides live in
+   m/index.html.
+   ========================================================================== */
+
+/* Ask-Tilli chat "typing" indicator — three bouncing dots */
+.tdot { width: 6px; height: 6px; border-radius: 50%; background: var(--tl-ink-300); display: inline-block; animation: tbounce 1.25s infinite ease-in-out; }
+.tdot:nth-child(2) { animation-delay: 0.16s; }
+.tdot:nth-child(3) { animation-delay: 0.32s; }
+@keyframes tbounce { 0%, 75%, 100% { transform: translateY(0); opacity: 0.35; } 35% { transform: translateY(-4px); opacity: 1; } }
+
+/* ── Ask-Tilli LIVE demo chat ─────────────────────────────────────
+   A real, interactive chat (js/ask-tilli-demo.js). Lives in a fixed
+   stage like every other section, so the card is height-capped and the
+   message log scrolls internally rather than growing the viewport. */
+.atl-card { max-width: 640px; margin: min(26px, 3vh) auto 0; background: var(--tl-white); border: 2px solid var(--tl-cyan-500); border-radius: var(--tl-radius-lg); box-shadow: var(--tl-shadow-raised); overflow: hidden; text-align: left; display: flex; flex-direction: column; }
+/* the card scales in (spring) the moment the heading reveals — it shares the
+   .rv reveal system, so it fires with the same "seen" trigger as the h2. */
+.atl-card.rv { opacity: 0; transform: scale(0.9); transition: opacity .5s ease, transform .6s cubic-bezier(0.34,1.56,0.64,1); }
+.atl-card.rv.in { opacity: 1; transform: scale(1); }
+.atl-loghead { font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-cyan-700); padding: 16px 20px 0; }
+.atl-log { padding: 14px 20px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: min(300px, 34vh); scroll-behavior: smooth; }
+.atl-log:empty { padding: 6px 20px; }
+.atl-log::-webkit-scrollbar { width: 6px; }
+.atl-log::-webkit-scrollbar-thumb { background: var(--tl-line-200); border-radius: var(--tl-radius-xs); }
+/* suggested prompts now live OUTSIDE the card; colours are driven by the
+   --atl-chip-* vars so the wave GUI can recolour them live. */
+.atl-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 640px; margin: 14px auto 0; }
+.atl-chip { font-size: var(--tl-fs-xs); font-weight: 600; color: var(--atl-chip-text, var(--tl-ink-500)); background: var(--atl-chip-bg, var(--tl-surface-200)); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-pill); padding: 7px 13px; cursor: pointer; transition: filter .2s ease, transform .12s ease; }
+.atl-chip:hover { filter: brightness(0.96); transform: translateY(-1px); }
+/* message bubbles — same language as the "Any AI" cards */
+.atl-msg { max-width: 82%; font-size: var(--tl-fs-sm); line-height: 1.5; padding: 11px 15px; border-radius: var(--tl-radius-md); animation: atlpop .32s cubic-bezier(0.34,1.56,0.64,1) both; }
+.atl-msg.user { align-self: flex-end; background: var(--tl-cyan-500); color: var(--tl-white); border-radius: var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-xs) var(--tl-radius-md); }
+.atl-msg.bot  { align-self: flex-start; background: var(--tl-surface-100); color: var(--tl-ink-700); border-radius: var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-xs); }
+.atl-msg.bot b { color: var(--tl-cyan-700); }
+.atl-typing { align-self: flex-start; background: var(--tl-surface-100); border-radius: var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-xs); padding: 13px 15px; display: flex; gap: 4px; align-items: center; animation: atlpop .3s ease both; }
+@keyframes atlpop { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
+/* input bar — expands with the text, capped, then scrolls */
+.atl-inputbar { position: relative; display: flex; align-items: flex-end; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--tl-line-200); background: var(--tl-white); transition: background .4s ease; }
+.atl-inputbar.atl-live { background: color-mix(in srgb, var(--tl-cyan-500) 6%, transparent); }
+.atl-inputbar.atl-plugged { background: color-mix(in srgb, var(--tl-green-500) 7%, transparent); }
+/* DROP-ZONE GLOW — the whole card breathes cyan while the socket is armed to
+   say "snap the flowing dots in here", then locks to a solid green ring the
+   moment the cursor plugs in. (:has keys off the bar's .atl-live/.atl-plugged
+   set by main.js.) */
+.atl-card:has(.atl-inputbar.atl-live) { border-color: var(--tl-cyan-500); animation: atl-card-glow 1.9s ease-in-out infinite; }
+.atl-card:has(.atl-inputbar.atl-plugged) { border-color: var(--tl-green-500); animation: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--tl-green-500) 28%, transparent), 0 12px 34px color-mix(in srgb, var(--tl-green-500) 22%, transparent); }
+@keyframes atl-card-glow {
+  0%,100% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tl-cyan-500) 35%, transparent), 0 10px 30px color-mix(in srgb, var(--tl-cyan-700) 12%, transparent); }
+  50%     { box-shadow: 0 0 0 4px color-mix(in srgb, var(--tl-cyan-500) 30%, transparent), 0 0 30px 4px color-mix(in srgb, var(--tl-cyan-500) 32%, transparent); }
+}
+/* floating guide pill — anchored to the RIGHT, its tail pointing down at the
+   socket that now sits after the send button. */
+.atl-guide { position: absolute; right: 4px; bottom: calc(100% + 14px); transform: translateY(6px); white-space: nowrap; padding: 7px 15px; border-radius: var(--tl-radius-pill); background: var(--tl-cyan-700); color: var(--tl-white); font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-normal); box-shadow: var(--tl-shadow-glow-cyan); opacity: 0; pointer-events: none; z-index: 6; transition: opacity .4s ease, transform .4s cubic-bezier(.34,1.56,.64,1), background .3s ease; }
+.atl-guide::after { content: ''; position: absolute; right: 22px; top: 100%; border: 6px solid transparent; border-top-color: var(--tl-cyan-700); transition: border-top-color .3s ease; }
+.atl-inputbar.atl-live .atl-guide { opacity: 1; transform: translateY(0); animation: atl-guide-bob 1.8s ease-in-out infinite; }
+@keyframes atl-guide-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.atl-guide-plug { display: none; }
+.atl-inputbar.atl-plugged .atl-guide { background: var(--tl-green-500); box-shadow: var(--tl-shadow-glow-green); animation: none; }
+.atl-inputbar.atl-plugged .atl-guide::after { border-top-color: var(--tl-green-500); }
+.atl-inputbar.atl-plugged .atl-guide-arm { display: none; }
+.atl-inputbar.atl-plugged .atl-guide-plug { display: inline; }
+@media (prefers-reduced-motion: reduce) {
+  .atl-card:has(.atl-inputbar.atl-live), .atl-inputbar.atl-live .atl-guide { animation: none; }
+}
+.atl-input { flex: 1; border: none; outline: none; resize: none; font-family: inherit; font-size: var(--tl-fs-base); line-height: 1.45; color: var(--tl-ink-700); background: transparent; max-height: 120px; overflow-y: auto; padding: 8px 4px; transition: padding-left .35s ease; }
+/* ── plug socket ── the colourful dots streaming off the cursor pour in here.
+   Hidden until the swarm is live (.atl-live on the bar); pulses (dashed ring,
+   sonar halo, converging chevrons) to say "plug in here", then locks solid
+   (.atl-plugged). pointer-events off so it never blocks typing. */
+/* RIGHT-side snap point: an in-flow flex item after the send button. It
+   collapses to zero width when idle (no layout shift) and expands when live. */
+.atl-socket { position: relative; align-self: center; flex-shrink: 0; width: 0; height: 32px; margin-left: -8px; pointer-events: none; opacity: 0; transform: scale(.5); transition: opacity .35s ease, transform .4s cubic-bezier(.34,1.56,.64,1), width .35s ease, margin-left .35s ease; z-index: 4; }
+.atl-inputbar.atl-live .atl-socket { width: 32px; margin-left: 0; opacity: 1; transform: scale(1); }
+.atl-socket-ring { position: absolute; inset: 0; border: 2px dashed var(--tl-cyan-500); border-radius: 50%; animation: atl-sock-spin 7s linear infinite; }
+.atl-socket-ring::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; box-shadow: 0 0 0 2px color-mix(in srgb, var(--tl-cyan-500) 45%, transparent); animation: atl-sock-halo 1.7s ease-out infinite; }
+.atl-socket-arrows { position: absolute; inset: 3px; display: flex; align-items: center; justify-content: space-between; color: var(--tl-cyan-700); }
+.atl-socket-arrows svg { width: 9px; height: 9px; }
+.atl-socket-arrows svg:first-child { animation: atl-arrowL 1.3s ease-in-out infinite; }
+.atl-socket-arrows svg:last-child { transform: rotate(180deg); animation: atl-arrowR 1.3s ease-in-out infinite; }
+.atl-socket-core { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--tl-cyan-500); box-shadow: 0 0 7px color-mix(in srgb, var(--tl-cyan-500) 85%, transparent); animation: atl-sock-core 1.7s ease-in-out infinite; }
+@keyframes atl-sock-spin { to { transform: rotate(360deg); } }
+@keyframes atl-sock-halo { 0% { transform: scale(.8); opacity: .8; } 100% { transform: scale(1.5); opacity: 0; } }
+@keyframes atl-sock-core { 0%,100% { transform: scale(.7); opacity: .7; } 50% { transform: scale(1.25); opacity: 1; } }
+@keyframes atl-arrowL { 0%,100% { transform: translateX(-2px); opacity: .35; } 50% { transform: translateX(2px); opacity: 1; } }
+@keyframes atl-arrowR { 0%,100% { transform: translateX(2px) rotate(180deg); opacity: .35; } 50% { transform: translateX(-2px) rotate(180deg); opacity: 1; } }
+/* plugged — lock solid green, drop every invitation animation */
+.atl-socket.atl-plugged .atl-socket-ring { animation: none; border-style: solid; border-color: var(--tl-green-500); }
+.atl-socket.atl-plugged .atl-socket-ring::after { animation: none; box-shadow: 0 0 10px 2px color-mix(in srgb, var(--tl-green-500) 55%, transparent); }
+.atl-socket.atl-plugged .atl-socket-arrows { display: none; }
+.atl-socket.atl-plugged .atl-socket-core { animation: none; width: 13px; height: 13px; margin: -6.5px 0 0 -6.5px; background: var(--tl-green-500); box-shadow: 0 0 12px color-mix(in srgb, var(--tl-green-500) 90%, transparent); }
+.atl-input::placeholder { color: var(--tl-ink-300); }
+.atl-btn { flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s ease, opacity .2s ease, transform .15s ease; }
+.atl-mic { background: var(--tl-surface-100); color: var(--tl-ink-500); }
+.atl-mic:hover { background: var(--tl-line-200); }
+.atl-mic.rec { background: var(--tl-pink-600); color: var(--tl-white); animation: atlpulse 1.2s infinite; }
+@keyframes atlpulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tl-pink-600) 40%, transparent); } 50% { box-shadow: 0 0 0 7px transparent; } }
+.atl-send { background: var(--tl-cyan-500); color: var(--tl-white); }
+.atl-send:hover { background: var(--tl-cyan-700); }
+.atl-btn:disabled { opacity: 0.4; cursor: default; }
+.atl-meta { display: flex; justify-content: space-between; align-items: center; padding: 0 16px 12px; font-size: var(--tl-fs-xs); font-weight: 600; color: var(--tl-ink-300); }
+.atl-count { color: var(--tl-cyan-700); }
+.atl-chars.over { color: var(--tl-pink-600); }
+/* locked state after the prompt budget is spent */
+.atl-locked { padding: 20px; border-top: 1px solid var(--tl-line-200); text-align: center; background: var(--tl-wash-cyan); }
+.atl-locked-t { font-size: var(--tl-fs-sm); font-weight: 700; color: var(--tl-ink-700); line-height: 1.5; }
+.atl-locked a { display: inline-block; margin-top: 12px; background: var(--tl-cyan-500); color: var(--tl-white); font-weight: 700; font-size: var(--tl-fs-sm); padding: 11px 26px; border-radius: var(--tl-radius-pill); }
+.atl-locked a:hover { background: var(--tl-cyan-700); }
+.atl-disclaimer { font-size: var(--tl-fs-xs); line-height: 1.5; color: var(--tl-ink-300); max-width: 560px; margin: 14px auto 0; }

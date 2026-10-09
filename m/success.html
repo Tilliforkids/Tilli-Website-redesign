@@ -22,48 +22,18 @@
 <meta name="twitter:image" content="https://tillinewwebsite.ishanirai.com/assets/ds/tilli-wordmark.png">
 <link rel="stylesheet" href="../_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/fonts.css">
 <link rel="stylesheet" href="../_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
+<link rel="stylesheet" href="../_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
+<link rel="stylesheet" href="../_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
+<link rel="stylesheet" href="../css/m.css">
 <!-- Shared mobile chrome (topbar, header, footer, WhatsApp) — one source for all /m/ pages -->
 <script src="../js/site-config.js?v=1"></script>
-<script src="../js/m-chrome.js?v=1" defer></script>
+<script src="../js/m-chrome.js?v=2" defer></script>
 <style>
   /* ── Mobile School Success build — on-brand, same sections as success.html,
         single-column phone scroll in the m/ design language. ── */
-  *, *::before, *::after { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; overflow-x: clip; }
-  body { margin: 0; padding-top: 6px; font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
-    color: var(--tl-ink-600); background: var(--tl-white); line-height: 1.55;
-    -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-  h1, h2, h3, p { margin: 0; }
-  a { color: var(--tl-cyan-700); text-decoration: none; }
-  img { max-width: 100%; display: block; }
-
-  .content { position: relative; z-index: 1; }
-  .wrap { padding-inline: 22px; }
-  section { padding-block: 50px; position: relative; }
-
-  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--tl-green-600); margin-bottom: 14px; }
-  .eyebrow.cyan { color: var(--tl-cyan-700); }
-  h1.title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(28px, 8.4vw, 40px);
-    line-height: 1.1; color: var(--tl-ink-900); letter-spacing: -0.02em; }
-  h2.title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(23px, 6.6vw, 31px);
-    line-height: 1.14; color: var(--tl-ink-900); letter-spacing: -0.015em; }
-  .lede { margin-top: 15px; font-size: 16.5px; color: var(--tl-ink-500); }
-  .body { margin-top: 14px; font-size: 15.5px; color: var(--tl-ink-600); line-height: 1.6; }
-  .c-green { color: var(--tl-green-600); } .c-cyan { color: var(--tl-cyan-700); }
-
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit;
-    font-weight: 700; font-size: 15px; padding: 13px 22px; border-radius: 999px; border: 0; cursor: pointer;
-    transition: transform .15s ease; }
-  .btn:active { transform: scale(0.97); }
-  .btn-pink { background: var(--tl-pink-600); color: #fff; box-shadow: 0 6px 18px rgba(233,30,140,0.28); }
-  .btn-cyan { background: var(--tl-cyan-500); color: #fff; box-shadow: 0 6px 18px rgba(38,189,226,0.28); }
-  .btn-block { display: flex; width: 100%; max-width: 300px; margin: 0 auto; }
-  .cta-col { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 24px; }
-
-  .wash-green { background: var(--tl-wash-green); }
-  .wash-cyan  { background: var(--tl-wash-cyan); }
-  .wash-pink  { background: var(--tl-wash-pink); }
+  /* Base reset, type, buttons and washes live in ../css/m.css. */
+  .btn-block { max-width: 300px; margin: 0 auto; }
+  .cta-col { align-items: center; }
 
   /* Hero */
   .s-hero { text-align: center; }
@@ -71,38 +41,38 @@
   /* Carousel placeholder (CHG-22 deferred — awaiting B4 school/training photos) */
   .s-carousel { display: flex; gap: 12px; overflow-x: auto; -webkit-overflow-scrolling: touch;
     padding: 4px 22px 6px; margin: 0 -22px; scroll-snap-type: x mandatory; }
-  .s-slide { scroll-snap-align: center; flex: 0 0 82%; aspect-ratio: 4/3; border-radius: 18px;
-    background: var(--tl-surface-150); border: 1px dashed var(--tl-line-200); display: flex;
-    align-items: center; justify-content: center; text-align: center; color: var(--tl-ink-400);
-    font-size: 13px; font-weight: 600; padding: 16px; }
+  .s-slide { scroll-snap-align: center; flex: 0 0 82%; aspect-ratio: 4/3; border-radius: var(--tl-radius-md);
+    background: var(--tl-surface-200); border: 1px dashed var(--tl-line-200); display: flex;
+    align-items: center; justify-content: center; text-align: center; color: var(--tl-ink-300);
+    font-size: var(--tl-fs-sm); font-weight: 600; padding: 16px; }
 
   /* Offerings — Measure / Ask / Intervene */
   .s-offer { display: flex; flex-direction: column; gap: 14px; margin-top: 26px; text-align: left; }
-  .s-ocard { background: #fff; border: 1px solid var(--tl-line-200); border-radius: 18px; padding: 20px 20px;
+  .s-ocard { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-md); padding: 20px 20px;
     border-top: 4px solid var(--tl-green-500); }
   .s-ocard.o-ask { border-top-color: var(--tl-cyan-500); }
   .s-ocard.o-int { border-top-color: var(--tl-yellow-500); }
-  .s-ocard .k { font-size: 11.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--tl-green-600); }
+  .s-ocard .k { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--tl-green-600); }
   .s-ocard.o-ask .k { color: var(--tl-cyan-700); }
-  .s-ocard.o-int .k { color: #C79600; }
-  .s-ocard h3 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 18px; color: var(--tl-ink-900); margin: 6px 0 6px; }
-  .s-ocard p { font-size: 14.5px; color: var(--tl-ink-500); line-height: 1.55; }
+  .s-ocard.o-int .k { color: var(--tl-yellow-700); }
+  .s-ocard h3 { font-family: var(--tl-font-core); font-weight: 800; font-size: var(--tl-fs-lg); color: var(--tl-ink-900); margin: 6px 0 6px; }
+  .s-ocard p { font-size: var(--tl-fs-sm); color: var(--tl-ink-500); line-height: 1.55; }
 
   /* Case studies */
-  .cs-card { background: #fff; border: 1px solid var(--tl-line-200); border-radius: 20px; overflow: hidden;
-    box-shadow: 0 8px 24px rgba(20,20,20,0.05); margin-top: 20px; text-align: left; }
-  .cs-media { aspect-ratio: 16/10; background: var(--tl-surface-150); display: flex; align-items: center;
-    justify-content: center; color: var(--tl-ink-400); font-weight: 600; font-size: 13px; text-align: center; padding: 16px; }
+  .cs-card { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-lg); overflow: hidden;
+    box-shadow: var(--tl-shadow-card); margin-top: 20px; text-align: left; }
+  .cs-media { aspect-ratio: 16/10; background: var(--tl-surface-200); display: flex; align-items: center;
+    justify-content: center; color: var(--tl-ink-300); font-weight: 600; font-size: var(--tl-fs-sm); text-align: center; padding: 16px; }
   .cs-media img { width: 100%; height: 100%; object-fit: cover; }
   .cs-body { padding: 22px 20px 24px; }
-  .cs-place { color: var(--tl-cyan-700); font-weight: 800; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
-  .cs-name { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 21px; color: var(--tl-ink-900); margin: 6px 0 12px; line-height: 1.15; }
+  .cs-place { color: var(--tl-cyan-700); font-weight: 800; font-size: var(--tl-fs-xs); letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; }
+  .cs-name { font-family: var(--tl-font-core); font-weight: 800; font-size: var(--tl-fs-lg); color: var(--tl-ink-900); margin: 6px 0 12px; line-height: 1.15; }
   .cs-stat { display: inline-flex; align-items: baseline; gap: 10px; background: var(--tl-wash-green);
-    border-radius: 14px; padding: 12px 16px; margin: 0 0 14px; }
-  .cs-stat b { font-size: 34px; font-weight: 800; letter-spacing: -.02em; color: var(--tl-green-600); line-height: 1; }
-  .cs-stat span { font-size: 13px; font-weight: 600; color: var(--tl-ink-600); line-height: 1.3; }
-  .cs-text { font-size: 15px; color: var(--tl-ink-600); line-height: 1.6; }
-  .cs-source { font-size: 12.5px; color: var(--tl-ink-400); border-left: 3px solid var(--tl-line-200);
+    border-radius: var(--tl-radius-md); padding: 12px 16px; margin: 0 0 14px; }
+  .cs-stat b { font-size: var(--tl-fs-xl); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-green-600); line-height: 1; }
+  .cs-stat span { font-size: var(--tl-fs-sm); font-weight: 600; color: var(--tl-ink-600); line-height: 1.3; }
+  .cs-text { font-size: var(--tl-fs-base); color: var(--tl-ink-600); line-height: 1.6; }
+  .cs-source { font-size: var(--tl-fs-xs); color: var(--tl-ink-300); border-left: 3px solid var(--tl-line-200);
     padding-left: 13px; margin-top: 16px; line-height: 1.5; }
 
   /* Reach-out band (CHG-27 E2) — illustration stacks above groups */
@@ -110,13 +80,13 @@
   .rk-art img { width: 160px; height: auto; }
   .rk-groups { display: flex; flex-direction: column; gap: 22px; text-align: left;
     max-width: 320px; margin: 22px auto 0; }
-  .rk-label { font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+  .rk-label { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase;
     color: var(--tl-ink-500); margin-bottom: 10px; }
-  .rk-link { display: flex; align-items: center; gap: 11px; font-weight: 700; font-size: 15.5px;
+  .rk-link { display: flex; align-items: center; gap: 11px; font-weight: 700; font-size: var(--tl-fs-base);
     color: var(--tl-ink-900); text-decoration: none; }
   .rk-link + .rk-link { margin-top: 9px; }
   .rk-ic { flex: none; display: inline-flex; align-items: center; justify-content: center;
-    width: 38px; height: 38px; border-radius: 11px; }
+    width: 38px; height: 38px; border-radius: var(--tl-radius-md); }
   .rk-ic svg { width: 19px; height: 19px; }
   .rk-ic.g { background: var(--tl-wash-green); color: var(--tl-green-600); }
   .rk-ic.c { background: var(--tl-wash-cyan);  color: var(--tl-cyan-700); }
@@ -124,27 +94,26 @@
 
   /* "Tilli works" Top Results (CHG-28 E3) — illustration stacks below text */
   .s-tw a { color: var(--tl-cyan-700); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
-  .tw-sub { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  .tw-sub { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase;
     color: var(--tl-ink-500); margin: 20px 0 14px; }
   .tw-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; text-align: left; }
   .tw-list li { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
-  .tw-check { flex: none; width: 24px; height: 24px; border-radius: 999px; margin-top: 1px;
+  .tw-check { flex: none; width: 24px; height: 24px; border-radius: var(--tl-radius-pill); margin-top: 1px;
     background: var(--tl-wash-green); color: var(--tl-green-600);
     display: inline-flex; align-items: center; justify-content: center; }
   .tw-check svg { width: 14px; height: 14px; }
-  .tw-cat { display: block; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  .tw-cat { display: block; font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase;
     color: var(--tl-cyan-700); margin-bottom: 2px; }
-  .tw-line { font-size: 15.5px; line-height: 1.5; color: var(--tl-ink-800); margin: 0; }
+  .tw-line { font-size: var(--tl-fs-base); line-height: 1.5; color: var(--tl-ink-700); margin: 0; }
   .tw-fig { color: var(--tl-green-600); font-weight: 800; }
-  .tw-art { margin-top: 22px; aspect-ratio: 4/3; border-radius: 20px; background: var(--tl-surface-150);
+  .tw-art { margin-top: 22px; aspect-ratio: 4/3; border-radius: var(--tl-radius-lg); background: var(--tl-surface-200);
     border: 1px solid var(--tl-line-200); display: flex; align-items: center; justify-content: center;
-    color: var(--tl-ink-400); font-weight: 600; font-size: 13px; text-align: center; padding: 18px; }
+    color: var(--tl-ink-300); font-weight: 600; font-size: var(--tl-fs-sm); text-align: center; padding: 18px; }
 
   /* CHG-33 (E8): closing CTA — bolder terminal band (no character for now) */
   .s-cta { padding-block: 64px; }
-  .s-cta .title { font-size: clamp(26px, 8vw, 38px); }
+  .s-cta .title { font-size: var(--tl-fs-2xl); }
 
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
@@ -155,7 +124,7 @@
 
   <!-- HERO (CHG-21) -->
   <section class="s-hero wash-green wrap">
-    <div class="eyebrow">Success Stories</div>
+    <div class="eyebrow green">Success Stories</div>
     <h1 class="title">Schools that measure the <span class="c-green">whole child</span></h1>
     <p class="lede">From a three-year partnership reshaping thousands of childhoods to research-practice collaborations built on measurement — here's what schools gain when foundational skills get the time and tools they need.</p>
     <div class="cta-col">
@@ -269,7 +238,7 @@
     <div class="rk-art">
       <img src="../assets/ds/tilli-girl-waving.png" alt="Tilli character waving" loading="lazy">
     </div>
-    <div class="eyebrow">Get in touch</div>
+    <div class="eyebrow green">Get in touch</div>
     <h2 class="title">Let’s talk about your <span class="c-green">school</span></h2>
     <div class="rk-groups">
       <div class="rk-group">

@@ -12,6 +12,19 @@
    ═══════════════════════════════════════════════════════════════════ */
 import * as THREE from '../lib/three.module.min.js';
 
+/* Brand colours are read from the CSS tokens (_ds/.../tokens/colors.css) so the
+   3D/canvas scenes and the page share ONE palette. The hex fallback is only
+   used if a token fails to resolve (e.g. it was renamed) — keep it in sync. */
+const TOKENS = getComputedStyle(document.documentElement);
+const tok = (name, fallback) => TOKENS.getPropertyValue(name).trim() || fallback;
+/* '--tl-wash-cyan' | '#D9F5FF' | '217,245,255' → [r, g, b] */
+const rgbOf = (v) => {
+  v = v.trim();
+  if (v.startsWith('--')) v = tok(v, '#FFFFFF');
+  if (v[0] === '#') { const n = parseInt(v.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+  return v.split(',').map(Number);
+};
+
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, t) => a + (b - a) * t;
 const ease = (t) => 1 - Math.pow(1 - t, 3);
@@ -98,7 +111,7 @@ const scenes = sceneEls.map((el) => {
     steps,
     fits: steps.map((s) => s.firstElementChild),
     seen: steps.map(() => false),
-    wash: (el.dataset.wash || '255,255,255').split(',').map(Number),
+    wash: rgbOf(el.dataset.wash || '--tl-white'),
     label: el.dataset.label || '',
     pin: el.dataset.pin || null,
     t: null,
@@ -161,7 +174,7 @@ const JAR = {
   drop:       0.4,    // downward speed as a marble leaves the mouth, in diameters / s
   damp:       0.9,    // velocity kept each substep (<1 bleeds energy so the pile settles)
   iterations: 5,      // collision-relaxation passes per frame (more = firmer pile, less overlap)
-  colors:     ['#56C02B', '#26BDE2', '#FCC30B'],  // Measure green · Ask cyan · Intervene yellow
+  colors:     [tok('--tl-green-500', '#56C02B'), tok('--tl-cyan-500', '#26BDE2'), tok('--tl-yellow-500', '#FCC30B')],  // Measure green · Ask cyan · Intervene yellow
   sound:      true,   // play a soft "plink" per marble as the jar fills (live: GUI "Sound")
 };
 let jar = null;   // { el, S, r, R, mouthY, marbles:[…], released, live, next, acc }
@@ -425,7 +438,8 @@ const BURST = {
   linkMax:   3,      // most threads drawn per dot
   jarGrow:   1.25,   // how much the jar scales up as it reaches centre
   overshoot: 0.14,   // outward pop past the ring before it settles (fraction of min(vw,vh))
-  colors: ['#56C02B', '#26BDE2', '#FCC30B', '#F7943E', '#EC2C8F'],   // green · cyan · yellow · orange · pink
+  colors: [tok('--tl-green-500', '#56C02B'), tok('--tl-cyan-500', '#26BDE2'), tok('--tl-yellow-500', '#FCC30B'),
+           tok('--tl-orange-500', '#F99B1C'), tok('--tl-pink-600', '#E91E8C')],   // green · cyan · yellow · orange · pink
 };
 let burst = null;   // { canvas, ctx, dots:[…], links:[[i,j]…], dpr, jarRect, N }
 
@@ -707,8 +721,10 @@ function stationF() {
    THREE.JS WORLD
    ═══════════════════════════════════════════════════════════════════ */
 const C = {
-  green: '#56C02B', cyan: '#26BDE2', pink: '#E91E8C', yellow: '#FCC30B',
-  orange: '#F99B1C', pink2: '#E866B0', gray: '#C9CFDA', greenD: '#348C11',
+  green: tok('--tl-green-500', '#56C02B'), cyan: tok('--tl-cyan-500', '#26BDE2'),
+  pink: tok('--tl-pink-600', '#E91E8C'), yellow: tok('--tl-yellow-500', '#FCC30B'),
+  orange: tok('--tl-orange-500', '#F99B1C'), pink2: tok('--tl-pink-400', '#E866B0'),
+  gray: tok('--tl-line-300', '#C7CDD8'), greenD: tok('--tl-green-600', '#348C11'),
 };
 const DEPTH = 40;
 const CAM_DIST = 26;
@@ -802,7 +818,7 @@ const HERO_CFG = {
   thickness: 0.055, // half-width of a connection line, in world units
   opacity: 0.35,    // master multiplier on connection-line opacity
   ringScale: 0.86,  // tightens / widens the rim
-  color: '#2E3542',
+  color: tok('--tl-ink-700', '#3D3D3D'),
 };
 const HERO_TOP = Math.PI / 2; // rim starts at the top of the frame
 /* the ring-connection lines only join dots whose angular separation is at
@@ -1341,7 +1357,7 @@ const COLLECT_ARC = {
    false to remove the overlay. Only shows while the Ask-Tilli scene is on. */
 const DEBUG_ASK_PATH = true;
 const ASK_FLOW = {
-  gray: '#c3c9d4',   // colour of the grey (generic-box) dots
+  gray: tok('--tl-line-300', '#C7CDD8'),   // colour of the grey (generic-box) dots
   z: -3,             // world plane the streams flow on
   width: 1.7,        // world units of stream spread (its thickness)
   red:  { pts: [[-0.03, -0.06], [0.05, 0.30], [0.15, 0.58], [0.28, 0.60]], speed: 0.35 },
@@ -1979,7 +1995,7 @@ function initThree() {
   selGeo.setAttribute('position', new THREE.BufferAttribute(selPos, 3));
   selGeo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 60);
   const selMat = new THREE.PointsMaterial({
-    size: 2.4, map: tex, color: new THREE.Color('#E91E8C'),
+    size: 2.4, map: tex, color: new THREE.Color(C.pink),
     transparent: true, opacity: 0, depthWrite: false, depthTest: false,
   });
   const selDots = new THREE.Points(selGeo, selMat);

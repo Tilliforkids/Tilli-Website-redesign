@@ -104,10 +104,10 @@
     /* Render the photo only when KAVI_PHOTO is set; otherwise draw the initials
        monogram directly so no missing-image request (404) is ever made. The img
        keeps an onerror fallback for the case where the path is set but fails. */
-    var monogram = '<div class="tl-wa__avatar" style="display:flex;align-items:center;justify-content:center;font-weight:800;color:#348C11;font-size:30px">' + initials + '</div>';
+    var monogram = '<div class="tl-wa__avatar" style="display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--tl-green-600);font-size:var(--tl-fs-xl)">' + initials + '</div>';
     var avatarMarkup = CONFIG.KAVI_PHOTO
       ? '<img class="tl-wa__avatar" src="' + CONFIG.KAVI_PHOTO + '" alt="Kavi"' +
-          ' onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'tl-wa__avatar\',style:\'display:flex;align-items:center;justify-content:center;font-weight:800;color:#348C11;font-size:30px\',textContent:\'' + initials + '\'}))">'
+          ' onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'tl-wa__avatar\',style:\'display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--tl-green-600);font-size:var(--tl-fs-xl)\',textContent:\'' + initials + '\'}))">'
       : monogram;
     var card =
       '<div class="tl-wa__card" role="dialog" aria-label="Chat with Kavi">' +
