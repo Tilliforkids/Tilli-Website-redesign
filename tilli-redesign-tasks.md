@@ -33,8 +33,8 @@
 | B3 | ~~Original HTML for the Research "Why" section~~ **RESOLVED:** there was no separate "Why" section; CHG-12 done via the WEIRD band work. | CHG-12 |
 | B4 | **Drive folder** with school + training photos for the carousel. | CHG-22 |
 | B5 | **Working session** on layout/direction before build. | CHG-13, CHG-14, CHG-18 |
-| B6 | **E4 chart data.** Choose **Option A** (reach/growth per year — traction) vs **Option B** (baseline→endline outcome lift per skill — efficacy; recommended) **and** supply the real underlying numbers. Real data only; label source + n under the chart. | CHG-29 |
-| B7 | **School proof assets.** Real school photos + approved pull-quotes + named roles + (recommended) school logos & permission to display — NMAJS, Hippocampus, GIG. | CHG-30, CHG-32 (shared w/ CHG-22) |
+| B6 | **E4 chart data.** Choose **Option A** (reach/growth per year — traction) vs **Option B** (baseline→endline outcome lift per skill — efficacy; recommended) **and** supply the real underlying numbers. Real data only; label source + n under the chart. **⏳ Awaiting Kavi — not yet received (asked 2026-10-09).** | CHG-29 |
+| B7 | **School proof assets.** Real school photos + approved pull-quotes + named roles + (recommended) school logos & permission to display. **Set = NMAJS, Hippocampus, Musaeus** (consent confirmed; **GIG dropped — no consent**). **⏳ Awaiting assets — not yet received.** | CHG-30, CHG-32 (shared w/ CHG-22) |
 | ~~B8~~ | ~~**E3 Top Results numbers.**~~ RESOLVED (2026-10-09) — user supplied: 95% teachers rate training effective · 9 in 10 children improved emotion regulation/term · built at Stanford, backed by UNICEF, validated w/ 12,510 children. | ~~CHG-28~~ |
 | ~~B9~~ | ~~**"+28%" collision.**~~ RESOLVED (2026-10-09) — E3 uses none of the clashing figures; "+28%" stays unique to Hippocampus (E7). Still applies to CHG-32 if that card keeps its "+28%". | CHG-32 |
 
@@ -379,7 +379,7 @@ differs.
   E3 reuses no clashing figure; "+28%" stays unique to the Hippocampus card (E7). Illustration =
   placeholder tile pending a real Tilli asset.
 
-### CHG-29 · (E4) Statistical bar-chart band ("the impact, in a graph") — ⛔ BLOCKED (B6)
+### CHG-29 · (E4) Statistical bar-chart band ("the impact, in a graph") — ⛔ BLOCKED (B6 · ⏳ awaiting Kavi, not yet received)
 - **Where:** mid page, after CHG-28. E3 states outcomes in words; this shows them as a chart.
 - **Change:** centered headline + one-line intro, then a single clean bar chart in a soft
   rounded card — grouped bars, clear y-axis label, legend, Tilli palette. **Render in CODE
@@ -433,7 +433,7 @@ differs.
 - **Acceptance:** stepping photo album (no peek), provenance moved out of line, stat pill
   aligned, logo present where permitted.
 
-### CHG-33 · (E8) Closing CTA band — Duolingo-style, add Tilli character — ⬜ TODO
+### CHG-33 · (E8) Closing CTA band — Duolingo-style, add Tilli character — ✅ DONE (character deferred)
 - **Where:** very bottom of the page, final band before the footer.
 - **Keep:** copy *"Your school could be the next story"* + subcopy *"Tell us about your
   children and we'll show you what measuring the whole child looks like in practice."* +
@@ -447,6 +447,13 @@ differs.
   Calendly / book-a-demo.
 - **Acceptance:** warm, on-brand closing band with Tilli character; CTA label decision made;
   no gradient.
+- **Resolution (2026-10-09):** upgraded the existing flat cyan band into a bolder, more
+  spacious terminal band on both builds (page-local `.s-cta` — larger headline + generous
+  padding; flat wash, no gradient). Copy kept per user ("Your school could be the next story" /
+  "Get in touch"; CTA routes desktop `data-tl-open-form` modal, mobile `wa.me`). Mobile button
+  switched cyan→pink for contrast + hero consistency. **Character deferred** — the only mascot
+  (`tilli-girl-waving.png`) is already used by the E2 band directly above; add a distinct
+  character later (tracked under PROGRESS.md "Deferred"). Completes all buildable P6 work.
 
 ---
 

@@ -140,6 +140,10 @@
     border: 1px solid var(--tl-line-200); display: flex; align-items: center; justify-content: center;
     color: var(--tl-ink-400); font-weight: 600; font-size: 13px; text-align: center; padding: 18px; }
 
+  /* CHG-33 (E8): closing CTA — bolder terminal band (no character for now) */
+  .s-cta { padding-block: 64px; }
+  .s-cta .title { font-size: clamp(26px, 8vw, 38px); }
+
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
@@ -300,12 +304,12 @@
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="s-hero wash-cyan wrap">
+  <!-- CLOSING CTA (CHG-33 E8): bold terminal band -->
+  <section class="s-hero wash-cyan wrap s-cta">
     <h2 class="title">Your school could be the <span class="c-cyan">next story</span></h2>
     <p class="lede">Tell us about your children and we'll show you what measuring the whole child looks like in practice.</p>
     <div class="cta-col">
-      <a class="btn btn-cyan btn-block" href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school." target="_blank" rel="noopener">Get in touch</a>
+      <a class="btn btn-pink btn-block" href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school." target="_blank" rel="noopener">Get in touch</a>
     </div>
   </section>
 

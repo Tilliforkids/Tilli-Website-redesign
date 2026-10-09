@@ -113,6 +113,12 @@
     .tw { grid-template-columns: 1fr; gap: 28px; }
     .tw__art { order: 2; }                  /* illustration stacks below text (spec) */
   }
+
+  /* CHG-33 (E8): closing CTA — bold, spacious terminal band (no character for now) */
+  .s-cta { padding: clamp(84px, 11vw, 148px) 0; }
+  .s-cta .tl-h2 { font-size: clamp(30px, 4.4vw, 52px); }
+  .s-cta .tl-lead { margin-top: 18px; }
+  .s-cta .tl-btn { margin-top: 34px; }
 </style>
 </head>
 <body class="tl-page">
@@ -312,8 +318,8 @@
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="tl-section tl-section--cyan">
+  <!-- CLOSING CTA (CHG-33 E8): bold terminal band -->
+  <section class="tl-section tl-section--cyan s-cta">
     <div class="tl-container tl-narrow" style="text-align:center">
       <h2 class="tl-h2">Your school could be the next story</h2>
       <p class="tl-lead">Tell us about your children and we’ll show you what measuring the whole child looks like in practice.</p>

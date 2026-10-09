@@ -4,25 +4,30 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-09 — CHG-28 (E3) ✅ ("Tilli works" Top Results band on both success builds; B8 + B9 cleared). Scope 29 tasks.
+> **Last updated:** 2026-10-09 — CHG-33 (E8) ✅ (closing CTA upgraded to a bold terminal band on both builds). **P5 + P6 now code-complete** — rest is external-blocked/process. Scope 29 tasks.
 
 ## At a glance
 
-- **Done:** 22 / 29
+- **Done:** 23 / 29
 - **In progress:** 0
 - **Blocked:** 4  (CHG-22 → B4 · CHG-29 → B6 · CHG-30 → B7 · CHG-32 → B7)
-- **Unblocked & remaining:** 3  (CHG-33 buildable · CHG-21 umbrella · CHG-23 process)
+- **Unblocked & remaining:** 2  (CHG-21 umbrella — awaits E4/E5/E7 · CHG-23 process — Masoomi)
 - **Removed:** 2  (CHG-14, CHG-18)
 
 ```
-[██████████████████████████████          ]  76%
+[████████████████████████████████        ]  79%
 ```
+
+> **P5 + P6 are code-complete** — every buildable task is done. All that remains is blocked on
+> external inputs (B4 photos · B6 Kavi chart data · B7 school assets) or is process (CHG-23
+> Masoomi review). Nothing further is buildable without those.
 
 ## Next up
 
-→ **P5 code tasks are done.** Remaining P5: CHG-22 (⛔ B4, Drive photos) and CHG-23
-  (process — Masoomi review). Next buildable work is **P6** → CHG-33 (E8, closing CTA band)
-  — the last unblocked P6 element; the rest (E4/E5/E7) wait on B6–B7.
+→ **All buildable P5 + P6 work is done.** Nothing is currently buildable. Remaining:
+  CHG-22 (⛔ B4, Drive photos) · CHG-23 (process — Masoomi review) · CHG-29 (⛔ B6, Kavi chart
+  data) · CHG-30 + CHG-32 (⛔ B7, school photos/quotes/names/logos). Each unblocks the moment
+  its external input arrives — see **Ask Kavi** + **Assets needed** below.
 
 ---
 
@@ -75,11 +80,11 @@
 | ✅ | CHG-26 (E1) | Clean centered intro header + de-crowd whole page |
 | ✅ | CHG-27 (E2) | "Get in touch" contact block — icons + Tilli character |
 | ✅ | CHG-28 (E3) | "Tilli works" + Top Results checklist |
-| ⛔ | CHG-29 (E4) | Statistical bar-chart band (coded) — **B6** |
-| ⛔ | CHG-30 (E5) | "Meet real Tilli schools" story feature — **B7** |
+| ⛔ | CHG-29 (E4) | Statistical bar-chart band (coded) — **B6** (⏳ awaiting Kavi) |
+| ⛔ | CHG-30 (E5) | "Meet real Tilli schools" story feature — **B7** (⏳ awaiting assets; fold into existing cards) |
 | ✅ | CHG-31 (E6) | Fix hero — remove gradient, keep content + CTA |
 | ⛔ | CHG-32 (E7) | Case-study card — photo album + logos + align — **B7** |
-| ⬜ | CHG-33 (E8) | Closing CTA band — Duolingo-style + Tilli character |
+| ✅ | CHG-33 (E8) | Closing CTA band — bolder terminal band (character deferred — asset needed) |
 
 ---
 
@@ -87,6 +92,25 @@
 - **Fredoka leftovers (from CHG-10)** — user chose to keep for now; delete when ready:
   - `_ds/.../assets/fonts/fredoka-normal-latin.woff2` + `-ext.woff2` (orphaned, unreferenced)
   - `Dataset _ Tilli.html` + `Dataset _ Tilli_files/` (old Wix site export, repo root)
+
+## Ask Kavi (open data requests)
+- ⏳ **B6 — E4 chart data (CHG-29).** Not yet received. Ask Kavi for the chart numbers. The ask:
+  *"For the Success-page impact chart, which do you want and what are the real numbers + source/n?
+  Option A = reach/growth per year (traction). Option B (recommended) = baseline→endline lift per
+  skill (true efficacy). Real data only — every bar must trace to a source and we'll label source
+  + n under the chart."* Blocks CHG-29 until answered.
+
+## Assets needed (B7 — for CHG-30/E5, also unblocks CHG-32/E7 + CHG-22)
+- ⏳ **Per school × 3 (Hippocampus, NMAJS, Musaeus):** (1) photo file — which file → which
+  school; (2) named role owner — full name + exact title; (3) approved quote (1–2 sentences,
+  cleared to publish); (4) optional logo + permission (monochrome). Consent confirmed; actual
+  files/text not yet received. GIG dropped (no consent).
+
+## Deferred (needs a new asset)
+- ⬜ **E8 closing-CTA character (CHG-33).** Shipped without a character — the only mascot
+  (`tilli-girl-waving.png`) is already used by the E2 band directly above it. Add a **distinct**
+  Tilli character to the closing band when one exists. Hook: page-local `.s-cta` section on both
+  success builds.
 
 ## Content ideas to place (Success Story page)
 - ⬜ **"Every school that has started with Tilli is still with us."** — a 100% retention /
@@ -101,12 +125,20 @@
 | ~~B3~~ | ~~Original HTML for Research "Why" section~~ — RESOLVED, no such section | ~~CHG-12~~ |
 | B4 | Drive folder of school + training photos | CHG-22 |
 | B5 | Working session on layout/direction | CHG-13, CHG-14, CHG-18 |
-| B6 | E4 chart: Option A (growth/yr) vs B (baseline→endline lift, recommended) + real numbers | CHG-29 |
-| B7 | Real school photos + approved quotes + named roles + logos/permission (NMAJS, Hippocampus, GIG) | CHG-30, CHG-32 (shared w/ CHG-22) |
+| B6 | E4 chart: Option A (growth/yr) vs B (baseline→endline lift, recommended) + real numbers. **⏳ Awaiting Kavi — not yet received (asked 2026-10-09).** | CHG-29 |
+| B7 | Real school photos + approved quotes + named roles + logos/permission. **Set = NMAJS, Hippocampus, Musaeus** (consent confirmed; **GIG dropped — no consent**). **⏳ Awaiting assets — not yet received.** E5 approach decided: fold photo + named person + quote into the 3 existing case-study cards (no new section). | CHG-30, CHG-32 (shared w/ CHG-22) |
 | ~~B8~~ | ~~E3 Top Results numbers~~ — RESOLVED: user supplied 95% teachers rate training effective · 9 in 10 children improved emotion regulation / term · built at Stanford, backed by UNICEF, validated w/ 12,510 children | ~~CHG-28~~ |
 | ~~B9~~ | ~~"+28%" collision~~ — RESOLVED: E3 uses none of the clashing figures; "+28%" stays unique to Hippocampus (E7). Still applies to CHG-32 if that card keeps +28% | CHG-32 |
 
 ## Change log
+- 2026-10-09 — CHG-33 (E8) ✅ done. Upgraded the existing closing CTA into a bolder, more
+  spacious terminal band on both builds (page-local `.s-cta`: bigger headline + generous
+  padding), keeping the confirmed copy ("Your school could be the next story" / "Get in touch";
+  desktop `data-tl-open-form` modal, mobile `wa.me`). Mobile button switched cyan→pink for
+  contrast on the cyan wash + consistency with the hero. **Character deferred** — the only
+  mascot (`tilli-girl-waving.png`) is already used by the E2 band directly above, so E8 ships
+  without one until a distinct character asset exists. **This completes all buildable P5 + P6
+  work.**
 - 2026-10-09 — CHG-28 (E3) ✅ done; B8 + B9 cleared. Added the "Tilli works" band high on both
   success builds (right after the hero, before offerings). Two-column on desktop (`.tw`: Top
   Results checklist left, placeholder illustration tile right), stacked on mobile (illustration
