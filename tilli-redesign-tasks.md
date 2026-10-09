@@ -33,6 +33,10 @@
 | B3 | ~~Original HTML for the Research "Why" section~~ **RESOLVED:** there was no separate "Why" section; CHG-12 done via the WEIRD band work. | CHG-12 |
 | B4 | **Drive folder** with school + training photos for the carousel. | CHG-22 |
 | B5 | **Working session** on layout/direction before build. | CHG-13, CHG-14, CHG-18 |
+| B6 | **E4 chart data.** Choose **Option A** (reach/growth per year — traction) vs **Option B** (baseline→endline outcome lift per skill — efficacy; recommended) **and** supply the real underlying numbers. Real data only; label source + n under the chart. | CHG-29 |
+| B7 | **School proof assets.** Real school photos + approved pull-quotes + named roles + (recommended) school logos & permission to display — NMAJS, Hippocampus, GIG. | CHG-30, CHG-32 (shared w/ CHG-22) |
+| B8 | **E3 Top Results numbers.** Either (a) a genuine pooled cross-school aggregate from the master assessment dataset, or (b) the real scoped figures reworded to their true scope (e.g. "% of classrooms/learners/teachers who improved" — NOT "average % increase"). No fabricated averages. | CHG-28 |
+| B9 | **"+28%" collision.** Same figure, two meanings on one page: E3 (Jordan teacher readiness) vs E7 (Hippocampus impulse control). Keep only one "+28%" or change one metric. | CHG-28, CHG-32 |
 
 ---
 
@@ -226,14 +230,14 @@ differs.
   building.
 - **Acceptance:** six skills laid out per the agreed plan; legible, on-brand on mobile.
 
-### CHG-14 · Domain/parameter chips mimic homepage buttons — ⛔ BLOCKED (B5)
+### CHG-14 · Domain/parameter chips mimic homepage buttons — ❌ REMOVED (not needed, 2026-10-08)
 - **Page:** Research · other domains & parameters
 - **Scope:** mobile · **Blocked-by:** B5 (discuss first)
 - **Change:** chip size/shape/padding/layout should mirror the **homepage buttons**
   (not the hero).
 - **Acceptance:** chips visually match the homepage button spec once agreed.
 
-### CHG-18 · Redesign "AI use cases: research → action" — ⛔ BLOCKED (B5)
+### CHG-18 · Redesign "AI use cases: research → action" — ❌ REMOVED (not needed, 2026-10-08)
 - **Page:** Research (and anywhere it appears) · **Scope:** global
 - **Blocked-by:** B5 (plan first)
 - **Change:** new design direction for this section, applied everywhere it appears.
@@ -250,11 +254,13 @@ differs.
 
 ## 7. PRIORITY 5 — School Success page overhaul
 
-### CHG-21 · Make the page enticing / on-brand — ⬜ TODO
+### CHG-21 · Make the page enticing / on-brand — ⬜ TODO (umbrella)
 - **Current:** plain, reads AI-generated.
 - **Change:** add Tilli character, warmth, and brand texture; bring it up to the other
   pages' standard.
 - **Acceptance:** page uses the Tilli design system; no longer reads as a plain template.
+- **Implemented by:** §8 / P6 (CHG-26…CHG-33, elements E1–E8) — the concrete execution of
+  this task. CHG-21 is done when the P6 elements land.
 
 ### CHG-22 · Schools & trainings photo carousel (landing element) — ⛔ BLOCKED (B4)
 - **Scope:** mobile (and desktop) · **Blocked-by:** B4
@@ -272,17 +278,145 @@ differs.
   ship.
 - **Acceptance:** copy reviewed/approved before this page goes live.
 
-### CHG-20 + CHG-25 · WhatsApp icon consistency — ⬜ TODO
+### CHG-20 + CHG-25 · WhatsApp icon consistency — ✅ DONE
 - **Pages:** Research (CHG-20), School Success (CHG-25)
 - **Scope:** global
 - **Current:** WhatsApp icon differs from the homepage landing icon.
 - **Change:** Make the WhatsApp icon **identical to the homepage landing icon** (same
   asset, size, style) wherever it appears. This is a consistency fix, not removal.
 - **Acceptance:** one consistent WhatsApp icon matching Home on every page.
+- **Resolution (2026-10-08):** already satisfied by the single-source chrome. One glyph
+  only — `WA_ICON` in `js/site-config.js` (`window.TILLI`); the floating bubble is built
+  unconditionally on every page by `js/site-chrome.js` (desktop) and `js/m-chrome.js`
+  (mobile), both reading that same `WA_ICON`. Single-source bubble CSS (desktop 62/32px in
+  `css/site.css`; mobile 52/28px in `m-chrome.js`), no per-page icon/size/style override,
+  and in-content `wa.me` links are text CTAs with no icon. Icon on Research + School Success
+  is identical to Home in each skin. Desktop-vs-mobile size is the intended device split.
 
 ---
 
-## 8. Cross-cutting acceptance (run once at the end)
+## 8. PRIORITY 6 — Success Story page elements (E1–E8)
+
+> Source: [success-story-edits.md](success-story-edits.md) — a self-contained spec for the
+> **School Success / "Success Story" page**. These elements are the concrete execution of
+> CHG-21. Inspiration is Duolingo (about / efficacy / press) — **adapt to Tilli, never copy
+> their numbers or copy.** E-numbers are kept in titles for traceability back to the spec.
+>
+> **Governing look (from E1 + E6, applies to the ENTIRE page):** one idea per section; big
+> soft rounded cards (16–24px radius) on light grey fills; generous whitespace; centered
+> section intros (small eyebrow + big headline). **No gradient** — gradient is Home-only;
+> every other page gets a flat/clean background.
+
+### CHG-26 · (E1) Clean centered intro header + de-crowd the whole page — ⬜ TODO
+- **Current:** page feels busy / "AI-generated"; too many elements per screen.
+- **Change:** top intro band = small coloured uppercase eyebrow (`OUR IMPACT` / `SCHOOL
+  SUCCESS`, accent, letter-spaced ~12–13px), one large bold rounded headline beneath
+  (Montserrat, clamp ~40–64px, centered, deep navy/charcoal), heavy whitespace, nothing
+  competing. Default headline *"Every child, developmentally on track by their 10th
+  birthday."* (confirm copy). This density principle governs every section below.
+- **Acceptance:** intro band matches the clean/spacious spec; the whole page reads
+  one-idea-per-section, not crowded.
+
+### CHG-27 · (E2) Grouped "get in touch" contact block — icons + Tilli character — ⬜ TODO
+- **Change:** two-column band. Left: a **custom Tilli character** (girl with yellow
+  headband), NOT Duo. Right: contact points grouped by purpose; each group = plain label +
+  one or two bold links, each prefixed by a small accent icon showing HOW to reach out
+  (calendar / envelope / document / laptop).
+- **Tilli content (confirm groups before building; Tilli is private — NO investor line):**
+  Partner / book a demo → Kavi's Calendly + kavindya@tillikids.com · Press/media →
+  info@tillikids.com + Impact Report/Fact Sheet (.pdf) if available · General →
+  info@tillikids.com + phone (+1 650-334-7904).
+- **Notes:** overlaps the proposed Press/Newsroom page — if that gets built this block may
+  move there (confirm home). Mobile: illustration stacks above the groups.
+- **Acceptance:** spacious grouped contact band present with method icons + Tilli character;
+  links route correctly.
+
+### CHG-28 · (E3) "Tilli works" — headline + intro + Top Results checklist — ⛔ BLOCKED (B8, B9)
+- **Where:** high on the page, right after the CHG-26 intro band (the "why my school needs
+  this" moment).
+- **Change:** two-column band. Left: big bold *"Tilli works"* headline; 2–3 line intro with
+  `assessment` / `the evidence` / `Stanford research` as accent inline links; a **"Top
+  results:"** sub-label; then **3** outcome lines, each with a green check + the figure in
+  accent. Right: warm Tilli character/children illustration (stacks below on mobile).
+- **Content intent (per spec UPDATE):** show OVERALL / cross-school impact, **no location
+  names** here. Candidate real figures (reword to true scope, "% who improved" — not
+  "average % increase"): 95% of classrooms fewer behavioural complaints in 12 wks · 90% of
+  learners improved emotion regulation in 12 wks · 88% of teachers more confident · 100%
+  pilot completion across 35+ pilots. Max 3 lines.
+- **Blocked-by:** **B8** (supply the real cross-school numbers — no fabricated aggregate)
+  and **B9** (resolve the +28% collision). Hippocampus-specific figures (self-awareness
+  +20%, conflict mgmt +23%, impulse control +28%) belong on the E7 card, NOT here.
+- **Acceptance:** 3 confirmed, correctly-scoped outcome lines; figures trace to source; no
+  place names; no number reused elsewhere with a different meaning.
+
+### CHG-29 · (E4) Statistical bar-chart band ("the impact, in a graph") — ⛔ BLOCKED (B6)
+- **Where:** mid page, after CHG-28. E3 states outcomes in words; this shows them as a chart.
+- **Change:** centered headline + one-line intro, then a single clean bar chart in a soft
+  rounded card — grouped bars, clear y-axis label, legend, Tilli palette. **Render in CODE
+  (not an image), responsive; use the dataviz skill.**
+- **Blocked-by:** **B6** — pick Option A (growth/reach per year) or Option B (baseline→endline
+  lift per skill; recommended, true efficacy analogue) and supply real numbers.
+- **HARD RULE:** real data only — every bar traces to a real source; label source + n under
+  the chart; mark any estimate as such; never fabricate a trend.
+- **Acceptance:** responsive coded chart in Tilli colours, every bar sourced + n labelled.
+
+### CHG-30 · (E5) "Meet real Tilli schools" — named-role story feature — ⛔ BLOCKED (B7)
+- **Where:** after CHG-29 (chart = aggregate proof; this = proof with a face + name).
+- **Change:** centered headline + one-line intro, then featured story rows: large **real
+  photo** tile one side (rounded card, soft shadow — NO fake play button), and on the other
+  the **named real role owner** (school + role) + a 1–2 sentence outcome-focused story.
+  Multiple stories: alternate image left/right, or a spacious swipeable carousel.
+- **Blocked-by:** **B7** (photos + approved quotes + named roles). Nameable schools: NMAJS,
+  Hippocampus, GIG — only with publish permission; confirm consent per school.
+- **Notes:** reuse the CHG-32 (E7) card as the per-school unit; same component as CHG-22.
+- **Acceptance:** at least one real, named, consented school story; spacious; swipeable on
+  mobile.
+
+### CHG-31 · (E6) Fix the current hero — remove gradient, keep content + CTA — ⬜ TODO
+- **Current:** existing Success Story hero sits on a gradient background.
+- **Keep:** eyebrow `SUCCESS STORIES` (green accent), headline *"Schools that measure the
+  whole child"* (Montserrat family, not Fredoka), the intro paragraph, and the pink pill
+  CTA **"Bring Tilli to your school"** → route to Kavi's Calendly / book-a-demo.
+- **Change:** **remove the gradient** (flat white / single very light wash); keep it clean
+  and spacious per CHG-26. This de-gradient rule applies to the whole page. This band IS the
+  real intro header — treat CHG-26 + CHG-31 as one header.
+- **Acceptance:** hero content/CTA preserved, gradient gone, flat clean background.
+
+### CHG-32 · (E7) Case-study card — photo album + stat-pill align + logos — ⛔ BLOCKED (B7)
+- **Keep (user likes the layout):** location eyebrow → school name → highlighted stat pill
+  (big % + short label) → 2–4 line story. Photo card one side, text the other; flat (no
+  gradient).
+- **Changes:** (1) photo → **album/carousel** — subtle arrows + maybe small dots, **no**
+  obvious carousel chrome and **no** peeking next slide; (2) **remove the inline source
+  line** → move provenance to a small "Methodology / sources" link at the section foot or a
+  hover tooltip on the stat (don't delete provenance entirely — it's credibility);
+  (3) **vertically center** the two-line stat-pill label against the big figure.
+- **Logos:** add a small monochrome school logo near the name (strong B2B trust anchor) —
+  pending assets + display permission.
+- **Blocked-by:** **B7** (photos, logos, permission). If this card keeps a "+28%", also **B9**.
+- **Notes:** this is the reusable per-school unit feeding CHG-30 (E5) and the CHG-22
+  carousel — **one component, reused**, not rebuilt three times.
+- **Acceptance:** stepping photo album (no peek), provenance moved out of line, stat pill
+  aligned, logo present where permitted.
+
+### CHG-33 · (E8) Closing CTA band — Duolingo-style, add Tilli character — ⬜ TODO
+- **Where:** very bottom of the page, final band before the footer.
+- **Keep:** copy *"Your school could be the next story"* + subcopy *"Tell us about your
+  children and we'll show you what measuring the whole child looks like in practice."* +
+  pink pill CTA.
+- **Change:** redo the current flat-blue band Duolingo-style — add the **Tilli character**
+  (girl with yellow headband) around the headline (waving / peeking / pointing at the
+  button); big friendly rounded pill; generous whitespace; flat background (no gradient);
+  light Tilli-colour personality (yellow/teal, confetti-ish) kept subtle.
+- **CTA consistency:** decide whether this label matches the hero's ("Bring Tilli to your
+  school") or is deliberately different (e.g. "Book a call with Kavi"); both route to Kavi's
+  Calendly / book-a-demo.
+- **Acceptance:** warm, on-brand closing band with Tilli character; CTA label decision made;
+  no gradient.
+
+---
+
+## 9. Cross-cutting acceptance (run once at the end)
 
 - One nav, one footer, one font system across Home / Research / School Success.
 - No Fredoka, no "30+", no "2,895 on enrolment", no WhatsApp-as-Ask-Tilli-channel.
