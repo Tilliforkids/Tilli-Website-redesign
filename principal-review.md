@@ -592,7 +592,7 @@ The 7 existing answers are the most credible writing on the site. These are the 
 | f | Will our data end up in Tilli's research dataset? | Opt-in only, de-identified, no school names ⚠️ (see RS-03) |
 | g | What does training involve, and who delivers it? | In-person or online, language, who runs it ⚠️ |
 | h | Can we do a pilot first? | Same wording as GL-03: one grade, one year, full review after Term 1 |
-| i | What do I take to my Management Committee? | School leader one-pager, sample dashboard, sample parent report |
+| i | What do I take to my Management Committee? | School leader one-pager, sample dashboard, sample parent report | **Built** (faq.html) |
 
 ---
 
