@@ -55,7 +55,7 @@
           '<button class="tl-burger" aria-label="Menu" aria-expanded="false">' +
             '<span></span><span></span><span></span></button>' +
           '<nav class="tl-nav" aria-label="Site">' + links +
-            '<button class="tl-btn tl-btn--primary tl-nav__cta" data-tl-open-form>Get in touch</button>' +
+            '<button class="tl-btn tl-btn--primary tl-nav__cta" data-tl-open-form>' + (CONFIG.NAV_CTA_LABEL || "Get in touch") + '</button>' +
           '</nav>' +
         '</div>' +
       '</header>'

@@ -36,8 +36,8 @@
 
 | ID | Page | Section | Change (short) | Type | Pri | Status |
 |---|---|---|---|---|---|---|
-| GL-01 | Global | Header nav | Add How it works / Pricing & FAQs to header | Section | P1 | To do |
-| GL-02 | Global | CTAs | One name for the primary CTA site-wide | Language | P2 | To do |
+| GL-01 | Global | Header nav | Add How it works / Pricing & FAQs to header | Section | P1 | Done |
+| GL-02 | Global | CTAs | One name for the primary CTA site-wide | Language | P2 | In progress |
 | GL-03 | Global | Pilot offer | Reconcile "one term" vs "one year" | Language | P1 | To do |
 | GL-04 | Global | Evidence claims | Reconcile "Tilli works" with "evidence still being built" | Language | P1 | To do |
 | GL-05 | Global | Framework name | "Analyze" vs "Ask": pick one | Language | P2 | To do |
@@ -89,7 +89,7 @@
 ## GLOBAL (site-wide)
 
 ### GL-01 · Header nav · P1 · Section
-- [ ] Done
+- [x] Done
 
 ![Header](principal-review/success-01.jpg)
 
@@ -101,7 +101,7 @@
 ---
 
 ### GL-02 · One primary CTA name · P2 · Language
-- [ ] Done
+- [ ] Done (primary CTA unified; one-pager + pilot CTAs pending)
 
 **Current (7 variants):** "Book a demo", "Book a demo →", "Get in touch", "Bring Tilli to your school", "Let's talk about your school", "Get the parent one-pager →", plain email links.
 **Recommended:** Use three CTAs only, with the same wording everywhere.

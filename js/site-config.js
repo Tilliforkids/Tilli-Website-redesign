@@ -26,12 +26,17 @@
       "Public / Government", "NGO / Non-profit", "Other"
     ],
 
-    /* Header nav, in order. */
+    /* Header nav, in order (GL-01). Logo links Home, so no "Home" item.
+       "Pricing & FAQs" = faq.html (prices, teacher hours, evidence answers). */
     NAV_ITEMS: [
-      { label: "Home", href: "index.html" },
-      { label: "Tilli for Research", href: "research.html" },
-      { label: "Success Stories", href: "success.html" }
+      { label: "How it works", href: "index.html#how" },
+      { label: "Results", href: "success.html" },
+      { label: "Pricing & FAQs", href: "faq.html" },
+      { label: "For researchers", href: "research.html" }
     ],
+
+    /* Header primary CTA label, both skins. GL-02 will unify the wording site-wide. */
+    NAV_CTA_LABEL: "Book a 30-minute call",
 
     /* Footer links (canonical = Home footer). First three are home-section anchors;
        mobile keeps them in-build via the hash-aware mHref() + the m/index #how anchor. */

@@ -128,7 +128,7 @@
           '<img src="../' + (T.ASSET_BASE || "assets/ds/") + 'tilli-logo.png" alt="Tilli"></a>' +
         '<button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>' +
         '<nav class="navdrawer" aria-label="Site">' + links +
-          '<a class="navdrawer-cta" href="' + waLink() + '" target="_blank" rel="noopener">Get in touch</a>' +
+          '<a class="navdrawer-cta" href="' + waLink() + '" target="_blank" rel="noopener">' + (T.NAV_CTA_LABEL || "Get in touch") + '</a>' +
         '</nav>' +
       '</header>'
     );
