@@ -155,7 +155,7 @@
     var footer = el(
       '<footer class="ft">' +
         '<div class="fbrand"><img src="../' + (T.ASSET_BASE || "assets/ds/") + 'tilli-logo.png" alt="Tilli"></div>' +
-        '<div class="tag">Developmentally on track by 10.</div>' +
+        '<div class="tag">Developmentally on track by age 10.</div>' +
         '<nav aria-label="Footer">' + links + "</nav>" +
         '<div class="social" aria-label="Social">' + social + "</div>" +
         '<div class="mail">Reach out: <a href="mailto:' + mail + '">' + mail + "</a></div>" +

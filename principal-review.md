@@ -42,11 +42,11 @@
 | 🟢 GL-04 | Global | Evidence claims | Reconcile "Tilli works" with "evidence still being built" | Language | P1 | 🟢 Done |
 | 🟢 GL-05 | Global | Framework name | "Analyze" vs "Ask": pick one | Language | P2 | 🟢 Done |
 | GL-06 | Global | Definitions | Define SEL / foundational skills once, plainly | Language | P2 | To do |
-| GL-07 | Global | Tagline / grades | "On track by 10": say age 10 and Pre‑K–5 | Language | P1 | To do |
-| GL-08 | Global | Local context | Indian-context wording, phone number, spelling | Language | P2 | To do |
+| 🟢 GL-07 | Global | Tagline / grades | "On track by 10": say age 10 and Pre‑K–5 | Language | P1 | 🟢 Done |
+| GL-08 | Global | Local context | Indian-context wording, phone number, spelling | Language | P2 | In progress |
 | GL-09 | Global | Recognition | Add HundrED / other recognition if true ⚠️ | Language | P2 | To do |
-| GL-10 | Global | Naming | "Ask-Tilli" vs "Ask Tilli" | Language | P3 | To do |
-| GL-11 | Home | Scene nav pills | Rename "Views", "Journey", "Progress" | Language | P3 | To do |
+| 🟢 GL-10 | Global | Naming | "Ask-Tilli" vs "Ask Tilli" | Language | P3 | 🟢 Done |
+| 🟢 GL-11 | Home | Scene nav pills | Rename "Views", "Journey", "Progress" | Language | P3 | 🟢 Done |
 | HM-01 | Home | Hero (beat A) | Lead with the principal's real question | Language | P1 | To do |
 | HM-02 | Home | Hero (beat B) | Clarify "They… that child… 579" | Language | P1 | To do |
 | HM-03 | Home | Dashboard | Show a real dashboard, not an illustration | Section | P1 | To do |
@@ -161,7 +161,7 @@
 ---
 
 ### GL-07 · "On track by 10" is ambiguous · P1 · Language ⚠️
-- [ ] Done
+- [x] Done — **Confirmed range: Pre‑K–Grade 5 (ages 3–10).** Tagline → "on track by age 10" (titles, OG/Twitter, meta, both footers via `site-chrome.js` / `m-chrome.js`). Hero beat B now carries *"Built for Pre-K to Grade 5 (ages 3–10)."* under the CTAs (both builds). Board-exam reassurance deferred to HM-14.
 
 **Current:** Footer and page title read *"Developmentally on track by 10."* No page states the grade range.
 **Recommended:**
@@ -174,7 +174,7 @@
 ---
 
 ### GL-08 · Indian context · P2 · Language
-- [ ] Done
+- [ ] Done — **Partial (11 Oct 2026):** zip → "PIN / postal code" and Research spellings → British (Standardised, categorised, Organisation, Behavioural, Licence), both builds. Privacy policy left in US spelling by decision (US legal entity). **Still open:** Indian/regional phone number (with SC-08); form phone placeholder is "+94 …" in `js/site-chrome.js`.
 
 | Where | Current | Recommended |
 |---|---|---|
@@ -187,7 +187,7 @@
 ---
 
 ### GL-09 · Recognition strip · P2 · Language ⚠️
-- [ ] Done
+- [ ] Done — ⏸ **Paused (11 Oct 2026).** Needs: list of recognitions Tilli actually holds (+ logos). One-pager part no longer applies (dropped in GL-02). Also open: UNICEF is described three ways — "Scaled with UNICEF Innovation" (Home hero), "backed by UNICEF" (Success Top results), "RPP involving UNICEF" (Research); confirm the exact relationship and align.
 
 **Current:** *"INCUBATED AT STANFORD · SCALED WITH UNICEF INNOVATION"*. Good.
 **Recommended:** If Tilli has HundrED or any Indian or government recognition, add it to this strip and to the school leader one-pager. ⚠️ Only add recognition Tilli actually holds.
@@ -197,7 +197,7 @@
 ---
 
 ### GL-10 · "Ask-Tilli" vs "Ask Tilli" · P3 · Language
-- [ ] Done
+- [x] Done — **Decision: product name is "AskTilli"** (one word; "ASKTILLI" in caps kickers). All visible copy swapped, both builds + demo greetings/error (`js/ask-tilli-demo.js`) + quick-nav pill (`js/main.js` NAV_ITEMS display name). Verb phrases kept: "Ask Tilli anything about your school", "Connected. Ask Tilli anything", aria-label "Ask Tilli a question". Internal keys unchanged (scene `data-label="Ask-Tilli"`, file names, `window.AskTilli`).
 
 **Current:** "ASK-TILLI · KNOWS DHRUV'S DATA" and "Ask Tilli anything about your school" appear in the same scroll.
 **Recommended:** Use one spelling for the product name ("Ask-Tilli"). The sentence "Ask Tilli anything" can stay as a verb phrase if you want, but check that it reads as intended.
@@ -205,7 +205,7 @@
 ---
 
 ### GL-11 · Home scene-nav pill labels · P3 · Language
-- [ ] Done
+- [x] Done — desktop only (mobile has no pill nav). Set used: `Home · Dashboard · Reports · 3 perspectives · Measure · 12 skills · On track · AskTilli · Schools · Partner schools · Contact`. Kept "Home" (clearer than "Start") and "Contact" (width). "Partner schools" is interim — switch to "A year with Tilli" when HM-13 renames that section.
 
 ![Scene nav](principal-review/home-09-ai-compare.jpg)
 
@@ -397,6 +397,7 @@ Make the FAQ number match. The FAQ currently says "about 2.5 hours", which assum
 
 ### HM-13 · "What our partner schools did" · P2 · Both
 - [ ] Done
+- ↪ From GL-11: when retitled, change the Journey pill in `js/main.js` NAV_ITEMS from "Partner schools" to "A year with Tilli".
 
 ![Partner schools did](principal-review/home-13-partner-schools-did.jpg)
 ![Intervene](principal-review/home-13b-intervene.jpg)
@@ -414,6 +415,7 @@ Make the FAQ number match. The FAQ currently says "about 2.5 hours", which assum
 
 ### HM-14 · NEW SECTION: "What it asks of your school" · P1 · Section
 - [ ] Done
+- ↪ From GL-07: include *"Tilli never touches your board-exam classes."* (range confirmed Pre‑K–Grade 5).
 
 **Placement:** after "A year with Tilli", before the closing CTA.
 **Recommended content** (all from the FAQ, made scannable):
@@ -673,7 +675,7 @@ The 7 existing answers are the most credible writing on the site. These are the 
 ---
 
 ### RS-05 · Copy fixes · P3 · Language
-- [ ] Done
+- [ ] Done — zip → PIN row already done via GL-08.
 
 ![Research parameters](principal-review/research-04.jpg)
 

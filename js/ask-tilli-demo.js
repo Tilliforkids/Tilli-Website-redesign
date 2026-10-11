@@ -67,10 +67,10 @@
     // greeting
     if (has('hello', 'hi ', 'hey', 'namaste', 'hola', 'bonjour', 'hallo') && q.length < 24) {
       return pick({
-        en: `Hi! I'm Ask-Tilli for <b>${school.name}</b>. Ask me about a grade, a class, a skill, or a child.`,
-        es: `¡Hola! Soy Ask-Tilli de <b>${school.name}</b>. Pregúntame por un grado, una clase, una habilidad o un niño.`,
-        fr: `Bonjour ! Je suis Ask-Tilli pour <b>${school.name}</b>. Posez-moi une question sur une classe, une compétence ou un enfant.`,
-        hi: `नमस्ते! मैं <b>${school.name}</b> के लिए Ask-Tilli हूँ। किसी कक्षा, कौशल या बच्चे के बारे में पूछें।`
+        en: `Hi! I'm AskTilli for <b>${school.name}</b>. Ask me about a grade, a class, a skill, or a child.`,
+        es: `¡Hola! Soy AskTilli de <b>${school.name}</b>. Pregúntame por un grado, una clase, una habilidad o un niño.`,
+        fr: `Bonjour ! Je suis AskTilli pour <b>${school.name}</b>. Posez-moi une question sur une classe, une compétence ou un enfant.`,
+        hi: `नमस्ते! मैं <b>${school.name}</b> के लिए AskTilli हूँ। किसी कक्षा, कौशल या बच्चे के बारे में पूछें।`
       }, lang);
     }
 
@@ -247,7 +247,7 @@
       const ctx = { lang: detectLang(text) };
       let answer;
       try { answer = await A.respond(text, ctx); }
-      catch (err) { answer = 'Something went wrong reaching Ask-Tilli. Please try again.'; }
+      catch (err) { answer = 'Something went wrong reaching AskTilli. Please try again.'; }
 
       const think = A.minThink + Math.random() * (A.maxThink - A.minThink);
       await wait(think);

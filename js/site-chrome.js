@@ -83,7 +83,7 @@
         '<div class="tl-container">' +
           '<div class="tl-footer__row">' +
             '<div class="tl-footer__brand"><img src="' + CONFIG.ASSET_BASE + 'tilli-logo.png" alt="Tilli">' +
-              '<span class="tl-footer__tag">Developmentally on track by 10.</span></div>' +
+              '<span class="tl-footer__tag">Developmentally on track by age 10.</span></div>' +
             '<nav class="tl-footer__links" aria-label="Footer">' + navLinks + '</nav>' +
           '</div>' +
           '<div class="tl-footer__row tl-footer__row--meta">' +

@@ -2332,9 +2332,9 @@ document.getElementById('goNext').addEventListener('click', () => glideTo(adjace
    active pill tracks scroll by finding the last section we've reached. */
 const NAV_ITEMS = [
   ['Start', 'Home'], ['Dashboard', 'Dashboard'], ['Reports', 'Reports'],
-  ['3 views', 'Views'], ['Measure', 'Measure'], ['12 skills', 'Skills'],
-  ['On track', 'Progress'], ['Ask-Tilli', 'Ask-Tilli'], ['Impact', 'Impact'],
-  ['Journey', 'Journey'], ["Let's talk", 'Contact'],
+  ['3 views', '3 perspectives'], ['Measure', 'Measure'], ['12 skills', '12 skills'],
+  ['On track', 'On track'], ['Ask-Tilli', 'AskTilli'], ['Impact', 'Schools'],
+  ['Journey', 'Partner schools'], ["Let's talk", 'Contact'],
 ];
 (function buildQuickNav() {
   const nav = document.getElementById('quicknav');

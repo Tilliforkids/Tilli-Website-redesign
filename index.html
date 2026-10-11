@@ -7,8 +7,8 @@
 <script src="js/device-split.js?v=2"></script>
 <!-- HTML cache self-heal — forces a fresh shell when /version.json bumps. See js/cache-guard.js -->
 <script src="js/cache-guard.js"></script>
-<title>Tilli — Developmentally on track by 10</title>
-<meta name="description" content="Tilli helps schools measure 12 foundational skills for every child — from teachers, parents, and the child — then ask Tilli what to do next. Developmentally on track by 10.">
+<title>Tilli — Developmentally on track by age 10</title>
+<meta name="description" content="Tilli helps schools measure 12 foundational skills for every child — from teachers, parents, and the child — then ask Tilli what to do next. Developmentally on track by age 10.">
 <meta name="theme-color" content="#26BDE2">
 <link rel="canonical" href="https://tillinewwebsite.ishanirai.com/">
 <link rel="icon" type="image/png" href="assets/ds/tilli-wordmark.png">
@@ -17,13 +17,13 @@
      swap the base to https://www.tillikids.com at production cut-over. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Tilli">
-<meta property="og:title" content="Tilli — Developmentally on track by 10">
+<meta property="og:title" content="Tilli — Developmentally on track by age 10">
 <meta property="og:description" content="Schools measure 12 foundational skills for every child — from teachers, parents, and the child themselves — then ask Tilli what to do next.">
 <meta property="og:url" content="https://tillinewwebsite.ishanirai.com/">
 <meta property="og:image" content="https://tillinewwebsite.ishanirai.com/assets/ds/tilli-wordmark.png">
 <meta property="og:image:alt" content="Tilli">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Tilli — Developmentally on track by 10">
+<meta name="twitter:title" content="Tilli — Developmentally on track by age 10">
 <meta name="twitter:description" content="Schools measure 12 foundational skills for every child, then ask Tilli what to do next.">
 <meta name="twitter:image" content="https://tillinewwebsite.ishanirai.com/assets/ds/tilli-wordmark.png">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/fonts.css">
@@ -282,6 +282,7 @@
   .hero-beat [data-hb].in { opacity: 1; transform: scale(1); }
   .hero-inner h1 { font-size: min(var(--tl-fs-2xl), 6.4vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); line-height: 1.1; color: var(--tl-ink-900); max-width: 840px; margin: 22px auto 0; }
   .hero-sub { font-size: min(var(--tl-fs-xl), 3.4vh); font-weight: 600; line-height: 1.5; color: var(--tl-ink-700); max-width: 700px; margin: 0 auto; }
+  .hero-range { font-size: var(--tl-fs-sm); font-weight: 600; color: var(--tl-ink-500); margin: min(16px, 2vh) auto 0; }
   #stat { font-weight: 800; font-size: min(var(--tl-fs-display), 6.4vh); color: var(--tl-pink-600); vertical-align: -6px; }
   @keyframes hintPulse { 0%, 100% { transform: scaleY(0.35); transform-origin: top; opacity: .5; } 50% { transform: scaleY(1); opacity: 1; } }
   #scrollHint { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 45; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; transition: opacity .6s ease; pointer-events: none; }
@@ -476,6 +477,7 @@
               <a href="#" data-tl-open-form class="btn-pink">Book a 30-minute call</a>
               <a href="#how" style="font-weight: 700; font-size: var(--tl-fs-base);">See how it works →</a>
             </div>
+            <p class="hero-range">Built for Pre-K to Grade 5 (ages 3–10).</p>
             <div style="margin-top: min(56px, 6vh);">
               <div style="font-size: var(--tl-fs-xs); font-weight: 600; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-ink-300); margin-bottom: 16px;">INCUBATED AT STANFORD · SCALED WITH UNICEF INNOVATION</div>
               <div style="display: flex; gap: 40px; justify-content: center; align-items: center;">
@@ -711,7 +713,7 @@
               <div data-ai-foot style="font-size: var(--tl-fs-sm); font-weight: 600; color: var(--tl-ink-500); margin-top: auto; padding-top: 14px; opacity: 0; will-change: opacity;">Advice for the average child. It has never met yours.</div>
             </div>
             <div data-ai-card style="flex: 1; min-width: 300px; max-width: 470px; background: var(--tl-wash-cyan); border: 2px solid var(--tl-cyan-500); border-radius: var(--tl-radius-lg); padding: min(28px, 3vh); display: flex; flex-direction: column; gap: min(12px, 1.4vh); opacity: 0; will-change: transform, opacity;">
-              <div style="font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-cyan-700); margin-bottom: 6px;">ASK-TILLI · KNOWS DHRUV'S DATA</div>
+              <div style="font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-cyan-700); margin-bottom: 6px;">ASKTILLI · KNOWS DHRUV'S DATA</div>
               <div data-ai-q style="align-self: flex-end; background: var(--tl-cyan-500); color: var(--tl-white); border-radius: var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-xs) var(--tl-radius-md); padding: 11px 15px; font-size: var(--tl-fs-sm); line-height: 1.5; max-width: 320px; display: none; opacity: 0; transform-origin: bottom right; will-change: transform, opacity;">How do I help Dhruv focus in class?</div>
               <div data-ai-typing style="align-self: flex-start; background: var(--tl-white); border-radius: var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-xs); padding: 13px 15px; gap: 4px; align-items: center; display: none; opacity: 0; transform-origin: bottom left; will-change: transform, opacity;"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span></div>
               <div data-ai-r style="align-self: flex-start; background: var(--tl-white); color: var(--tl-ink-700); border-radius: var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-xs); padding: 11px 15px; font-size: var(--tl-fs-sm); line-height: 1.5; max-width: 340px; display: none; opacity: 0; transform-origin: bottom left; will-change: transform, opacity;">Dhruv's attention is at <b>Learner</b>, but his working memory is <b>Expert</b>, and his parents report the same pattern at home. Start group tasks with the Week 14 attention warm-up, then let him lead the recall step.</div>
@@ -739,7 +741,7 @@
           <p style="font-size: min(var(--tl-fs-base), 2.3vh); line-height: 1.55; color: var(--tl-ink-500); max-width: 560px; margin: 0 auto;"><b style="color: var(--tl-ink-700);">Sunrise Academy</b> · 6 grades, Pre-K to Grade 5 · 15 students a class</p>
 
           <div class="atl-card rv" id="askTilliLive">
-            <div class="atl-loghead">ASK-TILLI · SUNRISE ACADEMY</div>
+            <div class="atl-loghead">ASKTILLI · SUNRISE ACADEMY</div>
             <div class="atl-log" data-atl-log></div>
             <div class="atl-inputbar" data-atl-inputbar>
               <!-- floating guide: invites the visitor to bring the flowing dots
@@ -773,7 +775,7 @@
               <span class="atl-chars" data-atl-chars>0 / 220</span>
             </div>
             <div class="atl-locked" data-atl-locked style="display: none;">
-              <div class="atl-locked-t">That's your 2-question demo. On your real data, Ask-Tilli knows every child, class, and skill in your school.</div>
+              <div class="atl-locked-t">That's your 2-question demo. On your real data, AskTilli knows every child, class, and skill in your school.</div>
               <a href="#" data-tl-open-form>Book a 30-minute call →</a>
             </div>
           </div>
@@ -920,13 +922,13 @@
               <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--tl-cyan-500); display: flex; align-items: center; justify-content: center;"><img src="assets/ds/icon-robot.png" alt="" style="width: 26px; height: 26px;"></div>
               <div style="font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-cyan-700);">ASK</div>
             </div>
-            <div style="font-size: min(var(--tl-fs-lg), 3.4vh); font-weight: 800; color: var(--tl-ink-900); letter-spacing: var(--tl-tracking-tight);">Ask-Tilli</div>
+            <div style="font-size: min(var(--tl-fs-lg), 3.4vh); font-weight: 800; color: var(--tl-ink-900); letter-spacing: var(--tl-tracking-tight);">AskTilli</div>
             <p style="font-size: min(var(--tl-fs-base), 2.3vh); line-height: 1.6; margin: 12px 0 0;">Teachers ask about a child or a class and get lesson plans, behaviour guidance, and that child's own data, in the middle of a school day, in seconds.</p>
           </div>
           <div style="width: 250px; background: var(--tl-wash-cyan); border: 4px solid var(--tl-cyan-500); border-radius: var(--tl-radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 10px;">
             <div style="align-self: flex-end; background: var(--tl-cyan-500); color: var(--tl-white); border-radius: var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-xs) var(--tl-radius-md); padding: 10px 14px; font-size: var(--tl-fs-sm); line-height: 1.45; max-width: 200px;">How do I support Dhruv's focus during group work?</div>
             <div style="align-self: flex-start; background: var(--tl-white); color: var(--tl-ink-700); border-radius: var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-xs); padding: 10px 14px; font-size: var(--tl-fs-sm); line-height: 1.45; max-width: 210px;">Dhruv's attention is at <b>Learner</b>. Try a 2-minute attention warm-up before the task. Here's one from Week 14.</div>
-            <div style="font-size: var(--tl-fs-xs); font-weight: 700; color: var(--tl-cyan-700); text-align: center; margin-top: 4px;">ASK-TILLI</div>
+            <div style="font-size: var(--tl-fs-xs); font-weight: 700; color: var(--tl-cyan-700); text-align: center; margin-top: 4px;">ASKTILLI</div>
           </div>
         </div>
       </div>
@@ -980,7 +982,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
             <div style="display: flex; align-items: center; gap: 16px;">
               <img src="assets/ds/tilli-logo.png" alt="tilli" style="height: 26px; width: auto;">
-              <span style="font-size: var(--tl-fs-sm); font-style: italic; color: var(--tl-ink-500);">Developmentally on track by 10.</span>
+              <span style="font-size: var(--tl-fs-sm); font-style: italic; color: var(--tl-ink-500);">Developmentally on track by age 10.</span>
             </div>
             <div style="display: flex; gap: 22px; font-size: var(--tl-fs-sm); font-weight: 600; flex-wrap: wrap;">
               <a href="#how" style="color: var(--tl-ink-600);">How it works</a>
