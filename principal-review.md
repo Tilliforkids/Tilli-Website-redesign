@@ -8,6 +8,7 @@
 ### How to track
 - Tick the checkbox on each item and update the **Status** column in the tracker.
 - Status values: `To do` · `In progress` · `Done` · `Won't do`
+- When a task is done, mark its row green: put 🟢 before the ID and set Status to `🟢 Done`.
 - **Priority:** **P1** = would stop me booking a call · **P2** = weakens the case I'd make to my Management Committee · **P3** = polish
 - ⚠️ **Confirm** = the recommended copy states a fact Tilli needs to verify before publishing. Don't ship a ⚠️ line until someone has confirmed it.
 
@@ -33,14 +34,13 @@
 ---
 
 ## Tracker
-
 | ID | Page | Section | Change (short) | Type | Pri | Status |
 |---|---|---|---|---|---|---|
-| GL-01 | Global | Header nav | Add How it works / Pricing & FAQs to header | Section | P1 | Done |
-| GL-02 | Global | CTAs | One name for the primary CTA site-wide | Language | P2 | In progress |
-| GL-03 | Global | Pilot offer | Reconcile "one term" vs "one year" | Language | P1 | Done |
-| GL-04 | Global | Evidence claims | Reconcile "Tilli works" with "evidence still being built" | Language | P1 | To do |
-| GL-05 | Global | Framework name | "Analyze" vs "Ask": pick one | Language | P2 | To do |
+| 🟢 GL-01 | Global | Header nav | Add How it works / Pricing & FAQs to header | Section | P1 | 🟢 Done |
+| 🟢 GL-02 | Global | CTAs | One name for the primary CTA site-wide | Language | P2 | 🟢 Done |
+| 🟢 GL-03 | Global | Pilot offer | Reconcile "one term" vs "one year" | Language | P1 | 🟢 Done |
+| 🟢 GL-04 | Global | Evidence claims | Reconcile "Tilli works" with "evidence still being built" | Language | P1 | 🟢 Done |
+| 🟢 GL-05 | Global | Framework name | "Analyze" vs "Ask": pick one | Language | P2 | 🟢 Done |
 | GL-06 | Global | Definitions | Define SEL / foundational skills once, plainly | Language | P2 | To do |
 | GL-07 | Global | Tagline / grades | "On track by 10": say age 10 and Pre‑K–5 | Language | P1 | To do |
 | GL-08 | Global | Local context | Indian-context wording, phone number, spelling | Language | P2 | To do |
@@ -101,7 +101,7 @@
 ---
 
 ### GL-02 · One primary CTA name · P2 · Language
-- [ ] Done (primary CTA unified; one-pager + pilot CTAs pending)
+- [x] Done — primary CTA unified; "Start with a pilot" added to Home closing CTA (both builds). One-pager CTA dropped by decision; the PDF is linked from the FAQ "Management Committee" answer only.
 
 **Current (7 variants):** "Book a demo", "Book a demo →", "Get in touch", "Bring Tilli to your school", "Let's talk about your school", "Get the parent one-pager →", plain email links.
 **Recommended:** Use three CTAs only, with the same wording everywhere.
@@ -129,7 +129,7 @@
 ---
 
 ### GL-04 · Evidence claims contradict · P1 · Language
-- [ ] Done
+- [x] Done — **Decision: Success page claims are the source of truth** (until stated otherwise). FAQ evidence answer rewritten to match: leads with the validated instrument + "9 in 10" outcome, keeps the honest line that no peer-reviewed outcome study is out yet, links to Success. Per-stat sourcing (N / schools / term) still open under SC-02 / SC-03.
 
 **Current:**
 - Success: heading *"Tilli works"*, *"9 in 10 children improved emotion regulation in a single term."*
@@ -142,7 +142,7 @@
 ---
 
 ### GL-05 · Framework name · P2 · Language
-- [ ] Done
+- [x] Done — hero eyebrow now "MEASURE · ASK · INTERVENE" (both builds). Dashboard section eyebrow changed from "ANALYZE" to "DASHBOARD" so it isn't read as a framework step.
 
 **Current:** The hero eyebrow says *"MEASURE · ANALYZE · INTERVENE"*. Everywhere else says *"Measure. Ask. Intervene."*
 **Recommended:** *"MEASURE · ASK · INTERVENE"* everywhere.
@@ -150,7 +150,7 @@
 ---
 
 ### GL-06 · Define SEL / foundational skills once · P2 · Language
-- [ ] Done
+- [ ] Done — ⏸ **Paused (11 Oct 2026).** Open points when resumed: "foundational" reads as NEP **FLN** (literacy & numeracy) to Indian principals; desktop has no EF / Social-Emotional grouping (mobile does — see HM-07); "decide how well a child learns" is a stronger claim than Success makes; desktop skills scene is viewport-pinned, check vertical fit. Draft alt: *"Not reading and maths: the attention, memory, self-control and people skills underneath them. The emotional half is often called social-emotional learning (SEL)."*
 
 **Current:** "SEL" first appears in *"…and the SEL Teaching Kit"* with no definition. "Foundational skills" is never defined either.
 **Recommended:** Add this line the first time the term appears on Home (the 12-skills section):

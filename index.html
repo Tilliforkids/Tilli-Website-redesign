@@ -262,6 +262,9 @@
   .eyebrow { font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-cyan-700); }
   .btn-pink { background: var(--tl-pink-600); color: var(--tl-white); font-weight: 700; font-size: var(--tl-fs-base); padding: 16px 34px; border-radius: var(--tl-radius-pill); display: inline-block; box-shadow: var(--tl-shadow-glow-pink); }
   .btn-pink:hover { background: var(--tl-pink-700); color: var(--tl-white); transform: translateY(-2px); }
+  /* secondary CTA (GL-02 pilot): green outline, same size as .btn-pink */
+  .btn-outline-green { background: transparent; color: var(--tl-green-600); font-weight: 700; font-size: var(--tl-fs-base); padding: 14.5px 32.5px; border: 1.5px solid var(--tl-green-500); border-radius: var(--tl-radius-pill); display: inline-block; }
+  .btn-outline-green:hover { background: var(--tl-wash-green); color: var(--tl-green-600); transform: translateY(-2px); }
 
   /* ── Hero ─────────────────────────────────────────────────── */
   .hero-inner { position: relative; max-width: 1140px; width: 100%; margin: 0 auto; padding: 0 24px; text-align: center; }
@@ -458,7 +461,7 @@
       <div class="step-in">
         <div class="hero-inner">
           <div class="hero-beat" id="beatA" style="transform: translateY(21vh);">
-            <div data-hb class="eyebrow">MEASURE · ANALYZE · INTERVENE</div>
+            <div data-hb class="eyebrow">MEASURE · ASK · INTERVENE</div>
             <h1 data-hb>How do schools make a <span style="color: var(--tl-pink-600);">decision</span> for their students?</h1>
           </div>
         </div>
@@ -497,7 +500,7 @@
     <div class="step">
       <div class="step-in">
         <div class="wrap" style="text-align: center;">
-          <div class="eyebrow">ANALYZE</div>
+          <div class="eyebrow">DASHBOARD</div>
           <h2 style="font-size: min(var(--tl-fs-xl), 5vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); margin: 14px auto 12px; max-width: 720px;">Schools see every data point in <span style="color: var(--tl-cyan-700);">one simple dashboard</span>.</h2>
           <p style="font-size: min(var(--tl-fs-lg), 2.6vh); line-height: 1.6; max-width: 620px; margin: 0 auto min(34px, 4vh);">Easy to use, easy to navigate. Built for teachers, not analysts.</p>
           <div data-zoom style="max-width: 940px; margin: 0 auto; background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-lg); padding: 14px; box-shadow: var(--tl-shadow-card); will-change: transform;">
@@ -961,9 +964,10 @@
         <div id="letsTalkCard" style="max-width: 640px; margin: 0 auto; text-align: center; position: relative;">
           <h2 style="font-size: min(var(--tl-fs-xl), 5.6vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); line-height: 1.12; margin: 0 0 20px;">Let Tilli help you understand your students' development better.</h2>
           <p style="font-size: min(var(--tl-fs-lg), 2.6vh); line-height: 1.6; color: var(--tl-ink-600); max-width: 540px; margin: 0 auto 22px;">A 30-minute conversation with our founding team about your school, your children, and what's possible.</p>
-          <div style="display: inline-flex; align-items: center; gap: 10px; margin: 0 auto 30px; padding: 10px 18px; border-radius: var(--tl-radius-pill); background: var(--tl-wash-green); border: 1.5px solid var(--tl-green-500); font-size: min(var(--tl-fs-base), 2.1vh); font-weight: 700; color: var(--tl-green-600);">Start with a pilot — one grade, one year, with a full review after Term 1.</div>
+          <div style="display: inline-flex; align-items: center; gap: 10px; margin: 0 auto 30px; padding: 10px 18px; border-radius: var(--tl-radius-pill); background: var(--tl-wash-green); border: 1.5px solid var(--tl-green-500); font-size: min(var(--tl-fs-base), 2.1vh); font-weight: 700; color: var(--tl-green-600);">Pilot: one grade, one year, with a full review after Term 1.</div>
           <div style="display: flex; align-items: center; justify-content: center; gap: 28px; flex-wrap: wrap;">
             <a href="#" data-tl-open-form class="btn-pink">Book a 30-minute call</a>
+            <a href="#" data-tl-open-form class="btn-outline-green">Start with a pilot</a>
             <a href="mailto:kavindya@tillikids.com" style="font-weight: 700; color: var(--tl-ink-700);">kavindya@tillikids.com</a>
           </div>
         </div>
