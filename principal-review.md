@@ -38,7 +38,7 @@
 |---|---|---|---|---|---|---|
 | GL-01 | Global | Header nav | Add How it works / Pricing & FAQs to header | Section | P1 | Done |
 | GL-02 | Global | CTAs | One name for the primary CTA site-wide | Language | P2 | In progress |
-| GL-03 | Global | Pilot offer | Reconcile "one term" vs "one year" | Language | P1 | To do |
+| GL-03 | Global | Pilot offer | Reconcile "one term" vs "one year" | Language | P1 | Done |
 | GL-04 | Global | Evidence claims | Reconcile "Tilli works" with "evidence still being built" | Language | P1 | To do |
 | GL-05 | Global | Framework name | "Analyze" vs "Ask": pick one | Language | P2 | To do |
 | GL-06 | Global | Definitions | Define SEL / foundational skills once, plainly | Language | P2 | To do |
@@ -116,7 +116,7 @@
 ---
 
 ### GL-03 · Pilot terms contradict · P1 · Language ⚠️
-- [ ] Done
+- [x] Done — **Decision: one grade, one year, with a full review after Term 1** (a year is the minimum to observe change in a child). Use this wording everywhere.
 
 **Current:**
 - Home closing CTA: *"Start with a pilot — one grade, one term, your data, your pace."*
@@ -452,7 +452,7 @@ H2: *"What Tilli asks of your school."* Sub: *"Fewer surprises at the Parent‑T
 
 **Current:** H2 *"Let Tilli help you understand your students' development better."* The pilot appears only as a small pill. A bare *kavindya@tillikids.com* button.
 **Recommended:**
-- H2: *"Start with one grade, one term."* (match GL-03)
+- H2: *"Start with one grade, one year."* (match GL-03: one grade, one year, full review after Term 1)
 - Sub: *"Your data, your pace. In 30 minutes with our founding team, we'll fit Tilli to your timetable, your section sizes and your budget."*
 - Buttons: **Book a 30-minute call** · **Email Kavindya Tennakoon, Founder & CEO**
 
@@ -559,7 +559,7 @@ The "Tilli illustration", "Photo: Hippocampus classroom", "Photo NMAJS early yea
 ![Final CTA](principal-review/success-08.jpg)
 
 **Current:** *"Your school could be the next story. Tell us about your children and we'll show you what measuring the whole child looks like in practice."*
-**Recommended:** Keep the H2. New sub: *"Start with one grade for one term. Your own baseline will show you whether it's working."* (match GL-03)
+**Recommended:** Keep the H2. New sub: *"Start with one grade for one year. Your own baseline will show you whether it's working, with a full review after Term 1."* (match GL-03)
 
 ---
 
@@ -591,7 +591,7 @@ The 7 existing answers are the most credible writing on the site. These are the 
 | e | Where is our children's data stored, and who can see it? | DPDP Act 2023, parental consent, storage location, nothing sold ⚠️ |
 | f | Will our data end up in Tilli's research dataset? | Opt-in only, de-identified, no school names ⚠️ (see RS-03) |
 | g | What does training involve, and who delivers it? | In-person or online, language, who runs it ⚠️ |
-| h | Can we do a pilot first? | Same wording as GL-03 |
+| h | Can we do a pilot first? | Same wording as GL-03: one grade, one year, full review after Term 1 |
 | i | What do I take to my Management Committee? | School leader one-pager, sample dashboard, sample parent report |
 
 ---
