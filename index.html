@@ -286,7 +286,6 @@
   .hero-lead { font-size: min(var(--tl-fs-lg), 2.6vh); font-weight: 500; line-height: 1.55; color: var(--tl-ink-500); max-width: 540px; margin: 0 auto; }
   .hero-stat-lbl { font-size: min(var(--tl-fs-lg), 2.6vh); font-weight: 500; line-height: 1.5; color: var(--tl-ink-500); max-width: 480px; margin: min(6px, 0.8vh) auto 0; }
   .hero-stat-lbl b { font-weight: 800; color: var(--tl-ink-900); }
-  .hero-range { font-size: var(--tl-fs-sm); font-weight: 600; color: var(--tl-ink-500); margin: min(16px, 2vh) auto 0; }
   #stat { display: block; font-weight: 800; font-size: min(var(--tl-fs-display), 8.5vh); line-height: 1; letter-spacing: var(--tl-tracking-tight); font-variant-numeric: tabular-nums; color: var(--tl-pink-600); margin-top: min(26px, 3.2vh); }
   @keyframes hintPulse { 0%, 100% { transform: scaleY(0.35); transform-origin: top; opacity: .5; } 50% { transform: scaleY(1); opacity: 1; } }
   #scrollHint { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 45; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; transition: opacity .6s ease; pointer-events: none; }
@@ -301,7 +300,13 @@
   .view-label .d { font-size: var(--tl-fs-sm); margin-top: 6px; }
 
   /* ── DNA measure ──────────────────────────────────────────── */
-  .dna-grid { max-width: 1140px; margin: 0 auto; display: grid; grid-template-columns: minmax(220px, 320px) minmax(150px, 1fr) minmax(260px, 360px); align-items: center; gap: 24px; padding: 0 24px; }
+  /* --dna-card-shift: the right column is 40px wider than the left and the
+     left text's ragged edge adds ~9px, so the helix (centred on screen) sat
+     closer to the card than to the text. Nudge the card right so both gaps
+     match; the clamp eases it back to 0 before it could overflow a narrower
+     screen (the grid stops having side margin below ~1190px). */
+  .dna-grid { --dna-card-shift: 48px; max-width: 1140px; margin: 0 auto; display: grid; grid-template-columns: minmax(220px, 320px) minmax(150px, 1fr) minmax(260px, 360px); align-items: center; gap: 24px; padding: 0 24px; }
+  .dna-grid > :last-child { transform: translateX(clamp(0px, calc((100vw - 1140px) / 2 + 24px), var(--dna-card-shift))); }
   .stage-title { opacity: 0.25; transition: opacity 0.4s ease; }
   .stage-panel { position: absolute; inset: 0; display: flex; align-items: center; opacity: 0; transition: opacity 0.45s ease; pointer-events: none; }
 
@@ -486,11 +491,9 @@
             <p class="hero-lead">Most schools find out from marks. Tilli measures each child three ways, three times a year.</p>
             <div id="stat">579</div>
             <p class="hero-stat-lbl"><b>data points per child,</b> in about 5 minutes of class time per child each term.</p>
-            <div style="display: flex; gap: 18px; justify-content: center; align-items: center; margin-top: min(34px, 4vh); flex-wrap: wrap;">
-              <a href="#" data-tl-open-form class="btn-pink">Book a 30-minute call</a>
+            <div style="display: flex; gap: 18px; justify-content: center; align-items: center; margin-top: min(26px, 3vh); flex-wrap: wrap;">
               <a href="#how" style="font-weight: 700; font-size: var(--tl-fs-base);">See how it works →</a>
             </div>
-            <p class="hero-range">Built for Pre-K to Grade 5 (ages 3–10).</p>
             <div style="margin-top: min(56px, 6vh);">
               <div style="font-size: var(--tl-fs-xs); font-weight: 600; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-ink-300); margin-bottom: 16px;">INCUBATED AT STANFORD · SCALED WITH UNICEF INNOVATION</div>
               <div style="display: flex; gap: 40px; justify-content: center; align-items: center;">
@@ -698,7 +701,7 @@
   <div class="stage">
     <div class="step">
       <div class="step-in">
-        <div class="wrap" style="text-align: center; display: flex; flex-direction: column; gap: min(56px, 9vh);">
+        <div class="wrap" style="text-align: center; display: flex; flex-direction: column; gap: min(32px, 3.6vh);">
           <div>
             <h2 data-st-h style="font-size: min(var(--tl-fs-xl), 5.6vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); line-height: 1.14; color: var(--tl-ink-900); max-width: 820px; margin: 0 auto 14px; will-change: transform, opacity;">Know, term by term, whether every child is <span style="color: var(--tl-green-600);">on track</span> for middle school.</h2>
             <p data-st-p style="font-size: min(var(--tl-fs-lg), 2.5vh); line-height: 1.55; max-width: 640px; margin: 0 auto; will-change: opacity;">See where each child stands, how far they've moved since last term, and what to do next.</p>
@@ -721,7 +724,6 @@
     <div class="step">
       <div class="step-in">
         <div class="wrap" style="text-align: center;">
-          <div class="eyebrow">ASK</div>
           <h2 data-ai-h style="font-size: min(var(--tl-fs-xl), 5vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); margin: 14px auto 12px; max-width: 760px; opacity: 0; will-change: transform, opacity;">Any AI can answer. <span style="color: var(--tl-cyan-700);">Only Tilli knows your student.</span></h2>
           <p data-ai-p style="font-size: min(var(--tl-fs-lg), 2.6vh); line-height: 1.6; max-width: 620px; margin: 0 auto min(40px, 4vh); opacity: 0; will-change: opacity;">The same question, asked two ways. One answer is for any child. One is for <em>this</em> child.</p>
           <div style="display: flex; gap: 32px; justify-content: center; align-items: stretch; flex-wrap: wrap; text-align: left; min-height: min(430px, 54vh);">
@@ -1055,7 +1057,7 @@
 <script src="js/ask-tilli-demo.js?v=2"></script>
 <script src="js/impact-orbits.js?v=7"></script>
 <script src="js/impact-carousel.js?v=7"></script>
-<script type="module" src="js/main.js?v=119"></script>
+<script type="module" src="js/main.js?v=127"></script>
 <script src="js/site-config.js?v=1"></script>
 <script src="js/site-chrome.js?v=4"></script>
 </body>

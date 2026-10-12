@@ -6,7 +6,7 @@
       "runtimeExecutable": "sh",
       "runtimeArgs": [
         "-c",
-        "cd /tmp && exec ruby -e 'require \"webrick\"; WEBrick::HTTPServer.new(Port: 8742, DocumentRoot: \"/private/tmp/claude-501/-Users-dotrai-Desktop-Tilli-Tilli-Website-redesign/a748f975-7280-4a8f-8b80-7522e64b7518/scratchpad/site\").start'"
+        "cd /tmp && exec ruby -e 'require \"webrick\"; WEBrick::HTTPServer.new(Port: 8742, DocumentRoot: \"/private/tmp/claude-501/-Users-dotrai-Desktop-Tilli-Tilli-Website-redesign/a037dd04-5886-410f-aa2d-853ee255e273/scratchpad/site\").start'"
       ],
       "port": 8742
     }

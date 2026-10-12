@@ -54,8 +54,8 @@
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
   };
   const PALETTE    = [
-    tokRGB('--tl-yellow-500', '#FCC30B'), tokRGB('--tl-cyan-500', '#26BDE2'), tokRGB('--tl-green-500', '#56C02B'),
-    tokRGB('--tl-orange-500', '#F99B1C'), tokRGB('--tl-pink-400', '#E866B0'),
+    tokRGB('--tl-dot-3', '#FCC30B'), tokRGB('--tl-dot-2', '#26BDE2'), tokRGB('--tl-dot-1', '#56C02B'),
+    tokRGB('--tl-dot-4', '#F99B1C'), tokRGB('--tl-dot-5', '#E866B0'),
   ];
 
   const MAX_DIST = 150, FADE_DIST = 78, MAX_LINKS = 3, DENSITY = 0.72,

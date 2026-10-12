@@ -62,6 +62,14 @@
   --tl-accent-4:var(--tl-yellow-500);
   --tl-accent-5:var(--tl-orange-500);
 
+  /* dot palette: the ONLY five colours any animated dot may use (3D field,
+     canvases, mobile dot art). Grey "inactive" dots use --tl-line-300. */
+  --tl-dot-1:var(--tl-green-500);
+  --tl-dot-2:var(--tl-cyan-500);
+  --tl-dot-3:var(--tl-yellow-500);
+  --tl-dot-4:var(--tl-orange-500);
+  --tl-dot-5:var(--tl-pink-400);
+
   /* rail: top → bottom order on every content slide */
   --tl-rail-1:var(--tl-green-500);
   --tl-rail-2:var(--tl-pink-400);

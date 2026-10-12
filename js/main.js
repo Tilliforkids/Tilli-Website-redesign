@@ -25,6 +25,14 @@ const rgbOf = (v) => {
   return v.split(',').map(Number);
 };
 
+/* THE dot palette — every animated dot on the page draws from these five
+   (colors.css --tl-dot-1…5). `gray` is the one sanctioned extra: the neutral
+   "inactive / generic" dot (ambient dust, the generic-AI chat stream). */
+const DOT_PALETTE = [
+  tok('--tl-dot-1', '#56C02B'), tok('--tl-dot-2', '#26BDE2'), tok('--tl-dot-3', '#FCC30B'),
+  tok('--tl-dot-4', '#F99B1C'), tok('--tl-dot-5', '#E866B0'),
+];
+
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, t) => a + (b - a) * t;
 const ease = (t) => 1 - Math.pow(1 - t, 3);
@@ -86,6 +94,10 @@ const FADE_LEN = 0.12;
 const FADE_OVER = 0.04;
 const STEP_FADE = 0.22;
 const FLIP_SPAN = 0.3;   // Journey cards: scene-progress (in card-units) each Y-axis card flip takes
+/* Schools ("30+ schools…") → A year with Tilli: a FADE-OUT then a FADE-IN (not
+   a cross-dissolve). Windows are f offsets from the Journey scene start: the
+   Impact stage is fully gone at out[1], then Journey fades in over in[]. */
+const IMPACT_TO_JOURNEY = { out: [-0.16, -0.05], in: [-0.01, 0.1] };
 /* The flow spans three scenes now: Start (ring) → Cross (the dots cross
    paths, a dedicated empty screen) → Dashboard (they pour into the card).
    MORPH_AT / SCROLL_AT are Start-scene fractions: where the dots begin
@@ -138,6 +150,15 @@ function measure() {
   fitSteps();
   buildJar();
   buildBurst();
+  /* the ring, the dashboard paths and the On-track copy are fitted to the live DOM layout */
+  measureHeroText();
+  anchorDashPaths();
+  layoutOnTrackText();
+  if (three) {
+    layoutHeroRing(three.heroRing);
+    three.relayoutDash();
+    three.restitch();
+  }
 }
 
 /* Stages are viewport-locked, so a step that is taller than the screen
@@ -174,7 +195,7 @@ const JAR = {
   drop:       0.4,    // downward speed as a marble leaves the mouth, in diameters / s
   damp:       0.9,    // velocity kept each substep (<1 bleeds energy so the pile settles)
   iterations: 5,      // collision-relaxation passes per frame (more = firmer pile, less overlap)
-  colors:     [tok('--tl-green-500', '#56C02B'), tok('--tl-cyan-500', '#26BDE2'), tok('--tl-yellow-500', '#FCC30B')],  // Measure green · Ask cyan · Intervene yellow
+  colors:     [DOT_PALETTE[0], DOT_PALETTE[1], DOT_PALETTE[2]],  // Measure green · Ask cyan · Intervene yellow
   sound:      true,   // play a soft "plink" per marble as the jar fills (live: GUI "Sound")
 };
 let jar = null;   // { el, S, r, R, mouthY, marbles:[…], released, live, next, acc }
@@ -438,8 +459,7 @@ const BURST = {
   linkMax:   3,      // most threads drawn per dot
   jarGrow:   1.25,   // how much the jar scales up as it reaches centre
   overshoot: 0.14,   // outward pop past the ring before it settles (fraction of min(vw,vh))
-  colors: [tok('--tl-green-500', '#56C02B'), tok('--tl-cyan-500', '#26BDE2'), tok('--tl-yellow-500', '#FCC30B'),
-           tok('--tl-orange-500', '#F99B1C'), tok('--tl-pink-600', '#E91E8C')],   // green · cyan · yellow · orange · pink
+  colors: DOT_PALETTE.slice(),   // green · cyan · yellow · orange · pink
 };
 let burst = null;   // { canvas, ctx, dots:[…], links:[[i,j]…], dpr, jarRect, N }
 
@@ -721,10 +741,9 @@ function stationF() {
    THREE.JS WORLD
    ═══════════════════════════════════════════════════════════════════ */
 const C = {
-  green: tok('--tl-green-500', '#56C02B'), cyan: tok('--tl-cyan-500', '#26BDE2'),
-  pink: tok('--tl-pink-600', '#E91E8C'), yellow: tok('--tl-yellow-500', '#FCC30B'),
-  orange: tok('--tl-orange-500', '#F99B1C'), pink2: tok('--tl-pink-400', '#E866B0'),
-  gray: tok('--tl-line-300', '#C7CDD8'), greenD: tok('--tl-green-600', '#348C11'),
+  green: DOT_PALETTE[0], cyan: DOT_PALETTE[1], yellow: DOT_PALETTE[2],
+  orange: DOT_PALETTE[3], pink: DOT_PALETTE[4],
+  gray: tok('--tl-line-300', '#C7CDD8'),
 };
 const DEPTH = 40;
 const CAM_DIST = 26;
@@ -751,6 +770,34 @@ const kidCenterX = (k) => KID.x + (k - (KID.count - 1) / 2) * KID.gap;
 /* ON-TRACK headline/subtext block offset (moves the whole .wrap together).
    x,y = screen translation in px; z = depth as a scale multiplier (1 = default). */
 const STATE_TEXT = { x: 0, y: 315, z: 1.1 };
+/* the block is FITTED to the viewport (layoutOnTrackText, on measure): its top
+   sits `gap` px under the kids' feet and its bottom stays clear of the section
+   nav, scaling down (never above STATE_TEXT.z) when a short screen can't fit
+   it — a fixed 315px push left the pills behind the nav on ~900px screens.
+   STATE_TEXT.y is now only the fallback before the first measure. */
+const STATE_FIT = { gap: 18, navPad: 14, feet: 0, s: STATE_TEXT.z };
+/* viewport-dependent part (on measure): where the kids' feet are, and the
+   scale that fits the block between them and the nav */
+function layoutOnTrackText() {
+  const sc = scenes[ST['On track']];
+  const wrap = sc && sc.stage && sc.stage.querySelector('.wrap');
+  if (!wrap || !wrap.offsetHeight) return;
+  const H = window.innerHeight;
+  /* kids' feet: the bottom of the figure row in screen px, plus the gap */
+  STATE_FIT.feet = (0.5 + (KID.height / 2 - KID.y) / (2 * visHalf(KID.z).h)) * H + STATE_FIT.gap;
+  const nav = document.getElementById('quicknav');
+  const navTop = nav ? nav.getBoundingClientRect().top : H;
+  const bottom = (navTop > H * 0.5 ? navTop : H) - STATE_FIT.navPad;
+  STATE_FIT.s = Math.max(0.6, Math.min(STATE_TEXT.z, (bottom - STATE_FIT.feet) / wrap.offsetHeight));
+}
+/* per-frame part: the push that puts the block's (scaled) top on the feet.
+   Read from offsetTop — layout, not transforms — because the step re-centres
+   the block whenever the site chrome hides/shows (its padding-bottom animates). */
+function onTrackTextY(wrap) {
+  if (!STATE_FIT.feet) return STATE_TEXT.y;
+  const h = wrap.offsetHeight, top0 = wrap.offsetTop;   // relative to the .step (pinned to the viewport)
+  return STATE_FIT.feet + (STATE_FIT.s * h) / 2 - (top0 + h / 2);
+}
 
 let three = null;
 
@@ -829,7 +876,7 @@ const MEASURE_MAXGAP = 2.0;   // ~115° — safely clear of the centre
    settled the dots into the ring: over this heroP window the lines grow from
    the TOP, anti-clockwise, and close back on the first dot. It finishes
    before MORPH_AT (where the flow starts carrying the ring off). */
-const STITCH_START = 0.56;    // heroP where the ring starts drawing (post-burst)
+const STITCH_START = 0.54;    // heroP where the ring starts drawing (post-burst)
 const STITCH_END = 0.64;      // heroP where the ring has fully closed
 
 /* ── Hero orb + hand ───────────────────────────────────────────────
@@ -841,10 +888,23 @@ const SPHERE_Z = -3;             // world plane the orb sits on (same as the rin
 const HAND_Z = -3;               // world plane the hand planes sit on (with the orb)
 const SPHERE = {
   radius: 4.6,        // orb radius in world units
-  burstSpeed: 4.2,    // how fast the orb bursts — settles into the ring before the flow leaves
   spin: 0.22,         // idle rotation speed of the parked orb
 };
-const BURST_START = 0.30;        // heroP where the burst begins (beat B lead-in)
+/* LANDING TIMELINE — heroP windows [start, end] (Start-scene fraction 0..1).
+   Strictly sequential so nothing overlaps: the beat-A headline and the two
+   hands clear the frame BEFORE the orb bursts, and the beat-B copy only
+   fades in once the burst has settled the dots into the ring.
+     textOut   beat-A headline fades out
+     handsOut  hands recoil away from the orb + fade
+     burst     orb bursts into the ring
+     textIn    beat-B copy ("Most schools find out…") fades in */
+const HERO_T = {
+  textOut:  [0.10, 0.20],
+  handsOut: [0.12, 0.25],
+  burst:    [0.24, 0.47],
+  textIn:   [0.45, 0.55],
+};
+const heroWin = (p, w) => clamp((p - w[0]) / (w[1] - w[0]));
 /* orb centre, screen fraction (0..1, top-left origin) — baked from the GUI */
 const ORB = { x: 0.50, y: 0.38 };
 /* the two Milo-Hand images that sweep in from the top corners and cradle
@@ -913,18 +973,25 @@ const WALK = { speed: 0.20, bob: 1.00, bobFreq: 2.5, slideL: 44 };
    scrubbed across the On-track tail — it always finishes with the handover.
    start  On-track scene fraction (0..1) where the kids start to leave
    dist   world units each side travels — BIGGER = kids shoot off faster
-   holdCol  fraction of the exit the kids stay coloured before whitening (0..1)
+   holdCol  fraction of the exit the kids stay full-size before shrinking away (0..1)
    textZoom scale the On-track headline shrinks to as it zooms out on exit */
 const ONTRACK_EXIT = { start: MORPH_AT, dist: 34, holdCol: 0.5, textZoom: 0.55 };
+/* ON-TRACK copy reveal, in On-track scene progress (0..1):
+     head     headline scale/fade-in finishes here
+     byline   [start, end] of the sub-line fade
+     pills    first pill starts here (right as the byline lands)
+     stagger  gap between consecutive pills
+     pillDur  each pill's pop-in length */
+const ON_TRACK_REVEAL = { head: 0.2, byline: [0.08, 0.2], pills: 0.17, stagger: 0.03, pillDur: 0.08 };
 /* ASK-TILLI reveal choreography.
    The WHOLE sequence is now time-based (NOT scrubbed by scroll). A single
    clock starts the instant the scene is entered — i.e. the moment the "Any AI
    can…" headline appears — and every beat below fires off that one clock, so
    the section auto-plays like a live chat regardless of scroll speed. All
    values are ms FROM ENTRY (except headFrom, a scale, and the *Dur spans).
-   The scroll is HELD on this scene and cannot be released until the response
-   bubbles have landed (askChat.locked, honoured by feedHold) — so the viewer
-   always watches the full exchange before moving on.
+   Scrolling can't pass this scene until the response bubbles have landed
+   (askChat.locked) — but pushing the scroll FAST-FORWARDS the chat (see
+   pushScroll's AskTilli gate) rather than being swallowed.
    headFrom   scale the "Any AI can…" headline zooms IN from (1 = no zoom)
    headDur    ms the headline takes to zoom in
    subAt      ms the sub-line fades in
@@ -937,14 +1004,15 @@ const ONTRACK_EXIT = { start: MORPH_AT, dist: 34, holdCol: 0.5, textZoom: 0.55 }
    (the response bubble is NOT timed directly — it pops the instant the first
     streamed dot reaches the box: flowGap + one path-traverse (1/speed s) after
     the prompt. A typing bubble fills the gap between prompt and response.) */
-const ASK = { headFrom: 0.72, headDur: 600, subAt: 480,
-  cardsAt: 860, cardsDur: 520, promptAt: 1620,
-  stagger: 90, flowGap: 520, pop: 300 };
+const ASK = { headFrom: 0.72, headDur: 560, subAt: 360,
+  cardsAt: 640, cardsDur: 460, promptAt: 1120,
+  stagger: 90, flowGap: 220, pop: 300 };
 /* the chat clock (ms since the scene was entered) is owned by runPin('ai') and
    shared with the dot-flow block in step() so both play off one timeline.
-   `locked` stays true until the response lands — feedHold absorbs scroll input
-   against the Ask-Tilli hold while it's set, so you can't scroll past early. */
-const askChat = { ms: -1, locked: true };
+   `locked` stays true until the response lands — the scroll gate holds at the
+   AskTilli detent while it's set. `boost` = ms fast-forwarded by scrolling
+   against that gate (added onto the clock). */
+const askChat = { ms: -1, locked: true, boost: 0 };
 /* ── ASK-LIVE cursor-carry + plug ─────────────────────────────────────
    Leaving the "Any AI can…" screen, the colourful dots detach from Dhruv's
    chat and CARRY on the cursor as a loose swirling cloud (carryP trails the
@@ -1077,12 +1145,15 @@ function buildHeroNetwork(cfg) {
   for (let k = 0; k < count; k++) used.add(nodeIdx[k]);
   const nb = Math.max(0, Math.round(cfg.branches));
   for (let b = 0; b < nb; b++) {
-    const host = Math.floor(r() * count);
+    /* hosts are spread round-robin around the rim (not rng-picked, which
+       bunched several branches on neighbouring nodes) */
+    const host = Math.floor(((b + 0.5) * count) / nb) % count;
     let li = 0, guard = 0;
     do { li = Math.floor(r() * N); guard++; } while (used.has(li) && guard < 60);
     used.add(li);
     branchIdx.push(li);
-    branchAng.push({ ang: nodeAng[host] + (r() - 0.5) * 0.5, rad: 1.22 + r() * 0.3 });
+    /* angle is resolved in layoutHeroRing from the host's (arc-length) angle */
+    branchAng.push({ host, dAng: (r() - 0.5) * 0.3, rad: 1.18 + r() * 0.22 });
     branchLinks.push([nodeIdx[host], li]);
   }
 
@@ -1095,12 +1166,141 @@ function buildHeroNetwork(cfg) {
    two flow queues. Every dot (wired ones included) gets a side + queue
    slot from its ring angle, so the whole field knows where to flow.
    Re-run on resize so the rim always lands near the frame edge. */
+/* ── Ring clearance ────────────────────────────────────────────────
+   The ring is sized from the beat-B copy's REAL text box (measured in
+   measure()), so its dot band never runs across the words on any viewport.
+   An exclusion ellipse wraps the text; the rim sits `gap` outside it, and any
+   parked dot whose jitter lands inside the exclusion is pushed back out.
+     pad    world units of breathing room added around the text box
+     gap    world units between the exclusion ellipse and the rim nodes
+     tall   text half-height ÷ exclusion half-height (smaller = taller ring,
+            larger = wider, flatter ring) — sets how the ellipse hugs the text
+     maxRy  cap on the exclusion half-height, as a fraction of the visible half-height */
+const RING_FIT = { pad: 1.0, gap: 1.5, tall: 0.8, maxRy: 0.8 };
+let heroTextBox = null;   // { a, b, cy, cyFrac } — beat-B copy half-extents + centre, world units at RING_Z
+/* px box of an element's VISIBLE content — the union of its text LINE boxes
+   (a text node's range) + images, not the block widths (a <p> spans the
+   whole column even when its words don't). null if nothing is laid out. */
+function inkBox(el) {
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  const grow = (r) => { if (r.width < 1 || r.height < 1) return; x0 = Math.min(x0, r.left); y0 = Math.min(y0, r.top); x1 = Math.max(x1, r.right); y1 = Math.max(y1, r.bottom); };
+  const range = document.createRange();
+  const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  for (let t = walk.nextNode(); t; t = walk.nextNode()) {
+    if (!t.textContent.trim()) continue;
+    range.selectNodeContents(t);
+    for (const r of range.getClientRects()) grow(r);
+  }
+  el.querySelectorAll('img').forEach((img) => grow(img.getBoundingClientRect()));
+  return isFinite(x0) ? { left: x0, top: y0, right: x1, bottom: y1 } : null;
+}
+function measureHeroText() {
+  const el = document.getElementById('beatB');
+  const bx = el && inkBox(el);
+  if (!bx) return;
+  const v = visHalf(RING_Z), W = window.innerWidth, H = window.innerHeight;
+  const toX = (px) => Math.abs(px / W - 0.5) * 2 * v.w;
+  /* the ring is centred on the copy block (not the screen), so it can hug it */
+  const cyFrac = (bx.top + bx.bottom) / 2 / H;
+  heroTextBox = {
+    a: Math.max(toX(bx.left), toX(bx.right)),
+    b: ((bx.bottom - bx.top) / 2 / H) * 2 * v.h,
+    cy: -(cyFrac - 0.5) * 2 * v.h,   // world y of the copy's centre (+ = up)
+    cyFrac,
+  };
+}
+
+/* ── Dashboard path anchoring ─────────────────────────────────────
+   The last three tail points of both streams are derived from the REAL
+   rest-state layout of the "Schools see…" screen, so on every viewport the
+   streams swing round OUTSIDE the heading and end INSIDE the video card
+   (where the card swallows them), instead of at fixed screen fractions.
+     sideOut  screen-width gap kept between a swing point and the heading /
+              card edge it passes
+     swingY   how far down the card's height the outer swing point sits (0..1)
+     endIn    how far in from the card's side edge the stream ends (0..1 of
+              the card width)
+     endY     how far down the card the stream ends (0..1 of its height) */
+const DASH_FIT = { sideOut: 0.035, swingY: 0.28, endIn: 0.26, endY: 0.5 };
+function anchorDashPaths() {
+  const sc = scenes[ST['Dashboard']];
+  if (!sc || !sc.stage) return;
+  const card = sc.stage.querySelector('[data-zoom]');
+  const head = sc.stage.querySelector('h2');
+  const hb = head && inkBox(head);
+  if (!card || !hb) return;
+  /* rects are relative to the stage, so the stage's climb-in translate is
+     cancelled out; the card's zoom is a scale about its centre, so only its
+     size needs un-scaling */
+  const st = sc.stage.getBoundingClientRect();
+  const W = window.innerWidth, H = window.innerHeight;
+  const cr = card.getBoundingClientRect();
+  const m = /scale\(([\d.]+)\)/.exec(card.style.transform || '');
+  const cs = m ? parseFloat(m[1]) : 1;
+  const ccx = ((cr.left + cr.right) / 2 - st.left) / W, ccy = ((cr.top + cr.bottom) / 2 - st.top) / H;
+  const cw = cr.width / cs / W, ch = cr.height / cs / H;
+  const cx1 = ccx + cw / 2, cy0 = ccy - ch / 2;
+  const hx1 = (hb.right - st.left) / W, hyc = ((hb.top + hb.bottom) / 2 - st.top) / H;
+  const red = DASH_PATHS.red, blue = DASH_PATHS.blue;
+  red[3] = [Math.min(0.965, hx1 + DASH_FIT.sideOut * 1.6), hyc];
+  red[4] = [Math.min(0.975, cx1 + DASH_FIT.sideOut), cy0 + ch * DASH_FIT.swingY];
+  red[5] = [cx1 - cw * DASH_FIT.endIn, cy0 + ch * DASH_FIT.endY];
+  for (let k = 3; k < 6; k++) blue[k] = [1 - red[k][0], red[k][1]];
+}
+/* rim radii (rx, ry) + the text exclusion ellipse (ex, ey), in world units */
+function ringRadii() {
+  const v = visHalf(RING_Z);
+  if (!heroTextBox) {
+    const rx = Math.min(v.w * 0.86, 21) * HERO_CFG.ringScale, ry = v.h * 0.8 * HERO_CFG.ringScale;
+    return { rx, ry, ex: 0, ey: 0, cy: 0, cyFrac: 0.5 };
+  }
+  const a = heroTextBox.a + RING_FIT.pad, b = heroTextBox.b + RING_FIT.pad;
+  let k = RING_FIT.tall;
+  let ey = b / k;
+  const eyMax = v.h * RING_FIT.maxRy;
+  if (ey > eyMax) { ey = Math.max(eyMax, b * 1.05); k = b / ey; }
+  const ex = Math.min(a / Math.sqrt(1 - k * k), v.w * 0.92 - RING_FIT.gap);
+  return { rx: ex + RING_FIT.gap, ry: ey + RING_FIT.gap, ex, ey, cy: heroTextBox.cy, cyFrac: heroTextBox.cyFrac };
+}
+/* n angles round an rx×ry ellipse at EQUAL ARC LENGTH, starting at a0 and
+   going anti-clockwise. Even parametric angles bunch up at the ends of a wide
+   ellipse — this keeps the connection nodes evenly spread. */
+function ellipseEvenAngles(n, rx, ry, a0) {
+  const M = 720, TAU = Math.PI * 2, cum = new Float32Array(M + 1);
+  for (let j = 1; j <= M; j++) {
+    const t = a0 + ((j - 0.5) / M) * TAU;
+    cum[j] = cum[j - 1] + Math.hypot(rx * Math.sin(t), ry * Math.cos(t));
+  }
+  const out = new Float32Array(n);
+  let j = 0;
+  for (let k = 0; k < n; k++) {
+    const target = (k / n) * cum[M];
+    while (j < M - 1 && cum[j + 1] < target) j++;
+    const fr = (target - cum[j]) / ((cum[j + 1] - cum[j]) || 1);
+    out[k] = a0 + ((j + fr) / M) * TAU;
+  }
+  return out;
+}
+
+let ringCY = 0;   // world y of the ring's centre (it sits on the beat-B copy)
 function layoutHeroRing(ring) {
   layoutDashPaths();
-  const v = visHalf(RING_Z);
-  const rx = Math.min(v.w * 0.86, 21) * HERO_CFG.ringScale, ry = v.h * 0.8 * HERO_CFG.ringScale;
+  const { rx, ry, ex, ey, cy } = ringRadii();
+  ringCY = cy;
   const r = rng(12);
   const net = heroNet;
+  /* rim nodes evenly spaced by arc length (not parametric angle) */
+  net.nodeAng.set(ellipseEvenAngles(net.count, rx, ry, HERO_TOP));
+  /* keep a parked dot out of the text: anything inside the exclusion ellipse
+     is pushed radially back onto (just outside) it */
+  const clear = (o, h) => {
+    if (!ex) return;
+    const x = ring[o], y = ring[o + 1] - cy;
+    const e = (x / ex) * (x / ex) + (y / ey) * (y / ey);
+    if (e >= 1) return;
+    const s = (1 / Math.sqrt(Math.max(e, 1e-4))) * (1.03 + 0.12 * h);
+    ring[o] = x * s; ring[o + 1] = cy + y * s;
+  };
   const special = new Uint8Array(N);
   const setQueue = (i, ang) => {
     const m = angleToQueue(ang);
@@ -1111,7 +1311,7 @@ function layoutHeroRing(ring) {
     const i = net.nodeIdx[k];
     special[i] = 1;
     ring[i * 3] = Math.cos(net.nodeAng[k]) * rx;
-    ring[i * 3 + 1] = Math.sin(net.nodeAng[k]) * ry;
+    ring[i * 3 + 1] = cy + Math.sin(net.nodeAng[k]) * ry;
     ring[i * 3 + 2] = RING_Z;
     setQueue(i, net.nodeAng[k]);
     /* wired nodes carry no jitter — they must sit dead on the rim */
@@ -1121,10 +1321,11 @@ function layoutHeroRing(ring) {
     const i = net.branchIdx[b];
     special[i] = 1;
     const ba = net.branchAng[b];
-    ring[i * 3] = Math.cos(ba.ang) * rx * ba.rad;
-    ring[i * 3 + 1] = Math.sin(ba.ang) * ry * ba.rad;
+    const ang = net.nodeAng[ba.host] + ba.dAng;
+    ring[i * 3] = Math.cos(ang) * rx * ba.rad;
+    ring[i * 3 + 1] = cy + Math.sin(ang) * ry * ba.rad;
     ring[i * 3 + 2] = RING_Z;
-    setQueue(i, ba.ang);
+    setQueue(i, ang);
     dashJit[i * 3] = dashJit[i * 3 + 1] = dashJit[i * 3 + 2] = 0;
   }
   const p = [0, 0, 0];
@@ -1148,7 +1349,7 @@ function layoutHeroRing(ring) {
     const ratio = a > Math.PI / 2 ? (a - Math.PI / 2) / span : (Math.PI / 2 - a) / span;
     if (ratio > 1) {
       ring[i * 3] = Math.cos(ang) * rx + dashJit[i * 3] * RING_JIT;
-      ring[i * 3 + 1] = Math.sin(ang) * ry + dashJit[i * 3 + 1] * RING_JIT;
+      ring[i * 3 + 1] = cy + Math.sin(ang) * ry + dashJit[i * 3 + 1] * RING_JIT;
       ring[i * 3 + 2] = RING_Z + dashJit[i * 3 + 2] * RING_JIT;
     } else {
       /* parked exactly where its queue slot sits on the path (wide band) —
@@ -1158,6 +1359,7 @@ function layoutHeroRing(ring) {
       ring[i * 3 + 1] = p[1];
       ring[i * 3 + 2] = p[2];
     }
+    clear(i * 3, jit);
   }
 }
 
@@ -1205,6 +1407,11 @@ const DASH_PATHS = {
    lands exactly on the cycle band. */
 const dashLine = { red: [], blue: [] };
 let DASH_R = 0, DASH_CS = 0;
+/* DASH_BAND = path param where the SETTLED stream begins: the tail point
+   beside the heading (index 3), so once "Schools see…" is on screen the
+   resting stream lies only beside the heading and the card — never over the
+   words — and drains into the card from there. */
+let DASH_BAND = 0;
 /* per-dot queue state, filled by layoutHeroRing */
 const dotSide = new Uint8Array(N);   // 0 = red (left half), 1 = blue (right)
 const dotQ = new Float32Array(N);    // parked param along the path, ∈ [0, DASH_R]
@@ -1225,14 +1432,14 @@ function sampleFrac(pts, u) {
    ellipse exactly (red sweeps top→left→bottom, blue top→right→bottom) */
 function ringArcFracs(side) {
   const v = visHalf(RING_Z);
-  const rx = Math.min(v.w * 0.86, 21) * HERO_CFG.ringScale, ry = v.h * 0.8 * HERO_CFG.ringScale;
+  const { rx, ry, cyFrac } = ringRadii();
   const fx = rx / (2 * v.w), fy = ry / (2 * v.h);
   const a0 = Math.PI / 2;
   const a1 = side ? -Math.PI / 2 + ARC_CUT : 3 * Math.PI / 2 - ARC_CUT;
   const pts = [];
   for (let k = 0; k < ARC_PTS; k++) {
     const a = a0 + (a1 - a0) * (k / (ARC_PTS - 1));
-    pts.push([0.5 + Math.cos(a) * fx, 0.5 - Math.sin(a) * fy]);
+    pts.push([0.5 + Math.cos(a) * fx, cyFrac - Math.sin(a) * fy]);
   }
   return pts;
 }
@@ -1245,6 +1452,7 @@ function layoutDashPaths() {
     const nSeg = pts.length - 1;
     DASH_R = (ARC_PTS - 1) / nSeg;
     DASH_CS = ARC_PTS / nSeg;
+    DASH_BAND = (ARC_PTS + 3) / nSeg;
     const line = side ? dashLine.blue : dashLine.red;
     line.length = 0;
     for (let s = 0; s <= DASH_STEPS; s++) {
@@ -1339,9 +1547,16 @@ const collectFrac = new Float32Array(N);
    screenFracToWorld each frame, so dragging a handle reshapes the arc live. To
    bake an edited layout, copy the editor's textarea over COLLECT_ARC. */
 const COLLECT_ARC = {
-  red:  [[0.31, 0.28], [0.07, 0.43], [0.19, 0.87]],
-  blue: [[0.69, 0.28], [0.93, 0.43], [0.81, 0.87]],
+  red:  [[0.30, 0.34], [0.05, 0.42], [0.17, 0.90]],
+  blue: [[0.70, 0.34], [0.95, 0.42], [0.83, 0.90]],
 };
+/* COLLECT SPLIT timing (Reports/Collect scene fractions + split-progress units).
+     pourOut  Reports fractions over which the funnel pour shrinks away
+     start    Reports fraction where emission begins (after the pour is gone)
+     end      Collect fraction where the last dot has landed in the ball
+     emit     share of the split over which dots are released one after another
+     travel   share of the split each dot takes to travel its whole arc */
+const COLLECT_FLOW = { pourOut: [0.46, 0.55], start: 0.55, end: 0.42, emit: 0.55, travel: 0.42 };
 
 /* ASK-TILLI in-flow — two cubic Bézier paths the dots stream along as they pour
    INTO the chat boxes. Each side's `pts` are 4 screen fractions (0..1, top-left
@@ -1353,15 +1568,15 @@ const COLLECT_ARC = {
    take to reach the box (travel = 1/speed sec), which is when that box's response
    pops. `gray` recolours the grey dots. Bake via the __tilliAskFlow() dump. */
 /* DEBUG: draw the colourful (blue) ask-flow path — the sampled Bézier curve, a
-   faint control-polygon, and a sphere at each of the 4 control points. Flip to
-   false to remove the overlay. Only shows while the Ask-Tilli scene is on. */
-const DEBUG_ASK_PATH = true;
+   faint control-polygon, and a sphere at each of the 4 control points. Dev-only:
+   open the page with ?debug=1&askpath=1. Only shows while the Ask-Tilli scene is on. */
+const DEBUG_ASK_PATH = DEBUG && /[?&]askpath=1\b/.test(location.search);
 const ASK_FLOW = {
   gray: tok('--tl-line-300', '#C7CDD8'),   // colour of the grey (generic-box) dots
   z: -3,             // world plane the streams flow on
   width: 1.7,        // world units of stream spread (its thickness)
-  red:  { pts: [[-0.03, -0.06], [0.05, 0.30], [0.15, 0.58], [0.28, 0.60]], speed: 0.35 },
-  blue: { pts: [[1.03, -0.06], [0.95, 0.30], [0.85, 0.58], [0.72, 0.60]], speed: 0.60 },
+  red:  { pts: [[-0.03, -0.06], [0.05, 0.30], [0.15, 0.58], [0.28, 0.60]], speed: 0.62 },
+  blue: { pts: [[1.03, -0.06], [0.95, 0.30], [0.85, 0.58], [0.72, 0.60]], speed: 0.72 },
 };
 /* one coordinate of a cubic Bézier at t */
 const bez3 = (a, b, c, d, t) => { const u = 1 - t; return u * u * u * a + 3 * u * u * t * b + 3 * u * t * t * c + t * t * t * d; };
@@ -1384,6 +1599,46 @@ const VIEWS_CY = 0.8;
 const VIEWS_Z = -4;
 const VIEWS_ZD = 1.0;                      // 1 = a true sphere (no z-stretch → no egg wobble)
 const VIEWS_SPIN = [0.26, -0.19, 0.32];    // rad/s per orb (sign = direction)
+/* 3 VIEWS → MEASURE exit, in 3-views scene progress (0..1). The two side orbs
+   ORBIT the centre orb (a carousel on the x–z plane — they pass in front and
+   behind it), the centre + right orbs then shrink away, and the left orb
+   sweeps across the screen as a WIPE: the 3-views copy is clipped away along
+   its trailing edge. The Measure DNA then weaves in exactly as before.
+     orbit  [start, end] of the carousel (eased: spins up from rest, settles)
+     turns  carousel revolutions over that window
+     depth  z-squash of the orbit (1 = circular, <1 = flatter, shallower pass)
+     fade   [start, end] over which the centre + right orbs shrink away
+     wipe   [start, end] of the left orb's sweep across the screen
+     wipeZ  world units the sweeping orb comes toward the camera
+     grow   how much the sweeping orb swells as it crosses */
+const VIEWS_EXIT = { orbit: [0.46, 0.76], turns: 1, depth: 0.6, fade: [0.64, 0.78], wipe: [0.74, 1.0], wipeZ: 3, grow: 1.5 };
+/* live exit pose for a 3-views progress vp: per-orb centre (cx, cz), how gone
+   each orb is, the sweeping orb's swell, and the wipe's trailing-edge screen
+   fraction (0 = nothing wiped). Shared by step() (dots) and onScroll (clip). */
+function viewsExit(vp) {
+  const X = VIEWS_EXIT, s = Math.abs(VIEWS_CX[0]);
+  const u = clamp((vp - X.orbit[0]) / (X.orbit[1] - X.orbit[0]));
+  const th = Math.PI * 2 * X.turns * easeInOut(u);
+  const cx = [0, 0, 0], cz = [VIEWS_Z, VIEWS_Z, VIEWS_Z];
+  [[0, Math.PI], [2, 0]].forEach(([o, a0]) => {
+    const a = a0 - th;                       // decreasing → the left orb swings to the FRONT first
+    cx[o] = s * Math.cos(a);
+    cz[o] = VIEWS_Z + s * Math.sin(a) * X.depth;
+  });
+  const fade = smooth(clamp((vp - X.fade[0]) / (X.fade[1] - X.fade[0])));
+  const gone = [0, fade, fade];
+  const w = smooth(clamp((vp - X.wipe[0]) / (X.wipe[1] - X.wipe[0])));
+  let grow = 1, wipeFrac = 0;
+  if (w > 0) {
+    const z = lerp(cz[0], VIEWS_Z + X.wipeZ, w);
+    grow = lerp(1, X.grow, w);
+    const half = visHalf(z).w;
+    cx[0] = lerp(cx[0], half + VIEWS_R * grow + 1, w);
+    cz[0] = z;
+    wipeFrac = clamp(0.5 + (cx[0] - VIEWS_R * grow) / (2 * half));
+  }
+  return { cx, cz, gone, grow, wipeFrac };
+}
 
 /* 3 VIEWS — the two Milo hands that frame the orbs from the sides (image
    layout): screen-fraction centre, size as a viewport-width fraction, flip to
@@ -1400,13 +1655,14 @@ function buildFormations() {
   const tmp = new THREE.Color();
   const white = new THREE.Color('#ffffff');
   const F = [];
-  const make = () => ({ pos: new Float32Array(N * 3), col: new Float32Array(N * 3) });
+  /* scl = per-dot size multiplier (0 = hidden — see aScale in initThree) */
+  const make = () => ({ pos: new Float32Array(N * 3), col: new Float32Array(N * 3), scl: new Float32Array(N).fill(1) });
   const setC = (f, i, hex, soften = 0.1) => {
     tmp.set(hex).lerp(white, soften);
     f.col[i * 3] = tmp.r; f.col[i * 3 + 1] = tmp.g; f.col[i * 3 + 2] = tmp.b;
   };
   const setP = (f, i, x, y, z) => { f.pos[i * 3] = x; f.pos[i * 3 + 1] = y; f.pos[i * 3 + 2] = z; };
-  const MIX = [C.green, C.cyan, C.yellow, C.orange, C.pink2];
+  const MIX = DOT_PALETTE;
 
   /* one dot placed inside the tapering funnel (mouth t=0 → spout t=1), from
      the live FUNNEL_CFG — shared by the dedicated Funnel screen and the
@@ -1465,7 +1721,7 @@ function buildFormations() {
     const p = [0, 0, 0];
     for (let i = 0; i < N; i++) {
       streamT[i] = DASH_R > 0 ? dotQ[i] / DASH_R : 0;
-      dashPoint(dotSide[i], DASH_CS + streamT[i] * (1 - DASH_CS), i * 3, p);
+      dashPoint(dotSide[i], DASH_BAND + streamT[i] * (1 - DASH_BAND), i * 3, p);
       setP(dash, i, p[0], p[1], p[2]);
     }
   };
@@ -1502,9 +1758,9 @@ function buildFormations() {
 
   /* 3 · COLLECT — the two split streams merge into one big dense BALL that
      holds in the centre of the screen (no spiral). Uniform-density disc so it
-     reads as a solid cluster. The pink dots (i%5===4) are faded to white here
-     so the settled cluster carries no pink, matching the fade that runs as the
-     streams gather. */
+     reads as a solid cluster. The pink dots (i%5===4) are HIDDEN here (scl 0)
+     so the settled cluster carries no pink, matching the shrink that runs as
+     the streams gather; they grow back as the ball splits into the 3 views. */
   {
     const cl = make();
     const r = rng(44);
@@ -1514,9 +1770,8 @@ function buildFormations() {
       const rad = Math.sqrt(r()) * R;                // sqrt → uniform area density
       const x = Math.cos(ang) * rad, y = Math.sin(ang) * rad * 0.94, z = -4.5 + (r() - 0.5) * 3;
       setP(cl, i, x, y, z);
-      const pink = i % 5 === 4;
-      if (pink) { cl.col[i * 3] = 1; cl.col[i * 3 + 1] = 1; cl.col[i * 3 + 2] = 1; }
-      else setC(cl, i, MIX[i % 5]);
+      setC(cl, i, MIX[i % 5]);
+      if (i % 5 === 4) cl.scl[i] = 0;
       collectPos[i * 3] = x; collectPos[i * 3 + 1] = y; collectPos[i * 3 + 2] = z;
       collectSide[i] = x < 0 ? -1 : 1;
     }
@@ -1602,7 +1857,7 @@ function buildFormations() {
     F.push(kids);
   }
 
-  /* 8 · ASK-TILLI — the field is held WHITE (invisible) here: the visible dots
+  /* 8 · ASK-TILLI — the field is held HIDDEN (scl 0) here: the visible dots
      are drawn entirely by the time-based ASK-TILLI CARD IN-FLOW block, which
      streams them into the two chat boxes. Keeping the form white means neither
      entry nor the exit-morph to Impact ever flashes a static cloud. Positions
@@ -1613,6 +1868,7 @@ function buildFormations() {
     for (let i = 0; i < N; i++) {
       setP(ai, i, (r() - 0.5) * 24, (r() - 0.5) * 13, -3 - r() * 3);
       setC(ai, i, '#ffffff', 0);
+      ai.scl[i] = 0;
     }
     F.push(ai);
   }
@@ -1625,7 +1881,7 @@ function buildFormations() {
       const u = r() * 2 - 1, ang = r() * Math.PI * 2;
       const rad = 8.5 + r() * 6, s = Math.sqrt(1 - u * u);
       setP(im, i, Math.cos(ang) * s * rad * 1.4, u * rad * 0.8, Math.sin(ang) * s * rad - 6);
-      setC(im, i, [C.green, C.cyan, C.pink, C.yellow, C.orange][i % 5], 0.04);
+      setC(im, i, DOT_PALETTE[i % 5], 0.04);
     }
     F.push(im);
   }
@@ -1653,7 +1909,7 @@ function buildFormations() {
       setP(h, i, 16 * Math.pow(Math.sin(t), 3) * s,
         (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * s + 1,
         -3 - r() * 3);
-      setC(h, i, i % 7 === 0 ? C.yellow : i % 2 ? C.pink : C.pink2, 0.05);
+      setC(h, i, i % 7 === 0 ? C.yellow : C.pink, i % 2 ? 0.05 : 0.25);
     }
     F.push(h);
   }
@@ -1756,7 +2012,7 @@ function initThree() {
       pos[i * 3] = (r() - 0.5) * 44 * Math.max(1, (window.innerWidth / Math.max(1, window.innerHeight)) / 1.6);
       pos[i * 3 + 1] = (r() - 0.5) * 26;
       pos[i * 3 + 2] = 30 - r() * (scenes.length * DEPTH + 60);
-      c.set(r() < 0.55 ? C.gray : [C.green, C.cyan, C.pink2, C.yellow, C.orange][Math.floor(r() * 5)]);
+      c.set(r() < 0.55 ? C.gray : DOT_PALETTE[Math.floor(r() * 5)]);
       col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
     }
     const g = new THREE.BufferGeometry();
@@ -1782,7 +2038,21 @@ function initThree() {
      it — without this the field draws in buffer order and far dots paint
      over near ones (the orb looked inside-out). The sprite is a near-solid
      disc, so alphaTest clips only the feathered rim and edges stay clean. */
-  const pts = new THREE.Points(geo, new THREE.PointsMaterial({ size: BASE_DOT_SIZE, map: tex, vertexColors: true, transparent: true, opacity: DOT_OPACITY, depthWrite: true, depthTest: true, alphaTest: 0.5 }));
+  /* per-dot SIZE multiplier (aScale) — how a dot DISAPPEARS. Fading a dot to
+     white only hides it on a white wash; on the tinted washes (cyan / green /
+     pink) a white dot stays visible. Shrinking to 0 hides it on any wash.
+     step() resets SC to the formations' scale each frame, then the blocks
+     shrink dots with vanish(). */
+  const SC = new Float32Array(N).fill(1);
+  geo.setAttribute('aScale', new THREE.BufferAttribute(SC, 1));
+  const dotMaterial = new THREE.PointsMaterial({ size: BASE_DOT_SIZE, map: tex, vertexColors: true, transparent: true, opacity: DOT_OPACITY, depthWrite: true, depthTest: true, alphaTest: 0.5 });
+  dotMaterial.onBeforeCompile = (sh) => {
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nattribute float aScale;')
+      .replace('#include <logdepthbuf_vertex>',
+        'gl_PointSize *= aScale;\n\tif ( aScale < 0.01 ) gl_Position = vec4( 2.0, 2.0, 2.0, 1.0 );\n\t#include <logdepthbuf_vertex>');
+  };
+  const pts = new THREE.Points(geo, dotMaterial);
   pts.frustumCulled = false;
   scene3.add(pts);
 
@@ -1903,17 +2173,19 @@ function initThree() {
   viewsHandMeshes.right.material.opacity = 0;
   const viewsHands = {
     meshes: viewsHandMeshes,
+    /* reveal: one opacity for both hands, or [left, right] */
     frame(planeZ, reveal) {
       const DEG = Math.PI / 180, vw = visHalf(HAND_Z).w;
       for (const key of ['left', 'right']) {
+        const rv = Array.isArray(reveal) ? reveal[key === 'left' ? 0 : 1] : reveal;
         const cfg = VIEWS_HANDS[key], m = viewsHandMeshes[key];
         const [wx, wy] = screenFracToWorld(cfg.x, cfg.y, HAND_Z);
         const w = cfg.scale * 2 * vw;
         m.position.set(wx, wy, HAND_Z + planeZ);
         m.scale.set(w * (cfg.flipX ? -1 : 1), w * HAND_ASPECT * (cfg.flipY ? -1 : 1), 1);
         m.rotation.set((cfg.rotX || 0) * DEG, (cfg.rotY || 0) * DEG, (cfg.rotZ || 0) * DEG);
-        m.material.opacity = reveal;
-        m.visible = reveal > 0.01;
+        m.material.opacity = rv;
+        m.visible = rv > 0.01;
       }
     },
   };
@@ -1932,7 +2204,7 @@ function initThree() {
        (increasing world angle), so the stitch grows from the top around the
        ring; the closed loop then brings it back to the first (top) dot */
     const ord = (i) => {
-      let a = Math.atan2(ring[i * 3 + 1], ring[i * 3]) - Math.PI / 2;
+      let a = Math.atan2(ring[i * 3 + 1] - ringCY, ring[i * 3]) - Math.PI / 2;
       if (a < 0) a += Math.PI * 2;
       return a;
     };
@@ -2125,7 +2397,7 @@ function initThree() {
   });
 
   return {
-    renderer, scene3, camera, geo, P, CL, phases, ...built,
+    renderer, scene3, camera, geo, P, CL, SC, phases, ...built,
     links, drawLinks, rebuildHeroNetwork, restitch: refreshLinkDraw,
     isEditing, stepEdit, setEditMode, clearSelection, resetSelection,
     selectionInfo, wiringText, getManual: () => selection.slice(),
@@ -2164,78 +2436,68 @@ let orbitBaseY = null, orbitBaseRotX = null;
 window.__orbitRise = window.__orbitRise || { topY: -292, rotTopX: -9 };
 
 /* ═══════════════════════════════════════════════════════════════════
-   MAGNETIC SECTION SNAPPING
-   The site no longer free-scrolls. A small scroll gesture — a wheel
-   notch, a trackpad flick, an arrow/space key, or a touch drag — GLIDES
-   the page to the next scene's rest point instead of scrubbing along.
-   The in-between choreography (orb burst, stream crossing, funnel pour,
-   DNA build) still plays: it simply animates as the glide scrubs through
-   it. Cross + Funnel are pure transition screens with nothing to rest
-   on, so they're skipped as stops — a gesture jumps across them to the
-   content scene on the far side.
+   SCROLL MODEL — smooth free-scroll with SOFT DETENTS
+   Wheel / touch / keys drive an eased free scroll (aimY, chased every
+   frame). Each content beat has a DETENT: as the page approaches it, scroll
+   input is progressively damped (it decelerates into the beat and lingers),
+   then picks back up past it — it never dead-stops. If you stop scrolling
+   close to a detent, the page eases gently onto it. Explicit navigation
+   (↑/↓ buttons, Home/End, anchor links, the section nav) is a timed glide.
+   The one exception is the AskTilli chat: you can't scroll past it before
+   its exchange has played, but scrolling there FAST-FORWARDS the chat
+   instead of being swallowed (see askGate).
    ═══════════════════════════════════════════════════════════════════ */
 const REST = 0.35;            // default: land this far into a scene (stage fully in)
-const SNAP_SKIP = new Set(['Cross', 'Funnel']);
-/* Snap stops are {i: sceneIndex, frac: fraction into that scene}. Most
-   scenes are one stop at REST, but the hero scene holds TWO beats in its
-   240vh — the orb ("How do schools decide?") and the ring it bursts into
-   ("They measure… 579 data points") — so it gets its own two stops.
-   Cross + Funnel are transition-only screens and contribute no stop. */
+const SNAP = {
+  smooth: 8,       // free-scroll smoothing rate — higher tracks the wheel tighter, lower = floatier
+  wheelMult: 1.0,  // px the free-scroll target moves per unit of wheel delta
+  dur: 1400,       // ms for an explicit-nav glide (Home/End, ↑/↓ buttons, anchor links)
+  fieldLag: 7,     // particle/scene interpolation rate — LOWER = dots ease between states more softly
+                   //   during a transition; raise toward 40+ to make them track the scroll 1:1
+};
+/* soft detents:
+     zone      viewport-heights either side of a detent where input is damped
+     resist    input multiplier AT the detent (1 = none; lower = lingers longer)
+     settleMs  idle ms before a nearby detent eases the page onto itself
+     settle    viewport-heights — how close you must stop for that ease-on */
+const DETENT = { zone: 0.3, resist: 0.28, settleMs: 240, settle: 0.14 };
+/* where each content beat rests (scene fractions), placed just AFTER that
+   beat's reveal has finished. Scenes not listed (Cross, Funnel, Collect,
+   Let's talk) are transitions and scroll straight through. */
+const DETENT_AT = {
+  'Start':     [0.63],               // the ring around "Most schools find out…" (after the stitch)
+  'Dashboard': [0.35],
+  'Reports':   [0.36],
+  '3 views':   [0.40],               // labels are in by 0.32; the orbit exit starts at 0.46
+  'Measure':   [0.27, 0.55, 0.82],   // one per strand: teacher · parent · child (rungs)
+  '12 skills': [0.42],
+  'On track':  [0.34],
+  'Ask-Tilli': [0.36],
+  'Ask-live':  [0.30],
+  'Fits in':   [0.35],
+  'Impact':    [0.18, 0.80],         // "30+ schools" · the carousel card
+  'Journey':   [0.15, 0.49, 0.84],   // one per card
+};
+if (DEBUG) { window.__tilliSnap = SNAP; window.__tilliDetent = DETENT; }   // ?debug=1 to tune from the console
+/* the detents double as the ↑/↓ button stops; y is read live (survives re-measure) */
 const HERO = ST['Start'];
 const snapStops = [];
-scenes.forEach((s, i) => {
-  if (SNAP_SKIP.has(s.label)) return;
-  if (i === HERO) snapStops.push({ i, frac: 0.20 }, { i, frac: 0.63 });
-  else snapStops.push({ i, frac: REST });
-});
+scenes.forEach((s, i) => (DETENT_AT[s.label] || []).forEach((frac) => snapStops.push({ i, frac, label: s.label })));
 function stopY(stop) {
   const s = scenes[clamp(stop.i, 0, LAST)];
   return s.top + s.len * stop.frac;
 }
-
-const SNAP = {
-  smooth: 9,       // free-scroll smoothing rate — higher tracks the wheel tighter, lower = floatier
-  wheelMult: 1.0,  // px the free-scroll target moves per unit of wheel delta
-  holdDist: 1800,  // px of scroll input you must "spend" (in one direction) to break free of a hold (all holds)
-  rearm: 70,       // px you must move off a hold before it can catch you again
-  dur: 1400,       // ms for an explicit-nav glide (Home/End, ↑/↓ buttons, anchor links)
-  fieldLag: 6,     // particle/scene interpolation rate — LOWER = dots ease between states more softly
-                   //   during a transition; raise toward 40+ to make them track the scroll 1:1
-};
-if (DEBUG) window.__tilliSnap = SNAP;   // ?debug=1 to tune these from the console
-
-/* ── Section HOLDS ───────────────────────────────────────────────────
-   There's no magnetic snapping — you free-scroll with soft easing. But
-   when the page REACHES a holding section it STICKS there and won't move
-   on until you've SPENT `dist` px of scroll input (in one direction), so
-   each screen gets a beat to land. Distance, not time — a fast and a slow
-   scroller do the same work. Pick which screens hold by data-label; full
-   ordered list:
-     Start · Cross · Dashboard · Funnel · Reports · Collect · 3 views ·
-     Measure · 12 skills · On track · Ask-Tilli · Ask-live · Fits in · Impact · Journey · Let's talk
-   (Cross + Funnel are blank transition screens — normally leave them out.) */
-const HOLD_ON = new Set([
-  'Dashboard', 'Reports', '3 views', 'Measure',
-  '12 skills', 'On track', 'Ask-Tilli', 'Fits in', 'Impact', 'Journey',
-]);   // Start (both hero beats) + Collect + Let's talk scroll through freely
-/* per-scene hold overrides — frac = where in the scene it catches (0..1;
-   later = nearer the end). All holds share SNAP.holdDist for the release
-   distance; these three just catch LATER, as they FINISH forming (just
-   before they morph to the next scene). Add `dist:` here to override one. */
-const HOLD_CFG = {
-  '3 views':   { frac: 0.62 },
-  'Measure':   { frac: 0.78 },
-  '12 skills': { frac: 0.62 },
-};
-/* one hold per enabled scene; y is read live each frame so it survives
-   re-measure. `armed` gates re-triggering while you sit on the hold. */
-const holds = scenes
-  .map((_, i) => i)
-  .filter((i) => HOLD_ON.has(scenes[i].label))
-  .map((i) => {
-    const c = HOLD_CFG[scenes[i].label] || {};
-    return { i, frac: c.frac ?? REST, dist: c.dist ?? SNAP.holdDist, armed: true };
-  });
+/* input multiplier at scroll position y: 1 in open water, easing down to
+   DETENT.resist right on a detent */
+function detentFactor(y) {
+  const zonePx = DETENT.zone * window.innerHeight;
+  let k = 1;
+  for (const d of snapStops) {
+    const dy = Math.abs(y - stopY(d));
+    if (dy < zonePx) k = Math.min(k, lerp(DETENT.resist, 1, smooth(dy / zonePx)));
+  }
+  return k;
+}
 
 /* land ~REST into a scene, where its stage is fully faded in */
 function sceneScrollTop(i) {
@@ -2243,19 +2505,12 @@ function sceneScrollTop(i) {
   return s.top + s.len * REST;
 }
 
-/* ── Smooth free-scroll with section holds ───────────────────────────
-   Wheel / touch drive a SMOOTHED free scroll (aimY, eased toward every
-   frame). Crossing a holding section pins the scroll there until you've
-   spent that hold's `dist` px of scroll input. Keys(Home/End) / buttons /
-   anchors do an explicit cubic-in-out glide. */
 let scrollMode = 'idle';               // 'idle' | 'free' | 'glide'
 let aimY = 0;                          // free-scroll target
 let glY0 = 0, glY1 = 0, glT0 = 0, glDur = 0;
-let maxY = 0, prevPosY = 0;
-/* active hold: pinned at holdY; `holdSpent` accumulates signed scroll input
-   and the hold releases once |holdSpent| ≥ holdNeed. */
-let holdActive = false, holdY = 0, holdSpent = 0, holdNeed = 0, holdLabel = '';
-const held = () => holdActive;
+let maxY = 0;
+let lastInputT = 0, settled = true;    // idle ease-onto-detent bookkeeping
+let wroteY = -1;                       // the scrollY this model last wrote (to spot outside scrolls)
 
 function refreshMaxY() { maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight); }
 window.addEventListener('resize', refreshMaxY);
@@ -2273,7 +2528,6 @@ function adjacentStopY(y, dir) {          // next stop strictly beyond y in a di
 function glideTo(y) {
   if (y == null) return;
   y = clamp(y, 0, maxY);
-  holdActive = false;                     // a deliberate jump clears any active hold
   if (reduced) { window.scrollTo(0, y); return; }
   glY0 = window.scrollY; glY1 = y;
   if (Math.abs(glY1 - glY0) < 1) { scrollMode = 'idle'; return; }
@@ -2282,43 +2536,64 @@ function glideTo(y) {
   scrollMode = 'glide';
 }
 
+/* AskTilli gate: while its chat is still playing, scrolling DOWN past the
+   AskTilli detent is held at the detent and every px of that push is turned
+   into chat time instead (askChat.boost), so a determined scroll plays the
+   exchange quickly and then carries on. Never blocks scrolling back up. */
+const ASK_FF_MS_PER_PX = 7;   // chat ms fast-forwarded per px of scroll pushed against the gate
+function askGateY() {
+  const i = ST['Ask-Tilli'];
+  return i == null ? Infinity : stopY({ i, frac: DETENT_AT['Ask-Tilli'][0] });
+}
+
+/* feed one scroll input (px, + = down) into the eased free-scroll target */
+function pushScroll(delta) {
+  if (scrollMode !== 'free') { aimY = window.scrollY; scrollMode = 'free'; }
+  lastInputT = performance.now();
+  settled = false;
+  /* integrate in small slices so a big wheel/page delta still decelerates
+     smoothly through a detent instead of leaping across it */
+  let rem = delta;
+  while (Math.abs(rem) > 0.01) {
+    const chunk = Math.sign(rem) * Math.min(24, Math.abs(rem));
+    aimY += chunk * detentFactor(aimY);
+    rem -= chunk;
+  }
+  const gy = askGateY();
+  if (delta > 0 && askChat.locked && window.scrollY <= gy + 2 && aimY > gy) {
+    askChat.boost += (aimY - gy) * ASK_FF_MS_PER_PX;
+    aimY = gy;
+  }
+  aimY = clamp(aimY, 0, maxY);
+}
+
 /* moves the scroll once per animation frame (called from the render loop) */
 function advanceScroll(now, dt) {
-  const k = 1 - Math.exp(-dt * SNAP.smooth);
   const pos = window.scrollY;
-
-  /* active hold: ease onto the hold point and stay pinned; input is fed to
-     holdSpent by the handlers below and releases the hold via feedHold */
-  if (holdActive) {
-    const ny = lerp(pos, holdY, k);
-    window.scrollTo(0, Math.abs(holdY - ny) < 0.4 ? holdY : ny);
-    aimY = holdY;
-    prevPosY = window.scrollY;
-    return;
-  }
-
+  /* the page was scrolled by something else (scrollbar drag, find-in-page,
+     focus): adopt that position instead of dragging the page back to aimY */
+  if (scrollMode === 'free' && wroteY >= 0 && Math.abs(pos - wroteY) > 2) { aimY = pos; settled = true; }
   if (scrollMode === 'free') {
-    let ny = lerp(pos, aimY, k);
-    /* catch a re-armed hold we cross this frame → stick to it */
-    for (const h of holds) {
-      const sc = scenes[h.i];
-      const hy = sc.top + sc.len * h.frac;                        // live (survives re-measure)
-      if (Math.abs(pos - hy) > SNAP.rearm) h.armed = true;         // moved away → re-arm
-      if (h.armed && ((prevPosY < hy) !== (ny < hy))) {            // crossed hy this frame
-        h.armed = false;
-        holdActive = true; holdY = hy; holdSpent = 0; holdNeed = h.dist;
-        holdLabel = sc.label;
-        aimY = hy; ny = hy;
-        break;
-      }
+    /* idle near a detent → ease onto it (once per pause) */
+    if (!settled && now - lastInputT > DETENT.settleMs) {
+      settled = true;
+      const reach = DETENT.settle * window.innerHeight;
+      let best = null, bd = reach;
+      for (const d of snapStops) { const dy = Math.abs(stopY(d) - aimY); if (dy < bd) { bd = dy; best = d; } }
+      if (best) aimY = clamp(stopY(best), 0, maxY);
     }
-    window.scrollTo(0, Math.abs(aimY - ny) < 0.4 ? aimY : ny);
+    const k = 1 - Math.exp(-dt * SNAP.smooth);
+    const ny = lerp(pos, aimY, k);
+    const y = Math.abs(aimY - ny) < 0.4 ? aimY : ny;
+    window.scrollTo(0, y);
+    wroteY = window.scrollY;
+    /* arrived and nothing pending → hand the page back (idle) */
+    if (y === aimY && settled) { scrollMode = 'idle'; wroteY = -1; }
   } else if (scrollMode === 'glide') {
     const p = glDur ? clamp((now - glT0) / glDur) : 1;
     window.scrollTo(0, glY0 + (glY1 - glY0) * easeInOut(p));
     if (p >= 1) scrollMode = 'idle';
   }
-  prevPosY = window.scrollY;
 }
 
 function goToScene(i) { glideTo(sceneScrollTop(i)); }
@@ -2382,61 +2657,36 @@ document.querySelectorAll('a[href^="#"]').forEach((a) => {
 });
 
 /* ── input → smooth free-scroll (wheel / keys / touch) ───────────────
-   Native scroll is intercepted and re-emitted through the eased model
-   above; input is ABSORBED while a hold is active. Skipped under
-   prefers-reduced-motion (native scroll stays). */
+   Native scroll is intercepted and re-emitted through the eased, detent-
+   damped model above. Skipped under prefers-reduced-motion (native scroll
+   stays). */
 if (!reduced) {
   const PAGE = new Set(['PageDown', 'PageUp', ' ', 'Spacebar']);
-  const beginFree = () => { if (scrollMode !== 'free') { aimY = window.scrollY; scrollMode = 'free'; } };
-  /* while pinned on a hold, scroll input is spent against holdNeed instead
-     of moving the page; once |holdSpent| clears it, let go and continue in
-     the push direction (nudged just past the hold so it doesn't re-catch) */
-  const feedHold = (delta) => {
-    /* the Ask-Tilli hold swallows all scroll input until its chat has played
-       through to the response — you can't skip past the exchange */
-    if (holdLabel === 'Ask-Tilli' && askChat.locked) return;
-    holdSpent += delta;
-    if (Math.abs(holdSpent) >= holdNeed) {
-      const dir = Math.sign(holdSpent) || 1;
-      holdActive = false;
-      beginFree();
-      aimY = clamp(holdY + dir * (SNAP.rearm + 30), 0, maxY);
-    }
-  };
-  const nudge = (dy) => { if (holdActive) { feedHold(dy); return; } beginFree(); aimY = clamp(aimY + dy, 0, maxY); };
-
   window.addEventListener('wheel', (e) => {
     if (e.ctrlKey) return;                  // leave pinch-zoom to the browser
     e.preventDefault();                     // take over native free-scroll
-    if (holdActive) { feedHold(e.deltaY * SNAP.wheelMult); return; }   // spend input against the hold
-    beginFree();
-    aimY = clamp(aimY + e.deltaY * SNAP.wheelMult, 0, maxY);
+    pushScroll(e.deltaY * SNAP.wheelMult);
   }, { passive: false });
 
   window.addEventListener('keydown', (e) => {
     if (e.target.closest('input, textarea, select, button, a, [contenteditable]')) return;
     const vh = window.innerHeight;
-    if (e.key === 'Home') { e.preventDefault(); glideTo(stopYs()[0]); return; }
-    if (e.key === 'End') { e.preventDefault(); const a = stopYs(); glideTo(a[a.length - 1]); return; }
-    if (e.key === 'ArrowDown') { e.preventDefault(); nudge(vh * 0.2); return; }
-    if (e.key === 'ArrowUp') { e.preventDefault(); nudge(-vh * 0.2); return; }
-    if (PAGE.has(e.key)) { e.preventDefault(); nudge((e.key === 'PageUp' ? -1 : 1) * vh * 0.9); return; }
+    if (e.key === 'Home') { e.preventDefault(); glideTo(0); return; }
+    if (e.key === 'End') { e.preventDefault(); glideTo(maxY); return; }
+    if (e.key === 'ArrowDown') { e.preventDefault(); pushScroll(vh * 0.2); return; }
+    if (e.key === 'ArrowUp') { e.preventDefault(); pushScroll(-vh * 0.2); return; }
+    if (PAGE.has(e.key)) { e.preventDefault(); pushScroll((e.key === 'PageUp' ? -1 : 1) * vh * 0.9); return; }
   });
 
   let touchY = null;
-  window.addEventListener('touchstart', (e) => {
-    touchY = e.touches[0].clientY;
-    if (!held()) beginFree();
-  }, { passive: true });
+  window.addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; }, { passive: true });
   window.addEventListener('touchmove', (e) => {
     e.preventDefault();
     if (touchY == null) return;
     const cur = e.touches[0].clientY;
     const dy = touchY - cur;                // finger up → scroll down
     touchY = cur;
-    if (holdActive) { feedHold(dy); return; }   // spend finger travel against the hold
-    beginFree();
-    aimY = clamp(aimY + dy, 0, maxY);
+    pushScroll(dy);
   }, { passive: false });
   window.addEventListener('touchend', () => { touchY = null; }, { passive: true });
 }
@@ -2530,7 +2780,7 @@ function onScroll(fOverride) {
      over the Cross tail. The dots carry the continuity across both. */
   const crossI = ST['Cross'], dashI = ST['Dashboard'], skillsI = ST['12 skills'], onTrackI = skillsI + 1;
   const aiI = ST['Ask-Tilli'], askLiveI = ST['Ask-live'], impactI = ST['Impact'], journeyI = ST['Journey'];
-  const fitsI = ST['Fits in'];
+  const fitsI = ST['Fits in'], viewsI = ST['3 views'];
   /* The dots now CROSS PATHS IN FRONT of the hero text. The hero stays
      centred (no ride-up) and simply fades out as the two streams sweep over
      it, while the whole dot field is lifted above the page content for the
@@ -2539,16 +2789,13 @@ function onScroll(fOverride) {
   const fCrossCentre = crossI + 0.35;               // f where the two streams cross
   const heroGone = smooth(clamp((f - (fCrossCentre - 0.18)) / 0.24));
   const liftDots = f > MORPH_AT + 0.02 && f < fCrossCentre + 0.12;
-  /* COLLECT SPLIT: once the arcs have emerged from beside the cards, lift the
-     dot field IN FRONT of the report cards so the streams flow from behind the
-     cards to the front as the cards disappear and the dots cluster in the
-     middle. Dropped back to 1 before the next scene's content arrives. */
-  const liftCollect = f > ST['Reports'] + 0.80 && f < ST['Collect'] + 0.45;
+  /* (COLLECT SPLIT stays BEHIND the content: the streams emerge from behind
+     the report cards and pass under the copy, never popping through it.) */
   /* MEASURE → 12 SKILLS: the woven helix glides IN FRONT of the measure
      cards as it slides aside, rather than ducking behind them (its dots sit
      on the right, clear of the incoming skills grid on the left). */
   const liftDNA = f > ST['Measure'] + 0.84 && f < ST['Measure'] + 1.12;
-  if (worldEl) worldEl.style.zIndex = (liftDots || liftCollect || liftDNA) ? '3' : '1';
+  if (worldEl) worldEl.style.zIndex = (liftDots || liftDNA) ? '3' : '1';
 
   /* NORMAL SCROLL around the Funnel screen — the one stretch that breaks the
      seamless cross-fade. "Schools see…" physically translates UP and out as
@@ -2573,12 +2820,18 @@ function onScroll(fOverride) {
 
     /* the travelling scenes leave and enter by moving, so they hold full
        opacity across their boundary instead of dissolving */
-    let ty = 0, tx = 0, exScale = 1, exBlur = 0;
+    let ty = 0, tx = 0, exScale = 1, exBlur = 0, clipL = 0;
     if (k === 0) {
       /* the hero text stays centred and FADES as the dot streams cross paths
          in front of it (they're lifted above the content — see liftDots
          above); it no longer rides up and out */
       op = 1 - heroGone;
+    } else if (k === viewsI) {
+      /* "Every data point…" is not faded out — it is WIPED away behind the
+         sweeping orb (viewsExit): clipped from the left along the orb's
+         trailing edge, gone once the orb has left the screen */
+      op = f < k + 1 ? smooth(clamp((f - a) / FADE_LEN)) : 0;
+      if (f > k) clipL = viewsExit(f - k).wipeFrac;
     } else if (k === skillsI) {
       /* 360° cards ease OUT to the LEFT (mirror of the DNA leaving right) over
          the exit half of the handover, fading as they go; the On-track text
@@ -2639,12 +2892,9 @@ function onScroll(fOverride) {
       /* "30+ schools…" — the stage is held opaque across the Ask-live→Impact
          boundary while #impactCard does the reveal (fade in + scale up + unblur,
          0.2s after Ask-live has blurred away — CSS drives that pause). On the way
-         OUT to Journey it uses the SAME soft, symmetric cross-fade as the
-         30+→"every morning" step swap: a STEP_FADE-wide window centred on the
-         boundary, so it dissolves straight into "What our partner schools did"
-         without dipping through the white background (see the journeyI branch). */
-      const XFADE = STEP_FADE;
-      const toJourney = smooth(clamp((f - (journeyI - XFADE / 2)) / XFADE));
+         OUT to Journey it fades out COMPLETELY first (IMPACT_TO_JOURNEY.out);
+         "What our partner schools did" then fades in on its own (journeyI). */
+      const toJourney = smoother(clamp((f - (journeyI + IMPACT_TO_JOURNEY.out[0])) / (IMPACT_TO_JOURNEY.out[1] - IMPACT_TO_JOURNEY.out[0])));
       op = smooth(clamp((f - (impactI - 0.45)) / 0.2)) * (1 - toJourney);
       if (impactCardEl) impactCardEl.classList.toggle('in', f > impactI - 0.06 && toJourney < 0.9);
       // dot-ring rise into the carousel card (step 1 → step 2) — see ORBIT_* above
@@ -2657,13 +2907,10 @@ function onScroll(fOverride) {
         oc.rotX = orbitBaseRotX + rise * (window.__orbitRise.rotTopX - orbitBaseRotX);
       }
     } else if (k === journeyI) {
-      /* "What our partner schools did" fades IN with the exact mirror of the
-         Impact fade-out above — the same STEP_FADE-wide window centred on the
-         boundary — so the two stages cross-dissolve like the 30+→"every morning"
-         step swap (they sum to 1 through the crossover, no white flash). Then a
-         normal FADE_LEN cross-fade out to "Let's talk" at its own tail. */
-      const XFADE = STEP_FADE;
-      const cin = smooth(clamp((f - (journeyI - XFADE / 2)) / XFADE));
+      /* "What our partner schools did" fades IN only after the Impact stage has
+         fully faded out (IMPACT_TO_JOURNEY.in — a fade-out → fade-in, not a
+         cross-dissolve). Then a normal FADE_LEN cross-fade out to "Let's talk". */
+      const cin = smoother(clamp((f - (journeyI + IMPACT_TO_JOURNEY.in[0])) / (IMPACT_TO_JOURNEY.in[1] - IMPACT_TO_JOURNEY.in[0])));
       const toTalk = smooth(clamp((f - (journeyI + 1 - FADE_LEN)) / FADE_LEN));
       op = cin * (1 - toTalk);
     } else if (k === journeyI + 1) {
@@ -2680,6 +2927,8 @@ function onScroll(fOverride) {
       if (tStr !== sc._tStr) { sc.stage.style.transform = tStr; sc._tStr = tStr; }
       const fStr = exBlur > 0.05 ? `blur(${exBlur.toFixed(1)}px)` : '';
       if (fStr !== sc._fStr) { sc.stage.style.filter = fStr; sc._fStr = fStr; }
+      const cStr = clipL > 0.0005 ? `inset(0 0 0 ${(clipL * 100).toFixed(2)}%)` : '';
+      if (cStr !== sc._cStr) { sc.stage.style.clipPath = cStr; sc._cStr = cStr; }
     }
 
     /* the Collect beat is pure dots — it has no stage at all */
@@ -2710,6 +2959,17 @@ function onScroll(fOverride) {
         const shown = Math.abs(deg) < 89.5;      // gone once edge-on/backface — not an opacity fade
         st.style.opacity = shown ? '1' : '0';
         st.style.pointerEvents = Math.abs(deg) < 45 ? 'auto' : 'none';
+      });
+    } else if (n === 2 && sc.pin === 'hero') {
+      /* LANDING — beat A clears before the burst, beat B arrives after it
+         (see HERO_T); never a cross-fade, so text and dots never overlap */
+      const hp = clamp(f - k);
+      const oa = 1 - smoother(heroWin(hp, HERO_T.textOut));
+      const ob = smoother(heroWin(hp, HERO_T.textIn));
+      [oa, ob].forEach((o, j) => {
+        const st = sc.steps[j];
+        st.style.opacity = o.toFixed(3);
+        st.style.pointerEvents = o > 0.6 ? 'auto' : 'none';
       });
     } else if (n) {
       const q = clamp(f - k) * n;
@@ -2743,7 +3003,7 @@ function runPin(sc, p) {
   const T = pinTargets(sc);
 
   if (sc.pin === 'hero') {
-    if (p > 0.45 && !counted) { counted = true; countUp(); }
+    if (p > HERO_T.textIn[0] && !counted) { counted = true; countUp(); }
     if (hintReady) scrollHint.style.opacity = p > 0.04 ? '0' : '1';
     if (three) three.heroP = p;
     return;
@@ -2758,7 +3018,7 @@ function runPin(sc, p) {
     return;
   }
   if (sc.pin === 'fan' && T.fans[0]) {
-    const q = ease(clamp(p / 0.6));
+    const q = ease(clamp(p / 0.32));   // fanned out by the Reports detent (0.36), not after it
     T.fans[0].style.transform = `rotate(${-7 * q}deg) translateX(${377 - 346 * q}px)`;
     T.fans[2].style.transform = `rotate(${7 * q}deg) translateX(${-(377 - 346 * q)}px)`;
     T.fans[1].style.transform = `scale(${0.96 + 0.04 * q})`;
@@ -2768,25 +3028,28 @@ function runPin(sc, p) {
     const q = ease(clamp((p - 0.06) / 0.18));
     T.vH.style.opacity = String(q);
     T.vH.style.transform = `translate(${VIEWS_HEAD.dx}px, ${VIEWS_HEAD.dy}px) scale(${(0.97 + 0.03 * q) * VIEWS_HEAD.scale})`;
-    T.vLabels.forEach((el, k) => el.classList.toggle('in', p > 0.3 + k * 0.09));
+    T.vLabels.forEach((el, k) => el.classList.toggle('in', p > 0.2 + k * 0.06));
     return;
   }
   if (sc.pin === 'skills' && T.skillCards.length) {
-    T.skillCards.forEach((card, k) => card.classList.toggle('in', p > 0.1 + k * 0.045));
+    T.skillCards.forEach((card, k) => card.classList.toggle('in', p > 0.06 + k * 0.022));
     return;
   }
   if (sc.pin === 'state' && T.stH) {
-    const q = ease(clamp(p / 0.35));
+    const q = ease(clamp(p / ON_TRACK_REVEAL.head));
     /* on exit (p ≥ start) the whole headline block ZOOMS OUT (shrinks) as the
        kids slide off — it recedes while the stage cross-fades away */
     const exit = ease(clamp((p - ONTRACK_EXIT.start) / (1 - ONTRACK_EXIT.start)));
     const zoom = lerp(1, ONTRACK_EXIT.textZoom, exit);
-    if (T.stWrap) T.stWrap.style.transform = `translate(${STATE_TEXT.x}px, ${STATE_TEXT.y}px) scale(${STATE_TEXT.z * zoom})`;
+    if (T.stWrap) T.stWrap.style.transform = `translate(${STATE_TEXT.x}px, ${onTrackTextY(T.stWrap).toFixed(1)}px) scale(${(STATE_FIT.s * zoom).toFixed(4)})`;
     T.stH.style.transform = `scale(${0.9 + 0.1 * q})`;
     T.stH.style.opacity = String(0.15 + 0.85 * q);
-    T.stP.style.opacity = String(clamp((p - 0.14) / 0.2));
+    /* headline → byline → pills follow one another with no dead air, all in
+       before the section's detent (ON_TRACK_REVEAL) */
+    const R = ON_TRACK_REVEAL;
+    T.stP.style.opacity = String(smooth(clamp((p - R.byline[0]) / (R.byline[1] - R.byline[0]))));
     T.pops.forEach((pl, k) => {
-      const v = clamp((p - 0.42 - k * 0.07) / 0.12);
+      const v = smooth(clamp((p - R.pills - k * R.stagger) / R.pillDur));
       pl.style.opacity = String(v);
       pl.style.transform = `scale(${0.6 + 0.4 * v})`;
     });
@@ -2799,14 +3062,14 @@ function runPin(sc, p) {
        from above or below. Everything downstream — headline, cards, prompt,
        typing, dots (step() reads askChat.ms), response — plays off this clock,
        NOT the scroll. */
-    const TRIG_IN = 0.24, TRIG_OUT = 0.55;          // p-window the sequence PLAYS in
+    const TRIG_IN = 0.03, TRIG_OUT = 0.55;          // p-window the sequence PLAYS in (starts as the stage lands)
     const live = p >= TRIG_IN && p <= TRIG_OUT;
     /* reset (re-arm for replay) only when scrolled back BEFORE the chat — NOT
        once it has finished. That way the completed boxes scroll away with their
        content intact instead of blanking out the instant p passes TRIG_OUT. */
-    if (p < TRIG_IN) { sc._chatT = 0; askChat.locked = true; }
+    if (p < TRIG_IN) { sc._chatT = 0; askChat.locked = true; askChat.boost = 0; }
     else if (live && !sc._chatT) sc._chatT = performance.now();
-    const rawMs = sc._chatT ? performance.now() - sc._chatT : -1;
+    const rawMs = sc._chatT ? performance.now() - sc._chatT + askChat.boost : -1;
     /* DOM clock: real time while live, then HELD at the finished frame past
        TRIG_OUT so the boxes stay fully drawn as they scroll off (1e7 covers
        arriving from below, where the chat never ran). The dot-flow clock
@@ -3102,6 +3365,10 @@ if (reduced) {
        and the ASK-LIVE wave block below fades the sine line in cleanly on top.
        Keeps the section change a plain scroll with no dot transition. */
     if (si === ST['Ask-Tilli']) tt = 0;
+    /* 3 VIEWS → MEASURE: base-morph OFF — the orbs never melt into the helix;
+       they orbit, shrink and wipe away (viewsExit) and the DNA weaves in
+       fresh on the Measure screen. */
+    if (si === ST['3 views']) tt = 0;
     /* dot size tracks the position morph exactly: only the 12-skills form
        carries the shrunken dotScale, so the dots scale down in lock-step with
        the geometry as Measure→12-skills and grow back on the way out. */
@@ -3112,7 +3379,10 @@ if (reduced) {
       th.dotMat.size = BASE_DOT_SIZE * lerp(sizeOf(i), sizeOf(i + 1), tt);
     }
     const A = th.F[i], B = th.F[i + 1];
-    const P = th.P, CL = th.CL, PH = th.phases;
+    const P = th.P, CL = th.CL, PH = th.phases, SC = th.SC;
+    /* shrink dot n toward hidden by amt (0 = untouched, 1 = gone) */
+    const vanish = (n, amt) => { if (amt > 0) SC[n] *= 1 - clamp(amt); };
+    for (let n = 0; n < N; n++) SC[n] = lerp(A.scl[n], B.scl[n], tt);
     for (let k = 0; k < N * 3; k += 3) {
       P[k] = lerp(A.pos[k], B.pos[k], tt);
       P[k + 1] = lerp(A.pos[k + 1], B.pos[k + 1], tt);
@@ -3128,21 +3398,28 @@ if (reduced) {
        ring (not a loose scatter) means the same dots are already parked as the
        head of the dashboard flow, so the hand-over downstream stays seamless. */
     if (i === 0) {
-      const burst = ease(clamp((th.heroP - BURST_START) * SPHERE.burstSpeed));
+      const burst = ease(heroWin(th.heroP, HERO_T.burst));
       heroBurst = burst;
-      if (handAPI) handAPI.frame(planeZ, burst);
+      /* the hands run on their OWN window, finishing before the burst starts */
+      if (handAPI) handAPI.frame(planeZ, smoother(heroWin(th.heroP, HERO_T.handsOut)));
       const bc = ballWorld();
       const ring = th.heroRing;
+      /* idle spin: ACCUMULATE the angle (slowing as the burst builds) rather
+         than scaling time·spin — scaling a large absolute angle by (1−burst)
+         whirled the orb through many turns the moment the burst began */
+      th.orbSpin = (th.orbSpin || 0) + dt * SPHERE.spin * (1 - burst);
       if (burst < 1 && SPHERE.spin > 0.001) {
-        const ang = time * SPHERE.spin * (1 - burst);
-        for (let k = 0; k < N * 3; k += 3) rotate2D(P, k, bc[0], bc[2], ang);
+        for (let k = 0; k < N * 3; k += 3) rotate2D(P, k, bc[0], bc[2], th.orbSpin);
       }
       if (burst > 0) {
+        /* mid-burst (tt is 0 here) every dot flies from its live, spun orb
+           position to the ring; once settled it's the plain ring → flow blend */
         const wgt = burst * (1 - tt);
         for (let k = 0; k < N * 3; k += 3) {
-          P[k] += (ring[k] - A.pos[k]) * wgt;
-          P[k + 1] += (ring[k + 1] - A.pos[k + 1]) * wgt;
-          P[k + 2] += (ring[k + 2] - A.pos[k + 2]) * wgt;
+          const sx = burst < 1 ? P[k] : A.pos[k], sy = burst < 1 ? P[k + 1] : A.pos[k + 1], sz = burst < 1 ? P[k + 2] : A.pos[k + 2];
+          P[k] += (ring[k] - sx) * wgt;
+          P[k + 1] += (ring[k + 1] - sy) * wgt;
+          P[k + 2] += (ring[k + 2] - sz) * wgt;
         }
       }
       /* atmospheric depth: dots on the far side of the ball wash toward the
@@ -3169,8 +3446,13 @@ if (reduced) {
        Measure. */
     if (viewsHandsAPI) {
       const vI = ST['3 views'];
-      const reveal = smooth(clamp((f - (vI - 0.05)) / 0.3)) * (1 - smooth(clamp((f - (vI + 0.85)) / 0.2)));
-      viewsHandsAPI.frame(planeZ, reveal);
+      /* in as the orbs form; out as the wipe's trailing edge passes each hand */
+      const reveal = smooth(clamp((f - (vI - 0.05)) / 0.3)) * (f < vI + 1 ? 1 : 0);
+      const wf = si === vI ? viewsExit(f - vI).wipeFrac : (f >= vI + 1 ? 1 : 0);
+      viewsHandsAPI.frame(planeZ, [
+        reveal * (1 - smooth(clamp((wf - 0.04) / 0.18))),
+        reveal * (1 - smooth(clamp((wf - 0.74) / 0.18))),
+      ]);
     }
     /* the threads are drawn between the field's own dots once the ring has
        settled — the actual layout happens below, after idle breathing, so
@@ -3216,29 +3498,22 @@ if (reduced) {
         const settle = smooth(clamp((phi - 0.75) / 0.25));
         for (let n = 0; n < N; n++) {
           const k = n * 3;
-          dashPoint(dotSide[n], dotQ[n] + travel, k, sp);
-          let tx = sp[0], ty = sp[1], tz = sp[2];
+          /* blend the PATH PARAMETER (not the position) from the travelling
+             queue to the settled band, so every dot glides along the path
+             itself instead of cutting a straight chord across the screen */
+          let t = dotQ[n] + travel;
           if (settle > 0.001) {
             /* non-wrapping progress toward the end of the band: at drainAmt 0
                each dot rests at its queue slot; as it grows they all flow to
                the end (bandPhase → 1) and stop, no respawn at the start */
             const bandPhase = Math.min(1, th.streamT[n] + drainAmt);
-            const tC = DASH_CS + bandPhase * (1 - DASH_CS);
-            dashPoint(dotSide[n], tC, k, sp);
-            tx = lerp(tx, sp[0], settle);
-            ty = lerp(ty, sp[1], settle);
-            tz = lerp(tz, sp[2], settle);
-            /* dissolve into the white background as it reaches the very end,
-               so the path empties cleanly rather than piling dots on the end
-               point. Gated by engage so dots regain colour if we leave to
-               Reports (engage → 0) instead of flickering. */
-            const fadeEnd = smooth(clamp((bandPhase - 0.86) / 0.14)) * settle * drainAmt * engage;
-            if (fadeEnd > 0.001) {
-              CL[k] = lerp(CL[k], 1, fadeEnd);
-              CL[k + 1] = lerp(CL[k + 1], 1, fadeEnd);
-              CL[k + 2] = lerp(CL[k + 2], 1, fadeEnd);
-            }
+            t = lerp(t, DASH_BAND + bandPhase * (1 - DASH_BAND), settle);
+            /* the path ends inside the card (which paints over the canvas);
+               shrink the arrived dots too so nothing piles on the end point */
+            vanish(n, smooth(clamp((bandPhase - 0.9) / 0.1)) * settle * drainAmt * engage);
           }
+          dashPoint(dotSide[n], t, k, sp);
+          const tx = sp[0], ty = sp[1], tz = sp[2];
           P[k] = lerp(P[k], tx, engage);
           P[k + 1] = lerp(P[k + 1], ty, engage);
           P[k + 2] = lerp(P[k + 2], tz, engage);
@@ -3251,28 +3526,35 @@ if (reduced) {
        straight out from the centre with no swirl. */
 
     /* 3 VIEWS: the Collect ball splits into three SPHERES; each then turns on
-       its OWN vertical axis — its own rate and direction — like a planet. This
-       is a real 3-D rotation in the x–z plane (rotate2D), NOT a flat on-screen
-       swirl, and each dot on the FAR side of its sphere washes toward the
-       background, so the orbs read with depth as they spin. The spin weight
-       (hold) is continuous across the Collect→3-views boundary, so the orbs are
-       already turning as they finish forming. */
+       its OWN vertical axis — its own rate and direction — like a planet (a real
+       3-D x–z rotation, with the far side of each sphere washing toward the
+       background for depth). Spin angles ACCUMULATE (dt·rate·weight) so the
+       spin eases up from rest instead of whirling through time·rate as the
+       weight ramps. Then the EXIT (viewsExit): the side orbs orbit the centre
+       orb, two orbs shrink away and the left one sweeps across as the wipe. */
     {
       const vI = ST['3 views'];
-      /* start ONLY after the orbs have finished forming (f > vI), ramp in over
-         the first bit of the scene, fade out over its tail — so nothing spins
-         during the split itself */
-      const spinWgt = smooth(clamp((f - (vI + 0.06)) / 0.28)) * (1 - smooth(clamp((f - (vI + 0.75)) / 0.25)));
-      if (spinWgt > 0.01) {
+      const vp = f - vI;
+      const spinWgt = smooth(clamp((vp - 0.04) / 0.3));
+      const vs = th.viewsSpin || (th.viewsSpin = [0, 0, 0]);
+      for (let o = 0; o < 3; o++) vs[o] += dt * VIEWS_SPIN[o] * spinWgt;
+      if (si === vI && spinWgt > 0.001) {
+        const ex = viewsExit(vp);
         const zSpan = 2 * VIEWS_R * VIEWS_ZD;
         for (let n = 0; n < N; n++) {
           const k = n * 3, o = n % 3;
-          rotate2D(P, k, VIEWS_CX[o], VIEWS_Z, time * VIEWS_SPIN[o] * spinWgt);
+          rotate2D(P, k, VIEWS_CX[o], VIEWS_Z, vs[o]);
           const depth = clamp((P[k + 2] - (VIEWS_Z - VIEWS_R * VIEWS_ZD)) / zSpan);   // 0 back → 1 front
           const wash = (1 - depth) * (1 - depth) * spinWgt * 0.72;
           CL[k] = lerp(CL[k], 1, wash);
           CL[k + 1] = lerp(CL[k + 1], 1, wash);
           CL[k + 2] = lerp(CL[k + 2], 1, wash);
+          /* carry the whole sphere to its exit pose (the sweeping orb swells) */
+          const g = o === 0 ? ex.grow : 1;
+          P[k]     = ex.cx[o] + (P[k] - VIEWS_CX[o]) * g;
+          P[k + 1] = VIEWS_CY + (P[k + 1] - VIEWS_CY) * g;
+          P[k + 2] = ex.cz[o] + (P[k + 2] - VIEWS_Z) * g;
+          vanish(n, ex.gone[o]);
         }
       }
     }
@@ -3280,7 +3562,9 @@ if (reduced) {
     /* DNA: strands appear in stage order, then the helix rotates */
     {
       const dnaI = ST['Measure'], skI = ST['12 skills'];
-      const wgt = clamp((f - (dnaI - 0.35)) / 0.35) * (1 - clamp((f - (skI + 0.9)) / 0.35));
+      /* starts exactly on the Measure screen — before it, the 3-views exit owns
+         the field (the orbs must not rotate/whiten into the helix) */
+      const wgt = (f >= dnaI ? 1 : 0) * (1 - clamp((f - (skI + 0.9)) / 0.35));
       if (wgt > 0.01) {
         const slide = smooth(clamp((f - (dnaI + 0.86)) / 0.14));
         const cx = lerp(0, DNA2_CFG.x, slide);
@@ -3296,7 +3580,7 @@ if (reduced) {
            (rather than the old `time*0.4 * wgt`, which scaled a large absolute
            angle down toward 0 as wgt faded) means the helix holds its last
            rotation and morphs straight into the kids with no unwind spin. */
-        const spinIn = clamp((f - (dnaI - 0.35)) / 0.35);
+        const spinIn = clamp((f - dnaI) / 0.35);
         if (f <= skI + SKILLS_EXIT.start) th.dnaSpin = (th.dnaSpin || 0) + dt * 0.4 * spinIn;
         const ang = th.dnaSpin || 0;
         const reveal = f > dnaI + 0.85 ? 1 : th.dnaP; // fully woven before the slide begins
@@ -3332,9 +3616,7 @@ if (reduced) {
         for (let n = 0; n < N; n++) {
           const k = n * 3;
           P[k] += dx;                                    // ease the spun helix off-right
-          CL[k]     = lerp(CL[k], 1, outP);
-          CL[k + 1] = lerp(CL[k + 1], 1, outP);
-          CL[k + 2] = lerp(CL[k + 2], 1, outP);
+          vanish(n, outP);                               // shrink away (the 12-skills wash is cyan — white would show)
         }
       }
     }
@@ -3353,7 +3635,7 @@ if (reduced) {
         const kids = th.F[onI];
         const wlk = smoother(th.kidWalk);                // eased 0→1 arrival
         const lx = WALK.slideL * (1 - wlk);              // remaining leftward offset → 0 at rest
-        const colIn = smooth(clamp(th.kidWalk / 0.1));   // colour up from white as they enter
+        const colIn = smooth(clamp(th.kidWalk / 0.1));   // grow in as they enter (a white fade would show on the tinted wash)
         /* the bob keeps hopping through the walk AND the whole On-track hold,
            at full strength right up to the exit — the straight exit below then
            carries the same bob and fades it out as the kids slide off. */
@@ -3367,9 +3649,10 @@ if (reduced) {
           P[k]     = kids.pos[k] - lx;
           P[k + 1] = kids.pos[k + 1] + bob;
           P[k + 2] = kids.pos[k + 2];
-          CL[k]     = lerp(1, kids.col[k], colIn);
-          CL[k + 1] = lerp(1, kids.col[k + 1], colIn);
-          CL[k + 2] = lerp(1, kids.col[k + 2], colIn);
+          CL[k]     = kids.col[k];
+          CL[k + 1] = kids.col[k + 1];
+          CL[k + 2] = kids.col[k + 2];
+          SC[n] = colIn;
         }
       } else if (f < f0) {
         th.kidWalk = 0;                                  // rearm when scrolled back before the walk
@@ -3398,37 +3681,41 @@ if (reduced) {
           P[k]     = kids.pos[k] + dir * ONTRACK_EXIT.dist * move;
           P[k + 1] = kids.pos[k + 1] + bob;
           P[k + 2] = kids.pos[k + 2];
-          CL[k]     = lerp(kids.col[k], 1, col);
-          CL[k + 1] = lerp(kids.col[k + 1], 1, col);
-          CL[k + 2] = lerp(kids.col[k + 2], 1, col);
+          /* keep their colour and SHRINK away — fading to white left visible
+             white dots on the green / pink washes */
+          CL[k]     = kids.col[k];
+          CL[k + 1] = kids.col[k + 1];
+          CL[k + 2] = kids.col[k + 2];
+          SC[n] = 1 - col;
         }
         th.dotMat.size = KID.dot;
       } else {
-        /* PHASE 2 — the Ask-Tilli formation fades in from white at its rest spots */
-        const inP = smoother(clamp((hb - 0.5) / 0.5));
+        /* PHASE 2 — the field sits on the (hidden) Ask-Tilli formation; the
+           visible Ask-Tilli dots are streamed in by the CARD IN-FLOW block */
         const ai = th.F[aiI];
         for (let n = 0; n < N; n++) {
           const k = n * 3;
           P[k]     = ai.pos[k];
           P[k + 1] = ai.pos[k + 1];
           P[k + 2] = ai.pos[k + 2];
-          CL[k]     = lerp(1, ai.col[k], inP);
-          CL[k + 1] = lerp(1, ai.col[k + 1], inP);
-          CL[k + 2] = lerp(1, ai.col[k + 2], inP);
+          SC[n] = 0;
         }
-        th.dotMat.size = lerp(KID.dot, BASE_DOT_SIZE, inP);
+        th.dotMat.size = BASE_DOT_SIZE;
       }
     }
 
     /* FUNNEL WATERFALL: across the Funnel screen and the Reports funnel, the
        funnel dots continuously fall from the mouth (top) to the spout (bottom);
-       a dot that reaches the bottom vanishes (fades to the wash) and re-appears
-       at the top — so it reads as a stream pouring down. */
+       a dot that reaches the bottom shrinks away and re-appears at the top —
+       so it reads as a stream pouring down. The pour SHRINKS away (not a
+       colour fade — the Reports wash is green) just before the COLLECT SPLIT
+       starts emitting, so the two never overlap. */
+    const rI = ST['Reports'], cI = ST['Collect'];
     {
-      const fI = ST['Funnel'], rI = ST['Reports'];
-      /* the pour releases right as the COLLECT SPLIT takes over (rI+0.55…0.67),
-         so the two side-streams peel straight out of the settled pour */
-      const funW = smooth(clamp((f - (fI - 0.1)) / 0.25)) * (1 - smooth(clamp((f - (rI + 0.55)) / 0.12)));
+      const fI = ST['Funnel'];
+      const pourIn = smooth(clamp((f - (fI - 0.1)) / 0.25));
+      const pourOut = smooth(clamp((f - (rI + COLLECT_FLOW.pourOut[0])) / (COLLECT_FLOW.pourOut[1] - COLLECT_FLOW.pourOut[0])));
+      const funW = pourIn * (f < rI + COLLECT_FLOW.pourOut[1] + 0.01 ? 1 : 0);
       if (funW > 0.001) {
         const MOUTH = FUNNEL_CFG.y, XC = FUNNEL_CFG.x;
         /* the spout ends on the report card's TOP EDGE, tracked live as the
@@ -3438,49 +3725,40 @@ if (reduced) {
            lands on the card the moment it enters and follows it to rest. */
         const SPOUT = REPORT_CARD_TOP_Y - (1 - S.repIn) * VIEWPORT_WORLD_H;
         for (let n = 0; n < N; n++) {
-          let w = funW;
-          if (w < 0.001) continue;
+          const w = funW;
           const k = n * 3;
           const tt = (funPh[n] + time * FUNNEL_CFG.fallSpeed) % 1;   // 0 = mouth, 1 = spout
           const width = lerp(FUNNEL_CFG.maxWidth, FUNNEL_CFG.minWidth, tt);
           P[k] = lerp(P[k], XC + funH[n] * width, w);
           P[k + 1] = lerp(P[k + 1], lerp(MOUTH, SPOUT, tt), w);
           P[k + 2] = lerp(P[k + 2], funZ[n], w);
-          /* fade in over the first 12% of the fall, out over the last 12% —
-             the appear/disappear that hides the wrap */
+          /* grow in over the first 12% of the fall, shrink over the last 12%
+             — the appear/disappear that hides the wrap */
           const edge = Math.min(smooth(clamp(tt / 0.12)), 1 - smooth(clamp((tt - 0.88) / 0.12)));
-          const fade = (1 - edge) * w;
-          if (fade > 0.001) {
-            CL[k] = lerp(CL[k], 1, fade);
-            CL[k + 1] = lerp(CL[k + 1], 1, fade);
-            CL[k + 2] = lerp(CL[k + 2], 1, fade);
-          }
+          SC[n] = lerp(SC[n], edge, w);
+          vanish(n, pourOut);
         }
       }
     }
 
-    /* COLLECT SPLIT: after the report cards settle the field divides down the
-       middle. Each half is EMITTED as a queue from beside the report images and
-       flows along a big cubic arc — out to the screen side, down low, then up —
-       so the two streams visibly TRACE the path (a red arc on the left, a blue
-       arc on the right) as they come out from BEHIND the cards. They then
-       CLUSTER into one big dense ball in the centre of the screen (lifted in
-       FRONT of the cards — see the collect z-lift in onScroll) just as the
-       cards fade away, and hold there (no spiral). Dots are strung along the
-       arc by an emit stagger + fixed travel time so it reads as two flowing
-       ribbons. Pink dots fade to white on the way. The endpoint rides the live
-       spinning cluster so it releases into the Collect rotation with no jump. */
+    /* COLLECT SPLIT: after the report cards settle and the pour has stopped,
+       the dots are EMITTED one after another from behind the left and right
+       report cards and each TRAVELS a big cubic arc — out to the screen side,
+       down low, then into the centre — and only once it reaches the end of its
+       arc does it join the ball. Before its turn a dot is hidden (aScale 0) at
+       the arc start, behind the cards; it grows in as it leaves. A long emit
+       stagger + a short per-dot trip makes it read as two flowing ribbons,
+       never as the whole field morphing at once. The endpoint is the dot's
+       fixed spot in the (non-spinning) Collect ball, so the release into the
+       Collect formation is exact. */
     {
-      const rI = ST['Reports'], cI = ST['Collect'];
-      const gStart = rI + 0.55, gEnd = cI + 0.40;
+      const gStart = rI + COLLECT_FLOW.start, gEnd = cI + COLLECT_FLOW.end;
       if (f >= gStart && f <= gEnd) {
-        const eng = smooth(clamp((f - gStart) / 0.10));
+        const eng = 1;   // un-emitted dots are hidden, so the take-over needs no ramp
         const Pg = clamp((f - gStart) / (gEnd - gStart));   // 0..1 across the whole split
-        const EMIT = 0.25, DUR = 0.40;                      // stagger span · per-dot travel time
-        const spinW = si === rI ? S.wt : 1;                 // matches the Collect rotation spin-up
-        const A = time * 0.45 * spinW, cs = Math.cos(A), sn = Math.sin(A);
-        /* the two arcs' control points, mapped from their editable screen
-           fractions to world once per frame (see COLLECT_ARC / the editor) */
+        const EMIT = COLLECT_FLOW.emit, DUR = COLLECT_FLOW.travel;
+        /* the two arcs' control points, mapped from their screen fractions to
+           world once per frame (see COLLECT_ARC) */
         const AZ = -3, CA = COLLECT_ARC;
         const rA = screenFracToWorld(CA.red[0][0], CA.red[0][1], AZ);
         const rC1 = screenFracToWorld(CA.red[1][0], CA.red[1][1], AZ);
@@ -3490,29 +3768,24 @@ if (reduced) {
         const bC2 = screenFracToWorld(CA.blue[2][0], CA.blue[2][1], AZ);
         for (let n = 0; n < N; n++) {
           const k = n * 3;
-          const s = smooth(clamp((Pg - collectFrac[n] * EMIT) / DUR));   // 0 at cards → 1 in spiral
-          const side = collectSide[n], left = side < 0;   // left half → red arc, right → blue
-          /* endpoint: this dot's spot in the cluster ball, rotated onto the live
-             (slowly spinning) cluster */
-          const sx0 = collectPos[k], sy0 = collectPos[k + 1];
-          const ex = sx0 * cs - sy0 * sn, ey = sy0 * cs + sx0 * sn, ez = collectPos[k + 2];
-          /* cubic arc: beside the cards → out to the side → down low → up into
-             the spiral from the lower outside (control points are editable) */
+          const raw = (Pg - collectFrac[n] * EMIT) / DUR;     // <0 waiting · 0..1 travelling · >1 arrived
+          const left = collectSide[n] < 0;                    // left half → red arc, right → blue
+          /* ease only the very ends of each dot's trip, so the ribbon moves at a
+             near-constant speed (a full smoothstep bunched dots at both ends) */
+          const u = clamp(raw), s = lerp(u, smooth(u), 0.35);
+          const ex = collectPos[k], ey = collectPos[k + 1], ez = collectPos[k + 2];
           const pA = left ? rA : bA, pC1 = left ? rC1 : bC1, pC2 = left ? rC2 : bC2;
-          const ax = pA[0] + funH[n] * 2.4, ay = pA[1] + (funPh[n] - 0.5) * 3, az = AZ;
-          const c1x = pC1[0], c1y = pC1[1], c1z = AZ;
-          const c2x = pC2[0], c2y = pC2[1], c2z = AZ;
+          const ax = pA[0] + funH[n] * 2.0, ay = pA[1] + (funPh[n] - 0.5) * 2.4, az = AZ;
           const o = 1 - s, o2 = o * o, o3 = o2 * o, s2 = s * s, s3 = s2 * s;
           const w0 = o3, w1 = 3 * o2 * s, w2 = 3 * o * s2, w3 = s3;
-          P[k] = lerp(P[k], w0 * ax + w1 * c1x + w2 * c2x + w3 * ex, eng);
-          P[k + 1] = lerp(P[k + 1], w0 * ay + w1 * c1y + w2 * c2y + w3 * ey, eng);
-          P[k + 2] = lerp(P[k + 2], w0 * az + w1 * c1z + w2 * c2z + w3 * ez, eng);
-          if (n % 5 === 4) {   // the pink dots slowly disappear as the spiral forms
-            const pf = smooth(clamp((Pg - 0.15) / 0.6)) * eng;
-            CL[k] = lerp(CL[k], 1, pf);
-            CL[k + 1] = lerp(CL[k + 1], 1, pf);
-            CL[k + 2] = lerp(CL[k + 2], 1, pf);
-          }
+          P[k] = lerp(P[k], w0 * ax + w1 * pC1[0] + w2 * pC2[0] + w3 * ex, eng);
+          P[k + 1] = lerp(P[k + 1], w0 * ay + w1 * pC1[1] + w2 * pC2[1] + w3 * ey, eng);
+          P[k + 2] = lerp(P[k + 2], w0 * az + w1 * AZ + w2 * AZ + w3 * ez, eng);
+          /* hidden until emitted, grows in as it leaves the card; the pink
+             fifth shrinks back out as it lands (the Collect ball has no pink) */
+          const born = smooth(clamp(raw / 0.08));
+          const pinkGone = n % 5 === 4 ? smooth(clamp((raw - 0.7) / 0.3)) : 0;
+          SC[n] = lerp(SC[n], born * (1 - pinkGone), eng);
         }
       }
     }
@@ -3633,9 +3906,11 @@ if (reduced) {
           P[k + 1] = lerp(P[k + 1], ty, own);
           P[k + 2] = lerp(P[k + 2], tz, own);
           const col = isGrey ? grey : pal[(n >> 1) % 3];
-          CL[k]     = lerp(CL[k], lerp(1, col.r, show), own);
-          CL[k + 1] = lerp(CL[k + 1], lerp(1, col.g, show), own);
-          CL[k + 2] = lerp(CL[k + 2], lerp(1, col.b, show), own);
+          /* grow in / shrink out (not a white fade — the AskTilli wash is pink) */
+          CL[k]     = lerp(CL[k], col.r, own);
+          CL[k + 1] = lerp(CL[k + 1], col.g, own);
+          CL[k + 2] = lerp(CL[k + 2], col.b, own);
+          SC[n] = lerp(SC[n], show, own);
         }
       }
     }
@@ -3690,6 +3965,7 @@ if (reduced) {
     }
     th.geo.attributes.position.needsUpdate = true;
     th.geo.attributes.color.needsUpdate = true;
+    th.geo.attributes.aScale.needsUpdate = true;
 
     /* RING CONNECTIONS: once the burst has fully settled the dots into the
        ring, STITCH the connection lines on — `stitch` drives drawLinks' growth
