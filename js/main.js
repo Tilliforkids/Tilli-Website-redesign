@@ -2212,11 +2212,11 @@ if (DEBUG) window.__tilliSnap = SNAP;   // ?debug=1 to tune these from the conso
    scroller do the same work. Pick which screens hold by data-label; full
    ordered list:
      Start · Cross · Dashboard · Funnel · Reports · Collect · 3 views ·
-     Measure · 12 skills · On track · Ask-Tilli · Impact · Journey · Let's talk
+     Measure · 12 skills · On track · Ask-Tilli · Ask-live · Fits in · Impact · Journey · Let's talk
    (Cross + Funnel are blank transition screens — normally leave them out.) */
 const HOLD_ON = new Set([
   'Dashboard', 'Reports', '3 views', 'Measure',
-  '12 skills', 'On track', 'Ask-Tilli', 'Impact', 'Journey',
+  '12 skills', 'On track', 'Ask-Tilli', 'Fits in', 'Impact', 'Journey',
 ]);   // Start (both hero beats) + Collect + Let's talk scroll through freely
 /* per-scene hold overrides — frac = where in the scene it catches (0..1;
    later = nearer the end). All holds share SNAP.holdDist for the release
@@ -2334,7 +2334,7 @@ const NAV_ITEMS = [
   ['Start', 'Home'], ['Dashboard', 'Dashboard'], ['Reports', 'Reports'],
   ['3 views', '3 perspectives'], ['Measure', 'Measure'], ['12 skills', '12 skills'],
   ['On track', 'On track'], ['Ask-Tilli', 'AskTilli'], ['Impact', 'Schools'],
-  ['Journey', 'Partner schools'], ["Let's talk", 'Contact'],
+  ['Journey', 'A year with Tilli'], ["Let's talk", 'Contact'],
 ];
 (function buildQuickNav() {
   const nav = document.getElementById('quicknav');
@@ -2530,6 +2530,7 @@ function onScroll(fOverride) {
      over the Cross tail. The dots carry the continuity across both. */
   const crossI = ST['Cross'], dashI = ST['Dashboard'], skillsI = ST['12 skills'], onTrackI = skillsI + 1;
   const aiI = ST['Ask-Tilli'], askLiveI = ST['Ask-live'], impactI = ST['Impact'], journeyI = ST['Journey'];
+  const fitsI = ST['Fits in'];
   /* The dots now CROSS PATHS IN FRONT of the hero text. The hero stays
      centred (no ride-up) and simply fades out as the two streams sweep over
      it, while the whole dot field is lifted above the page content for the
@@ -2625,6 +2626,15 @@ function onScroll(fOverride) {
       op = smooth(clamp(askIn / 0.08)) * (1 - askOut);
       exScale = 1 + askOut * 0.7;    // grow past the camera
       exBlur = askOut * 16;          // px
+    } else if (k === fitsI) {
+      /* "Works with what you already have" (HM-15) — plain fade in after the
+         Ask-live zoom, then the SAME zoom-through exit so Impact's early
+         reveal (impactI - 0.45) overlaps it exactly as it used to overlap Ask-live. */
+      const inn = smooth(clamp((f - (k - FADE_OVER)) / FADE_LEN));
+      const out = smooth(clamp((f - (k + 0.62)) / 0.34));
+      op = inn * (1 - out);
+      exScale = 1 + out * 0.7;
+      exBlur = out * 16;
     } else if (k === impactI) {
       /* "30+ schools…" — the stage is held opaque across the Ask-live→Impact
          boundary while #impactCard does the reveal (fade in + scale up + unblur,
@@ -3645,7 +3655,7 @@ if (reduced) {
       /* Impact, Journey and Let's-talk are all clean card layouts now — the field
          stays fully hidden from Impact onward, so the heart never re-forms behind
          the Journey cards (or the closing CTA). */
-      else if (si >= ST['Impact']) th.dotMat.opacity = 0;
+      else if (si > ST['Ask-live']) th.dotMat.opacity = 0;
       else                          th.dotMat.opacity = DOT_OPACITY;
     }
 

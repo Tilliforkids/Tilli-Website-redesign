@@ -41,28 +41,28 @@
 | 🟢 GL-03 | Global | Pilot offer | Reconcile "one term" vs "one year" | Language | P1 | 🟢 Done |
 | 🟢 GL-04 | Global | Evidence claims | Reconcile "Tilli works" with "evidence still being built" | Language | P1 | 🟢 Done |
 | 🟢 GL-05 | Global | Framework name | "Analyze" vs "Ask": pick one | Language | P2 | 🟢 Done |
-| GL-06 | Global | Definitions | Define SEL / foundational skills once, plainly | Language | P2 | To do |
+| 🟢 GL-06 | Global | Definitions | Define SEL / foundational skills once, plainly | Language | P2 | 🟢 Done |
 | 🟢 GL-07 | Global | Tagline / grades | "On track by 10": say age 10 and Pre‑K–5 | Language | P1 | 🟢 Done |
 | GL-08 | Global | Local context | Indian-context wording, phone number, spelling | Language | P2 | In progress |
 | GL-09 | Global | Recognition | Add HundrED / other recognition if true ⚠️ | Language | P2 | To do |
 | 🟢 GL-10 | Global | Naming | "Ask-Tilli" vs "Ask Tilli" | Language | P3 | 🟢 Done |
 | 🟢 GL-11 | Home | Scene nav pills | Rename "Views", "Journey", "Progress" | Language | P3 | 🟢 Done |
-| HM-01 | Home | Hero (beat A) | Lead with the principal's real question | Language | P1 | To do |
-| HM-02 | Home | Hero (beat B) | Clarify "They… that child… 579" | Language | P1 | To do |
+| 🟢 HM-01 | Home | Hero (beat A) | Lead with the principal's real question | Language | P1 | 🟢 Done |
+| 🟢 HM-02 | Home | Hero (beat B) | Clarify "They… that child… 579" | Language | P1 | 🟢 Done |
 | HM-03 | Home | Dashboard | Show a real dashboard, not an illustration | Section | P1 | To do |
-| HM-04 | Home | Reports | Answer the parent's real question | Language | P2 | To do |
-| HM-05 | Home | 3 people | "Matter most" → "know the child best" | Language | P3 | To do |
-| HM-06 | Home | Teacher strand | Promote the workload line, use real class size | Language | P1 | To do |
-| HM-07 | Home | 12 skills | Plain-language grouping + NEP/HPC mapping ⚠️ | Language | P2 | To do |
-| HM-08 | Home | On track | Remove headline/sub contradiction | Language | P2 | To do |
-| HM-09 | Home | AI compare | Add a privacy line under the Tilli answer | Language | P1 | To do |
-| HM-10 | Home | Live demo | 35 per class, leader-style prompts | Language | P2 | To do |
-| HM-11 | Home | 53 schools | Add where / which boards; fix placeholder carousel | Both | P1 | To do |
-| HM-12 | Home | Stats + quote | Outcome stats on Home; fix quote label | Both | P2 | To do |
-| HM-13 | Home | Partner schools did | Reframe as "A year with Tilli" | Both | P2 | To do |
-| HM-14 | Home | **New section** | "What it asks of your school" | Section | P1 | To do |
-| HM-15 | Home | **New section** | "Works with what you already have" | Section | P2 | To do |
-| HM-16 | Home | Closing CTA | Lead with the pilot; name the founder | Language | P1 | To do |
+| 🟢 HM-04 | Home | Reports | Answer the parent's real question | Language | P2 | 🟢 Done |
+| 🟢 HM-05 | Home | 3 people | "Matter most" → "know the child best" | Language | P3 | 🟢 Done |
+| 🟢 HM-06 | Home | Teacher strand | Promote the workload line, use real class size | Language | P1 | 🟢 Done |
+| 🟢 HM-07 | Home | 12 skills | Plain-language grouping + NEP/HPC mapping ⚠️ | Language | P2 | 🟢 Done |
+| 🟢 HM-08 | Home | On track | Remove headline/sub contradiction | Language | P2 | 🟢 Done |
+| 🟢 HM-09 | Home | AI compare | Add a privacy line under the Tilli answer | Language | P1 | 🟢 Done |
+| 🟢 HM-10 | Home | Live demo | 35 per class, leader-style prompts | Language | P2 | 🟢 Done |
+| 🟢 HM-11 | Home | 53 schools | Add where / which boards; fix placeholder carousel | Both | P1 | 🟢 Done |
+| 🟢 HM-12 | Home | Stats + quote | Outcome stats on Home; fix quote label | Both | P2 | 🟢 Done |
+| 🟢 HM-13 | Home | Partner schools did | Reframe as "A year with Tilli" | Both | P2 | 🟢 Done |
+| 🟢 HM-14 | Home | **New section** | "What it asks of your school" | Section | P1 | 🟢 Done |
+| 🟢 HM-15 | Home | **New section** | "Works with what you already have" | Section | P2 | 🟢 Done |
+| 🟢 HM-16 | Home | Closing CTA | Lead with the pilot; name the founder | Language | P1 | 🟢 Done |
 | SC-01 | Success | Hero | Replace "reshaping thousands of childhoods" | Language | P2 | To do |
 | SC-02 | Success | Tilli works | Retitle; adoption ≠ training rating; add sources | Language | P1 | To do |
 | SC-03 | Success | Hippocampus | Say what the 28% is and who reported it | Language | P2 | To do |
@@ -150,7 +150,7 @@
 ---
 
 ### GL-06 · Define SEL / foundational skills once · P2 · Language
-- [ ] Done — ⏸ **Paused (11 Oct 2026).** Open points when resumed: "foundational" reads as NEP **FLN** (literacy & numeracy) to Indian principals; desktop has no EF / Social-Emotional grouping (mobile does — see HM-07); "decide how well a child learns" is a stronger claim than Success makes; desktop skills scene is viewport-pinned, check vertical fit. Draft alt: *"Not reading and maths: the attention, memory, self-control and people skills underneath them. The emotional half is often called social-emotional learning (SEL)."*
+- [x] Done (12 Oct 2026, with HM-07) — shipped the draft alt below under the 12-skills sub on both builds. Earlier open points (now resolved): "foundational" reads as NEP **FLN** (literacy & numeracy) to Indian principals; desktop has no EF / Social-Emotional grouping (mobile does — see HM-07); "decide how well a child learns" is a stronger claim than Success makes; desktop skills scene is viewport-pinned, check vertical fit. Draft alt: *"Not reading and maths: the attention, memory, self-control and people skills underneath them. The emotional half is often called social-emotional learning (SEL)."*
 
 **Current:** "SEL" first appears in *"…and the SEL Teaching Kit"* with no definition. "Foundational skills" is never defined either.
 **Recommended:** Add this line the first time the term appears on Home (the 12-skills section):
@@ -219,7 +219,7 @@
 ## HOME (`index.html`)
 
 ### HM-01 · Hero, beat A · P1 · Language
-- [ ] Done
+- [x] Done
 
 ![Hero](principal-review/home-01-hero.jpg)
 
@@ -234,7 +234,7 @@
 ---
 
 ### HM-02 · Hero, beat B · P1 · Language
-- [ ] Done
+- [x] Done
 
 ![579](principal-review/home-02-579.jpg)
 
@@ -262,7 +262,7 @@
 ---
 
 ### HM-04 · Reports · P2 · Language
-- [ ] Done
+- [x] Done
 
 ![Reports](principal-review/home-04-reports.jpg)
 
@@ -277,7 +277,7 @@ Add a second link beside "Get the parent one-pager": **"Get the school leader on
 ---
 
 ### HM-05 · Three people · P3 · Language
-- [ ] Done
+- [x] Done
 
 ![3 people](principal-review/home-05-three-people.jpg)
 
@@ -289,7 +289,7 @@ Add a second link beside "Get the parent one-pager": **"Get the school leader on
 ---
 
 ### HM-06 · Teacher strand: workload line is buried · P1 · Language
-- [ ] Done
+- [x] Done
 
 ![Teacher strand](principal-review/home-06-teacher-strand.jpg)
 
@@ -304,7 +304,7 @@ Make the FAQ number match. The FAQ currently says "about 2.5 hours", which assum
 ---
 
 ### HM-07 · 12 skills · P2 · Language ⚠️
-- [ ] Done
+- [x] Done — shipped with the existing 6/6 grouping (Thinking / People) and the NEP + NCF‑FS sentence only. **HPC sentence held back until confirmed.**
 
 ![12 skills](principal-review/home-07-12-skills.jpg)
 
@@ -319,7 +319,7 @@ Make the FAQ number match. The FAQ currently says "about 2.5 hours", which assum
 ---
 
 ### HM-08 · "Developmentally on track" · P2 · Language
-- [ ] Done
+- [x] Done
 
 ![On track](principal-review/home-08-on-track.jpg)
 
@@ -333,7 +333,7 @@ Make the FAQ number match. The FAQ currently says "about 2.5 hours", which assum
 ---
 
 ### HM-09 · Generic AI vs Ask-Tilli · P1 · Language
-- [ ] Done
+- [x] Done
 
 ![AI compare](principal-review/home-09-ai-compare.jpg)
 
@@ -346,7 +346,7 @@ Make the FAQ number match. The FAQ currently says "about 2.5 hours", which assum
 ---
 
 ### HM-10 · Live demo · P2 · Language
-- [ ] Done
+- [x] Done
 
 ![Live demo](principal-review/home-10-live-demo.jpg)
 
@@ -362,7 +362,7 @@ Make the FAQ number match. The FAQ currently says "about 2.5 hours", which assum
 ---
 
 ### HM-11 · "53 schools" · P1 · Both
-- [ ] Done
+- [x] Done — Headline uses the country + board-mix line. **Logo captions (City · Board) pending** — need city + board per school.
 
 ![53 schools](principal-review/home-11-53-schools.jpg)
 
@@ -376,7 +376,7 @@ Make the FAQ number match. The FAQ currently says "about 2.5 hours", which assum
 ---
 
 ### HM-12 · Stats + quote · P2 · Both
-- [ ] Done
+- [x] Done — "Children assessed", +28% Hippocampus outcome stat added, Basu cited "on the NMAJS partnership". **Pending:** teacher quote (comment slot in markup), 5 carousel images; "9 in 10" held back until sourced (SC-02/03).
 
 ![Stats and quote](principal-review/home-12-stats-quote.jpg)
 
@@ -396,7 +396,7 @@ Make the FAQ number match. The FAQ currently says "about 2.5 hours", which assum
 ---
 
 ### HM-13 · "What our partner schools did" · P2 · Both
-- [ ] Done
+- [x] Done — Retitled; year cadence shown without months (works for India + Sri Lanka); "2,895 over five years"; "Teaching Kit"; nav pill → "A year with Tilli".
 - ↪ From GL-11: when retitled, change the Journey pill in `js/main.js` NAV_ITEMS from "Partner schools" to "A year with Tilli".
 
 ![Partner schools did](principal-review/home-13-partner-schools-did.jpg)
@@ -414,7 +414,7 @@ Make the FAQ number match. The FAQ currently says "about 2.5 hours", which assum
 ---
 
 ### HM-14 · NEW SECTION: "What it asks of your school" · P1 · Section
-- [ ] Done
+- [x] Done — **Placed on the Success page** (both builds), after the case studies — not on Home.
 - ↪ From GL-07: include *"Tilli never touches your board-exam classes."* (range confirmed Pre‑K–Grade 5).
 
 **Placement:** after "A year with Tilli", before the closing CTA.
@@ -436,7 +436,7 @@ H2: *"What Tilli asks of your school."* Sub: *"Fewer surprises at the Parent‑T
 ---
 
 ### HM-15 · NEW SECTION: "Works with what you already have" · P2 · Section
-- [ ] Done
+- [x] Done — Desktop: new "Fits in" scene between Ask-live and Impact. Mobile: section between AskTilli and Impact.
 
 **Placement:** near the 12 skills or the Ask-Tilli section.
 **Recommended copy:**
@@ -448,7 +448,7 @@ H2: *"What Tilli asks of your school."* Sub: *"Fewer surprises at the Parent‑T
 ---
 
 ### HM-16 · Closing CTA · P1 · Language
-- [ ] Done
+- [x] Done — New H2 + sub; all three buttons kept; email link now "Email Kavindya Tennakoon, Founder & CEO".
 
 ![Closing CTA](principal-review/home-16-closing-cta.jpg)
 

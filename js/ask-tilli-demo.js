@@ -24,7 +24,7 @@
   const school = {
     name: 'Sunrise Academy',
     grades: ['Pre-K', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'],
-    studentsPerClass: 15,
+    studentsPerClass: 35,
     get totalStudents() { return this.grades.length * this.studentsPerClass; },
     // one illustrative snapshot per grade
     snapshots: {
@@ -34,6 +34,25 @@
       'Grade 3': { focus: 'self-control',         strong: 'cognitive flexibility',child: 'Rehan',  note: 'quick to switch tasks, but interrupts during group work.' },
       'Grade 4': { focus: 'planning',             strong: 'attention',            child: 'Isha',   note: 'strong focus; needs scaffolding to plan multi-step tasks.' },
       'Grade 5': { focus: 'working memory',       strong: 'planning',             child: 'Dhruv',  note: 'attention at Learner, working memory at Expert, and leads recall well.' }
+    },
+    // Term 1 → Term 2 on each grade's focus skill: % of the class at or above
+    // the expected level (illustrative; powers "how has X changed" questions)
+    trend: {
+      'Pre-K':   { t1: 41, t2: 55 },
+      'Grade 1': { t1: 36, t2: 49 },
+      'Grade 2': { t1: 38, t2: 54 },
+      'Grade 3': { t1: 44, t2: 58 },
+      'Grade 4': { t1: 47, t2: 60 },
+      'Grade 5': { t1: 52, t2: 63 }
+    },
+    // one home activity per grade (powers "what should I tell parents / PTM")
+    home: {
+      'Pre-K':   'name feelings out loud at bedtime ("you look frustrated")',
+      'Grade 1': 'a 10-minute homework block with the TV off, then a short break',
+      'Grade 2': 'give one instruction at a time and ask them to repeat it back',
+      'Grade 3': 'a "count to three before you answer" game at dinner',
+      'Grade 4': 'plan the weekend together on a simple checklist',
+      'Grade 5': 'ask them to teach you one thing they learned today'
     },
     // 12 skills Tilli measures (for skill-specific questions)
     skills: ['attention', 'working memory', 'cognitive flexibility', 'inhibition',
@@ -83,6 +102,28 @@
         fr: `<b>${school.name}</b> compte <b>${school.totalStudents} élèves</b> : ${school.grades.length} niveaux (de Pre-K au Grade 5), avec ${school.studentsPerClass} enfants par classe.`,
         hi: `<b>${school.name}</b> में <b>${school.totalStudents} छात्र</b> हैं, ${school.grades.length} कक्षाएँ (Pre-K से Grade 5), हर कक्षा में ${school.studentsPerClass} बच्चे।`
       }, lang);
+    }
+
+    // PTM / what to tell parents — leader-style prompt
+    const gradeIn = school.grades.find((g) => q.includes(g.toLowerCase()) ||
+      (g === 'Pre-K' && has('pre-k', 'prek', 'pre k', 'kindergarten')));
+    if (has('ptm', 'parent', 'pta')) {
+      if (!gradeIn) {
+        return `Tell me which grade's PTM it is (Pre-K to Grade 5) and I'll draft the talking points: one strength, one focus area, and one thing to try at home.`;
+      }
+      const s = school.snapshots[gradeIn];
+      return `For the <b>${gradeIn}</b> PTM, three things to share:<br>1. The class is strongest in <b>${s.strong}</b>.<br>2. This term's focus is <b>${s.focus}</b>: ${s.note}<br>3. One thing to try at home: ${school.home[gradeIn]}.<br>Lead with the strength. No scores and no ranking against classmates.`;
+    }
+
+    // change over time — "how has Grade 2 changed since Term 1?"
+    if (has('changed', 'change', 'since', 'progress', 'improv', 'grown', 'term 1')) {
+      const g = gradeIn || Object.keys(school.trend).reduce((a, b) =>
+        (school.trend[b].t2 - school.trend[b].t1) > (school.trend[a].t2 - school.trend[a].t1) ? b : a);
+      const t = school.trend[g], n = school.studentsPerClass;
+      const kids = (p) => Math.round(p / 100 * n);
+      const lead = gradeIn ? `Since Term 1, <b>${g}</b> has moved most on <b>${school.snapshots[g].focus}</b>` :
+        `Since Term 1, the biggest gain is <b>${g}</b> on <b>${school.snapshots[g].focus}</b>`;
+      return `${lead}: <b>${t.t1}% → ${t.t2}%</b> of the class at or above the expected level (${kids(t.t1)} → ${kids(t.t2)} of ${n} children). ${cap(school.snapshots[g].note)} Keep going with the weekly activities and check again at Term 3.`;
     }
 
     // grades / classes overview

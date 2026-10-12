@@ -120,6 +120,18 @@
   .s-cta .tl-h2 { font-size: var(--tl-fs-2xl); }
   .s-cta .tl-lead { margin-top: 18px; }
   .s-cta .tl-btn { margin-top: 34px; }
+  /* HM-14 · "What Tilli asks of your school" — scannable brief (mirrors faq.html) */
+  .asks { width: 100%; max-width: 760px; margin: 28px auto 0; border-collapse: collapse; background: var(--tl-white);
+    border-radius: var(--tl-radius-lg); box-shadow: var(--tl-shadow-card); overflow: hidden; text-align: left; }
+  .asks th, .asks td { padding: 16px 24px; font-size: var(--tl-fs-base); line-height: 1.5; vertical-align: top; }
+  .asks tr + tr th, .asks tr + tr td { border-top: 1px solid var(--tl-line-200); }
+  .asks th { width: 34%; font-weight: 800; color: var(--tl-ink-900); }
+  .asks td { color: var(--tl-ink-600); }
+  @media (max-width: 600px) {
+    .asks th, .asks td { display: block; width: auto; padding: 12px 18px 0; }
+    .asks td { padding: 4px 18px 12px; }
+    .asks tr + tr td { border-top: 0; }
+  }
 </style>
 </head>
 <body class="tl-page">
@@ -271,8 +283,27 @@
     </div>
   </section>
 
-  <!-- REACH OUT (CHG-27 E2): grouped contact block + Tilli character -->
+  <!-- WHAT IT ASKS (HM-14): time, training, cost, timetable — the Management Committee brief -->
   <section class="tl-section tl-section--tint">
+    <div class="tl-container" style="text-align:center">
+      <p class="tl-eyebrow">What it takes</p>
+      <h2 class="tl-h2">What Tilli asks of your school.</h2>
+      <p class="tl-lead">Fewer surprises at the Parent‑Teacher Meet. Nothing new on the timetable.</p>
+      <table class="asks">
+        <tbody>
+          <tr><th scope="row">Training</th><td>2 days, once. Nothing mandatory after.</td></tr>
+          <tr><th scope="row">Assessment</th><td>About 5 minutes per child, in class, 3× a year.</td></tr>
+          <tr><th scope="row">Lessons</th><td>30 minutes a week, inside an existing period (e.g. Life Skills).</td></tr>
+          <tr><th scope="row">Teacher prep</th><td>None. Lessons are ready to teach.</td></tr>
+          <tr><th scope="row">Board-exam classes</th><td>Untouched. Tilli runs Pre‑K to Grade 5 and never touches your board-exam classes.</td></tr>
+          <tr><th scope="row">Cost</th><td>From ₹1,600 per child per year. One grade of 60 is about ₹1.8 lakh.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- REACH OUT (CHG-27 E2): grouped contact block + Tilli character -->
+  <section class="tl-section">
     <div class="tl-container">
       <div class="rk">
         <div class="rk__art">

@@ -114,6 +114,12 @@
   .s-cta { padding-block: 64px; }
   .s-cta .title { font-size: var(--tl-fs-2xl); }
 
+  /* HM-14 · "What Tilli asks of your school" — stacked label/value list */
+  .asks { margin: 18px 0 0; background: var(--tl-white); border-radius: var(--tl-radius-lg); box-shadow: var(--tl-shadow-card); text-align: left; overflow: hidden; }
+  .asks__row { padding: 14px 18px; }
+  .asks__row + .asks__row { border-top: 1px solid var(--tl-line-200); }
+  .asks__k { font-weight: 800; font-size: var(--tl-fs-sm); color: var(--tl-ink-900); }
+  .asks__v { font-size: var(--tl-fs-sm); line-height: 1.5; color: var(--tl-ink-600); margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -230,6 +236,21 @@
         <p class="cs-text">One of Sri Lanka's most respected girls' schools has brought SEL into Grade 1 with Tilli. What won them over was a model where teachers don't just receive data, they <strong>use</strong> it — each teacher designs a support plan for her class, sees multi-informant data on those same children, then redesigns it.</p>
         <p class="cs-source">Newest partner (started July 2026). This story leads on the approach and why they joined; outcomes follow after their first assessment window.</p>
       </div>
+    </div>
+  </section>
+
+  <!-- WHAT IT ASKS (HM-14): time, training, cost, timetable -->
+  <section class="wrap" style="text-align:center">
+    <div class="eyebrow">What it takes</div>
+    <h2 class="title">What Tilli asks of your school.</h2>
+    <p class="lede">Fewer surprises at the Parent‑Teacher Meet. Nothing new on the timetable.</p>
+    <div class="asks">
+      <div class="asks__row"><div class="asks__k">Training</div><div class="asks__v">2 days, once. Nothing mandatory after.</div></div>
+      <div class="asks__row"><div class="asks__k">Assessment</div><div class="asks__v">About 5 minutes per child, in class, 3× a year.</div></div>
+      <div class="asks__row"><div class="asks__k">Lessons</div><div class="asks__v">30 minutes a week, inside an existing period (e.g. Life Skills).</div></div>
+      <div class="asks__row"><div class="asks__k">Teacher prep</div><div class="asks__v">None. Lessons are ready to teach.</div></div>
+      <div class="asks__row"><div class="asks__k">Board-exam classes</div><div class="asks__v">Untouched. Tilli runs Pre‑K to Grade 5 and never touches your board-exam classes.</div></div>
+      <div class="asks__row"><div class="asks__k">Cost</div><div class="asks__v">From ₹1,600 per child per year. One grade of 60 is about ₹1.8 lakh.</div></div>
     </div>
   </section>
 
