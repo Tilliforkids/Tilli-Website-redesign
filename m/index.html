@@ -28,7 +28,7 @@
 <link rel="stylesheet" href="../css/m.css">
 <link rel="stylesheet" href="../css/ask-tilli.css">
 <!-- Shared mobile chrome (topbar, header, footer, WhatsApp) — one source for all /m/ pages -->
-<script src="../js/site-config.js?v=1"></script>
+<script src="../js/site-config.js?v=2"></script>
 <script src="../js/m-chrome.js?v=2" defer></script>
 <style>
   /* ── Mobile build — the SAME sections and elements as the desktop 3JS site
@@ -136,8 +136,6 @@
   .bucket-head .b-name { font-family: var(--tl-font-core); font-weight: 800; font-size: var(--tl-fs-lg);
     color: var(--tl-ink-900); line-height: 1.15; }
   .bucket-head .b-sub { font-size: var(--tl-fs-xs); color: var(--tl-ink-500); margin-top: 2px; }
-  .skills-def { font-size: var(--tl-fs-sm); line-height: 1.55; color: var(--tl-ink-500); margin: 10px auto 0; }
-  .skills-nep { font-size: var(--tl-fs-sm); font-weight: 600; color: var(--tl-cyan-700); margin: 8px auto 0; }
   .skill-card { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-md); padding: 14px; }
   .skill-card .n { font-size: var(--tl-fs-sm); font-weight: 800; line-height: 1.2; }
   .skill-card .d { font-size: var(--tl-fs-xs); color: var(--tl-ink-500); margin-top: 5px; line-height: 1.4; }
@@ -199,6 +197,16 @@
   .j-card.g { border: 2px solid var(--tl-green-500); } .j-card.c { border: 2px solid var(--tl-cyan-500); }
   .j-card.y { border: 2px solid var(--tl-yellow-500); }
   .j-card .top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  /* timeline chip: when this step happens in the year (border/tint follow the card colour) */
+  .j-when { display: flex; flex-direction: column; gap: 3px; margin: 0 0 14px; padding: 10px 12px;
+    border-radius: var(--tl-radius-md); border: 1.5px solid var(--c); background: color-mix(in srgb, var(--c) 10%, var(--tl-white)); }
+  .j-card.g .j-when { --c: var(--tl-green-500); --ct: var(--tl-green-600); }
+  .j-card.c .j-when { --c: var(--tl-cyan-500);  --ct: var(--tl-cyan-700); }
+  .j-card.y .j-when { --c: var(--tl-yellow-500); --ct: var(--tl-yellow-700); }
+  .j-when .t { font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--ct); }
+  .j-when .d { font-size: var(--tl-fs-sm); font-weight: 600; line-height: 1.45; color: var(--tl-ink-700); }
+  /* Measure kicker promoted to section-heading size */
+  .measure-head { font-size: var(--tl-fs-xl); font-weight: 800; line-height: 1.15; letter-spacing: 0.04em; }
   .j-card .ic { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
   .j-card .ic img { width: 24px; height: 24px; }
   .j-card.g .ic { background: var(--tl-green-500); } .j-card.c .ic { background: var(--tl-cyan-500); }
@@ -306,11 +314,11 @@
       <img class="hero-arm right" src="../assets/Milo Hand.png" alt="">
       <canvas id="heroBall" class="hero-ball"></canvas>
     </div>
-    <div class="eyebrow">For school leaders</div>
+    <div class="eyebrow">Hello school leaders</div>
     <h1>How do you know which children are quietly <span class="c-pink">falling behind</span>?</h1>
-    <p class="hero-sub">Most schools find out from marks. Tilli measures each child three ways, three times a year.</p>
+    <p class="hero-sub">Most schools find out from marks. Tilli looks at the child beyond academics and from 3 unique people in the child's life.</p>
     <div class="hero-stat">579</div>
-    <div style="font-size:var(--tl-fs-base);color:var(--tl-ink-500)">data points per child, in about 5 minutes of class time per child each term.</div>
+    <div style="font-size:var(--tl-fs-base);color:var(--tl-ink-500)"><b>data points per child per year,</b> in about 40 minutes per child per term.</div>
     <div class="badges">
       <div class="k">INCUBATED AT STANFORD · SCALED WITH UNICEF INNOVATION</div>
       <div class="logos">
@@ -323,7 +331,6 @@
   <!-- 2 · DASHBOARD -->
   <span id="how" aria-hidden="true"></span><!-- footer "How it works" anchor (= Dashboard) -->
   <section id="dashboard" class="wash-cyan wrap">
-    <div class="eyebrow">Dashboard</div>
     <h2 class="title">Schools see every data point in <span class="c-cyan">one simple dashboard</span>.</h2>
     <p class="lede">Easy to use, easy to navigate. Built for teachers, not analysts.</p>
     <div class="shot">
@@ -344,21 +351,19 @@
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
     <h2 class="title">Teachers share reports <span class="c-green">parents love to receive</span>.</h2>
-    <p class="lede">Term by term: strengths, growth areas, and two or three things to try at home. No scores out of ten, no ranking against classmates, and in the language your parents read.</p>
+    <p class="lede">Term by term: strengths, growth areas, and two or three things to try at home in the language your parents easily apply. Answer the question 'Why is school spending time on this?'</p>
     <div class="cta-col" style="align-items:center">
       <a class="btn btn-pink btn-block" style="max-width:220px"
          href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school."
          target="_blank" rel="noopener">Book a 30-minute call</a>
       <a class="textlink" href="../uploads/Tilli_Parent%20Report_Example.pdf" target="_blank" rel="noopener">See an example parent report →</a>
-      <a class="textlink" href="../assets/Tilli%20School%20Leader%20One%20Pager.pdf" target="_blank" rel="noopener">Get the school leader one-pager →</a>
     </div>
   </section>
 
   <!-- 5 · MEASURE / 360° view -->
   <section id="measure" class="wrap">
-    <div class="eyebrow">Measure · 360° View</div>
+    <div class="eyebrow measure-head">Measure · 360° View</div>
     <h2 class="title">Three strands, one measurement.</h2>
-    <p class="lede"><b>About 5 minutes per child, during class, three times a year. For a class of 35, that's roughly 3 hours a term, with nothing to mark or take home.</b></p>
     <!-- CHG-01 · each strand bound to its own example box, one per swipe card -->
     <div class="mrail">
       <div class="mcard">
@@ -367,7 +372,7 @@
           <div class="lab">TEACHER OBSERVATION</div>
           <div class="q">"Stays focused during group tasks."</div>
           <div class="chips"><span class="chip">Rarely</span><span class="chip">Sometimes</span><span class="chip on-g">Often</span></div>
-          <div class="meta">3× a year · 5 minutes per child</div>
+          <div class="meta">Teacher time: 5 min per child · 3× a year</div>
         </div>
       </div>
       <div class="mcard">
@@ -407,8 +412,6 @@
   <section id="skills" class="wash-cyan wrap" style="text-align:center">
     <h2 class="title">Get a <span class="c-pink">360° view</span> of the student.</h2>
     <p class="lede">12 foundational skills, measured from every side, term after term.</p>
-    <p class="skills-def">Not reading and maths: the attention, memory, self-control and people skills underneath them. The emotional half is often called social-emotional learning (SEL).</p>
-    <p class="skills-nep">Mapped to NEP 2020 and NCF‑FS socio-emotional competencies.</p>
     <!-- Bucket 1 · Thinking skills (brain) -->
     <div class="skill-bucket">
       <div class="bucket-head">
@@ -594,14 +597,12 @@
     <div class="imp-stats">
       <div><div class="num">12,510</div><div class="lbl">Children<br>assessed</div></div>
       <div><div class="num">4,541</div><div class="lbl">Educators<br>trained</div></div>
-      <div><div class="num">+28%</div><div class="lbl">Impulse control<br>Hippocampus 2025–26</div></div>
     </div>
   </section>
 
   <!-- 10 · JOURNEY -->
   <section id="journey" class="wrap" style="text-align:center">
     <h2 class="title">What a year with Tilli looks like</h2>
-    <p class="lede">Start of year: a baseline across all 12 skills · Every week: one 30-minute lesson · End of each term: reassessment and parent reports · Year end: a report for your Management Committee.</p>
     <div class="j-steps">
       <button class="j-pill on" type="button" data-step="measure"   style="border-color:var(--tl-green-500);color:var(--tl-green-600)">1 — Measure</button>
       <button class="j-pill" type="button" data-step="ask"       style="border-color:var(--tl-cyan-500);color:var(--tl-cyan-700)">2 — Ask</button>
@@ -610,6 +611,7 @@
     <div class="j-cards" style="text-align:left">
       <div class="j-card g show" id="j-measure" data-step="measure">
         <div class="top"><div class="ic"><img src="../assets/ds/icon-clipboard-check.png" alt=""></div><div class="kicker c-green">MEASURE</div></div>
+        <div class="j-when"><span class="t">Start of the academic year</span><span class="d">Begin with a baseline at the start of the academic year.</span></div>
         <h3>Start with a real baseline</h3>
         <p>In the first weeks, every child is assessed across all 12 skills: teacher observation, parent report, and direct tasks. We repeat it three times a year, so growth shows up in the data instead of being guessed at.</p>
         <div class="data">579 data points per child each year — 2,895 over five years.</div>
@@ -617,11 +619,13 @@
       </div>
       <div class="j-card c" id="j-ask" data-step="ask">
         <div class="top"><div class="ic"><img src="../assets/ds/icon-robot.png" alt=""></div><div class="kicker c-cyan">ASK</div></div>
+        <div class="j-when"><span class="t">Right after the measures</span><span class="d">Walk through the results with AskTilli as soon as the measures are complete.</span></div>
         <h3>AskTilli</h3>
         <p>Teachers ask about a child or a class and get lesson plans, behaviour guidance, and that child's own data, in the middle of a school day, in seconds.</p>
       </div>
       <div class="j-card y" id="j-intervene" data-step="intervene">
         <div class="top"><div class="ic"><img src="../assets/ds/icon-book.png" alt=""></div><div class="kicker" style="color:var(--tl-yellow-700)">INTERVENE</div></div>
+        <div class="j-when"><span class="t">Every week</span><span class="d">30-minute lessons that fit into your Life Skills class, plus personalised interventions we build with you.</span></div>
         <h3>A curriculum, not a workshop</h3>
         <p>36 weeks of play-based lessons for every class: Feelings Time workbooks, Teacher's Guidebooks, and the Teaching Kit. 30 minutes a week. No new period, no extra prep.</p>
         <div class="books">
@@ -642,10 +646,8 @@
       <a class="btn btn-cyan btn-block"
          href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school."
          target="_blank" rel="noopener">Book a 30-minute call</a>
-      <a class="btn btn-ghost btn-block"
-         href="https://wa.me/94741889706?text=Hi%20Kavi!%20We'd%20like%20to%20start%20with%20a%20pilot%20at%20our%20school."
-         target="_blank" rel="noopener">Start with a pilot</a>
       <a class="textlink" href="mailto:kavindya@tillikids.com">Email Kavindya Tennakoon, Founder &amp; CEO</a>
+      <a class="textlink" href="https://www.linkedin.com/in/kavindyathennakoon/" target="_blank" rel="noopener">Kavindya on LinkedIn →</a>
     </div>
   </section>
 
@@ -658,9 +660,11 @@
 <script>
 /* Header hamburger + WhatsApp bubble toggles now live in ../js/m-chrome.js */
 
-/* ── FITS IN — the green line types out once, 1 char at a time, the first time
-      the section is half on screen. Untyped tail stays in flow but invisible
-      (.tw-rest) so the heading never reflows; caret = .tw-done::after. ── */
+/* ── FITS IN — the green line types out, 1 char at a time, whenever the
+      section is half on screen; it resets once the section has fully left the
+      viewport, so it retypes on every return (scrolling up or down). Untyped
+      tail stays in flow but invisible (.tw-rest) so the heading never reflows;
+      caret = .tw-done::after. ── */
 (function () {
   var TW = { charMs: 45, startDelay: 300, caretHold: 1200 };
   var el = document.querySelector('[data-typewrite]');
@@ -672,19 +676,31 @@
   el.innerHTML = '<span class="tw-done" aria-hidden="true"></span><span class="tw-rest" aria-hidden="true"></span>';
   var done = el.firstChild, rest = el.lastChild;
   rest.textContent = text;
-  var io = new IntersectionObserver(function (entries) {
-    if (!entries[0].isIntersecting) return;
-    io.disconnect();
+  var started = false, timer = 0;
+  function start() {
+    started = true;
     var i = 0;
     function tick() {
       i++;
       done.textContent = text.slice(0, i);
       rest.textContent = text.slice(i);
-      if (i < text.length) setTimeout(tick, TW.charMs);
-      else setTimeout(function () { done.classList.add('tw-off'); }, TW.caretHold);
+      if (i < text.length) timer = setTimeout(tick, TW.charMs);
+      else timer = setTimeout(function () { done.classList.add('tw-off'); }, TW.caretHold);
     }
-    setTimeout(tick, TW.startDelay);
-  }, { threshold: 0.5 });
+    timer = setTimeout(tick, TW.startDelay);
+  }
+  function reset() {
+    clearTimeout(timer);
+    started = false;
+    done.textContent = '';
+    rest.textContent = text;
+    done.classList.remove('tw-off');
+  }
+  var io = new IntersectionObserver(function (entries) {
+    var e = entries[entries.length - 1];
+    if (e.intersectionRatio >= 0.5 && !started) start();
+    else if (!e.isIntersecting && started) reset();
+  }, { threshold: [0, 0.5] });
   io.observe(sec);
 })();
 

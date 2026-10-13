@@ -2770,8 +2770,10 @@ else statEl.textContent = '0';
 
 /* Typewriter for [data-typewrite] spans (Fits in). The untyped tail stays in
    flow but invisible (.tw-rest) so the centred heading never reflows; the
-   caret is .tw-done::after. Prepared up front, started once by the .rv reveal
-   in onScroll. Reduced-motion leaves the plain text alone. */
+   caret is .tw-done::after. Prepared up front, started by the step reveal in
+   onScroll and reset when the step fades out, so it retypes every time the
+   visitor scrolls back in (either direction). Reduced-motion leaves the plain
+   text alone. */
 const TW = {
   charMs: 45,       // ms per character
   startDelay: 450,  // ms after the heading's reveal begins (lets the black line fade in first)
@@ -2782,7 +2784,7 @@ twSpans.forEach((el) => {
   const text = el.textContent;
   el.setAttribute('aria-label', text);
   el.innerHTML = '<span class="tw-done" aria-hidden="true"></span><span class="tw-rest" aria-hidden="true"></span>';
-  el._tw = { text, done: el.firstChild, rest: el.lastChild, started: false };
+  el._tw = { text, done: el.firstChild, rest: el.lastChild, started: false, timer: 0 };
   el._tw.rest.textContent = text;
 });
 function typewrite(el, delay) {
@@ -2794,10 +2796,19 @@ function typewrite(el, delay) {
     i++;
     tw.done.textContent = tw.text.slice(0, i);
     tw.rest.textContent = tw.text.slice(i);
-    if (i < tw.text.length) setTimeout(tick, TW.charMs);
-    else setTimeout(() => tw.done.classList.add('tw-off'), TW.caretHold);
+    if (i < tw.text.length) tw.timer = setTimeout(tick, TW.charMs);
+    else tw.timer = setTimeout(() => tw.done.classList.add('tw-off'), TW.caretHold);
   };
-  setTimeout(tick, delay + TW.startDelay);
+  tw.timer = setTimeout(tick, delay + TW.startDelay);
+}
+function resetTypewrite(el) {
+  const tw = el._tw;
+  if (!tw || !tw.started) return;
+  clearTimeout(tw.timer);
+  tw.started = false;
+  tw.done.textContent = '';
+  tw.rest.textContent = tw.text;
+  tw.done.classList.remove('tw-off');
 }
 
 function pinTargets(sc) {
@@ -3028,6 +3039,15 @@ function onScroll(fOverride) {
       sc.stage.style.visibility = op < 0.004 ? 'hidden' : 'visible';
       sc.op = op;
     }
+    /* typewriter replays on every visit: types once the scene is mostly in,
+       resets once it has faded out (runs before the early return below) */
+    if (twSpans.length && sc.stage) {
+      if (!sc.tw) sc.tw = Array.from(sc.stage.querySelectorAll('[data-typewrite]'));
+      sc.tw.forEach((tw) => {
+        if (op > 0.4) typewrite(tw, 0);
+        else if (op < 0.05) resetTypewrite(tw);
+      });
+    }
     if (!sc.stage || op < 0.004) return;
 
     const n = sc.steps.length;
@@ -3075,7 +3095,6 @@ function onScroll(fOverride) {
           st.querySelectorAll('.rv').forEach((el, r) => {
             el.style.transitionDelay = `${r * 110}ms`;
             el.classList.add('in');
-            el.querySelectorAll('[data-typewrite]').forEach((tw) => typewrite(tw, r * 110));
           });
         }
       });

@@ -189,3 +189,9 @@ body.tl-at-end .tl-header { transform: none; }
 .tl-hero { padding: clamp(96px, 12vw, 150px) 0 clamp(48px, 6vw, 76px); }
 .tl-hero--cyan { background: linear-gradient(180deg, var(--tl-wash-cyan), var(--tl-white)); }
 .tl-hero--green { background: linear-gradient(180deg, var(--tl-wash-green), var(--tl-white)); }
+
+/* ── 3JS dot-field stages ────────────────────────────────────────────────────
+   Empty boxes that reserve room for a dot formation (js/dot-field.js). Same
+   gate as the module (desktop + fine pointer), so phones never get the gap. */
+.dots-stage { display: none; }
+@media (min-width: 861px) and (pointer: fine) { .dots-stage { display: block; } }

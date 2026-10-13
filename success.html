@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
-<link rel="stylesheet" href="css/site.css?v=3">
+<link rel="stylesheet" href="css/site.css?v=4">
 <style>
   /* page-local: case-study layout */
   .cs { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
@@ -35,8 +35,6 @@
     font-weight: 700; font-size: var(--tl-fs-sm); overflow: hidden; border: 1px solid var(--tl-line-200); }
   .cs__media img { width: 100%; height: 100%; object-fit: cover; }
   .cs__place { color: var(--tl-cyan-700); font-weight: 800; font-size: var(--tl-fs-xs); letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; }
-  .cs__source { font-size: var(--tl-fs-sm); color: var(--tl-text-muted); border-left: 3px solid var(--tl-line-200);
-    padding-left: 14px; margin-top: 18px; line-height: 1.55; }
   .cs__stat { display: inline-flex; align-items: baseline; gap: 10px; background: var(--tl-wash-green);
     border-radius: var(--tl-radius-md); padding: 14px 20px; margin: 6px 0 14px; }
   .cs__stat b { font-size: var(--tl-fs-xl); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-green-600); line-height: 1; }
@@ -59,7 +57,6 @@
   .s-hero-flat { background: var(--tl-wash-green);
     padding: clamp(104px, 13vw, 168px) 0 clamp(72px, 9vw, 112px); }
     .s-hero-flat .tl-lead { margin-top: 22px; }
-  .s-hero-flat .tl-btn { margin-top: 34px; }
 
   /* CHG-27 (E2): grouped reach-out band — Tilli character + contact groups
      with method icons. One idea per section, spacious, per the E1 governing look. */
@@ -110,16 +107,33 @@
   .tw__art { aspect-ratio: 4/3; border-radius: var(--tl-radius-lg); background: var(--tl-surface-200);
     border: 1px solid var(--tl-line-200); display: flex; align-items: center; justify-content: center;
     color: var(--tl-text-muted); font-weight: 700; font-size: var(--tl-fs-sm); text-align: center; padding: 20px; }
+  html.tl-dots .tw__art { background: transparent; border-color: transparent; }
+  /* photo placeholders become the dot stage until real photos land */
+  html.tl-dots .cs__media:not(:has(img)) { background: transparent; border-color: transparent; color: transparent; }
+  /* the weekly dots draw the year line themselves */
+  html.tl-dots .yr::before { opacity: 0; }
+  html.tl-dots .tw__art span { visibility: hidden; }
   @media (max-width: 900px) {
     .tw { grid-template-columns: 1fr; gap: 28px; }
     .tw__art { order: 2; }                  /* illustration stacks below text (spec) */
   }
 
-  /* CHG-33 (E8): closing CTA — bold, spacious terminal band (no character for now) */
-  .s-cta { padding: clamp(84px, 11vw, 148px) 0; }
-  .s-cta .tl-h2 { font-size: var(--tl-fs-2xl); }
-  .s-cta .tl-lead { margin-top: 18px; }
-  .s-cta .tl-btn { margin-top: 34px; }
+  /* year timeline above the asks table: four steps joined by a dotted line */
+  .yr { list-style: none; margin: 32px auto 0; padding: 0; max-width: 900px; display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; position: relative; text-align: center; }
+  .yr::before { content: ""; position: absolute; left: 12%; right: 12%; top: 9px;
+    border-top: 2px dotted var(--tl-line-300); }
+  .yr__step { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 28px; }
+  .yr__step::before { content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 20px; height: 20px; border-radius: 50%; background: var(--c);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--c) 22%, var(--tl-white)); }
+  .yr__when { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker);
+    text-transform: uppercase; color: var(--ct); }
+  .yr__what { font-size: var(--tl-fs-sm); font-weight: 600; line-height: 1.45; color: var(--tl-ink-700); }
+  @media (max-width: 700px) {
+    .yr { grid-template-columns: 1fr 1fr; row-gap: 24px; }
+    .yr::before { display: none; }
+  }
   /* HM-14 · "What Tilli asks of your school" — scannable brief (mirrors faq.html) */
   .asks { width: 100%; max-width: 760px; margin: 28px auto 0; border-collapse: collapse; background: var(--tl-white);
     border-radius: var(--tl-radius-lg); box-shadow: var(--tl-shadow-card); overflow: hidden; text-align: left; }
@@ -146,18 +160,103 @@
 <main class="tl-main">
 
   <!-- Hero (CHG-26 E1 + CHG-31 E6: clean centered intro, flat — no gradient) -->
-  <section class="tl-hero s-hero-flat">
+  <section class="tl-hero s-hero-flat" data-dots="child" data-dots-pos="0.86,0.5" data-dots-r="0.17">
     <div class="tl-container tl-narrow" style="text-align:center">
       <p class="tl-eyebrow">Success Stories</p>
       <h1 class="tl-h1">Schools that measure the whole child</h1>
       <p class="tl-lead">From a three-year partnership reshaping thousands of childhoods to a research-practice
         collaboration built on measurement. Each one shows what schools gain when they give foundational skills the time and the tools they need.</p>
-      <a class="tl-btn tl-btn--primary tl-btn--lg" href="#" data-tl-open-form>Book a 30-minute call</a>
+    </div>
+  </section>
+
+  <!-- OFFERINGS — Measure / Ask / Intervene (CHG-24) · dots: the orb splits into
+       three single-colour orbs rising behind each card -->
+  <section class="tl-section tl-section--tint" data-dots="pipeline" data-dots-anchor=".dots-stage" data-dots-fit>
+    <div class="tl-container">
+      <div class="tl-section-head tl-center">
+        <p class="tl-eyebrow" style="color:var(--tl-cyan-700)">What schools get</p>
+        <h2 class="tl-h2">Measure. Ask. Intervene.</h2>
+        <p class="tl-lead">The same three-step model our partner schools run, every term.</p>
+      </div>
+      <!-- dots: scattered data (Measure) → one insight (Ask) → a rising arrow (Intervene) -->
+      <div class="dots-stage" style="height: 170px; margin-bottom: 8px;" aria-hidden="true"></div>
+      <div class="tl-grid tl-grid--3">
+        <div class="tl-card o-card">
+          <p class="o-kicker">1 — Measure</p>
+          <h3 class="tl-h3">See the whole child</h3>
+          <p class="tl-body">Every child is assessed across all 12 foundational skills from three lenses — teacher,
+            parent, and the child’s own play-based tasks — three times a year.</p>
+        </div>
+        <div class="tl-card o-card o-card--ask">
+          <p class="o-kicker">2 — Ask</p>
+          <h3 class="tl-h3">Guidance grounded in data</h3>
+          <p class="tl-body">Teachers ask AskTilli about any child and get specific, practical next steps grounded in
+            that child’s own assessment record — not generic advice.</p>
+        </div>
+        <div class="tl-card o-card o-card--int">
+          <p class="o-kicker">3 — Intervene</p>
+          <h3 class="tl-h3">Turn insight into a plan</h3>
+          <p class="tl-body">Each term, teachers design a support plan for their class, see multi-informant data on
+            those children, then redesign it — a dashboard becomes a concrete next step.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hippocampus · dots: three years of growth, the growth slice in pink -->
+  <section class="tl-section" data-dots="bars" data-dots-anchor=".cs__media" data-dots-fit>
+    <div class="tl-container">
+      <div class="cs">
+        <div class="cs__media"><span>Photo: Hippocampus classroom</span></div>
+        <div>
+          <p class="cs__place">Karnataka, India</p>
+          <h2 class="tl-h2">Hippocampus Learning Centres</h2>
+          <div class="cs__stat"><b>+28%</b><span>growth in impulse control<br>(“stop-and-think”), 2025–26</span></div>
+          <p class="tl-body">Tilli’s longest-standing partner: three years, and now more than <strong>3,500 children</strong>
+            across the Hippocampus network. Over the 2025–26 year, teachers reported growth in every skill Tilli measures:
+            self-awareness up 20%, conflict management up 23%, and impulse control up 28%. It’s the clearest proof of Tilli’s
+            core belief: given time and the right tools, foundational skills compound.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NMAJS · dots: three independent lenses, the child where they overlap -->
+  <section class="tl-section tl-section--tint" data-dots="venn" data-dots-anchor=".cs__media" data-dots-fit>
+    <div class="tl-container">
+      <div class="cs cs--flip">
+        <div class="cs__media"><span>Photo: NMAJS early years</span></div>
+        <div>
+          <p class="cs__place">Mumbai, India</p>
+          <h2 class="tl-h2">Nita Mukesh Ambani Junior School</h2>
+          <p class="tl-body">A research-practice partnership built on one idea: measure the whole child, not just the answer
+            sheet. From LKG to Grade 2, Tilli looks at <strong>12 developmental skills through three independent lenses</strong>
+            (parent, teacher, and the child’s own play-based tasks), so leaders can see where each child genuinely is, and read
+            early-years data as growth emerging on schedule rather than a child falling behind.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Musaeus · dots: plan → see the data → redesign, as a loop -->
+  <section class="tl-section" data-dots="loop" data-dots-anchor=".cs__media" data-dots-fit>
+    <div class="tl-container">
+      <div class="cs">
+        <div class="cs__media"><span>Photo: Musaeus College</span></div>
+        <div>
+          <p class="cs__place">Colombo, Sri Lanka</p>
+          <h2 class="tl-h2">Musaeus College</h2>
+          <p class="tl-body">One of Sri Lanka’s most respected girls’ schools has brought SEL into Grade 1 with Tilli. What won
+            them over was a model where teachers don’t just receive data, they <strong>use</strong> it. In Tilli’s intervention
+            sessions, each teacher designs a support plan for her class, sees multi-informant data on those same children, then
+            redesigns it, turning a dashboard into a concrete next step for every learner.</p>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- TILLI WORKS (CHG-28 E3): headline + intro + Top Results checklist -->
-  <section class="tl-section">
+  <section class="tl-section tl-section--tint" data-dots="tenkids" data-dots-anchor=".tw__art" data-dots-fit>
     <div class="tl-container">
       <div class="tw">
         <div class="tw__body">
@@ -190,109 +289,28 @@
             </li>
           </ul>
         </div>
-        <div class="tw__art">Tilli illustration</div>
+        <div class="tw__art" aria-hidden="true"><span>Tilli illustration</span></div>
       </div>
     </div>
   </section>
 
-  <!-- OFFERINGS — Measure / Ask / Intervene (CHG-24) -->
-  <section class="tl-section tl-section--tint">
-    <div class="tl-container">
-      <div class="tl-section-head tl-center">
-        <p class="tl-eyebrow" style="color:var(--tl-cyan-700)">What schools get</p>
-        <h2 class="tl-h2">Measure. Ask. Intervene.</h2>
-        <p class="tl-lead">The same three-step model our partner schools run, every term.</p>
-      </div>
-      <div class="tl-grid tl-grid--3">
-        <div class="tl-card o-card">
-          <p class="o-kicker">1 — Measure</p>
-          <h3 class="tl-h3">See the whole child</h3>
-          <p class="tl-body">Every child is assessed across all 12 foundational skills from three lenses — teacher,
-            parent, and the child’s own play-based tasks — three times a year.</p>
-        </div>
-        <div class="tl-card o-card o-card--ask">
-          <p class="o-kicker">2 — Ask</p>
-          <h3 class="tl-h3">Guidance grounded in data</h3>
-          <p class="tl-body">Teachers ask AskTilli about any child and get specific, practical next steps grounded in
-            that child’s own assessment record — not generic advice.</p>
-        </div>
-        <div class="tl-card o-card o-card--int">
-          <p class="o-kicker">3 — Intervene</p>
-          <h3 class="tl-h3">Turn insight into a plan</h3>
-          <p class="tl-body">Each term, teachers design a support plan for their class, see multi-informant data on
-            those children, then redesign it — a dashboard becomes a concrete next step.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Hippocampus -->
-  <section class="tl-section">
-    <div class="tl-container">
-      <div class="cs">
-        <div class="cs__media"><span>Photo: Hippocampus classroom</span></div>
-        <div>
-          <p class="cs__place">Karnataka, India</p>
-          <h2 class="tl-h2">Hippocampus Learning Centres</h2>
-          <div class="cs__stat"><b>+28%</b><span>growth in impulse control<br>(“stop-and-think”), 2025–26</span></div>
-          <p class="tl-body">Tilli’s longest-standing partner: three years, and now more than <strong>3,500 children</strong>
-            across the Hippocampus network. Over the 2025–26 year, teachers reported growth in every skill Tilli measures:
-            self-awareness up 20%, conflict management up 23%, and impulse control up 28%. It’s the clearest proof of Tilli’s
-            core belief: given time and the right tools, foundational skills compound.</p>
-          <p class="cs__source">Source: Hippocampus × Tilli End-of-Year Report, Feb 2026; Teacher Report on Student SEL.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- NMAJS -->
-  <section class="tl-section tl-section--tint">
-    <div class="tl-container">
-      <div class="cs cs--flip">
-        <div class="cs__media"><span>Photo: NMAJS early years</span></div>
-        <div>
-          <p class="cs__place">Mumbai, India</p>
-          <h2 class="tl-h2">Nita Mukesh Ambani Junior School</h2>
-          <p class="tl-body">A research-practice partnership built on one idea: measure the whole child, not just the answer
-            sheet. From LKG to Grade 2, Tilli looks at <strong>12 developmental skills through three independent lenses</strong>
-            (parent, teacher, and the child’s own play-based tasks), so leaders can see where each child genuinely is, and read
-            early-years data as growth emerging on schedule rather than a child falling behind.</p>
-          <p class="cs__source">Baseline complete; midline (Sept) and endline (Dec) still to come. For now this story leads on the depth
-            of the measurement, which is its real strength.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Musaeus -->
-  <section class="tl-section">
-    <div class="tl-container">
-      <div class="cs">
-        <div class="cs__media"><span>Photo: Musaeus College</span></div>
-        <div>
-          <p class="cs__place">Colombo, Sri Lanka</p>
-          <h2 class="tl-h2">Musaeus College</h2>
-          <p class="tl-body">One of Sri Lanka’s most respected girls’ schools has brought SEL into Grade 1 with Tilli. What won
-            them over was a model where teachers don’t just receive data, they <strong>use</strong> it. In Tilli’s intervention
-            sessions, each teacher designs a support plan for her class, sees multi-informant data on those same children, then
-            redesigns it, turning a dashboard into a concrete next step for every learner.</p>
-          <p class="cs__source">Newest partner (started July 2026). This story leads on the approach and why they joined; we’ll add
-            outcomes after their first assessment window.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- WHAT IT ASKS (HM-14): time, training, cost, timetable — the Management Committee brief -->
-  <section class="tl-section tl-section--tint">
+  <!-- WHAT IT ASKS (HM-14): time, training, cost, timetable — the Management Committee brief · dots: 36 weekly lessons along the year -->
+  <section class="tl-section" data-dots="weeks" data-dots-anchor=".yr" data-dots-fit>
     <div class="tl-container" style="text-align:center">
       <p class="tl-eyebrow">What it takes</p>
       <h2 class="tl-h2">What Tilli asks of your school.</h2>
       <p class="tl-lead">Fewer surprises at the Parent‑Teacher Meet. Nothing new on the timetable.</p>
+      <!-- the year at a glance (moved here from Home's "What a year with Tilli looks like") -->
+      <ol class="yr">
+        <li class="yr__step" style="--c: var(--tl-green-500); --ct: var(--tl-green-600);"><span class="yr__when">Start of year</span><span class="yr__what">A baseline across all 12 skills</span></li>
+        <li class="yr__step" style="--c: var(--tl-cyan-500); --ct: var(--tl-cyan-700);"><span class="yr__when">Every week</span><span class="yr__what">One 30-minute lesson</span></li>
+        <li class="yr__step" style="--c: var(--tl-yellow-500); --ct: var(--tl-yellow-700);"><span class="yr__when">End of each term</span><span class="yr__what">Reassessment and parent reports</span></li>
+        <li class="yr__step" style="--c: var(--tl-pink-400); --ct: var(--tl-pink-600);"><span class="yr__when">Year end</span><span class="yr__what">A report for your Management Committee</span></li>
+      </ol>
       <table class="asks">
         <tbody>
           <tr><th scope="row">Training</th><td>2 days, once. Nothing mandatory after.</td></tr>
-          <tr><th scope="row">Assessment</th><td>About 5 minutes per child, in class, 3× a year.</td></tr>
+          <tr><th scope="row">Assessment</th><td>About 5 minutes of teacher time per child, in class, 3× a year.</td></tr>
           <tr><th scope="row">Lessons</th><td>30 minutes a week, inside an existing period (e.g. Life Skills).</td></tr>
           <tr><th scope="row">Teacher prep</th><td>None. Lessons are ready to teach.</td></tr>
           <tr><th scope="row">Board-exam classes</th><td>Untouched. Tilli runs Pre‑K to Grade 5 and never touches your board-exam classes.</td></tr>
@@ -302,8 +320,8 @@
     </div>
   </section>
 
-  <!-- REACH OUT (CHG-27 E2): grouped contact block + Tilli character -->
-  <section class="tl-section">
+  <!-- REACH OUT (CHG-27 E2): grouped contact block + Tilli character · dots: 53 partner schools + one empty slot -->
+  <section class="tl-section tl-section--tint" data-dots="constellation" data-dots-anchor=".rk__art" data-dots-r="0.3">
     <div class="tl-container">
       <div class="rk">
         <div class="rk__art">
@@ -312,7 +330,7 @@
         <div class="rk__body">
           <div class="rk__head">
             <p class="tl-eyebrow">Get in touch</p>
-            <h2 class="tl-h2">Let’s talk about your school</h2>
+            <h2 class="tl-h2">Your school could be the next story</h2>
           </div>
           <div class="rk__groups">
             <div class="rk__group">
@@ -350,18 +368,10 @@
     </div>
   </section>
 
-  <!-- CLOSING CTA (CHG-33 E8): bold terminal band -->
-  <section class="tl-section tl-section--cyan s-cta">
-    <div class="tl-container tl-narrow" style="text-align:center">
-      <h2 class="tl-h2">Your school could be the next story</h2>
-      <p class="tl-lead">Tell us about your children and we’ll show you what measuring the whole child looks like in practice.</p>
-      <a class="tl-btn tl-btn--primary tl-btn--lg" href="#" data-tl-open-form>Book a 30-minute call</a>
-    </div>
-  </section>
-
 </main>
 
-<script src="js/site-config.js?v=1"></script>
+<script src="js/site-config.js?v=2"></script>
 <script src="js/site-chrome.js?v=5"></script>
+<script type="module" src="js/dot-field.js?v=2"></script>
 </body>
 </html>

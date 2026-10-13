@@ -22,24 +22,61 @@
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
-<link rel="stylesheet" href="css/site.css?v=3">
+<link rel="stylesheet" href="css/site.css?v=4">
 <style>
-  /* page-local: FAQ accordion */
-  .faq { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-  .faq__item { background: var(--tl-surface-card); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-md);
-    padding: 4px 24px; box-shadow: var(--tl-shadow-card); transition: border-color .2s ease; }
-  .faq__item[open] { border-color: var(--tl-pink-400); }
-  .faq__item summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; padding: 18px 0; font-size: var(--tl-fs-base); font-weight: 700; color: var(--tl-ink-900); }
-  .faq__item summary::-webkit-details-marker { display: none; }
-  .faq__item summary::after { content: "+"; font-size: var(--tl-fs-lg); font-weight: 400; color: var(--tl-pink-600);
-    line-height: 1; transition: transform .25s ease; }
-  .faq__item[open] summary::after { transform: rotate(45deg); }
-  .faq__a { padding: 0 0 20px; font-size: var(--tl-fs-base); line-height: 1.65; color: var(--tl-ink-600); }
-  .faq__a p { margin: 0 0 12px; }
-  .faq__a p:last-child { margin-bottom: 0; }
-  .faq__a p.faq__lead { font-weight: 700; color: var(--tl-ink-900); }
-  .faq__a a { color: var(--tl-pink-600); font-weight: 700; }
+  /* page-local: FAQ flip cards. Front = question on a brand fill, back = the
+     one-line answer; both faces share one grid cell so the card is as tall as
+     its taller face and every card in a row matches. */
+  .fq-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+  @media (max-width: 1000px) { .fq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px)  { .fq-grid { grid-template-columns: 1fr; } .fc__inner { min-height: 220px; } }
+  .fc { perspective: 1400px; cursor: pointer; }
+  .fc--green  { --fc: var(--tl-green-500);  --fc-ink: var(--tl-ink-900); --fc-t: var(--tl-green-600); }
+  .fc--cyan   { --fc: var(--tl-cyan-500);   --fc-ink: var(--tl-ink-900); --fc-t: var(--tl-cyan-700); }
+  .fc--pink   { --fc: var(--tl-pink-600);   --fc-ink: var(--tl-white);   --fc-t: var(--tl-pink-600); }
+  .fc--yellow { --fc: var(--tl-yellow-500); --fc-ink: var(--tl-ink-900); --fc-t: var(--tl-yellow-700); }
+  .fc--orange { --fc: var(--tl-orange-500); --fc-ink: var(--tl-ink-900); --fc-t: var(--tl-ink-900); }
+  .fc__inner { display: grid; height: 100%; min-height: 280px; transform-style: preserve-3d;
+    transition: transform .6s cubic-bezier(.3,.7,.2,1); }
+  .fc__face { grid-area: 1 / 1; display: flex; flex-direction: column; border-radius: var(--tl-radius-lg);
+    padding: 28px 26px 24px; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    box-shadow: var(--tl-shadow-card); }
+  .fc__front { background: var(--fc); color: var(--fc-ink); }
+  .fc__back { background: var(--tl-white); border: 3px solid var(--fc); transform: rotateY(180deg); }
+  .fc.is-flipped .fc__inner, .fc:focus-within .fc__inner { transform: rotateY(180deg); }
+  @media (hover: hover) and (pointer: fine) { .fc:hover .fc__inner { transform: rotateY(180deg); } }
+  .fc__num { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); opacity: .75; }
+  .fc__q { margin: 14px 0 22px; font-size: var(--tl-fs-lg); font-weight: 800; line-height: 1.3;
+    letter-spacing: var(--tl-tracking-tight); color: inherit; }
+  .fc__turn { margin-top: auto; align-self: flex-start; display: inline-flex; gap: 8px; align-items: center;
+    font: inherit; font-size: var(--tl-fs-sm); font-weight: 700; color: inherit; background: transparent;
+    border: 1.5px solid currentColor; border-radius: var(--tl-radius-pill); padding: 8px 16px; cursor: pointer; }
+  .fc__lead { margin: 0 0 20px; font-size: var(--tl-fs-base); font-weight: 700; line-height: 1.55; color: var(--tl-ink-900); }
+  .fc__actions { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .fc__more { font: inherit; font-size: var(--tl-fs-sm); font-weight: 700; color: var(--fc-ink); background: var(--fc);
+    border: 0; border-radius: var(--tl-radius-pill); padding: 10px 20px; cursor: pointer; }
+  .fc__more:hover { filter: brightness(.94); }
+  .fc__back-btn { font: inherit; font-size: var(--tl-fs-lg); line-height: 1; color: var(--fc-t); background: transparent;
+    border: 0; padding: 6px; cursor: pointer; }
+  .fc button:focus-visible { outline: 3px solid var(--tl-ink-900); outline-offset: 2px; }
+  /* reduced motion: cross-fade instead of the 3D turn */
+  @media (prefers-reduced-motion: reduce) {
+    .fc__inner, .fc.is-flipped .fc__inner, .fc:focus-within .fc__inner, .fc:hover .fc__inner { transform: none !important; transition: none; }
+    .fc__back { transform: none; opacity: 0; transition: opacity .2s ease; }
+    .fc.is-flipped .fc__back, .fc:focus-within .fc__back { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) { .fc:hover .fc__back { opacity: 1; } }
+
+  /* full-answer modal (reuses the shared .tl-modal shell) */
+  .fq-modal__panel { max-width: 640px; border-top: 6px solid var(--fc, var(--tl-pink-600)); }
+  .fq-modal__kicker { margin: 0; font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker);
+    text-transform: uppercase; color: var(--fc-t, var(--tl-pink-600)); }
+  .fq-modal__q { margin: 8px 40px 16px 0; font-size: var(--tl-fs-lg); font-weight: 800; line-height: 1.3; color: var(--tl-ink-900); }
+  .fq-modal__a { font-size: var(--tl-fs-base); line-height: 1.65; color: var(--tl-ink-600); }
+  .fq-modal__a p { margin: 0 0 12px; }
+  .fq-modal__a p:last-child { margin-bottom: 0; }
+  .fq-modal__a p.faq__lead { font-weight: 700; color: var(--tl-ink-900); }
+  .fq-modal__a a { color: var(--tl-pink-600); font-weight: 700; }
 </style>
 </head>
 <body class="tl-page">
@@ -54,7 +91,7 @@
 <main class="tl-main">
 
   <!-- Hero -->
-  <section class="tl-hero tl-hero--green">
+  <section class="tl-hero tl-hero--green" data-dots="qcheck" data-dots-pos="0.885,0.5" data-dots-r="0.13">
     <div class="tl-container tl-narrow" style="text-align:center">
       <p class="tl-eyebrow">FAQs</p>
       <h1 class="tl-h1">Questions, answered</h1>
@@ -63,131 +100,302 @@
     </div>
   </section>
 
-  <!-- FAQ list -->
-  <section class="tl-section">
+  <!-- FAQ flip cards: hover (or tap) a question to flip it; the back carries the
+       one-line answer, and "Read full answer" opens the full text in a modal.
+       Full answers stay in the DOM (hidden) for search + no-JS. -->
+  <section class="tl-section" data-dots="network" data-dots-box="0.01,0.06,0.99,0.94" data-dots-avoid=".fc">
     <div class="tl-container">
-      <div class="faq">
+      <div class="fq-grid">
 
-        <details class="faq__item">
-          <summary>What does this cost for one grade?</summary>
-          <div class="faq__a">
+        <article class="fc fc--green">
+          <div class="fc__inner">
+            <div class="fc__face fc__front">
+              <span class="fc__num">01</span>
+              <h2 class="fc__q">What does this cost for one grade?</h2>
+              <button class="fc__turn" type="button">See the answer <span aria-hidden="true">↻</span></button>
+            </div>
+            <div class="fc__face fc__back">
+              <p class="fc__lead">One grade for one year, with a full review after Term 1, is our smallest engagement, and it's how most schools start.</p>
+              <div class="fc__actions">
+                <button class="fc__more" type="button">Read full answer</button>
+                <button class="fc__back-btn" type="button" aria-label="Show the question again">↺</button>
+              </div>
+            </div>
+          </div>
+          <div class="fc__full" hidden>
             <p class="faq__lead">One grade for one year, with a full review after Term 1, is our smallest engagement, and it's how most schools start.</p>
             <p>Pricing runs ₹1,600 to ₹3,000 per student per year. A single grade sits at the top of that range,
-              because training and setup cost the same whether it's one grade or six. Adding grades brings the
-              per-child figure down.</p>
+            because training and setup cost the same whether it's one grade or six. Adding grades brings the
+            per-child figure down.</p>
             <p>For a grade of 60 children, one year is around ₹1.8 lakh. For 100 children, around ₹3 lakh.</p>
             <p>These are starting points, not fixed quotes, and we're open to discussing what works for your school.
-              Bring your section sizes to the call and we'll set the number together.</p>
+            Bring your section sizes to the call and we'll set the number together.</p>
           </div>
-        </details>
+        </article>
 
-        <details class="faq__item">
-          <summary>Does the child's data go into an AI system? Which one? Can it be turned off?</summary>
-          <div class="faq__a">
+        <article class="fc fc--cyan">
+          <div class="fc__inner">
+            <div class="fc__face fc__front">
+              <span class="fc__num">02</span>
+              <h2 class="fc__q">Does the child's data go into an AI system? Which one? Can it be turned off?</h2>
+              <button class="fc__turn" type="button">See the answer <span aria-hidden="true">↻</span></button>
+            </div>
+            <div class="fc__face fc__back">
+              <p class="fc__lead">Yes, and you should know exactly how.</p>
+              <div class="fc__actions">
+                <button class="fc__more" type="button">Read full answer</button>
+                <button class="fc__back-btn" type="button" aria-label="Show the question again">↺</button>
+              </div>
+            </div>
+          </div>
+          <div class="fc__full" hidden>
             <p class="faq__lead">Yes, and you should know exactly how.</p>
             <p>AskTilli is the assistant your teachers use. When a teacher asks about a specific child,
-              it draws on that child's assessment record to answer, which is why it can say something useful rather
-              than something generic. That's the entire point of it, and it's the difference between advice for a
-              seven-year-old and advice for your seven-year-old.</p>
+            it draws on that child's assessment record to answer, which is why it can say something useful rather
+            than something generic. That's the entire point of it, and it's the difference between advice for a
+            seven-year-old and advice for your seven-year-old.</p>
             <p>It runs on Google's Gemini. Records passed to it are identified by school-assigned ID, not by name.</p>
             <p>It can be switched off at school level. If you turn it off, assessment, reports and curriculum all
-              continue exactly as before. You lose the assistant, nothing else.</p>
+            continue exactly as before. You lose the assistant, nothing else.</p>
           </div>
-        </details>
+        </article>
 
-        <details class="faq__item">
-          <summary>How much time does this take per teacher, per week?</summary>
-          <div class="faq__a">
+        <article class="fc fc--pink">
+          <div class="fc__inner">
+            <div class="fc__face fc__front">
+              <span class="fc__num">03</span>
+              <h2 class="fc__q">How much time does this take per teacher, per week?</h2>
+              <button class="fc__turn" type="button">See the answer <span aria-hidden="true">↻</span></button>
+            </div>
+            <div class="fc__face fc__back">
+              <p class="fc__lead">Assessment is about 3 hours per teacher per term, three times a year.</p>
+              <div class="fc__actions">
+                <button class="fc__more" type="button">Read full answer</button>
+                <button class="fc__back-btn" type="button" aria-label="Show the question again">↺</button>
+              </div>
+            </div>
+          </div>
+          <div class="fc__full" hidden>
             <p class="faq__lead">Assessment is about 3 hours per teacher per term, three times a year.</p>
             <p>That's five minutes per child for a class of 35, done as structured observation during normal classroom time, not as
-              evening admin. Across a year, roughly 9 hours.</p>
+            evening admin. Across a year, roughly 9 hours.</p>
             <p>Curriculum is 30 minutes a week, inside an existing period. No new timetable slot, and the weekly
-              plan is written to be picked up and taught without preparation.</p>
+            plan is written to be picked up and taught without preparation.</p>
             <p>Training is two days before you start. Nothing mandatory after that.</p>
             <p>We won't claim this replaces something. In most schools it doesn't. What it does replace is the
-              guesswork in a parent-teacher meeting, and teachers tell us that conversation gets shorter and
-              considerably easier.</p>
+            guesswork in a parent-teacher meeting, and teachers tell us that conversation gets shorter and
+            considerably easier.</p>
           </div>
-        </details>
+        </article>
 
-        <details class="faq__item">
-          <summary>We're mid-year. Can we start in January?</summary>
-          <div class="faq__a">
+        <article class="fc fc--yellow">
+          <div class="fc__inner">
+            <div class="fc__face fc__front">
+              <span class="fc__num">04</span>
+              <h2 class="fc__q">We're mid-year. Can we start in January?</h2>
+              <button class="fc__turn" type="button">See the answer <span aria-hidden="true">↻</span></button>
+            </div>
+            <div class="fc__face fc__back">
+              <p class="fc__lead">Yes, and January is a reasonable time to start.</p>
+              <div class="fc__actions">
+                <button class="fc__more" type="button">Read full answer</button>
+                <button class="fc__back-btn" type="button" aria-label="Show the question again">↺</button>
+              </div>
+            </div>
+          </div>
+          <div class="fc__full" hidden>
             <p class="faq__lead">Yes, and January is a reasonable time to start.</p>
             <p>The one thing that has to happen first is a baseline. Every child is assessed across all twelve
-              skills before any teaching begins, because without it you have activities rather than evidence. That
-              takes the first two to three weeks.</p>
+            skills before any teaching begins, because without it you have activities rather than evidence. That
+            takes the first two to three weeks.</p>
             <p>A January start gives you a baseline in January and a second measurement before the year closes.
-              That's one growth comparison in your first year rather than two, which is enough to know whether it's
-              working and enough to take to a management committee.</p>
+            That's one growth comparison in your first year rather than two, which is enough to know whether it's
+            working and enough to take to a management committee.</p>
             <p>If you'd rather begin the 36-week curriculum in June and use the intervening months to baseline and
-              train your teachers, we'll do it that way instead. Several schools have.</p>
+            train your teachers, we'll do it that way instead. Several schools have.</p>
           </div>
-        </details>
+        </article>
 
-        <details class="faq__item">
-          <summary>What do parents actually receive, and how often?</summary>
-          <div class="faq__a">
+        <article class="fc fc--orange">
+          <div class="fc__inner">
+            <div class="fc__face fc__front">
+              <span class="fc__num">05</span>
+              <h2 class="fc__q">What do parents actually receive, and how often?</h2>
+              <button class="fc__turn" type="button">See the answer <span aria-hidden="true">↻</span></button>
+            </div>
+            <div class="fc__face fc__back">
+              <p class="fc__lead">A report on their own child, three times a year, at each assessment point.</p>
+              <div class="fc__actions">
+                <button class="fc__more" type="button">Read full answer</button>
+                <button class="fc__back-btn" type="button" aria-label="Show the question again">↺</button>
+              </div>
+            </div>
+          </div>
+          <div class="fc__full" hidden>
             <p class="faq__lead">A report on their own child, three times a year, at each assessment point.</p>
             <p>It opens with the child by name and covers where they stand across all twelve skills, what's grown
-              since the last report, and two or three specific things to try at home. It's written for a parent, not
-              for a specialist. No jargon, no scores out of ten, no comparison against other children.</p>
+            since the last report, and two or three specific things to try at home. It's written for a parent, not
+            for a specialist. No jargon, no scores out of ten, no comparison against other children.</p>
             <p>Parents also receive a short survey each term, around ten minutes, asking what they see
-              at home. That's one of the three perspectives the assessment draws on, and it's why the report can say
-              something a school report can't.</p>
+            at home. That's one of the three perspectives the assessment draws on, and it's why the report can say
+            something a school report can't.</p>
             <p>Reports can be delivered in any language your school wants, and you choose whether they go out
-              through us or through your existing channel.</p>
+            through us or through your existing channel.</p>
           </div>
-        </details>
+        </article>
 
-        <details class="faq__item">
-          <summary>Is this a curriculum, an assessment, or both?</summary>
-          <div class="faq__a">
+        <article class="fc fc--green">
+          <div class="fc__inner">
+            <div class="fc__face fc__front">
+              <span class="fc__num">06</span>
+              <h2 class="fc__q">Is this a curriculum, an assessment, or both?</h2>
+              <button class="fc__turn" type="button">See the answer <span aria-hidden="true">↻</span></button>
+            </div>
+            <div class="fc__face fc__back">
+              <p class="fc__lead">Both, and you can buy the assessment on its own.</p>
+              <div class="fc__actions">
+                <button class="fc__more" type="button">Read full answer</button>
+                <button class="fc__back-btn" type="button" aria-label="Show the question again">↺</button>
+              </div>
+            </div>
+          </div>
+          <div class="fc__full" hidden>
             <p class="faq__lead">Both, and you can buy the assessment on its own.</p>
             <p>Most schools that start with measurement alone add the curriculum within a year, because once you can
-              see where a cohort is thin, the obvious question is what to do about it.</p>
+            see where a cohort is thin, the obvious question is what to do about it.</p>
             <p>What we don't sell is the curriculum without the assessment. A programme you can't measure is one
-              you'll stop running by Term 2, and you'd have no way of knowing whether that mattered.</p>
+            you'll stop running by Term 2, and you'd have no way of knowing whether that mattered.</p>
           </div>
-        </details>
+        </article>
 
-        <details class="faq__item">
-          <summary>Is there any evidence this works? Where's it published?</summary>
-          <div class="faq__a">
+        <article class="fc fc--cyan">
+          <div class="fc__inner">
+            <div class="fc__face fc__front">
+              <span class="fc__num">07</span>
+              <h2 class="fc__q">Is there any evidence this works? Where's it published?</h2>
+              <button class="fc__turn" type="button">See the answer <span aria-hidden="true">↻</span></button>
+            </div>
+            <div class="fc__face fc__back">
+              <p class="fc__lead">Yes. The instrument is validated with 12,510 children, and in partner schools 9 in 10 children improved emotion regulation in a single term. What isn't out yet is a peer-reviewed outcome study, and we'd rather tell you that than show you someone else's research.</p>
+              <div class="fc__actions">
+                <button class="fc__more" type="button">Read full answer</button>
+                <button class="fc__back-btn" type="button" aria-label="Show the question again">↺</button>
+              </div>
+            </div>
+          </div>
+          <div class="fc__full" hidden>
             <p class="faq__lead">Yes. The instrument is validated with 12,510 children, and in partner schools 9 in 10 children improved emotion regulation in a single term. What isn't out yet is a peer-reviewed outcome study, and we'd rather tell you that than show you someone else's research.</p>
             <p>Tilli was incubated at Stanford's Graduate School of Education and runs an ongoing
-              research-practice partnership with Stanford. Two papers are in progress: one with Hippocampus
-              Learning Centres for a CASEL special issue, and one on behavioural regulation in Sri Lanka currently
-              in revision. That speaks to how we work. It isn't yet a published outcome study, and we won't
-              dress it up as one.</p>
+            research-practice partnership with Stanford. Two papers are in progress: one with Hippocampus
+            Learning Centres for a CASEL special issue, and one on behavioural regulation in Sri Lanka currently
+            in revision. That speaks to how we work. It isn't yet a published outcome study, and we won't
+            dress it up as one.</p>
             <p>What we can show you is your own data. Every school gets a baseline in the first weeks and a
-              comparison every term after. Within one year you'll know whether it worked in your school, with your
-              children, which is a better answer than a study conducted somewhere else.</p>
+            comparison every term after. Within one year you'll know whether it worked in your school, with your
+            children, which is a better answer than a study conducted somewhere else.</p>
             <p>You can see partner-school results on our <a href="success.html">Success Stories</a> page. We'll send you the peer-reviewed papers the moment they land.</p>
           </div>
-        </details>
+        </article>
 
-        <details class="faq__item">
-          <summary>What do I take to my Management Committee?</summary>
-          <div class="faq__a">
+        <article class="fc fc--pink">
+          <div class="fc__inner">
+            <div class="fc__face fc__front">
+              <span class="fc__num">08</span>
+              <h2 class="fc__q">What do I take to my Management Committee?</h2>
+              <button class="fc__turn" type="button">See the answer <span aria-hidden="true">↻</span></button>
+            </div>
+            <div class="fc__face fc__back">
+              <p class="fc__lead">Three things, and we'll put them together for you before the call.</p>
+              <div class="fc__actions">
+                <button class="fc__more" type="button">Read full answer</button>
+                <button class="fc__back-btn" type="button" aria-label="Show the question again">↺</button>
+              </div>
+            </div>
+          </div>
+          <div class="fc__full" hidden>
             <p class="faq__lead">Three things, and we'll put them together for you before the call.</p>
             <p>A <a href="assets/Tilli%20School%20Leader%20One%20Pager.pdf" target="_blank" rel="noopener">school leader one-pager</a>
-              that sets out what Tilli is, what it costs, what it asks of your teachers, and the evidence position in
-              plain terms. A sample dashboard, so they can see what you'll be looking at through the year. And a
-              <a href="uploads/Tilli_Parent%20Report_Example.pdf" target="_blank" rel="noopener">sample parent report</a>,
-              so they can see what reaches families.</p>
+            that sets out what Tilli is, what it costs, what it asks of your teachers, and the evidence position in
+            plain terms. A sample dashboard, so they can see what you'll be looking at through the year. And a
+            <a href="uploads/Tilli_Parent%20Report_Example.pdf" target="_blank" rel="noopener">sample parent report</a>,
+            so they can see what reaches families.</p>
             <p>Between them, that's enough to answer the first round of questions a committee asks without you
-              needing us in the room.</p>
+            needing us in the room.</p>
           </div>
-        </details>
+        </article>
 
       </div>
     </div>
   </section>
 
+  <!-- full-answer modal, filled from the card's .fc__full -->
+  <div class="tl-modal fq-modal" role="dialog" aria-modal="true" aria-labelledby="fqModalQ">
+    <div class="tl-modal__panel fq-modal__panel">
+      <button class="tl-modal__close" type="button" aria-label="Close">×</button>
+      <p class="fq-modal__kicker"></p>
+      <h2 class="fq-modal__q" id="fqModalQ"></h2>
+      <div class="fq-modal__a"></div>
+    </div>
+  </div>
+
 </main>
 
-<script src="js/site-config.js?v=1"></script>
+<script src="js/site-config.js?v=2"></script>
 <script src="js/site-chrome.js?v=5"></script>
+<script>
+  // FAQ flip cards: tap/click flips (hover flips on mouse via CSS);
+  // "Read full answer" opens the modal with that card's full text.
+  (function () {
+    var modal = document.querySelector('.fq-modal');
+    var panel = modal.querySelector('.fq-modal__panel');
+    var lastFocus = null;
+    function openFull(card) {
+      var tone = getComputedStyle(card);
+      panel.style.setProperty('--fc', tone.getPropertyValue('--fc'));
+      panel.style.setProperty('--fc-t', tone.getPropertyValue('--fc-t'));
+      modal.querySelector('.fq-modal__kicker').textContent = 'Question ' + card.querySelector('.fc__num').textContent;
+      modal.querySelector('.fq-modal__q').textContent = card.querySelector('.fc__q').textContent;
+      modal.querySelector('.fq-modal__a').innerHTML = card.querySelector('.fc__full').innerHTML;
+      lastFocus = document.activeElement;
+      modal.classList.add('tl-modal--open');
+      document.body.style.overflow = 'hidden';
+      modal.querySelector('.tl-modal__close').focus();
+    }
+    function closeFull() {
+      if (!modal.classList.contains('tl-modal--open')) return;
+      modal.classList.remove('tl-modal--open');
+      document.body.style.overflow = '';
+      if (lastFocus) lastFocus.focus();
+    }
+    // tell the dot field (js/dot-field.js) to burst this card's colour as it turns
+    var lastBurst = new WeakMap();
+    function burst(card) {
+      var now = Date.now();
+      if (now - (lastBurst.get(card) || 0) < 700) return;
+      lastBurst.set(card, now);
+      var r = card.getBoundingClientRect();
+      document.dispatchEvent(new CustomEvent('tl-dots:burst', { detail: {
+        x: r.left, y: r.top, w: r.width, h: r.height,
+        color: getComputedStyle(card).getPropertyValue('--fc').trim() } }));
+    }
+    var hoverFlip = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    document.querySelectorAll('.fc').forEach(function (card) {
+      if (hoverFlip) card.addEventListener('mouseenter', function () { burst(card); });
+      card.addEventListener('click', function (e) {
+        if (e.target.closest('.fc__more')) { openFull(card); return; }
+        if (e.target.closest('a')) return;
+        card.classList.toggle('is-flipped');
+        if (card.classList.contains('is-flipped')) burst(card);
+        // focus-within also flips, so drop focus when turning back to the question
+        if (!card.classList.contains('is-flipped') && card.contains(document.activeElement)) document.activeElement.blur();
+      });
+    });
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal || e.target.closest('.tl-modal__close')) closeFull();
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeFull(); });
+  })();
+</script>
+<script type="module" src="js/dot-field.js?v=2"></script>
 </body>
 </html>

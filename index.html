@@ -31,7 +31,7 @@
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
 <link rel="stylesheet" href="css/ask-tilli.css">
-<link rel="stylesheet" href="css/site.css?v=3">
+<link rel="stylesheet" href="css/site.css?v=4">
 <style>
   * { box-sizing: border-box; }
   html { scroll-behavior: auto; }
@@ -271,9 +271,6 @@
   .eyebrow { font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-cyan-700); }
   .btn-pink { background: var(--tl-pink-600); color: var(--tl-white); font-weight: 700; font-size: var(--tl-fs-base); padding: 16px 34px; border-radius: var(--tl-radius-pill); display: inline-block; box-shadow: var(--tl-shadow-glow-pink); }
   .btn-pink:hover { background: var(--tl-pink-700); color: var(--tl-white); transform: translateY(-2px); }
-  /* secondary CTA (GL-02 pilot): green outline, same size as .btn-pink */
-  .btn-outline-green { background: transparent; color: var(--tl-green-600); font-weight: 700; font-size: var(--tl-fs-base); padding: 14.5px 32.5px; border: 1.5px solid var(--tl-green-500); border-radius: var(--tl-radius-pill); display: inline-block; }
-  .btn-outline-green:hover { background: var(--tl-wash-green); color: var(--tl-green-600); transform: translateY(-2px); }
 
   /* ── Hero ─────────────────────────────────────────────────── */
   .hero-inner { position: relative; max-width: 1140px; width: 100%; margin: 0 auto; padding: 0 24px; text-align: center; }
@@ -374,6 +371,13 @@
   .j-step-pill.on { color: var(--ct); border-color: var(--c);
     background: color-mix(in srgb, var(--c) 13%, var(--tl-white)); font-weight: 700;
     transform: scale(1.06); box-shadow: 0 6px 16px color-mix(in srgb, var(--c) 34%, transparent); }
+  /* timeline chip inside each journey card: when this step happens in the year */
+  .j-when { display: flex; flex-direction: column; gap: 4px; margin: 0 0 14px;
+    padding: 10px 14px; border-radius: var(--tl-radius-md); border: 1.5px solid var(--c);
+    background: color-mix(in srgb, var(--c) 10%, var(--tl-white)); }
+  .j-when-tag { font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
+    text-transform: uppercase; color: var(--ct); }
+  .j-when-txt { font-size: min(var(--tl-fs-sm), 2vh); font-weight: 600; line-height: 1.45; color: var(--tl-ink-700); }
   @media (max-width: 1080px) {
     .j-steps { right: 0; left: 0; width: auto; bottom: 5vh; }
   }
@@ -487,7 +491,7 @@
       <div class="step-in">
         <div class="hero-inner">
           <div class="hero-beat" id="beatA" style="transform: translateY(21vh);">
-            <div data-hb class="eyebrow">FOR SCHOOL LEADERS</div>
+            <div data-hb class="eyebrow">HELLO SCHOOL LEADERS</div>
             <h1 data-hb>How do you know which children are quietly <span style="color: var(--tl-pink-600);">falling behind</span>?</h1>
           </div>
         </div>
@@ -497,9 +501,9 @@
       <div class="step-in">
         <div class="hero-inner">
           <div class="hero-beat" id="beatB">
-            <p class="hero-lead">Most schools find out from marks. Tilli measures each child three ways, three times a year.</p>
+            <p class="hero-lead">Most schools find out from marks. Tilli looks at the child beyond academics and from 3 unique people in the child's life.</p>
             <div id="stat">579</div>
-            <p class="hero-stat-lbl"><b>data points per child,</b> in about 5 minutes of class time per child each term.</p>
+            <p class="hero-stat-lbl"><b>data points per child per year,</b> in about 40 minutes per child per term.</p>
             <div style="display: flex; gap: 18px; justify-content: center; align-items: center; margin-top: min(26px, 3vh); flex-wrap: wrap;">
               <a href="#how" style="font-weight: 700; font-size: var(--tl-fs-base);">See how it works →</a>
             </div>
@@ -527,7 +531,6 @@
     <div class="step">
       <div class="step-in">
         <div class="wrap" style="text-align: center;">
-          <div class="eyebrow">DASHBOARD</div>
           <h2 style="font-size: min(var(--tl-fs-xl), 5vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); margin: 14px auto 12px; max-width: 720px;">Schools see every data point in <span style="color: var(--tl-cyan-700);">one simple dashboard</span>.</h2>
           <p style="font-size: min(var(--tl-fs-lg), 2.6vh); line-height: 1.6; max-width: 620px; margin: 0 auto min(34px, 4vh);">Easy to use, easy to navigate. Built for teachers, not analysts.</p>
           <div data-zoom style="max-width: 940px; margin: 0 auto; background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-lg); padding: 14px; box-shadow: var(--tl-shadow-card); will-change: transform;">
@@ -556,11 +559,10 @@
             <img data-fan="3" src="assets/report-page-4.png" alt="Tilli parent report: what to do at home" style="width: 338px; max-height: min(470px, 50vh); object-fit: contain; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised); position: relative; will-change: transform;">
           </div>
           <h2 style="font-size: min(var(--tl-fs-xl), 5vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); max-width: 700px; margin: 0 auto 12px;">Teachers share reports <span style="color: var(--tl-green-600);">parents love to receive</span>.</h2>
-          <p style="font-size: min(var(--tl-fs-lg), 2.6vh); line-height: 1.6; max-width: 600px; margin: 0 auto min(20px, 2.2vh);">Term by term: strengths, growth areas, and two or three things to try at home. No scores out of ten, no ranking against classmates, and in the language your parents read. It's the answer when a parent asks, 'Why is school spending time on this?'</p>
+          <p style="font-size: min(var(--tl-fs-lg), 2.6vh); line-height: 1.6; max-width: 600px; margin: 0 auto min(20px, 2.2vh);">Term by term: strengths, growth areas, and two or three things to try at home in the language your parents easily apply. Answer the question 'Why is school spending time on this?'</p>
           <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap;">
             <a href="#" data-tl-open-form class="btn-pink">Book a 30-minute call</a>
             <a href="uploads/Tilli_Parent%20Report_Example.pdf" target="_blank" rel="noopener" style="font-weight: 700; font-size: var(--tl-fs-base); color: var(--tl-ink-700);">See an example parent report →</a>
-            <a href="assets/Tilli%20School%20Leader%20One%20Pager.pdf" target="_blank" rel="noopener" style="font-weight: 700; font-size: var(--tl-fs-base); color: var(--tl-ink-700);">Get the school leader one-pager →</a>
           </div>
         </div>
       </div>
@@ -606,8 +608,7 @@
       <div class="step-in">
         <div class="dna-grid">
           <div style="display: flex; flex-direction: column; gap: min(36px, 5vh);">
-            <div class="eyebrow">MEASURE · 360° VIEW</div>
-            <p style="font-size: var(--tl-fs-base); font-weight: 700; line-height: 1.5; color: var(--tl-ink-900); margin: 0;">About 5 minutes per child, during class, three times a year. For a class of 35, that's roughly 3 hours a term, with nothing to mark or take home.</p>
+            <div class="eyebrow" style="font-size: min(var(--tl-fs-xl), 5vh); font-weight: 800; line-height: 1.15; letter-spacing: 0.04em;">MEASURE · 360° VIEW</div>
             <div class="stage-title">
               <div style="font-size: var(--tl-fs-base); font-weight: 800; color: var(--tl-green-600);">01 · The teacher's strand</div>
               <div style="font-size: var(--tl-fs-base); line-height: 1.55; margin-top: 6px;">Structured observation of each child, right in the classroom.</div>
@@ -632,7 +633,7 @@
                   <span style="border: 1.5px solid var(--tl-line-200); border-radius: var(--tl-radius-pill); padding: 7px 16px; font-size: var(--tl-fs-sm); font-weight: 600;">Sometimes</span>
                   <span style="background: var(--tl-green-500); border: 1.5px solid var(--tl-green-500); color: var(--tl-white); border-radius: var(--tl-radius-pill); padding: 7px 16px; font-size: var(--tl-fs-sm); font-weight: 700;">Often</span>
                 </div>
-                <div style="font-size: var(--tl-fs-sm); color: var(--tl-ink-300); margin-top: 18px;">3× a year · 5 min per child</div>
+                <div style="font-size: var(--tl-fs-sm); color: var(--tl-ink-300); margin-top: 18px;">Teacher time: 5 min per child · 3× a year</div>
               </div>
             </div>
             <div class="stage-panel">
@@ -675,8 +676,6 @@
               <div style="text-align: center; padding: 0 8px; margin-bottom: min(20px, 2.4vh);">
                 <h2 style="font-size: min(var(--tl-fs-xl), 5vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); margin: 0 auto 8px;">Get a <span style="color: var(--tl-pink-600);">360° view</span> of the student.</h2>
                 <p style="font-size: min(var(--tl-fs-lg), 2.4vh); line-height: 1.5; max-width: 620px; margin: 0 auto;">12 foundational skills, measured from every side, term after term.</p>
-                <p style="font-size: min(var(--tl-fs-sm), 1.8vh); line-height: 1.5; color: var(--tl-ink-500); max-width: 600px; margin: min(8px, 1vh) auto 0;">Not reading and maths: the attention, memory, self-control and people skills underneath them. The emotional half is often called social-emotional learning (SEL).</p>
-                <p style="font-size: min(var(--tl-fs-sm), 1.8vh); font-weight: 600; color: var(--tl-cyan-700); margin: min(8px, 1vh) auto 0;">Mapped to NEP 2020 and NCF‑FS socio-emotional competencies.</p>
               </div>
               <div class="skill-group-head"><img src="assets/Brain.png" alt=""><div><span class="g-name">Thinking skills</span> <span class="g-sub">how a child learns</span></div></div>
               <div class="skills-grid">
@@ -901,10 +900,8 @@
         </div>
         <div class="imp2-bottom">
           <div class="imp2-stats">
-            <div class="imp2-stat imp2-move rv" style="--x:-85px; --y:0px; --sc:1.4;"><div class="imp2-num">12,510</div><div class="imp2-lbl">Children<br>assessed</div></div>
-            <div class="imp2-stat imp2-move rv" style="--x:0px; --y:0px; --sc:1.4;"><div class="imp2-num">4,541</div><div class="imp2-lbl">Educators<br>trained</div></div>
-            <!-- HM-12 · outcome stat, sourced from the Success page (Hippocampus × Tilli End-of-Year Report, Feb 2026) -->
-            <div class="imp2-stat imp2-move rv" style="--x:85px; --y:0px; --sc:1.4;"><div class="imp2-num">+28%</div><div class="imp2-lbl">Impulse control, Hippocampus<br>2025–26 (teacher-reported)</div></div>
+            <div class="imp2-stat imp2-move rv" style="--x:-42px; --y:0px; --sc:1.4;"><div class="imp2-num">12,510</div><div class="imp2-lbl">Children<br>assessed</div></div>
+            <div class="imp2-stat imp2-move rv" style="--x:42px; --y:0px; --sc:1.4;"><div class="imp2-num">4,541</div><div class="imp2-lbl">Educators<br>trained</div></div>
           </div>
           <blockquote class="imp2-quote imp2-move rv" style="--x:150px; --y:0px; --sc:1.15; max-width:560px;">
             <div class="imp2-rpp">Research-Practice Partnership with Stanford &amp; NMAJS</div>
@@ -936,7 +933,7 @@
   <div class="stage j-stage">
     <div class="stage-deco">
       <!-- top-centre heading · position + scale tunable in the GUI (press J) -->
-      <h2 class="j-heading" style="--x:256px; --y:96px; --sc:1.23;">What a year with Tilli looks like<span style="display: block; max-width: 760px; margin: 10px auto 0; font-size: var(--tl-fs-xs); font-weight: 600; line-height: 1.5; letter-spacing: 0; color: var(--tl-ink-500);">Start of year: a baseline across all 12 skills · Every week: one 30-minute lesson · End of each term: reassessment and parent reports · Year end: a report for your Management Committee.</span></h2>
+      <h2 class="j-heading" style="--x:256px; --y:96px; --sc:1.23;">What a year with Tilli looks like</h2>
       <!-- spherical jar to the left of the cards · size + offset tunable (press J) -->
       <div class="j-jar" style="--jx:43px; --jy:-3px; --jsize:435px;"></div>
       <!-- step indicators under the cards — the pill for the card on screen goes
@@ -956,6 +953,7 @@
               <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--tl-green-500); display: flex; align-items: center; justify-content: center;"><img src="assets/ds/icon-clipboard-check.png" alt="" style="width: 26px; height: 26px;"></div>
               <div style="font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-green-600);">MEASURE</div>
             </div>
+            <div class="j-when" style="--c:var(--tl-green-500); --ct:var(--tl-green-600);"><span class="j-when-tag">Start of the academic year</span><span class="j-when-txt">Begin with a baseline at the start of the academic year.</span></div>
             <div style="font-size: min(var(--tl-fs-lg), 3.4vh); font-weight: 800; color: var(--tl-ink-900); letter-spacing: var(--tl-tracking-tight);">Start with a real baseline</div>
             <p style="font-size: min(var(--tl-fs-base), 2.3vh); line-height: 1.6; margin: 12px 0 0;">In the first weeks, every child is assessed across all 12 skills: teacher observation, parent report, and direct tasks. We repeat it three times a year, so growth shows up in the data instead of being guessed at.</p>
             <div style="font-size: var(--tl-fs-sm); font-weight: 700; color: var(--tl-pink-600); margin-top: 14px;">579 data points per child each year — 2,895 over five years.</div>
@@ -973,6 +971,7 @@
               <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--tl-cyan-500); display: flex; align-items: center; justify-content: center;"><img src="assets/ds/icon-robot.png" alt="" style="width: 26px; height: 26px;"></div>
               <div style="font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-cyan-700);">ASK</div>
             </div>
+            <div class="j-when" style="--c:var(--tl-cyan-500); --ct:var(--tl-cyan-700);"><span class="j-when-tag">Right after the measures</span><span class="j-when-txt">Walk through the results with AskTilli as soon as the measures are complete.</span></div>
             <div style="font-size: min(var(--tl-fs-lg), 3.4vh); font-weight: 800; color: var(--tl-ink-900); letter-spacing: var(--tl-tracking-tight);">AskTilli</div>
             <p style="font-size: min(var(--tl-fs-base), 2.3vh); line-height: 1.6; margin: 12px 0 0;">Teachers ask about a child or a class and get lesson plans, behaviour guidance, and that child's own data, in the middle of a school day, in seconds.</p>
           </div>
@@ -993,6 +992,7 @@
               <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--tl-yellow-500); display: flex; align-items: center; justify-content: center;"><img src="assets/ds/icon-book.png" alt="" style="width: 26px; height: 26px;"></div>
               <div style="font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-yellow-700);">INTERVENE</div>
             </div>
+            <div class="j-when" style="--c:var(--tl-yellow-500); --ct:var(--tl-yellow-700);"><span class="j-when-tag">Every week</span><span class="j-when-txt">30-minute lessons that fit into your Life Skills class, plus personalised interventions we build with you.</span></div>
             <div style="font-size: min(var(--tl-fs-lg), 3.4vh); font-weight: 800; color: var(--tl-ink-900); letter-spacing: var(--tl-tracking-tight);">A curriculum, not a workshop</div>
             <p style="font-size: min(var(--tl-fs-base), 2.3vh); line-height: 1.6; margin: 12px 0 0;">36 weeks of play-based lessons for every class: Feelings Time workbooks, Teacher's Guidebooks, and the Teaching Kit. 30 minutes a week. No new period, no extra prep.</p>
           </div>
@@ -1016,12 +1016,11 @@
       <div class="step-in">
         <div id="letsTalkCard" style="max-width: 640px; margin: 0 auto; text-align: center; position: relative;">
           <h2 style="font-size: min(var(--tl-fs-xl), 5.6vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); line-height: 1.12; margin: 0 0 20px;">Start with one grade, one year.</h2>
-          <p style="font-size: min(var(--tl-fs-lg), 2.6vh); line-height: 1.6; color: var(--tl-ink-600); max-width: 540px; margin: 0 auto 22px;">Your data, your pace. In 30 minutes with our founding team, we'll fit Tilli to your timetable, your section sizes and your budget.</p>
-          <div style="display: inline-flex; align-items: center; gap: 10px; margin: 0 auto 30px; padding: 10px 18px; border-radius: var(--tl-radius-pill); background: var(--tl-wash-green); border: 1.5px solid var(--tl-green-500); font-size: min(var(--tl-fs-base), 2.1vh); font-weight: 700; color: var(--tl-green-600);">Pilot: one grade, one year, with a full review after Term 1.</div>
+          <p style="font-size: min(var(--tl-fs-lg), 2.6vh); line-height: 1.6; color: var(--tl-ink-600); max-width: 540px; margin: 0 auto 30px;">Your data, your pace. In 30 minutes with our founding team, we'll fit Tilli to your timetable, your section sizes and your budget.</p>
           <div style="display: flex; align-items: center; justify-content: center; gap: 28px; flex-wrap: wrap;">
             <a href="#" data-tl-open-form class="btn-pink">Book a 30-minute call</a>
-            <a href="#" data-tl-open-form class="btn-outline-green">Start with a pilot</a>
             <a href="mailto:kavindya@tillikids.com" style="font-weight: 700; color: var(--tl-ink-700);">Email Kavindya Tennakoon, Founder &amp; CEO</a>
+            <a href="https://www.linkedin.com/in/kavindyathennakoon/" target="_blank" rel="noopener" style="font-weight: 700; color: var(--tl-ink-700);">Kavindya on LinkedIn →</a>
           </div>
         </div>
       </div>
@@ -1036,7 +1035,7 @@
               <span style="font-size: var(--tl-fs-sm); font-style: italic; color: var(--tl-ink-500);">Developmentally on track by age 10.</span>
             </div>
             <div style="display: flex; gap: 22px; font-size: var(--tl-fs-sm); font-weight: 600; flex-wrap: wrap;">
-              <a href="#how" style="color: var(--tl-ink-600);">How it works</a>
+              <a href="#how" style="color: var(--tl-ink-600);">How Tilli works</a>
               <a href="#skills" style="color: var(--tl-ink-600);">The 12 skills</a>
               <a href="#impact" style="color: var(--tl-ink-600);">Impact</a>
               <a href="faq.html" style="color: var(--tl-ink-600);">FAQs</a>
@@ -1066,8 +1065,8 @@
 <script src="js/ask-tilli-demo.js?v=2"></script>
 <script src="js/impact-orbits.js?v=7"></script>
 <script src="js/impact-carousel.js?v=7"></script>
-<script type="module" src="js/main.js?v=128"></script>
-<script src="js/site-config.js?v=1"></script>
+<script type="module" src="js/main.js?v=130"></script>
+<script src="js/site-config.js?v=2"></script>
 <script src="js/site-chrome.js?v=5"></script>
 </body>
 </html>

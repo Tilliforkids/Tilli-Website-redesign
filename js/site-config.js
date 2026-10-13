@@ -29,7 +29,7 @@
     /* Header nav, in order (GL-01). Logo links Home, so no "Home" item.
        "Pricing & FAQs" = faq.html (prices, teacher hours, evidence answers). */
     NAV_ITEMS: [
-      { label: "How it works", href: "index.html#how" },
+      { label: "How Tilli works", href: "index.html" },  /* no hash: lands on Home beat A */
       { label: "Results", href: "success.html" },
       { label: "Pricing & FAQs", href: "faq.html" },
       { label: "For researchers", href: "research.html" }
@@ -41,7 +41,7 @@
     /* Footer links (canonical = Home footer). First three are home-section anchors;
        mobile keeps them in-build via the hash-aware mHref() + the m/index #how anchor. */
     FOOTER_LINKS: [
-      { label: "How it works", href: "index.html#how" },
+      { label: "How Tilli works", href: "index.html#how" },
       { label: "The 12 skills", href: "index.html#skills" },
       { label: "Impact", href: "index.html#impact" },
       { label: "FAQs", href: "faq.html" },

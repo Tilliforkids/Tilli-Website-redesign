@@ -26,7 +26,7 @@
 <link rel="stylesheet" href="../_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
 <link rel="stylesheet" href="../css/m.css">
 <!-- Shared mobile chrome (topbar, header, footer, WhatsApp) — one source for all /m/ pages -->
-<script src="../js/site-config.js?v=1"></script>
+<script src="../js/site-config.js?v=2"></script>
 <script src="../js/m-chrome.js?v=2" defer></script>
 <style>
   /* ── Mobile School Success build — on-brand, same sections as success.html,
@@ -72,8 +72,6 @@
   .cs-stat b { font-size: var(--tl-fs-xl); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-green-600); line-height: 1; }
   .cs-stat span { font-size: var(--tl-fs-sm); font-weight: 600; color: var(--tl-ink-600); line-height: 1.3; }
   .cs-text { font-size: var(--tl-fs-base); color: var(--tl-ink-600); line-height: 1.6; }
-  .cs-source { font-size: var(--tl-fs-xs); color: var(--tl-ink-300); border-left: 3px solid var(--tl-line-200);
-    padding-left: 13px; margin-top: 16px; line-height: 1.5; }
 
   /* Reach-out band (CHG-27 E2) — illustration stacks above groups */
   .rk-art { display: flex; justify-content: center; margin-bottom: 22px; }
@@ -110,9 +108,15 @@
     border: 1px solid var(--tl-line-200); display: flex; align-items: center; justify-content: center;
     color: var(--tl-ink-300); font-weight: 600; font-size: var(--tl-fs-sm); text-align: center; padding: 18px; }
 
-  /* CHG-33 (E8): closing CTA — bolder terminal band (no character for now) */
-  .s-cta { padding-block: 64px; }
-  .s-cta .title { font-size: var(--tl-fs-2xl); }
+  /* year timeline above the asks list: dot + when + what, joined by a dotted spine */
+  .yr { list-style: none; margin: 22px 0 0; padding: 0 0 0 6px; display: flex; flex-direction: column; gap: 14px;
+    text-align: left; position: relative; }
+  .yr::before { content: ""; position: absolute; left: 15px; top: 10px; bottom: 10px; border-left: 2px dotted var(--tl-line-300); }
+  .yr li { position: relative; padding-left: 34px; display: flex; flex-direction: column; gap: 2px; }
+  .yr li::before { content: ""; position: absolute; left: 1px; top: 2px; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--c); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 22%, var(--tl-white)); }
+  .yr-when { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--ct); }
+  .yr-what { font-size: var(--tl-fs-sm); font-weight: 600; line-height: 1.45; color: var(--tl-ink-700); }
 
   /* HM-14 · "What Tilli asks of your school" — stacked label/value list */
   .asks { margin: 18px 0 0; background: var(--tl-white); border-radius: var(--tl-radius-lg); box-shadow: var(--tl-shadow-card); text-align: left; overflow: hidden; }
@@ -133,40 +137,6 @@
     <div class="eyebrow green">Success Stories</div>
     <h1 class="title">Schools that measure the <span class="c-green">whole child</span></h1>
     <p class="lede">From a three-year partnership reshaping thousands of childhoods to research-practice collaborations built on measurement — here's what schools gain when foundational skills get the time and tools they need.</p>
-    <div class="cta-col">
-      <a class="btn btn-pink btn-block" href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school." target="_blank" rel="noopener">Book a 30-minute call</a>
-    </div>
-  </section>
-
-  <!-- TILLI WORKS (CHG-28 E3): headline + intro + Top Results checklist -->
-  <section class="s-tw wrap" style="text-align:center">
-    <h2 class="title">Tilli works</h2>
-    <p class="lede">See how Tilli's research-backed approach delivers measurable results. Explore our <a href="research.html">assessment</a>, <a href="research.html">the evidence</a>, and our <a href="research.html">Stanford research</a>.</p>
-    <p class="tw-sub">Top results</p>
-    <ul class="tw-list">
-      <li>
-        <span class="tw-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
-        <div>
-          <span class="tw-cat">Adoption</span>
-          <p class="tw-line"><b class="tw-fig">95%</b> of teachers rate Tilli's training highly effective — adoption built in, not bolted on.</p>
-        </div>
-      </li>
-      <li>
-        <span class="tw-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
-        <div>
-          <span class="tw-cat">Outcome</span>
-          <p class="tw-line"><b class="tw-fig">9 in 10</b> children improved emotion regulation in a single term.</p>
-        </div>
-      </li>
-      <li>
-        <span class="tw-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
-        <div>
-          <span class="tw-cat">Credibility</span>
-          <p class="tw-line">Built at <strong>Stanford</strong>, backed by <strong>UNICEF</strong>, validated with <b class="tw-fig">12,510 children</b>.</p>
-        </div>
-      </li>
-    </ul>
-    <div class="tw-art">Tilli illustration</div>
   </section>
 
   <!-- SCHOOLS & TRAININGS CAROUSEL — CHG-22 deferred (B4: real photos needed) -->
@@ -214,7 +184,6 @@
         <div class="cs-name">Hippocampus Learning Centres</div>
         <div class="cs-stat"><b>+28%</b><span>growth in impulse control<br>(&ldquo;stop-and-think&rdquo;), 2025–26</span></div>
         <p class="cs-text">Tilli's longest-standing partner: three years, and now more than <strong>3,500 children</strong> across the Hippocampus network. Over 2025–26, teachers reported growth in every skill Tilli measures: self-awareness up 20%, conflict management up 23%, impulse control up 28%. Given time and the right tools, foundational skills compound.</p>
-        <p class="cs-source">Source: Hippocampus × Tilli End-of-Year Report, Feb 2026; Teacher Report on Student SEL.</p>
       </div>
     </div>
 
@@ -224,7 +193,6 @@
         <div class="cs-place">Mumbai, India</div>
         <div class="cs-name">Nita Mukesh Ambani Junior School</div>
         <p class="cs-text">A research-practice partnership built on one idea: measure the whole child, not just the answer sheet. From LKG to Grade 2, Tilli looks at <strong>12 developmental skills through three independent lenses</strong> (parent, teacher, and the child's own play-based tasks), so leaders can see where each child genuinely is — reading early-years data as growth on schedule rather than a child falling behind.</p>
-        <p class="cs-source">Baseline complete; midline (Sept) and endline (Dec) to come. For now this story leads on the depth of the measurement — its real strength.</p>
       </div>
     </div>
 
@@ -234,9 +202,39 @@
         <div class="cs-place">Colombo, Sri Lanka</div>
         <div class="cs-name">Musaeus College</div>
         <p class="cs-text">One of Sri Lanka's most respected girls' schools has brought SEL into Grade 1 with Tilli. What won them over was a model where teachers don't just receive data, they <strong>use</strong> it — each teacher designs a support plan for her class, sees multi-informant data on those same children, then redesigns it.</p>
-        <p class="cs-source">Newest partner (started July 2026). This story leads on the approach and why they joined; outcomes follow after their first assessment window.</p>
       </div>
     </div>
+  </section>
+
+  <!-- TILLI WORKS (CHG-28 E3): headline + intro + Top Results checklist -->
+  <section class="s-tw wrap" style="text-align:center">
+    <h2 class="title">Tilli works</h2>
+    <p class="lede">See how Tilli's research-backed approach delivers measurable results. Explore our <a href="research.html">assessment</a>, <a href="research.html">the evidence</a>, and our <a href="research.html">Stanford research</a>.</p>
+    <p class="tw-sub">Top results</p>
+    <ul class="tw-list">
+      <li>
+        <span class="tw-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+        <div>
+          <span class="tw-cat">Adoption</span>
+          <p class="tw-line"><b class="tw-fig">95%</b> of teachers rate Tilli's training highly effective — adoption built in, not bolted on.</p>
+        </div>
+      </li>
+      <li>
+        <span class="tw-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+        <div>
+          <span class="tw-cat">Outcome</span>
+          <p class="tw-line"><b class="tw-fig">9 in 10</b> children improved emotion regulation in a single term.</p>
+        </div>
+      </li>
+      <li>
+        <span class="tw-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+        <div>
+          <span class="tw-cat">Credibility</span>
+          <p class="tw-line">Built at <strong>Stanford</strong>, backed by <strong>UNICEF</strong>, validated with <b class="tw-fig">12,510 children</b>.</p>
+        </div>
+      </li>
+    </ul>
+    <div class="tw-art">Tilli illustration</div>
   </section>
 
   <!-- WHAT IT ASKS (HM-14): time, training, cost, timetable -->
@@ -244,9 +242,16 @@
     <div class="eyebrow">What it takes</div>
     <h2 class="title">What Tilli asks of your school.</h2>
     <p class="lede">Fewer surprises at the Parent‑Teacher Meet. Nothing new on the timetable.</p>
+    <!-- the year at a glance (moved here from Home's "What a year with Tilli looks like") -->
+    <ol class="yr">
+      <li style="--c: var(--tl-green-500); --ct: var(--tl-green-600);"><span class="yr-when">Start of year</span><span class="yr-what">A baseline across all 12 skills</span></li>
+      <li style="--c: var(--tl-cyan-500); --ct: var(--tl-cyan-700);"><span class="yr-when">Every week</span><span class="yr-what">One 30-minute lesson</span></li>
+      <li style="--c: var(--tl-yellow-500); --ct: var(--tl-yellow-700);"><span class="yr-when">End of each term</span><span class="yr-what">Reassessment and parent reports</span></li>
+      <li style="--c: var(--tl-pink-400); --ct: var(--tl-pink-600);"><span class="yr-when">Year end</span><span class="yr-what">A report for your Management Committee</span></li>
+    </ol>
     <div class="asks">
       <div class="asks__row"><div class="asks__k">Training</div><div class="asks__v">2 days, once. Nothing mandatory after.</div></div>
-      <div class="asks__row"><div class="asks__k">Assessment</div><div class="asks__v">About 5 minutes per child, in class, 3× a year.</div></div>
+      <div class="asks__row"><div class="asks__k">Assessment</div><div class="asks__v">About 5 minutes of teacher time per child, in class, 3× a year.</div></div>
       <div class="asks__row"><div class="asks__k">Lessons</div><div class="asks__v">30 minutes a week, inside an existing period (e.g. Life Skills).</div></div>
       <div class="asks__row"><div class="asks__k">Teacher prep</div><div class="asks__v">None. Lessons are ready to teach.</div></div>
       <div class="asks__row"><div class="asks__k">Board-exam classes</div><div class="asks__v">Untouched. Tilli runs Pre‑K to Grade 5 and never touches your board-exam classes.</div></div>
@@ -260,7 +265,7 @@
       <img src="../assets/ds/tilli-girl-waving.png" alt="Tilli character waving" loading="lazy">
     </div>
     <div class="eyebrow green">Get in touch</div>
-    <h2 class="title">Let’s talk about your <span class="c-green">school</span></h2>
+    <h2 class="title">Your school could be the <span class="c-green">next story</span></h2>
     <div class="rk-groups">
       <div class="rk-group">
         <p class="rk-label">Partner with us / book a call</p>
@@ -291,15 +296,6 @@
           +1 650-334-7904
         </a>
       </div>
-    </div>
-  </section>
-
-  <!-- CLOSING CTA (CHG-33 E8): bold terminal band -->
-  <section class="s-hero wash-cyan wrap s-cta">
-    <h2 class="title">Your school could be the <span class="c-cyan">next story</span></h2>
-    <p class="lede">Tell us about your children and we'll show you what measuring the whole child looks like in practice.</p>
-    <div class="cta-col">
-      <a class="btn btn-pink btn-block" href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school." target="_blank" rel="noopener">Book a 30-minute call</a>
     </div>
   </section>
 
