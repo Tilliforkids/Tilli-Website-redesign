@@ -58,6 +58,10 @@
      data-dots-void="0.2"       dim/scatter: empty circle in the middle (× vh)
      data-dots-avoid="sel"      hide dots that land on these elements
      data-dots-clip             hide dots outside the section's box (crop at its edges)
+     data-dots-mirror           child: a second, mirrored child on the other side of the
+                                viewport (x → 1 − x); the dots are split between the two
+     data-dots-scroll           scroll with the section like an image (no clamping into the
+                                visible part) — pair with data-dots-cut on the next section
      data-dots-cut              no morph INTO this section: it and the one above each keep
                                 their own dots and simply scroll past one another
    Page: <main data-dots-count="640" data-dots-size="9"> overrides dot count / size (px).
@@ -197,7 +201,9 @@ async function init() {
   let W = 1, H = 1, DPR = 1;
 
   const mainDs = (document.querySelector('main') || {}).dataset || {};
-  const N = parseInt(mainDs.dotsCount, 10) || cfg.count;
+  // ?debug=1&dots=N previews a dot count (the Kids panel reloads with it — N sizes every buffer)
+  const urlDots = DEBUG && parseInt((location.search.match(/[?&]dots=(\d+)/) || [])[1], 10);
+  const N = urlDots || parseInt(mainDs.dotsCount, 10) || cfg.count;
   cfg.dotSize = parseFloat(mainDs.dotsSize) || cfg.dotSize;
   const pointsMat = () => new THREE.ShaderMaterial({
     transparent: true, depthTest: false, depthWrite: false,
@@ -374,6 +380,8 @@ async function init() {
         rw: parseFloat(d.dotsRw) || 0,
         clip: d.dotsClip !== undefined,
         cut: d.dotsCut !== undefined,
+        mirror: d.dotsMirror !== undefined,
+        scroll: d.dotsScroll !== undefined,
         fit: d.dotsFit !== undefined,
         anchor: d.dotsAnchor ? el.querySelector(d.dotsAnchor) : null,
         anchors: d.dotsAnchor ? Array.from(el.querySelectorAll(d.dotsAnchor)) : [],
@@ -506,6 +514,7 @@ async function init() {
     }
     const R = f.r * H;
     let cy = rect.top + f.pos[1] * rect.height;
+    if (f.scroll) return { cx: (f.pos[0] + f.off[0]) * W, cy: cy + f.off[1] * W, rx: R, ry: R };
     const lo = Math.max(rect.top, 0) + R, hi = Math.min(rect.bottom, H) - R;
     cy = lo < hi ? clamp(cy, lo, hi) : (Math.max(rect.top, 0) + Math.min(rect.bottom, H)) / 2;
     return { cx: (f.pos[0] + f.off[0]) * W, cy: cy + f.off[1] * W, rx: R, ry: R };
@@ -682,7 +691,10 @@ async function init() {
       const R = p.ry, br = 1 + 0.012 * Math.sin(t * 1.4), sway = Math.sin(t * 0.7) * 0.03;
       for (let i = 0; i < N; i++) {
         const ux = KID[i * 2], uy = KID[i * 2 + 1], out = i < KID_OUTLINE;
-        dot(i, p.cx + (ux + sway * uy) * R * br, p.cy - uy * R * br, PALETTE[i % 5], out ? 1 : 0.85, out ? 0.8 : 1);
+        // mirror: odd dots draw the twin, flipped about the viewport centre — every other
+        // outline point each, so both outlines stay evenly spaced
+        const tw = f.mirror && i & 1, sx = tw ? -1 : 1, cx = tw ? W - p.cx : p.cx;
+        dot(i, cx + sx * (ux + sway * uy) * R * br, p.cy - uy * R * br, PALETTE[i % 5], out ? 1 : 0.85, out ? 0.8 : 1);
       }
     },
     /* RESULTS ─ Measure → Ask → Intervene: scattered data, gathered insight, rising action */
@@ -919,8 +931,8 @@ async function init() {
             0.9 * Math.min(1, ph * 8) * (1 - Math.pow(ph, 6)), 0.65);
           continue;
         }
-        // file orbs hold still (no spin); ball points spread pole→pole whatever fileN is
-        orbDot(i, fx, fy, fileR, g * 1.7, fileRGB[g], f.fileSize, BALL, Math.floor((rank + 0.5) * N / st.fileN));
+        // file orbs spin (each starts at its own angle); ball points spread pole→pole whatever fileN is
+        orbDot(i, fx, fy, fileR, g * 1.7 + t * cfg.spin, fileRGB[g], f.fileSize, BALL, Math.floor((rank + 0.5) * N / st.fileN));
       }
     },
     /* RESEARCH ─ AI use cases: dots fill the on-screen stretch of a pipe, flowing START → END */
@@ -1353,14 +1365,41 @@ async function init() {
 
   if (DEBUG) window.__dotField = { cfg, rebuild: () => { readFormations(); kick(); }, formations: () => formations };
 
-  /* ── ?debug=1 tuning panel for the Research pipe ───────────────────────── */
-  const pipeSec = DEBUG && formations.find((f) => f.type === 'pipe');
-  if (pipeSec) {
-    const sec = pipeSec.el, panel = document.createElement('div');
-    panel.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:9999;width:240px;padding:12px 14px;' +
+  /* ── ?debug=1 tuning panels ────────────────────────────────────────────── */
+  // knob: { label, unit, min, max, step, get, set, note?, commit? } — commit fires on release
+  function debugPanel(title, knobs, side, foot) {
+    const panel = document.createElement('div');
+    panel.style.cssText = 'position:fixed;' + side + ':16px;bottom:16px;z-index:9999;width:240px;padding:12px 14px;' +
       'background:#fff;border:1px solid #C7CDD8;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.12);' +
       'font:12px/1.4 system-ui,sans-serif;color:#141414';
-    panel.innerHTML = '<b style="display:block;margin-bottom:6px">Pipe tuning</b>';
+    panel.innerHTML = '<b style="display:block;margin-bottom:6px">' + title + '</b>';
+    const shows = [];
+    knobs.forEach((k) => {
+      const row = document.createElement('label');
+      row.style.cssText = 'display:block;margin-top:8px';
+      row.innerHTML = '<span style="display:flex;justify-content:space-between"><span>' + k.label + '</span><output></output></span>' +
+        '<input type="range" style="width:100%" min="' + k.min + '" max="' + k.max + '" step="' + k.step + '" value="' + k.get() + '">';
+      const out = row.querySelector('output'), input = row.querySelector('input');
+      const show = () => { out.textContent = input.value + ' ' + k.unit + (k.note ? k.note(parseFloat(input.value)) : ''); };
+      input.addEventListener('input', () => { if (k.set) k.set(parseFloat(input.value)); shows.forEach((f) => f()); kick(); });
+      if (k.commit) input.addEventListener('change', () => k.commit(parseFloat(input.value)));
+      shows.push(show);
+      panel.appendChild(row);
+    });
+    if (foot) {
+      const ft = document.createElement('div');
+      ft.style.cssText = 'margin-top:10px;padding-top:8px;border-top:1px solid #E5E7EB;color:#6B7280;font:11px/1.45 ui-monospace,monospace;word-break:break-all';
+      panel.appendChild(ft);
+      shows.push(() => { ft.textContent = foot(); });
+    }
+    shows.forEach((f) => f());
+    document.body.appendChild(panel);
+  }
+
+  // Research pipe
+  const pipeSec = DEBUG && formations.find((f) => f.type === 'pipe');
+  if (pipeSec) {
+    const sec = pipeSec.el;
     const css0 = (name) => parseFloat(getComputedStyle(sec).getPropertyValue(name));
     const knobs = [
       { label: 'Pipe width', unit: 'px', min: 12, max: 240, step: 1, get: () => css0('--pipe-w'),
@@ -1380,17 +1419,25 @@ async function init() {
           return cfg.pipeDensity > cap ? ' (max ' + cap.toFixed(2) + ')' : '';
         } },
     ];
-    knobs.forEach((k) => {
-      const row = document.createElement('label');
-      row.style.cssText = 'display:block;margin-top:8px';
-      row.innerHTML = '<span style="display:flex;justify-content:space-between"><span>' + k.label + '</span><output></output></span>' +
-        '<input type="range" style="width:100%" min="' + k.min + '" max="' + k.max + '" step="' + k.step + '" value="' + k.get() + '">';
-      const out = row.querySelector('output'), input = row.querySelector('input');
-      const show = () => { out.textContent = input.value + ' ' + k.unit + (k.note ? k.note() : ''); };
-      input.addEventListener('input', () => { k.set(parseFloat(input.value)); show(); kick(); });
-      show();
-      panel.appendChild(row);
-    });
-    document.body.appendChild(panel);
+    debugPanel('Pipe tuning', knobs, 'right');
+  }
+
+  // the child(ren): density = dot count, which sizes every buffer → applied by reloading
+  const kidSec = DEBUG && formations.find((f) => f.type === 'child');
+  if (kidSec) {
+    const per = kidSec.mirror ? 2 : 1, f = kidSec;
+    debugPanel('Kids', [
+      { label: 'Dots (page total)', unit: '', min: 120, max: 2000, step: 20, get: () => N,
+        note: (v) => per > 1 ? ' · ' + Math.round(v / per) + '/kid' : '',
+        commit: (v) => {   // reload with ?dots= (keeps debug=1)
+          const u = new URL(location.href);
+          u.searchParams.set('dots', v);
+          location.href = u.href;
+        } },
+      { label: 'Dot size (page)', unit: 'px', min: 2, max: 18, step: 0.5, get: () => cfg.dotSize, set: (v) => { cfg.dotSize = v; } },
+      { label: 'Kid size (data-dots-r)', unit: '× vh', min: 0.06, max: 0.4, step: 0.005, get: () => f.r, set: (v) => { f.r = v; } },
+      { label: 'Kid x (right one)', unit: '× vw', min: 0.55, max: 0.98, step: 0.005, get: () => f.pos[0], set: (v) => { f.pos[0] = v; } },
+    ], 'left', () => '<main data-dots-count="' + N + '" data-dots-size="' + cfg.dotSize + '"> · hero data-dots-r="' +
+      f.r + '" data-dots-pos="' + f.pos[0] + ',' + f.pos[1] + '"');
   }
 }

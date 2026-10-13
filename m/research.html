@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="../_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
 <link rel="stylesheet" href="../_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
 <link rel="stylesheet" href="../_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
-<link rel="stylesheet" href="../css/m.css">
+<link rel="stylesheet" href="../css/m.css?v=2">
 <!-- Shared mobile chrome (topbar, header, footer, WhatsApp) — one source for all /m/ pages -->
 <script src="../js/site-config.js?v=2"></script>
 <script src="../js/m-chrome.js?v=2" defer></script>
@@ -39,12 +39,12 @@
      Previous "Image 2" variant (photo hero + card pulled up) lives in git @79213fa. */
   .r-hero { padding: 0; text-align: center; }
   .r-hero__text { padding-block: 34px 28px; }
-  .r-hero__ttl { font-family: var(--tl-font-core); font-weight: 800; font-size: var(--tl-fs-2xl);
-    color: var(--tl-cyan-700); line-height: 1; }
-  .r-hero__st { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-lg); line-height: 1.15; margin: 12px 0 14px; }
-  .r-hero__desc { color: var(--tl-ink-600); font-size: var(--tl-fs-base); line-height: 1.6; margin: 0 auto 12px; max-width: 34ch; }
+  .r-hero__ttl { font-weight: 800; font-size: var(--tl-fs-2xl); letter-spacing: var(--tl-tracking-tight);
+    color: var(--tl-ink-900); line-height: var(--tl-leading-tight); }
+  .r-hero__st { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-lg); line-height: var(--tl-leading-snug); margin: 12px 0 14px; }
+  .r-hero__desc { color: var(--tl-ink-600); font-size: var(--tl-fs-base); line-height: var(--tl-leading-body); margin: 0 auto 12px; max-width: 34ch; }
   .r-hero__safe { display: flex; align-items: flex-start; justify-content: center; gap: 8px; margin: 0 auto 22px; max-width: 34ch;
-    font-size: var(--tl-fs-sm); font-weight: 700; line-height: 1.45; color: var(--tl-ink-700); text-align: left; }
+    font-size: var(--tl-fs-sm); font-weight: 700; line-height: var(--tl-leading-relaxed); color: var(--tl-ink-700); text-align: left; }
   .r-hero__safe svg { flex: none; margin-top: 2px; color: var(--tl-green-600); }
   .r-hero .cta-col { align-items: center; }
   .r-hero .cta-col .btn-block { max-width: 300px; }
@@ -52,34 +52,43 @@
   .r-hero__photo { height: var(--hero-h, 220px);
     background: url('../assets/dataset/hero-children.jpg') var(--hero-x, 75%) var(--hero-y, 62%)/cover no-repeat; }
 
+  /* ── Shared card type ── */
+  .r-pcard h3, .r-ai__item h3, .r-stream__t { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-base); }
+  .r-panel h3, .r-res__item h3, .r-folder__t { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-lg); }
+  .r-pcard p, .r-ai__item p, .r-res__item p, .r-panel p, .r-stream__d { color: var(--tl-ink-500); font-size: var(--tl-fs-sm); line-height: var(--tl-leading-body); }
+  .r-braid-arrow, .r-ai__arrow { color: var(--tl-pink-600); }
+  .t-center { text-align: center; } .t-left { text-align: left; }
+
   /* ── PROBLEM (dark) · CHG-12 deferred (B3): ported as-is ── */
   .r-dark { background: var(--tl-ink-900); color: var(--tl-white); }
   .r-dark .title { color: var(--tl-white); text-align: center; }
   .r-pcards { display: flex; flex-direction: column; gap: 14px; margin-top: 28px; }
   .r-pcard { position: relative; background: var(--tl-white); border-radius: var(--tl-radius-md); padding: 22px 20px 44px; }
-  .r-pcard h3 { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-base); margin: 0 0 8px; }
-  .r-pcard p { color: var(--tl-ink-500); font-size: var(--tl-fs-sm); line-height: 1.55; }
+  .r-pcard h3 { margin: 0 0 8px; }
   .r-pcard__ic { position: absolute; right: 14px; bottom: 10px; font-size: var(--tl-fs-lg); }
   .r-weird { position: relative; margin: 28px -22px 24px; overflow: hidden; }
   .r-weird__art { display: block; width: 100%; height: clamp(300px,74vw,460px); }
   .r-weird__inner { position: absolute; left: 0; right: 0; top: 0; height: 75.8%; display: flex; flex-direction: column;
     justify-content: center; align-items: center; text-align: center; padding: 0 20px; }
   .r-weird__pre { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-base); }
-  .r-weird__big { font-weight: 800; color: var(--tl-white); font-size: var(--tl-fs-display); line-height: 1; margin: 6px 0; text-shadow: 0 2px 12px color-mix(in srgb, var(--tl-ink-900) 28%, transparent); }
+  .r-weird__big { font-weight: 800; color: var(--tl-white); font-size: var(--tl-fs-display); line-height: var(--tl-leading-tight); margin: 6px 0; text-shadow: 0 2px 12px color-mix(in srgb, var(--tl-ink-900) 28%, transparent); }
   .r-weird__post { font-weight: 600; color: var(--tl-ink-900); font-size: var(--tl-fs-sm); }
   .r-blind { text-align: center; }
   .r-blind__pre { font-weight: 700; color: var(--tl-cyan-500); font-size: var(--tl-fs-base); margin-bottom: 4px; }
-  .r-blind__big { font-family: var(--tl-font-core); font-weight: 800; color: var(--tl-white); font-size: var(--tl-fs-xl); line-height: 1.15; }
+  .r-blind__big { font-weight: 800; color: var(--tl-white); font-size: var(--tl-fs-xl); line-height: var(--tl-leading-snug); }
   .r-blind__post { color: var(--tl-line-300); font-size: var(--tl-fs-sm); margin-top: 12px; }
 
   /* ── COMPETENCIES · CHG-13: live 2-col skill grid (no image strips) ── */
-  .r-comp__label { font-weight: 800; text-align: center; font-size: var(--tl-fs-base); margin: 0 0 16px; }
+  .r-comp__label { font-weight: 800; text-align: center; font-size: var(--tl-fs-base); margin: 28px 0 16px; }
   .r-skills { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; text-align: left; }
-  .r-skill { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-top: 4px solid var(--sk); border-radius: var(--tl-radius-md); padding: 14px 14px 16px; }
-  .r-skill__ic { width: 40px; height: 40px; border-radius: var(--tl-radius-md); display: flex; align-items: center; justify-content: center;
-    font-size: var(--tl-fs-lg); background: color-mix(in srgb, var(--sk) 15%, var(--tl-white)); margin-bottom: 10px; }
-  .r-skill__n { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-sm); line-height: 1.2; }
-  .r-skill__d { color: var(--tl-ink-500); font-size: var(--tl-fs-xs); line-height: 1.45; margin-top: 5px; }
+  /* bordered tile + icon tile shared by skills and triadic streams */
+  .r-skill, .r-stream { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-md); padding: 16px; }
+  .r-skill__ic, .r-stream__ic { width: 40px; height: 40px; border-radius: var(--tl-radius-md); display: flex; align-items: center;
+    justify-content: center; font-size: var(--tl-fs-lg); }
+  .r-skill { border-top: 4px solid var(--sk); }
+  .r-skill__ic { background: color-mix(in srgb, var(--sk) 15%, var(--tl-white)); margin-bottom: 10px; }
+  .r-skill__n { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-sm); line-height: var(--tl-leading-snug); }
+  .r-skill__d { color: var(--tl-ink-500); font-size: var(--tl-fs-xs); line-height: var(--tl-leading-relaxed); margin-top: 5px; }
   .r-skill--cyan { --sk: var(--tl-cyan-500); } .r-skill--orange { --sk: var(--tl-orange-500); }
   .r-skill--green { --sk: var(--tl-green-500); } .r-skill--pink { --sk: var(--tl-pink-600); }
   .r-skills-div { height: 1px; background: var(--tl-line-200); margin: 30px 10%; }
@@ -92,60 +101,55 @@
   .r-panel { display: none; background: var(--tl-white); border-radius: var(--tl-radius-md); padding: 24px 20px; margin-top: 18px;
     box-shadow: var(--tl-shadow-card); }
   .r-panel[data-active="true"] { display: block; }
-  .r-panel h3 { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-lg); margin: 0 0 12px; }
+  .r-panel h3 { margin: 0 0 12px; }
   .r-panel ul { margin: 0 0 12px; padding-left: 20px; }
-  .r-panel li { color: var(--tl-ink-700); font-size: var(--tl-fs-base); line-height: 1.7; }
-  .r-panel p { color: var(--tl-ink-500); font-size: var(--tl-fs-sm); line-height: 1.6; margin: 0 0 10px; }
-  .r-panel h4 { font-weight: 800; color: var(--tl-ink-700); font-size: var(--tl-fs-xs); text-transform: uppercase;
-    letter-spacing: var(--tl-tracking-kicker); margin: 10px 0 4px; }
+  .r-panel li { color: var(--tl-ink-700); font-size: var(--tl-fs-base); line-height: var(--tl-leading-body); }
+  .r-panel p { margin: 0 0 10px; }
+  .r-panel h4 { margin: 10px 0 4px; }   /* .eyebrow (cyan) */
   .r-panel__ill { width: 100%; height: auto; max-height: 200px; object-fit: contain; margin-top: 14px; }
 
   /* ── TRIADIC (CHG-15: rebuilt in live HTML/CSS, no images) ── */
   .r-triadic__sub { margin: 14px 0 26px; }
   .r-streams { display: flex; flex-direction: column; gap: 12px; }
-  .r-stream { display: flex; gap: 14px; align-items: flex-start; background: var(--tl-white); border: 1px solid var(--tl-line-200);
-    border-left: 5px solid var(--tl-cyan-500); border-radius: var(--tl-radius-md); padding: 16px 16px; }
+  .r-stream { display: flex; gap: 14px; align-items: flex-start; border-left: 5px solid var(--tl-cyan-500); }
   .r-stream.s-green { border-left-color: var(--tl-green-500); }
   .r-stream.s-pink   { border-left-color: var(--tl-pink-600); }
-  .r-stream__ic { flex: 0 0 auto; width: 42px; height: 42px; border-radius: var(--tl-radius-md); display: flex;
-    align-items: center; justify-content: center; font-size: var(--tl-fs-lg); background: var(--tl-wash-cyan); }
+  .r-stream__ic { flex: 0 0 auto; background: var(--tl-wash-cyan); }
   .r-stream.s-green .r-stream__ic { background: var(--tl-wash-green); }
   .r-stream.s-pink .r-stream__ic { background: var(--tl-wash-pink); }
-  .r-stream__t { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-base); }
-  .r-stream__d { font-size: var(--tl-fs-sm); color: var(--tl-ink-500); margin-top: 3px; line-height: 1.5; }
-  .r-braid-arrow { text-align: center; font-size: var(--tl-fs-lg); color: var(--tl-pink-600); margin: 6px 0; }
+  .r-stream__d { margin-top: 3px; }
+  .r-braid-arrow { text-align: center; font-size: var(--tl-fs-lg); margin: 6px 0; }
   .r-profile { background: linear-gradient(135deg,var(--tl-ink-900),var(--tl-cyan-700)); color: var(--tl-white); border-radius: var(--tl-radius-md);
     padding: 22px 20px; text-align: center; }
-  .r-profile__k { font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); opacity: .85; }
-  .r-profile__t { font-family: var(--tl-font-core); font-weight: 800; font-size: var(--tl-fs-lg); margin-top: 6px; line-height: 1.2; }
+  .r-profile__k { color: inherit; margin: 0; opacity: .85; }   /* .eyebrow */
+  .r-profile__t { font-weight: 800; font-size: var(--tl-fs-lg); margin-top: 6px; line-height: var(--tl-leading-snug); }
   .r-note { text-align: center; font-style: italic; color: var(--tl-ink-500); font-size: var(--tl-fs-sm); margin-top: 18px; }
 
   /* ── DATA STRUCTURE folders (CHG-16: stronger, on-brand) ── */
   .r-ds-sub { text-align: center; margin: 12px auto 0; max-width: 520px; }
-  .r-ds-sub code { background: var(--tl-surface-100); padding: 1px 6px; border-radius: var(--tl-radius-sm); font-size: var(--tl-fs-sm); }
+  .r-ds-sub code { background: var(--tl-surface-200); padding: 2px 6px; border-radius: var(--tl-radius-xs); font-size: var(--tl-fs-sm); }
   .r-folders { display: flex; flex-direction: column; gap: 16px; margin-top: 30px; }
   .r-folder { position: relative; aspect-ratio: 304 / 294; }
   .r-folder__body { position: absolute; top: 25%; left: 3%; right: 3%; bottom: 4%; display: block; color: var(--body); }
   .r-folder__frame { position: absolute; inset: 0; width: 100%; height: 100%; display: block; color: var(--frame);
     filter: drop-shadow(var(--tl-shadow-raised)); }
   .r-folder__text { position: absolute; z-index: 2; left: 9%; right: 7%; top: 34%; }
-  .r-folder__t { font-family: var(--tl-font-core); font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-lg); line-height: 1.2; margin: 0 0 10px; }
-  .r-folder__d { font-family: var(--tl-font-core); font-weight: 600; color: var(--tl-ink-900); font-size: var(--tl-fs-sm); line-height: 1.35; margin: 0; }
+  .r-folder__t { line-height: var(--tl-leading-snug); margin: 0 0 10px; }
+  .r-folder__d { font-weight: 600; color: var(--tl-ink-900); font-size: var(--tl-fs-sm); line-height: var(--tl-leading-normal); margin: 0; }
   .r-folder--pink  { --frame: var(--tl-pink-600); --body: var(--tl-pink-400); }
   .r-folder--green { --frame: var(--tl-green-600); --body: var(--tl-green-500); }
   .r-folder--cyan  { --frame: var(--tl-cyan-700); --body: var(--tl-cyan-500); }
   .r-folder--orange { --frame: var(--tl-yellow-700); --body: var(--tl-orange-500); }
 
   /* ── AI USE CASES · CHG-18 deferred (B5): ported ── */
-  .r-ai__arrow { font-size: var(--tl-fs-xl); color: var(--tl-pink-600); margin: 8px 0 18px; }
+  .r-ai__arrow { font-size: var(--tl-fs-xl); margin: 8px 0 18px; }
   .r-ai__item { margin: 0 0 18px; }
-  .r-ai__item h3 { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-base); margin: 0 0 5px; }
-  .r-ai__item p { color: var(--tl-ink-500); font-size: var(--tl-fs-sm); line-height: 1.55; }
+  .r-ai__item h3 { margin: 0 0 5px; }
 
   /* ── RESOURCES ── */
   .r-res { display: flex; flex-direction: column; gap: 26px; margin-top: 30px; }
-  .r-res__item h3 { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-lg); margin: 0 0 6px; }
-  .r-res__item p { color: var(--tl-ink-500); font-size: var(--tl-fs-sm); line-height: 1.6; margin: 0 0 14px; }
+  .r-res__item h3 { margin: 0 0 6px; }
+  .r-res__item p { margin: 0 0 14px; }
 
 
 </style>
@@ -159,8 +163,7 @@
   <!-- HERO (CHG-11) · text-first, photo band below -->
   <section class="r-hero">
     <div class="r-hero__text wrap">
-      <div class="eyebrow cyan">Tilli for Research</div>
-      <h1 class="r-hero__ttl">Tilli Measures!</h1>
+      <h1 class="r-hero__ttl">Tilli <span class="c-cyan">Measures!</span></h1>
       <p class="r-hero__st">The 360-degree Foundational Skills Dataset</p>
       <p class="r-hero__desc">Unlocking longitudinal, multi-informant insights into cognitive and social-emotional development for non-WEIRD populations.</p>
       <p class="r-hero__safe"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 1a3.5 3.5 0 0 0-3.5 3.5V6H4a1.5 1.5 0 0 0-1.5 1.5v6A1.5 1.5 0 0 0 4 15h8a1.5 1.5 0 0 0 1.5-1.5v-6A1.5 1.5 0 0 0 12 6h-.5V4.5A3.5 3.5 0 0 0 8 1Zm2 5H6V4.5a2 2 0 1 1 4 0V6Z"/></svg>Every record is de-identified: children appear only as a coded ID, never by name.</p>
@@ -203,10 +206,10 @@
   </section>
 
   <!-- COMPETENCIES · CHG-13: live 2-col skill grid -->
-  <section class="wrap" style="text-align:center">
+  <section class="wrap t-center">
     <h2 class="title">We provide a unified view of <span class="c-green">child development</span>.</h2>
     <p class="lede">Across 12 core competencies, in two critical domains.</p>
-    <p class="r-comp__label c-cyan" style="margin-top:28px">6 Cognitive Skills</p>
+    <p class="r-comp__label c-cyan">6 Cognitive Skills</p>
     <div class="r-skills">
       <div class="r-skill r-skill--cyan"><span class="r-skill__ic">🎯</span><div class="r-skill__n">Attention</div><div class="r-skill__d">Focusing on relevant information and sustaining it on a task.</div></div>
       <div class="r-skill r-skill--orange"><span class="r-skill__ic">🧠</span><div class="r-skill__n">Working Memory</div><div class="r-skill__d">Holding and using information over short periods.</div></div>
@@ -250,9 +253,9 @@
     <div class="r-panel" data-panel="eco" data-active="false">
       <h3>Ecological Predictors</h3>
       <p>Captures school and home influences, including teacher quality, resources, parental education, socioeconomic status, and access to learning materials.</p>
-      <h4>Classroom</h4>
+      <h4 class="eyebrow">Classroom</h4>
       <p>Teacher education levels · access to professional development · school PIN / postal code · material &amp; infrastructure access.</p>
-      <h4>Home</h4>
+      <h4 class="eyebrow">Home</h4>
       <p>Parental education levels · home PIN / postal code · parental socioeconomic status · access to learning materials at home.</p>
       <img class="r-panel__ill" src="../assets/dataset/domain-ecology.png" alt="">
     </div>
@@ -278,17 +281,17 @@
     </div>
     <div class="r-braid-arrow" aria-hidden="true">↓</div>
     <div class="r-profile">
-      <div class="r-profile__k">ONE COMPREHENSIVE</div>
+      <div class="eyebrow r-profile__k">ONE COMPREHENSIVE</div>
       <div class="r-profile__t">Developmental profile for every child</div>
     </div>
     <p class="r-note">All data is de-identified, privacy-first, and delivered via low-bandwidth messaging platforms to ensure inclusivity.</p>
   </section>
 
   <!-- DATA STRUCTURE folders (CHG-16 redesigned; CHG-17 banner removed) -->
-  <section class="wrap" style="text-align:center">
+  <section class="wrap t-center">
     <h2 class="title">What we measure: data structure</h2>
     <p class="lede r-ds-sub">Four interoperable CSV files, linked by a unique <code>subject_id</code>.</p>
-    <div class="r-folders" style="text-align:left">
+    <div class="r-folders t-left">
       <div class="r-folder r-folder--pink"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Demographics &amp; Ecology</div><div class="r-folder__d">Equity markers, home environment, family structure, and special-needs status.</div></div></div>
       <div class="r-folder r-folder--green"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Direct Assessments</div><div class="r-folder__d">Behavioural interaction streams, raw latency, task-switching performance, and foundational literacy/numeracy readiness.</div></div></div>
       <div class="r-folder r-folder--cyan"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Caregiver Report</div><div class="r-folder__d">Home-based emotional symptoms, behavioural outcomes, and executive-function ratings.</div></div></div>
@@ -307,9 +310,9 @@
   </section>
 
   <!-- RESOURCES -->
-  <section class="wash-grey wrap" style="text-align:center">
+  <section class="wash-grey wrap t-center">
     <h2 class="title c-pink">Resources &amp; more</h2>
-    <div class="r-res" style="text-align:left">
+    <div class="r-res t-left">
       <div class="r-res__item">
         <h3>Technical Documentation</h3>
         <p>For software developers familiar with how web applications are built.</p>

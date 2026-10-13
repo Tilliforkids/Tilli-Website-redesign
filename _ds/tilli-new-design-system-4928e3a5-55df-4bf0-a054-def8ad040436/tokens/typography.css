@@ -39,8 +39,9 @@
 
   --tl-leading-tight:1.02;     /* hero + display */
   --tl-leading-snug:1.15;      /* headlines */
-  --tl-leading-normal:1.35;    /* body */
-  --tl-leading-relaxed:1.5;    /* long paragraphs */
+  --tl-leading-normal:1.35;    /* sub-titles, short descriptions */
+  --tl-leading-relaxed:1.5;    /* compact multi-line text (captions, tiles) */
+  --tl-leading-body:1.6;       /* web paragraphs, card text, list items */
 
   --tl-tracking-hero:-0.06em;
   --tl-tracking-tight:-0.02em;

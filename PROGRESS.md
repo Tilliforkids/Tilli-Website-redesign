@@ -4,18 +4,18 @@
 > Updated by Claude as tasks are completed. Spec is the source of truth; this is the dashboard.
 >
 > **Legend:** ✅ done · 🔵 in progress · ⬜ todo · ⛔ blocked
-> **Last updated:** 2026-10-09 — CHG-33 (E8) ✅ (closing CTA upgraded to a bold terminal band on both builds). **P5 + P6 now code-complete** — rest is external-blocked/process. Scope 29 tasks.
+> **Last updated:** 2026-10-13 — CHG-22 ✅ (schools & trainings carousel: 5 photos + 8 logos, desktop marquee / mobile swipe). **P5 + P6 now code-complete** — rest is external-blocked/process. Scope 29 tasks.
 
 ## At a glance
 
-- **Done:** 23 / 29
+- **Done:** 24 / 29
 - **In progress:** 0
-- **Blocked:** 4  (CHG-22 → B4 · CHG-29 → B6 · CHG-30 → B7 · CHG-32 → B7)
+- **Blocked:** 3  (CHG-29 → B6 · CHG-30 → B7 · CHG-32 → B7)
 - **Unblocked & remaining:** 2  (CHG-21 umbrella — awaits E4/E5/E7 · CHG-23 process — Masoomi)
 - **Removed:** 2  (CHG-14, CHG-18)
 
 ```
-[████████████████████████████████        ]  79%
+[█████████████████████████████████       ]  83%
 ```
 
 > **P5 + P6 are code-complete** — every buildable task is done. All that remains is blocked on
@@ -25,7 +25,7 @@
 ## Next up
 
 → **All buildable P5 + P6 work is done.** Nothing is currently buildable. Remaining:
-  CHG-22 (⛔ B4, Drive photos) · CHG-23 (process — Masoomi review) · CHG-29 (⛔ B6, Kavi chart
+  CHG-23 (process — Masoomi review) · CHG-29 (⛔ B6, Kavi chart
   data) · CHG-30 + CHG-32 (⛔ B7, school photos/quotes/names/logos). Each unblocks the moment
   its external input arrives — see **Ask Kavi** + **Assets needed** below.
 
@@ -69,7 +69,7 @@
 | Status | ID | Task |
 |--------|----|------|
 | ⬜ | CHG-21 | Make page on-brand |
-| ⛔ | CHG-22 | Photo carousel — **B4** (Drive photos) |
+| ✅ | CHG-22 | Photo carousel — photos + logos under the hero, both builds (GiG logo omitted — no consent) |
 | ✅ | CHG-24 | Offerings section — desktop parity (mobile already had it) |
 | ✅ | CHG-25+20 | WhatsApp icon consistency — already single-source (WA_ICON) in both skins |
 | ⬜ | CHG-23 | Masoomi content review (process) |
@@ -123,7 +123,7 @@
 | # | Needed | Unblocks |
 |---|--------|----------|
 | ~~B3~~ | ~~Original HTML for Research "Why" section~~ — RESOLVED, no such section | ~~CHG-12~~ |
-| B4 | Drive folder of school + training photos | CHG-22 |
+| ~~B4~~ | ~~Drive folder of school + training photos~~ RESOLVED 2026-10-13 (`assets/Images for school success/`) | ~~CHG-22~~ |
 | B5 | Working session on layout/direction | CHG-13, CHG-14, CHG-18 |
 | B6 | E4 chart: Option A (growth/yr) vs B (baseline→endline lift, recommended) + real numbers. **⏳ Awaiting Kavi — not yet received (asked 2026-10-09).** | CHG-29 |
 | B7 | Real school photos + approved quotes + named roles + logos/permission. **Set = NMAJS, Hippocampus, Musaeus** (consent confirmed; **GIG dropped — no consent**). **⏳ Awaiting assets — not yet received.** E5 approach decided: fold photo + named person + quote into the 3 existing case-study cards (no new section). | CHG-30, CHG-32 (shared w/ CHG-22) |

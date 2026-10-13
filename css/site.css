@@ -34,6 +34,15 @@
 .tl-body { font-size: var(--tl-fs-base); line-height: 1.7; color: var(--tl-text-body); }
 .tl-muted { color: var(--tl-text-muted); }
 
+/* ── Tones ───────────────────────────────────────────────────────────────────
+   Per-item brand colour pair for components that read --c (accent fill / border)
+   and --ct (accent text on white). One class instead of inline style="--c:…". */
+.tone-cyan   { --c: var(--tl-cyan-500);   --ct: var(--tl-cyan-700); }
+.tone-green  { --c: var(--tl-green-500);  --ct: var(--tl-green-600); }
+.tone-yellow { --c: var(--tl-yellow-500); --ct: var(--tl-yellow-700); }
+.tone-pink   { --c: var(--tl-pink-400);   --ct: var(--tl-pink-600); }
+.tone-orange { --c: var(--tl-orange-500); --ct: var(--tl-yellow-700); }
+
 /* ── Sections ────────────────────────────────────────────────────────────── */
 .tl-section { padding: clamp(56px, 8vw, 104px) 0; }
 .tl-section--tint { background: var(--tl-surface-100); }

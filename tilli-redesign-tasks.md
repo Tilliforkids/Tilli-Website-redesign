@@ -31,7 +31,7 @@
 | B1 | ~~WhatsApp: remove or keep?~~ **RESOLVED:** rename "Ask-Tilli on WhatsApp" → "Ask-Tilli" everywhere (copy only). The WhatsApp icon itself stays — just make it consistent with Home (CHG-20/25). | CHG-06 |
 | B2 | ~~Brain/heart columns: skill→column mapping~~ **RESOLVED:** 2 buckets — brain = Executive Function, heart = Social-Emotional (full lists in §2 / CHG-02). | CHG-02 |
 | B3 | ~~Original HTML for the Research "Why" section~~ **RESOLVED:** there was no separate "Why" section; CHG-12 done via the WEIRD band work. | CHG-12 |
-| B4 | **Drive folder** with school + training photos for the carousel. | CHG-22 |
+| ~~B4~~ | ~~**Drive folder** with school + training photos for the carousel.~~ RESOLVED 2026-10-13 | ~~CHG-22~~ |
 | B5 | **Working session** on layout/direction before build. | CHG-13, CHG-14, CHG-18 |
 | B6 | **E4 chart data.** Choose **Option A** (reach/growth per year — traction) vs **Option B** (baseline→endline outcome lift per skill — efficacy; recommended) **and** supply the real underlying numbers. Real data only; label source + n under the chart. **⏳ Awaiting Kavi — not yet received (asked 2026-10-09).** | CHG-29 |
 | B7 | **School proof assets.** Real school photos + approved pull-quotes + named roles + (recommended) school logos & permission to display. **Set = NMAJS, Hippocampus, Musaeus** (consent confirmed; **GIG dropped — no consent**). **⏳ Awaiting assets — not yet received.** | CHG-30, CHG-32 (shared w/ CHG-22) |
@@ -262,11 +262,15 @@ differs.
 - **Implemented by:** §8 / P6 (CHG-26…CHG-33, elements E1–E8) — the concrete execution of
   this task. CHG-21 is done when the P6 elements land.
 
-### CHG-22 · Schools & trainings photo carousel (landing element) — ⛔ BLOCKED (B4)
+### CHG-22 · Schools & trainings photo carousel (landing element) — ✅ DONE
 - **Scope:** mobile (and desktop) · **Blocked-by:** B4
 - **Change:** add a carousel of real school + training photos as the first element
   (above or below the hero).
 - **Acceptance:** carousel present, swipeable on mobile, using real photos from B4.
+- **Resolution (2026-10-13):** strip directly under the hero on both builds — 5 school/training
+  photos (web copies `assets/ds/success-photo-1…5.jpg`) interleaved with 8 partner logos (GiG
+  omitted — no consent, B7). Desktop `success.html`: seamless auto-scroll marquee (`.sc-*`), hover
+  pauses. Mobile `m/success.html`: swipeable snap strip (`.s-carousel`).
 
 ### CHG-24 · Add an offerings section — ✅ DONE
 - **Change:** add an "offerings" section consistent with how offerings appear elsewhere.

@@ -23,7 +23,7 @@ img { max-width: 100%; display: block; }
 section { padding-block: 52px; position: relative; }
 
 /* ── Type ────────────────────────────────────────────────────────────────── */
-.eyebrow { font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
+.eyebrow { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker);
   text-transform: uppercase; color: var(--tl-cyan-700); margin-bottom: 14px; }
 .eyebrow.cyan  { color: var(--tl-cyan-700); }
 .eyebrow.green { color: var(--tl-green-600); }

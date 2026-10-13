@@ -51,12 +51,35 @@
   .o-card--int .o-kicker { color: var(--tl-yellow-700); }
 
   /* CHG-26 (E1) + CHG-31 (E6): clean centered intro header, de-crowded.
-     Flat green wash (NO gradient) matches the mobile hero for device parity;
+     Flat white (NO gradient) matches the mobile hero for device parity;
      scoped to this page so the shared .tl-hero--green (faq / privacy) is untouched.
      Extra top/bottom whitespace lets the single headline breathe. */
-  .s-hero-flat { background: var(--tl-wash-green);
+  .s-hero-flat { background: var(--tl-white);
     padding: clamp(104px, 13vw, 168px) 0 clamp(72px, 9vw, 112px); }
     .s-hero-flat .tl-lead { margin-top: 22px; }
+
+  /* CHG-22: schools & trainings marquee — school photos interleaved with partner
+     logos, one seamless auto-scrolling strip under the hero (white, like the hero).
+     Track holds the set TWICE so translateX(-50%) loops with no seam — keep both
+     halves identical. Hover pauses; reduced-motion turns it into a scroll strip. */
+  .sc-band { padding: 0 0 clamp(56px, 7vw, 88px); }
+  .sc-marquee { --sc-h: 240px; --sc-gap: 20px; --sc-dur: 90s;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+  .sc-track { display: flex; gap: var(--sc-gap); width: max-content; padding-right: var(--sc-gap);
+    animation: sc-loop var(--sc-dur) linear infinite; }
+  .sc-marquee:hover .sc-track { animation-play-state: paused; }
+  .sc-tile { flex: 0 0 auto; height: var(--sc-h); border-radius: var(--tl-radius-md); overflow: hidden; }
+  .sc-tile--photo { aspect-ratio: 4 / 3; background: var(--tl-surface-100); }
+  .sc-tile--photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .sc-tile--logo { aspect-ratio: 1; background: var(--tl-white); border: 2px solid var(--tl-line-200);
+    display: flex; align-items: center; justify-content: center; padding: 28px; }
+  .sc-tile--logo img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+  @keyframes sc-loop { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .sc-marquee { overflow-x: auto; }
+    .sc-track { animation: none; } }
 
   /* CHG-27 (E2): grouped reach-out band — Tilli character + contact groups
      with method icons. One idea per section, spacious, per the E1 governing look. */
@@ -65,49 +88,64 @@
   .rk__art { display: flex; justify-content: center; }
   .rk__art img { width: 100%; max-width: 300px; height: auto; }
   .rk__head { margin: 0 0 28px; }
-  .rk__groups { display: grid; gap: 26px; }
-  .rk__label { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker);
-    text-transform: uppercase; color: var(--tl-ink-500); margin: 0 0 12px; }
+  /* three contacts, one colour: cyan icons; the call is the primary action, styled as a link */
+  .rk__links { display: grid; gap: 14px; justify-items: start; }
   .rk__link { display: inline-flex; align-items: center; gap: 12px; font-weight: 700;
     font-size: var(--tl-fs-base); color: var(--tl-ink-900); text-decoration: none; }
-  .rk__link + .rk__link { margin-top: 10px; }
-  .rk__link:hover { color: var(--tl-green-600); }
+  .rk__link:hover { color: var(--tl-cyan-700); }
+  .rk__link--cta { color: var(--tl-cyan-700); text-decoration: underline; text-decoration-thickness: 2px;
+    text-underline-offset: 4px; }
+  .rk__link--cta:hover { text-decoration-thickness: 3px; }
   .rk__ic { flex: none; display: inline-flex; align-items: center; justify-content: center;
-    width: 40px; height: 40px; border-radius: var(--tl-radius-md); }
+    width: 40px; height: 40px; border-radius: var(--tl-radius-md);
+    background: var(--tl-wash-cyan); color: var(--tl-cyan-700); }
   .rk__ic svg { width: 20px; height: 20px; }
-  .rk__ic--green { background: var(--tl-wash-green); color: var(--tl-green-600); }
-  .rk__ic--cyan  { background: var(--tl-wash-cyan);  color: var(--tl-cyan-700); }
-  .rk__ic--pink  { background: var(--tl-wash-pink);  color: var(--tl-pink-600); }
   @media (max-width: 900px) {
     .rk { grid-template-columns: 1fr; gap: 32px; text-align: center; }
     .rk__art { order: -1; }                 /* illustration stacks above (spec) */
     .rk__art img { max-width: 200px; }
-    .rk__groups { justify-items: center; }
+    .rk__links { justify-items: center; }
     .rk__link { justify-content: center; }
   }
 
   /* CHG-28 (E3): "Tilli works" — two-col band with Top Results checklist */
-  .tw { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+  /* Clean pass: ONE accent (--tw-accent) for heading, links and key figures; green is
+     reserved for the ticks. Body in ink-600 at tighter leading, sentence-case subhead. */
+  .tw { --tw-accent: var(--tl-cyan-700);
+    display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
     gap: 56px; align-items: center; }
-  .tw a { color: var(--tl-cyan-700); font-weight: 700; text-decoration: underline;
-    text-underline-offset: 2px; }
-  .tw a:hover { color: var(--tl-pink-600); }
-  .tw__sub { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase;
-    color: var(--tl-ink-500); margin: 28px 0 16px; }
-  .tw__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
-  .tw__list li { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; }
-  .tw__check { flex: none; width: 26px; height: 26px; border-radius: var(--tl-radius-pill); margin-top: 2px;
-    background: var(--tl-wash-green); color: var(--tl-green-600);
+  .tw .tl-lead { color: var(--tl-ink-600); line-height: 1.5; margin: 0; }
+  .tw a { color: var(--tw-accent); font-weight: 700; text-decoration: none; }
+  .tw a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .tw__sub { font-size: var(--tl-fs-lg); font-weight: 800; color: var(--tl-ink-900); margin: 44px 0 22px; }
+  .tw__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 26px; }
+  .tw__list li { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; }
+  .tw__check { flex: none; width: 30px; height: 30px; border-radius: var(--tl-radius-pill);
+    background: var(--tl-green-500); color: var(--tl-white);   /* solid disc, white tick */
     display: inline-flex; align-items: center; justify-content: center; }
-  .tw__check svg { width: 15px; height: 15px; }
-  .tw__cat { display: block; font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker);
-    text-transform: uppercase; color: var(--tl-cyan-700); margin-bottom: 3px; }
-  .tw__line { font-size: var(--tl-fs-base); line-height: 1.5; color: var(--tl-ink-700); margin: 0; }
-  .tw__fig { color: var(--tl-green-600); font-weight: 800; }
+  .tw__check svg { width: 17px; height: 17px; }
+  .tw__line { font-size: var(--tl-fs-base); line-height: 1.45; color: var(--tl-ink-700); margin: 0; }
+  .tw__line strong { font-weight: 600; color: inherit; }
+  .tw__fig { color: var(--tw-accent); font-weight: 700; }
   .tw__art { aspect-ratio: 4/3; border-radius: var(--tl-radius-lg); background: var(--tl-surface-200);
     border: 1px solid var(--tl-line-200); display: flex; align-items: center; justify-content: center;
     color: var(--tl-text-muted); font-weight: 700; font-size: var(--tl-fs-sm); text-align: center; padding: 20px; }
   html.tl-dots .tw__art { background: transparent; border-color: transparent; }
+  /* heading sits over the ten-kids art (right column), centred on it */
+  .tw__title { text-align: center; margin: 0 0 8px; color: var(--tw-accent); font-size: var(--tl-fs-2xl); }
+  /* "Tilli works" wave: each letter hops in turn, then a short rest before the next wave.
+     Letters are aria-hidden; the h2's aria-label carries the text. */
+  .tw-wave { --wave-dur: 2.2s; --wave-step: 70ms; --wave-h: 0.26em; }
+  .tw-wave__w { display: inline-block; white-space: nowrap; }
+  .tw-wave__w > span { display: inline-block; animation: tw-wave var(--wave-dur) ease-in-out infinite;
+    animation-delay: calc(var(--i) * var(--wave-step)); }
+  @keyframes tw-wave {
+    0%, 40%, 100% { transform: translateY(0); }
+    14% { transform: translateY(calc(var(--wave-h) * -1)); }
+    27% { transform: translateY(calc(var(--wave-h) * 0.12)); }
+  }
+  @media (prefers-reduced-motion: reduce) { .tw-wave__w > span { animation: none; } }
+
   /* photo placeholders become the dot stage until real photos land */
   html.tl-dots .cs__media:not(:has(img)) { background: transparent; border-color: transparent; color: transparent; }
   /* the weekly dots draw the year line themselves */
@@ -115,6 +153,8 @@
   html.tl-dots .tw__art span { visibility: hidden; }
   @media (max-width: 900px) {
     .tw { grid-template-columns: 1fr; gap: 28px; }
+    .tw__aside { display: contents; }      /* single column: heading back on top, */
+    .tw__title { order: -1; text-align: left; margin: 0; }
     .tw__art { order: 2; }                  /* illustration stacks below text (spec) */
   }
 
@@ -157,29 +197,62 @@
   <div style="background: var(--tl-yellow-500);"></div>
 </div>
 
-<main class="tl-main">
+<main class="tl-main" data-dots-count="600" data-dots-size="7.5">
 
   <!-- Hero (CHG-26 E1 + CHG-31 E6: clean centered intro, flat — no gradient) -->
-  <section class="tl-hero s-hero-flat" data-dots="child" data-dots-pos="0.86,0.5" data-dots-r="0.17">
+  <section class="tl-hero s-hero-flat" data-dots="child" data-dots-mirror data-dots-scroll data-dots-pos="0.86,0.5" data-dots-r="0.17">
     <div class="tl-container tl-narrow" style="text-align:center">
       <p class="tl-eyebrow">Success Stories</p>
       <h1 class="tl-h1">Schools that measure the whole child</h1>
       <p class="tl-lead">From a three-year partnership reshaping thousands of childhoods to a research-practice
-        collaboration built on measurement. Each one shows what schools gain when they give foundational skills the time and the tools they need.</p>
+        collaboration built on measurement.</p>
     </div>
   </section>
 
-  <!-- OFFERINGS — Measure / Ask / Intervene (CHG-24) · dots: the orb splits into
-       three single-colour orbs rising behind each card -->
-  <section class="tl-section tl-section--tint" data-dots="pipeline" data-dots-anchor=".dots-stage" data-dots-fit>
+  <!-- SCHOOLS & TRAININGS MARQUEE (CHG-22) — photos + partner logos, set ×2 for the loop -->
+  <section class="sc-band" aria-label="Partner schools and trainings">
+    <div class="sc-marquee">
+      <div class="sc-track">
+        <div class="sc-tile sc-tile--photo"><img src="assets/ds/success-photo-1.jpg" alt="Teachers raising hands during a Tilli training session" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo"><img src="assets/ds/school-nmajs.png" alt="Nita Mukesh Ambani Junior School" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo"><img src="assets/ds/school-hippocampus.png" alt="Hippocampus Learning Centres" decoding="async"></div>
+        <div class="sc-tile sc-tile--photo"><img src="assets/ds/success-photo-2.jpg" alt="School leader and Tilli team member reviewing Feelings Time" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo"><img src="assets/ds/school-musaeus.png" alt="Musaeus College" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo"><img src="assets/ds/school-pathways.png" alt="Pathways School" decoding="async"></div>
+        <div class="sc-tile sc-tile--photo"><img src="assets/ds/success-photo-3.jpg" alt="Teachers working through a Tilli activity together" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo"><img src="assets/ds/school-kai.png" alt="Kai" decoding="async"></div>
+        <div class="sc-tile sc-tile--photo"><img src="assets/ds/success-photo-4.jpg" alt="Tilli team with a partner school leader" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo"><img src="assets/ds/school-vega.png" alt="Vega" decoding="async"></div>
+        <div class="sc-tile sc-tile--photo"><img src="assets/ds/success-photo-5.jpg" alt="Teacher exploring the Tilli assessment dashboard" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo"><img src="assets/ds/school-arugam-bay.png" alt="Arugam Bay" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo"><img src="assets/ds/school-leeds.png" alt="Leeds School" decoding="async"></div>
+        <!-- duplicate of the set above, for the seamless loop -->
+        <div class="sc-tile sc-tile--photo" aria-hidden="true"><img src="assets/ds/success-photo-1.jpg" alt="" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo" aria-hidden="true"><img src="assets/ds/school-nmajs.png" alt="" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo" aria-hidden="true"><img src="assets/ds/school-hippocampus.png" alt="" decoding="async"></div>
+        <div class="sc-tile sc-tile--photo" aria-hidden="true"><img src="assets/ds/success-photo-2.jpg" alt="" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo" aria-hidden="true"><img src="assets/ds/school-musaeus.png" alt="" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo" aria-hidden="true"><img src="assets/ds/school-pathways.png" alt="" decoding="async"></div>
+        <div class="sc-tile sc-tile--photo" aria-hidden="true"><img src="assets/ds/success-photo-3.jpg" alt="" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo" aria-hidden="true"><img src="assets/ds/school-kai.png" alt="" decoding="async"></div>
+        <div class="sc-tile sc-tile--photo" aria-hidden="true"><img src="assets/ds/success-photo-4.jpg" alt="" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo" aria-hidden="true"><img src="assets/ds/school-vega.png" alt="" decoding="async"></div>
+        <div class="sc-tile sc-tile--photo" aria-hidden="true"><img src="assets/ds/success-photo-5.jpg" alt="" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo" aria-hidden="true"><img src="assets/ds/school-arugam-bay.png" alt="" decoding="async"></div>
+        <div class="sc-tile sc-tile--logo" aria-hidden="true"><img src="assets/ds/school-leeds.png" alt="" decoding="async"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OFFERINGS — Measure / Ask / Intervene (CHG-24) · dots off. data-dots-cut = no morph
+       out of the hero; with the hero's data-dots-scroll the kids just scroll away with it -->
+  <section class="tl-section tl-section--tint" data-dots="off" data-dots-cut>
     <div class="tl-container">
       <div class="tl-section-head tl-center">
         <p class="tl-eyebrow" style="color:var(--tl-cyan-700)">What schools get</p>
         <h2 class="tl-h2">Measure. Ask. Intervene.</h2>
         <p class="tl-lead">The same three-step model our partner schools run, every term.</p>
       </div>
-      <!-- dots: scattered data (Measure) → one insight (Ask) → a rising arrow (Intervene) -->
-      <div class="dots-stage" style="height: 170px; margin-bottom: 8px;" aria-hidden="true"></div>
       <div class="tl-grid tl-grid--3">
         <div class="tl-card o-card">
           <p class="o-kicker">1 — Measure</p>
@@ -203,11 +276,15 @@
     </div>
   </section>
 
-  <!-- Hippocampus · dots: three years of growth, the growth slice in pink -->
-  <section class="tl-section" data-dots="bars" data-dots-anchor=".cs__media" data-dots-fit>
+  <!-- Hippocampus · photo slideshow (js/slideshow.js) in place of the dot bars; dots off -->
+  <section class="tl-section" data-dots="off">
     <div class="tl-container">
       <div class="cs">
-        <div class="cs__media"><span>Photo: Hippocampus classroom</span></div>
+        <div class="cs__media ss" data-ss-interval="5000">
+          <img src="assets/ds/success-hippo-1.jpg" alt="Hippocampus children working through Tilli activity books at a classroom table" style="object-position:50% 45%">
+          <img src="assets/ds/success-hippo-2.jpg" alt="A Hippocampus student holding up paper glasses made in a Tilli activity" style="object-position:50% 30%">
+          <img src="assets/ds/success-photo-2.jpg" alt="School leader reviewing Tilli's Feelings Time book with a Tilli team member">
+        </div>
         <div>
           <p class="cs__place">Karnataka, India</p>
           <h2 class="tl-h2">Hippocampus Learning Centres</h2>
@@ -221,11 +298,14 @@
     </div>
   </section>
 
-  <!-- NMAJS · dots: three independent lenses, the child where they overlap -->
-  <section class="tl-section tl-section--tint" data-dots="venn" data-dots-anchor=".cs__media" data-dots-fit>
+  <!-- NMAJS · photo slideshow (js/slideshow.js) in place of the dot venn; dots off -->
+  <section class="tl-section tl-section--tint" data-dots="off">
     <div class="tl-container">
       <div class="cs cs--flip">
-        <div class="cs__media"><span>Photo: NMAJS early years</span></div>
+        <div class="cs__media ss" data-ss-interval="5000">
+          <img src="assets/ds/success-photo-5.jpg" alt="NMAJS teacher exploring the Tilli assessment dashboard">
+          <img src="assets/ds/success-photo-4.jpg" alt="Tilli team member with an NMAJS school leader" style="object-position:50% 35%">
+        </div>
         <div>
           <p class="cs__place">Mumbai, India</p>
           <h2 class="tl-h2">Nita Mukesh Ambani Junior School</h2>
@@ -238,11 +318,14 @@
     </div>
   </section>
 
-  <!-- Musaeus · dots: plan → see the data → redesign, as a loop -->
-  <section class="tl-section" data-dots="loop" data-dots-anchor=".cs__media" data-dots-fit>
+  <!-- Musaeus · photo slideshow (js/slideshow.js) in place of the dot loop; dots off -->
+  <section class="tl-section" data-dots="off">
     <div class="tl-container">
       <div class="cs">
-        <div class="cs__media"><span>Photo: Musaeus College</span></div>
+        <div class="cs__media ss" data-ss-interval="5000">
+          <img src="assets/ds/success-photo-3.jpg" alt="Musaeus teachers working through a Tilli activity together">
+          <img src="assets/ds/success-photo-1.jpg" alt="Musaeus teachers raising hands during a Tilli training session">
+        </div>
         <div>
           <p class="cs__place">Colombo, Sri Lanka</p>
           <h2 class="tl-h2">Musaeus College</h2>
@@ -256,46 +339,39 @@
   </section>
 
   <!-- TILLI WORKS (CHG-28 E3): headline + intro + Top Results checklist -->
-  <section class="tl-section tl-section--tint" data-dots="tenkids" data-dots-anchor=".tw__art" data-dots-fit>
+  <section class="tl-section tl-section--tint" data-dots="tenkids" data-dots-anchor=".tw__art" data-dots-fit data-dots-cut>
     <div class="tl-container">
       <div class="tw">
         <div class="tw__body">
-          <h2 class="tl-h2">Tilli works</h2>
           <p class="tl-lead">See how Tilli’s research-backed approach delivers measurable results.
             Explore our <a href="research.html">assessment</a>, <a href="research.html">the evidence</a>,
             and our <a href="research.html">Stanford research</a>.</p>
           <p class="tw__sub">Top results</p>
           <ul class="tw__list">
             <li>
-              <span class="tw__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
-              <div>
-                <span class="tw__cat">Adoption</span>
-                <p class="tw__line"><b class="tw__fig">95%</b> of teachers rate Tilli’s training highly effective — adoption built in, not bolted on.</p>
-              </div>
+              <span class="tw__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              <p class="tw__line"><b class="tw__fig">95%</b> of teachers rate Tilli’s training highly effective — adoption built in, not bolted on.</p>
             </li>
             <li>
-              <span class="tw__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
-              <div>
-                <span class="tw__cat">Outcome</span>
-                <p class="tw__line"><b class="tw__fig">9 in 10</b> children improved emotion regulation in a single term.</p>
-              </div>
+              <span class="tw__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              <p class="tw__line"><b class="tw__fig">9 in 10</b> children improved emotion regulation in a single term.</p>
             </li>
             <li>
-              <span class="tw__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
-              <div>
-                <span class="tw__cat">Credibility</span>
-                <p class="tw__line">Built at <strong>Stanford</strong>, backed by <strong>UNICEF</strong>, validated with <b class="tw__fig">12,510 children</b>.</p>
-              </div>
+              <span class="tw__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              <p class="tw__line">Built at <strong>Stanford</strong>, backed by <strong>UNICEF</strong>, validated with <b class="tw__fig">12,510 children</b>.</p>
             </li>
           </ul>
         </div>
-        <div class="tw__art" aria-hidden="true"><span>Tilli illustration</span></div>
+        <div class="tw__aside">
+          <h2 class="tl-h2 tw__title tw-wave" aria-label="Tilli works"><span class="tw-wave__w" aria-hidden="true"><span style="--i:0">T</span><span style="--i:1">i</span><span style="--i:2">l</span><span style="--i:3">l</span><span style="--i:4">i</span></span> <span class="tw-wave__w" aria-hidden="true"><span style="--i:5">w</span><span style="--i:6">o</span><span style="--i:7">r</span><span style="--i:8">k</span><span style="--i:9">s</span></span></h2>
+          <div class="tw__art" aria-hidden="true"><span>Tilli illustration</span></div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- WHAT IT ASKS (HM-14): time, training, cost, timetable — the Management Committee brief · dots: 36 weekly lessons along the year -->
-  <section class="tl-section" data-dots="weeks" data-dots-anchor=".yr" data-dots-fit>
+  <section class="tl-section" data-dots="weeks" data-dots-anchor=".yr" data-dots-fit data-dots-cut>
     <div class="tl-container" style="text-align:center">
       <p class="tl-eyebrow">What it takes</p>
       <h2 class="tl-h2">What Tilli asks of your school.</h2>
@@ -320,8 +396,8 @@
     </div>
   </section>
 
-  <!-- REACH OUT (CHG-27 E2): grouped contact block + Tilli character · dots: 53 partner schools + one empty slot -->
-  <section class="tl-section tl-section--tint" data-dots="constellation" data-dots-anchor=".rk__art" data-dots-r="0.3">
+  <!-- REACH OUT (CHG-27 E2): grouped contact block + Tilli character · dots off (cut: the weekly dots above just scroll away) -->
+  <section class="tl-section tl-section--tint" data-dots="off" data-dots-cut>
     <div class="tl-container">
       <div class="rk">
         <div class="rk__art">
@@ -329,39 +405,22 @@
         </div>
         <div class="rk__body">
           <div class="rk__head">
-            <p class="tl-eyebrow">Get in touch</p>
+            <p class="tl-eyebrow" style="color:var(--tl-cyan-700)">Get in touch</p>
             <h2 class="tl-h2">Your school could be the next story</h2>
           </div>
-          <div class="rk__groups">
-            <div class="rk__group">
-              <p class="rk__label">Partner with us / book a call</p>
-              <a class="rk__link" href="#" data-tl-open-form>
-                <span class="rk__ic rk__ic--green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg></span>
-                Book a 30-minute call
-              </a>
-              <a class="rk__link" href="mailto:kavindya@tillikids.com">
-                <span class="rk__ic rk__ic--green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg></span>
-                kavindya@tillikids.com
-              </a>
-            </div>
-            <div class="rk__group">
-              <p class="rk__label">Press &amp; media</p>
-              <a class="rk__link" href="mailto:info@tillikids.com">
-                <span class="rk__ic rk__ic--cyan" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg></span>
-                info@tillikids.com
-              </a>
-            </div>
-            <div class="rk__group">
-              <p class="rk__label">General enquiries</p>
-              <a class="rk__link" href="mailto:info@tillikids.com">
-                <span class="rk__ic rk__ic--pink" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg></span>
-                info@tillikids.com
-              </a>
-              <a class="rk__link" href="tel:+16503347904">
-                <span class="rk__ic rk__ic--pink" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 11.6a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2z"></path></svg></span>
-                +1 650-334-7904
-              </a>
-            </div>
+          <div class="rk__links">
+            <a class="rk__link rk__link--cta" href="#" data-tl-open-form>
+              <span class="rk__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg></span>
+              Book a 30-minute call
+            </a>
+            <a class="rk__link" href="mailto:kavindya@tillikids.com">
+              <span class="rk__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg></span>
+              kavindya@tillikids.com
+            </a>
+            <a class="rk__link" href="tel:+16503347904">
+              <span class="rk__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 11.6a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2z"></path></svg></span>
+              +1 650-334-7904
+            </a>
           </div>
         </div>
       </div>
@@ -372,6 +431,33 @@
 
 <script src="js/site-config.js?v=2"></script>
 <script src="js/site-chrome.js?v=5"></script>
-<script type="module" src="js/dot-field.js?v=36"></script>
+<script src="js/slideshow.js?v=1"></script>
+<script type="module" src="js/dot-field.js?v=40"></script>
+<script>
+/* ?debug=1 → carousel speed panel (CHG-22). Drives the running CSS animation's
+   playback rate so the strip doesn't jump mid-drag; bake the readout into
+   --sc-dur on .sc-marquee when happy. */
+(() => {
+  if (!/[?&]debug=1\b/.test(location.search)) return;
+  const mq = document.querySelector('.sc-marquee'), track = mq && mq.querySelector('.sc-track');
+  const anim = track && track.getAnimations()[0];
+  if (!anim) return;
+  const base = parseFloat(getComputedStyle(mq).getPropertyValue('--sc-dur')) || 60;
+  const panel = document.createElement('div');
+  panel.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:9999;width:240px;padding:12px 14px;' +
+    'background:#fff;border:1px solid #C7CDD8;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.12);' +
+    'font:12px/1.4 system-ui,sans-serif;color:#141414';
+  panel.innerHTML = '<b style="display:block;margin-bottom:6px">Carousel</b>' +
+    '<label style="display:block;margin-top:8px"><span style="display:flex;justify-content:space-between">' +
+    '<span>Loop time (--sc-dur)</span><output></output></span>' +
+    '<input type="range" style="width:100%" min="10" max="180" step="1" value="' + base + '"></label>' +
+    '<div style="margin-top:6px;color:#6B7280">Lower = faster</div>';
+  const input = panel.querySelector('input'), out = panel.querySelector('output');
+  const show = () => { out.textContent = input.value + 's'; };
+  input.addEventListener('input', () => { anim.updatePlaybackRate(base / parseFloat(input.value)); show(); });
+  show();
+  document.body.appendChild(panel);
+})();
+</script>
 </body>
 </html>
