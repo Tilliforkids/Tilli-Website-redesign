@@ -29,9 +29,9 @@
   /* ============ Tilli for Research — Home ("How Tilli works") design language ============
      Cyan uppercase kickers, heavy H2s with one coloured phrase, white cards with
      2px brand borders, pill chips, pastel washes. Story arc in colour:
-     light hero → DARK problem → BRIGHT W.E.I.R.D. → DARK blind spot → light from
-     there on. Dots (js/dot-field.js) follow the same arc: orb → dim → full colour
-     → dim with a void → split / network. */
+     light hero → DARK problem → DARK W.E.I.R.D.→blind spot (one pinned section; colour only
+     in the type + lit West) → light from there on. Dots (js/dot-field.js): globe → none →
+     West-lit map that greys into the blind-spot ring → none (skills, domains) → star → card ring → none. */
   .ds *{ box-sizing:border-box; }
   .ds .wrap{ max-width:1180px; margin:0 auto; padding:0 24px; }
 
@@ -49,14 +49,20 @@
   .rs-sec{ padding:96px 0; }
   .c-cyan{ color:var(--tl-cyan-700); } .c-green{ color:var(--tl-green-600); } .c-pink{ color:var(--tl-pink-600); }
 
-  /* ---- HERO: centred copy, then the wide classroom photo as a rounded band ---- */
+  /* ---- HERO: centred copy, then the 360° globe (desktop dot-field) ---- */
   .rs-hero{ padding:72px 0 88px; background:var(--tl-white); text-align:center; }
   .rs-hero__copy{ max-width:760px; margin:0 auto; }
   .rs-hero__ttl{ margin:0; font-size:var(--tl-fs-2xl); font-weight:800; line-height:1.05; letter-spacing:var(--tl-tracking-tight); color:var(--tl-ink-900); }
   .rs-hero__st{ margin:14px 0 0; font-size:var(--tl-fs-lg); font-weight:800; line-height:1.3; color:var(--tl-ink-700); }
   .rs-hero__desc{ margin:14px auto 30px; font-size:var(--tl-fs-base); line-height:1.65; color:var(--tl-ink-600); max-width:520px; }
   .rs-hero__cta{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px; }
-  .rs-hero__photo{ margin:56px auto 0; border-radius:var(--tl-radius-xl); overflow:hidden; aspect-ratio:1905/560;
+  /* globe (desktop): sphere top sits under the CTAs, centre just below the hero —
+     the dark section crops it (data-dots-clip). Height × ay ≈ rw keeps the top in view. */
+  .rs-hero__orb{ height:19.4vw; margin-top:24px; }
+  @media (min-width:861px) and (pointer:fine){ .rs-hero{ padding-bottom:0; } }
+  /* classroom photo — closes the page, after Resources */
+  .rs-endphoto{ padding:72px 0 88px; background:var(--tl-white); }
+  .rs-hero__photo{ margin:0 auto; border-radius:var(--tl-radius-xl); overflow:hidden; aspect-ratio:1905/560;
     box-shadow:var(--tl-shadow-overlay); border:6px solid var(--tl-white); }
   .rs-hero__photo img{ display:block; width:100%; height:100%; object-fit:cover; object-position:center 35%; }
 
@@ -74,23 +80,33 @@
   .rs-pcard p{ margin:0; font-size:var(--tl-fs-sm); line-height:1.6; color:var(--tl-line-300); }
   .rs-pcard__ic{ position:absolute; right:22px; top:22px; font-size:var(--tl-fs-xl); filter:grayscale(1); opacity:.55; }
 
-  /* ---- W.E.I.R.D. (bright, colourful) ---- */
-  .rs-weird{ background:var(--tl-white); padding:96px 0 0; text-align:center; overflow:hidden; }
-  .rs-weird__pre{ margin:0; font-size:var(--tl-fs-lg); font-weight:800; color:var(--tl-ink-900); }
-  .rs-weird__big{ margin:10px 0; font-size:var(--tl-fs-display); font-weight:800; line-height:1; letter-spacing:.04em; color:var(--tl-ink-900); }
+  /* ---- W.E.I.R.D. (dark; colour carried by the letters, chips and lit West) ---- */
+  /* One section: W.E.I.R.D. copy fades out, the map turns into the blind-spot map
+     (js/dot-field.js, data-dots-map="weird-blind"), then the blind-spot copy fades in
+     below it. Desktop pins the stage (sticky) for the scroll; elsewhere it just stacks. */
+  .rs-wb{ background:var(--tl-ink-900); padding:96px 0; text-align:center; }
+  .rs-wb__b{ margin-top:56px; }
+  @media (min-width:861px) and (pointer:fine){
+    .rs-wb{ height:240vh; padding:0; }
+    .rs-wb__pin{ position:sticky; top:0; height:100vh; display:flex; align-items:center; }
+    .rs-wb__stack{ position:relative; width:100%; will-change:transform; }
+    .rs-wb__map{ height:340px; }
+    .rs-wb__a{ position:absolute; left:24px; right:24px; bottom:100%; padding-bottom:28px; }
+    .rs-wb__b{ position:absolute; left:24px; right:24px; top:100%; margin:0; padding-top:28px; opacity:0; }
+  }
+  .rs-weird__pre{ margin:0; font-size:var(--tl-fs-lg); font-weight:800; color:var(--tl-white); }
+  .rs-weird__big{ margin:10px 0; font-size:var(--tl-fs-display); font-weight:800; line-height:1; letter-spacing:.04em; color:var(--tl-white); }
   .rs-weird__big span:nth-of-type(1){ color:var(--tl-pink-600); }
   .rs-weird__big span:nth-of-type(2){ color:var(--tl-orange-500); }
   .rs-weird__big span:nth-of-type(3){ color:var(--tl-green-500); }
   .rs-weird__big span:nth-of-type(4){ color:var(--tl-cyan-500); }
   .rs-weird__big span:nth-of-type(5){ color:var(--tl-yellow-500); }
-  .rs-weird__post{ margin:0 auto; max-width:620px; font-size:var(--tl-fs-base); font-weight:600; color:var(--tl-ink-600); }
+  .rs-weird__post{ margin:0 auto; max-width:620px; font-size:var(--tl-fs-base); font-weight:600; color:var(--tl-line-300); }
   .rs-weird__chips{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:26px 0 0; }
-  .rs-chip{ font-size:var(--tl-fs-sm); font-weight:700; color:var(--tl-ink-700); background:var(--tl-white);
+  .rs-chip{ font-size:var(--tl-fs-sm); font-weight:700; color:var(--tl-white); background:transparent;
     border:2px solid var(--c); border-radius:var(--tl-radius-pill); padding:8px 18px; }
-  .rs-weird__art{ display:block; width:100%; height:clamp(160px,18vw,260px); margin-top:56px; }
 
   /* ---- "data blind spot" (dark again) ---- */
-  .rs-blind{ background:var(--tl-ink-900); text-align:center; padding:72px 0 140px; }
   .rs-blind__pre{ margin:0 0 6px; font-size:var(--tl-fs-base); font-weight:700; color:var(--tl-cyan-500); }
   .rs-blind__big{ margin:0; font-size:var(--tl-fs-2xl); font-weight:800; line-height:1.1; letter-spacing:var(--tl-tracking-tight); color:var(--tl-white); }
   .rs-blind__post{ margin:16px 0 0; font-size:var(--tl-fs-lg); color:var(--tl-line-300); }
@@ -143,18 +159,18 @@
   .ds-folders{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
   @media(max-width:920px){ .ds-folders{ grid-template-columns:repeat(2,1fr); } }
   @media(max-width:520px){ .ds-folders{ grid-template-columns:1fr; } }
-  /* folder shape = glyph frame (+tab) filling the card over a lighter inner body rect; text on top */
-  .ds-folder{ position:relative; aspect-ratio:304 / 294; }
-  .ds-folder__body{ position:absolute; top:25%; left:3%; right:3%; bottom:4%; display:block; color:var(--body); }
-  .ds-folder__frame{ position:absolute; inset:0; width:100%; height:100%; display:block; color:var(--frame);
-    filter:drop-shadow(var(--tl-shadow-raised)); }
-  .ds-folder__text{ position:absolute; z-index:2; left:9%; right:7%; top:34%; }
-  .ds-folder__t{ font-weight:800; color:var(--tl-ink-900); font-size:var(--tl-fs-lg); line-height:1.2; margin:0 0 10px; }
+  /* four data files as plain text columns; each file's dot cluster (desktop) sits under its
+     text in .ds-folder__dot (bottom-aligned across columns) and streams into the .ds-hub orb */
+  .ds-folder{ display:flex; flex-direction:column; text-align:center; }
+  .ds-folder__text{ margin-bottom:18px; }
+  .ds-folder__dot{ height:96px; margin-top:auto; }
+  .ds-hub{ height:246px; margin-top:123px; }   /* = hub orb diameter (data-dots-hub-r × 2); gap = stream length */
+  .ds-folder__t{ font-weight:800; color:var(--frame); font-size:var(--tl-fs-lg); line-height:1.2; margin:0 0 10px; }
   .ds-folder__d{ font-weight:600; color:var(--tl-ink-900); font-size:var(--tl-fs-sm); line-height:1.35; margin:0; }
-  .ds-folder--pink{ --frame:var(--tl-pink-600); --body:var(--tl-pink-400); }
-  .ds-folder--green{ --frame:var(--tl-green-600); --body:var(--tl-green-500); }
-  .ds-folder--cyan{ --frame:var(--tl-cyan-700); --body:var(--tl-cyan-500); }
-  .ds-folder--orange{ --frame:var(--tl-yellow-700); --body:var(--tl-orange-500); }
+  .ds-folder--pink{ --frame:var(--tl-pink-600); }
+  .ds-folder--green{ --frame:var(--tl-green-600); }
+  .ds-folder--cyan{ --frame:var(--tl-cyan-700); }
+  .ds-folder--orange{ --frame:var(--tl-yellow-700); }
   .rs-data code{ font-size:.92em; background:var(--tl-surface-200); border-radius:var(--tl-radius-xs); padding:2px 6px; }
 
   /* ---- AI USE CASES: numbered Home-style cards ---- */
@@ -165,6 +181,21 @@
     background:var(--c); color:var(--tl-ink-900); font-weight:800; font-size:var(--tl-fs-base); }
   .rs-ai__card h3{ margin:16px 0 8px; font-size:var(--tl-fs-lg); font-weight:800; color:var(--ct); }
   .rs-ai__card p{ margin:0; font-size:var(--tl-fs-sm); line-height:1.6; color:var(--tl-ink-600); }
+  /* AI use cases (desktop): pinned; one card at a time in the middle of a dot ring
+     (js/dot-field.js "cardring"); scroll steps through the cards. Elsewhere: the 2×2 grid. */
+  .rs-aiw{ padding-top:24px; }
+  @media (min-width:861px) and (pointer:fine){
+    .rs-aiw{ --ring:min(560px, 62vh); height:360vh; padding:0; }
+    .rs-aiw__pin{ position:sticky; top:0; height:100vh; display:flex; flex-direction:column; justify-content:center; }
+    .rs-aiw .rs-head{ margin-bottom:8px; }
+    .rs-aiw__stage{ position:relative; height:var(--ring); display:flex; align-items:center; justify-content:center; }
+    .rs-aiw__ring{ position:absolute; top:0; left:50%; width:var(--ring); height:var(--ring); transform:translateX(-50%); }
+    .rs-aiw .rs-ai{ grid-template-columns:1fr; gap:0; width:min(400px, calc(var(--ring) * .7)); }
+    .rs-aiw .rs-ai__card{ grid-area:1 / 1; opacity:0; transform:translateY(28px); pointer-events:none;
+      transition:opacity .45s ease, transform .45s cubic-bezier(.2,.7,.2,1); }
+    .rs-aiw .rs-ai__card.is-past{ transform:translateY(-28px); }
+    .rs-aiw .rs-ai__card.is-active{ opacity:1; transform:none; pointer-events:auto; }
+  }
 
   /* ---- RESOURCES ---- */
   .rs-res{ background:var(--tl-wash-green); }
@@ -186,10 +217,10 @@
   <div style="background: var(--tl-yellow-500);"></div>
 </div>
 
-<main class="tl-main ds" data-dots-count="640">
+<main class="tl-main ds" data-dots-count="1600" data-dots-size="7">
 
   <!-- ===== HERO ===== -->
-  <section class="rs-hero" data-dots="globe" data-dots-pos="0.86,0.24" data-dots-r="0.1">
+  <section class="rs-hero" data-dots="globe" data-dots-anchor=".dots-stage" data-dots-rw="0.26" data-dots-ay="1.34" data-dots-off="0,0.03" data-dots-speed="0.45" data-dots-clip>
     <div class="wrap">
       <div class="rs-hero__copy">
         <p class="rs-kicker">For researchers · Open dataset</p>
@@ -201,12 +232,12 @@
           <a class="tl-btn tl-btn--green" href="https://drive.google.com/drive/folders/1lnV730XYbq1U8BbJ4031M_BSKqjxFaP2?usp=drive_link" target="_blank" rel="noopener">Access Data Repository</a>
         </div>
       </div>
-      <div class="rs-hero__photo"><img src="assets/dataset/hero-children.jpg" alt="Children in a Tilli partner classroom"></div>
+      <div class="dots-stage rs-hero__orb" aria-hidden="true"></div>
     </div>
   </section>
 
   <!-- ===== PROBLEM (dark — the "blindness") ===== -->
-  <section class="rs-dark rs-sec" data-dots="isolated" data-dots-anchor=".dots-stage" data-dots-fit data-dots-avoid="h2,p,h3,.rs-pcard">
+  <section class="rs-dark rs-sec" data-dots="off" data-dots-cut>
     <div class="wrap">
       <div class="rs-head">
         <p class="rs-kicker">The problem</p>
@@ -223,54 +254,38 @@
           <h3>Expensive Protocols</h3>
           <p>Standardised assessments require high-cost, in-person trained assessors, leaving resource-poor communities out of the AI evolution.</p></div>
       </div>
-      <!-- dots: classroom data and home data, two grey clusters that never connect -->
-      <div class="dots-stage" style="height: 150px; margin-top: 36px;" aria-hidden="true"></div>
     </div>
   </section>
 
-  <!-- ===== W.E.I.R.D. (bright, colourful — the data the models DO see) ===== -->
-  <section class="rs-weird" data-dots="map" data-dots-map="weird" data-dots-anchor=".dots-stage" data-dots-fit>
-    <div class="wrap">
-      <p class="rs-weird__pre">Current educational AI models are predominantly trained on data from</p>
-      <p class="rs-weird__big" aria-label="W.E.I.R.D."><span>W</span>.<span>E</span>.<span>I</span>.<span>R</span>.<span>D</span>.</p>
-      <p class="rs-weird__post">Western, Educated, Industrialized, Rich, and Democratic populations.</p>
-      <div class="rs-weird__chips" aria-hidden="true">
-        <span class="rs-chip" style="--c: var(--tl-pink-600);">Western</span>
-        <span class="rs-chip" style="--c: var(--tl-orange-500);">Educated</span>
-        <span class="rs-chip" style="--c: var(--tl-green-500);">Industrialized</span>
-        <span class="rs-chip" style="--c: var(--tl-cyan-500);">Rich</span>
-        <span class="rs-chip" style="--c: var(--tl-yellow-500);">Democratic</span>
+  <!-- ===== W.E.I.R.D. → "data blind spot" (one pinned section; the map morphs) ===== -->
+  <section class="rs-wb" data-dots="map" data-dots-map="weird-blind" data-dots-morph="0.32,0.68" data-dots-cut data-dots-anchor=".dots-stage" data-dots-fit>
+    <div class="rs-wb__pin">
+      <div class="wrap rs-wb__stack">
+        <div class="rs-wb__a">
+          <p class="rs-weird__pre">Current educational AI models are predominantly trained on data from</p>
+          <p class="rs-weird__big" aria-label="W.E.I.R.D."><span>W</span>.<span>E</span>.<span>I</span>.<span>R</span>.<span>D</span>.</p>
+          <p class="rs-weird__post">Western, Educated, Industrialized, Rich, and Democratic populations.</p>
+          <div class="rs-weird__chips" aria-hidden="true">
+            <span class="rs-chip" style="--c: var(--tl-pink-600);">Western</span>
+            <span class="rs-chip" style="--c: var(--tl-orange-500);">Educated</span>
+            <span class="rs-chip" style="--c: var(--tl-green-500);">Industrialized</span>
+            <span class="rs-chip" style="--c: var(--tl-cyan-500);">Rich</span>
+            <span class="rs-chip" style="--c: var(--tl-yellow-500);">Democratic</span>
+          </div>
+        </div>
+        <!-- dots: the world map — the West lit, then all grey with a ring where South Asia and the Middle East should be -->
+        <div class="dots-stage rs-wb__map" aria-hidden="true"></div>
+        <div class="rs-wb__b">
+          <p class="rs-blind__pre">This creates a</p>
+          <p class="rs-blind__big">"data blind spot" for children in</p>
+          <p class="rs-blind__post">South Asia, the Middle East, and other diverse contexts.</p>
+        </div>
       </div>
-      <!-- dots: a world map where only the West is lit -->
-      <div class="dots-stage" style="height: 340px; margin-top: 28px;" aria-hidden="true"></div>
-    </div>
-    <!-- brand-colour bands sinking into the dark blind-spot section below -->
-    <svg class="rs-weird__art" viewBox="0 0 1440 400" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <g fill="none" stroke-width="64">
-        <circle cx="720" cy="1460" r="1348" style="stroke: var(--tl-pink-400);"/>
-        <circle cx="720" cy="1460" r="1286" style="stroke: var(--tl-orange-500);"/>
-        <circle cx="720" cy="1460" r="1224" style="stroke: var(--tl-yellow-500);"/>
-        <circle cx="720" cy="1460" r="1162" style="stroke: var(--tl-green-500);"/>
-        <circle cx="720" cy="1460" r="1100" style="stroke: var(--tl-cyan-500);"/>
-      </g>
-      <circle cx="720" cy="1460" r="1070" style="fill: var(--tl-ink-900);"/>
-      <rect x="0" y="396" width="1440" height="4" style="fill: var(--tl-ink-900);"/>
-    </svg>
-  </section>
-
-  <!-- ===== "data blind spot" (dark) ===== -->
-  <section class="rs-blind" data-dots="map" data-dots-map="blind" data-dots-anchor=".dots-stage" data-dots-fit>
-    <div class="wrap">
-      <p class="rs-blind__pre">This creates a</p>
-      <p class="rs-blind__big">"data blind spot" for children in</p>
-      <p class="rs-blind__post">South Asia, the Middle East, and other diverse contexts.</p>
-      <!-- dots: the same map gone grey, an empty ring where South Asia and the Middle East should be -->
-      <div class="dots-stage" style="height: 340px; margin-top: 28px;" aria-hidden="true"></div>
     </div>
   </section>
 
   <!-- ===== COMPETENCIES (light from here on) ===== -->
-  <section class="rs-sec rs-curve" data-dots="skills12">
+  <section class="rs-sec rs-curve" data-dots="off" data-dots-cut data-dots-cursor>
     <div class="wrap">
       <div class="rs-head">
         <p class="rs-kicker">The dataset</p>
@@ -289,7 +304,7 @@
   </section>
 
   <!-- ===== OTHER DOMAINS (tabs) ===== -->
-  <section class="rs-sec rs-wash" data-dots="rings" data-dots-pos="0.93,0.5">
+  <section class="rs-sec rs-wash" data-dots="off">
     <div class="wrap">
       <div class="rs-head">
         <p class="rs-kicker">Beyond the 12 skills</p>
@@ -339,7 +354,7 @@
   </section>
 
   <!-- ===== TRIADIC (How we Measure) — unchanged on purpose; dots fade out here ===== -->
-  <section class="ds-white" style="padding:72px 0" data-dots="off">
+  <section class="ds-white" style="padding:72px 0" data-dots="off" data-dots-cursor-fill=".ds-triadic-core">
     <div class="wrap">
       <h2 class="ds-display ds-triadic__h">How We Measure:<br>The Triadic Assessment Protocol</h2>
       <p class="ds-sub ds-triadic__sub">We move beyond single-informant bias by capturing three perspectives for every child, using a digitized, voice-supported, and localized protocol:</p>
@@ -358,60 +373,60 @@
   </section>
 
   <!-- ===== DATA STRUCTURE ===== -->
-  <section class="rs-sec rs-data" data-dots="star" data-dots-anchor=".ds-folder" data-dots-hub=".dots-stage" data-dots-ay="0.08" data-dots-r="0.05" data-dots-colors="pink,green,cyan,orange">
+  <section class="rs-sec rs-data" data-dots="star" data-dots-cut data-dots-anchor=".ds-folder__dot" data-dots-hub=".ds-hub" data-dots-hub-n="429" data-dots-hub-r="123" data-dots-hub-size="1.4" data-dots-file-n="217" data-dots-file-r="50" data-dots-file-size="0.9" data-dots-packets="75" data-dots-flow="0.13" data-dots-ay="0.5" data-dots-r="0.05" data-dots-colors="pink,green,cyan,orange">
     <div class="wrap">
       <div class="rs-head">
         <p class="rs-kicker">What we measure</p>
         <h2 class="rs-h2">What We Measure: <span class="c-cyan">Data Structure</span></h2>
         <p class="rs-lead">Our dataset is composed of four interoperable CSV files linked by a unique <code>subject_id</code>.</p>
       </div>
-      <!-- dots: the subject_id hub every file is wired to -->
-      <div class="dots-stage" style="height: 120px;" aria-hidden="true"></div>
       <div class="ds-folders">
         <div class="ds-folder ds-folder--pink">
-          <svg class="ds-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg>
-          <svg class="ds-folder__frame" viewBox="33 38 133.333 125" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg>
           <div class="ds-folder__text"><div class="ds-folder__t">Demographics &amp; Ecology</div><div class="ds-folder__d">Equity markers, home environment, family structure, and special needs status.</div></div>
+          <div class="dots-stage ds-folder__dot" aria-hidden="true"></div>
         </div>
         <div class="ds-folder ds-folder--green">
-          <svg class="ds-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg>
-          <svg class="ds-folder__frame" viewBox="33 38 133.333 125" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg>
           <div class="ds-folder__text"><div class="ds-folder__t">Direct Assessments</div><div class="ds-folder__d">Behavioural interaction streams, raw latency, task-switching performance, and foundational literacy/numeracy readiness.</div></div>
+          <div class="dots-stage ds-folder__dot" aria-hidden="true"></div>
         </div>
         <div class="ds-folder ds-folder--cyan">
-          <svg class="ds-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg>
-          <svg class="ds-folder__frame" viewBox="33 38 133.333 125" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg>
           <div class="ds-folder__text"><div class="ds-folder__t">Caregiver Report</div><div class="ds-folder__d">Home-based emotional symptoms, behavioural outcomes, and executive function ratings.</div></div>
+          <div class="dots-stage ds-folder__dot" aria-hidden="true"></div>
         </div>
         <div class="ds-folder ds-folder--orange">
-          <svg class="ds-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg>
-          <svg class="ds-folder__frame" viewBox="33 38 133.333 125" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg>
           <div class="ds-folder__text"><div class="ds-folder__t">Teacher / Classroom Report</div><div class="ds-folder__d">Pedagogical context, concentration/distractibility ratings, and interpersonal assessments.</div></div>
+          <div class="dots-stage ds-folder__dot" aria-hidden="true"></div>
         </div>
       </div>
+      <!-- dots: the subject_id hub — every file streams its data down into it -->
+      <div class="dots-stage ds-hub" aria-hidden="true"></div>
     </div>
   </section>
 
   <!-- ===== AI USE CASES ===== -->
-  <section class="rs-sec" style="padding-top:24px" data-dots="neural" data-dots-anchor=".dots-stage" data-dots-fit>
-    <div class="wrap">
-      <div class="rs-head">
-        <p class="rs-kicker">From research to action</p>
-        <h2 class="rs-h2">AI Use Cases: <span class="c-pink">From Research to Action</span></h2>
-      </div>
-      <!-- dots: a small neural net, activation pulsing input → output -->
-      <div class="dots-stage" style="height: 220px; margin-bottom: 24px;" aria-hidden="true"></div>
-      <div class="rs-ai">
-        <div class="rs-ai__card" style="--c: var(--tl-green-500); --ct: var(--tl-green-600);"><span class="rs-ai__n">1</span><h3>Predictive Intervention</h3><p>Identify Grade 3 cognitive signatures that serve as early warning signs for academic struggle.</p></div>
-        <div class="rs-ai__card" style="--c: var(--tl-cyan-500); --ct: var(--tl-cyan-700);"><span class="rs-ai__n">2</span><h3>Context-Aware Profiling</h3><p>Use AI to weigh conflicting reports from parents vs. teachers, turning "discrepancies" into signals for better child support.</p></div>
-        <div class="rs-ai__card" style="--c: var(--tl-yellow-500); --ct: var(--tl-yellow-700);"><span class="rs-ai__n">3</span><h3>Synthetic Learner Profiles</h3><p>Train Generative AI (LLMs/LRMs) to simulate diverse, realistic student profiles for teacher training and curriculum stress-testing.</p></div>
-        <div class="rs-ai__card" style="--c: var(--tl-pink-400); --ct: var(--tl-pink-600);"><span class="rs-ai__n">4</span><h3>Algorithmic Fairness Audits</h3><p>Use our localized dataset to audit and improve the regional robustness of global SEL models.</p></div>
+  <section class="rs-sec rs-aiw" data-dots="cardring" data-dots-colors="green,cyan,yellow,pink" data-dots-cut data-dots-cursor-end data-dots-anchor=".rs-aiw__ring" data-dots-fit>
+    <div class="rs-aiw__pin">
+      <div class="wrap">
+        <div class="rs-head">
+          <p class="rs-kicker">From research to action</p>
+          <h2 class="rs-h2">AI Use Cases: <span class="c-pink">From Research to Action</span></h2>
+        </div>
+        <div class="rs-aiw__stage">
+          <!-- dots: a ring around the card, recoloured to each card's colour as you scroll -->
+          <div class="dots-stage rs-aiw__ring" aria-hidden="true"></div>
+          <div class="rs-ai">
+            <div class="rs-ai__card" style="--c: var(--tl-green-500); --ct: var(--tl-green-600);"><span class="rs-ai__n">1</span><h3>Predictive Intervention</h3><p>Identify Grade 3 cognitive signatures that serve as early warning signs for academic struggle.</p></div>
+            <div class="rs-ai__card" style="--c: var(--tl-cyan-500); --ct: var(--tl-cyan-700);"><span class="rs-ai__n">2</span><h3>Context-Aware Profiling</h3><p>Use AI to weigh conflicting reports from parents vs. teachers, turning "discrepancies" into signals for better child support.</p></div>
+            <div class="rs-ai__card" style="--c: var(--tl-yellow-500); --ct: var(--tl-yellow-700);"><span class="rs-ai__n">3</span><h3>Synthetic Learner Profiles</h3><p>Train Generative AI (LLMs/LRMs) to simulate diverse, realistic student profiles for teacher training and curriculum stress-testing.</p></div>
+            <div class="rs-ai__card" style="--c: var(--tl-pink-400); --ct: var(--tl-pink-600);"><span class="rs-ai__n">4</span><h3>Algorithmic Fairness Audits</h3><p>Use our localized dataset to audit and improve the regional robustness of global SEL models.</p></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ===== RESOURCES ===== -->
-  <section class="rs-sec rs-res" data-dots="release" data-dots-pos="0.935,0.5" data-dots-r="0.05">
+  <section class="rs-sec rs-res" data-dots="off" data-dots-cut>
     <div class="wrap">
       <div class="rs-head">
         <p class="rs-kicker">Get the data</p>
@@ -440,6 +455,13 @@
     </div>
   </section>
 
+  <!-- ===== CLOSING PHOTO ===== -->
+  <section class="rs-endphoto">
+    <div class="wrap">
+        <div class="rs-hero__photo"><img src="assets/dataset/hero-children.jpg" alt="Children in a Tilli partner classroom"></div>
+    </div>
+  </section>
+
 </main>
 
 <script>
@@ -455,8 +477,63 @@
     });
   })();
 </script>
+<script>
+  // W.E.I.R.D. → blind spot: scroll story inside the pinned .rs-wb (desktop gate only).
+  // The map morph itself runs in js/dot-field.js over data-dots-morph; the stack glides
+  // over the same range so whichever copy is showing stays centred with the map.
+  (function(){
+    var sec = document.querySelector('.rs-wb'); if (!sec) return;
+    var a = sec.querySelector('.rs-wb__a'), b = sec.querySelector('.rs-wb__b'), stack = sec.querySelector('.rs-wb__stack');
+    var mq = window.matchMedia('(min-width: 861px) and (pointer: fine)');
+    var MORPH = (sec.getAttribute('data-dots-morph') || '0.32,0.68').split(',').map(parseFloat);
+    var A_OUT = [0.12, 0.32], B_IN = [0.68, 0.88];   // scroll-progress ranges for the copy fades
+    var RISE = 24;                                   // px the copy drifts while fading
+    function ease(p, r){ var v = Math.min(1, Math.max(0, (p - r[0]) / (r[1] - r[0]))); return v * v * (3 - 2 * v); }
+    var raf = 0;
+    function update(){
+      raf = 0;
+      if (!mq.matches){ a.style.cssText = ''; b.style.cssText = ''; stack.style.transform = ''; return; }
+      var r = sec.getBoundingClientRect(), span = r.height - window.innerHeight;
+      var p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+      var ka = ease(p, A_OUT), kb = ease(p, B_IN), km = ease(p, MORPH);
+      a.style.opacity = 1 - ka; a.style.transform = 'translateY(' + (-RISE * ka) + 'px)';
+      a.style.visibility = ka >= 1 ? 'hidden' : '';
+      b.style.opacity = kb; b.style.transform = 'translateY(' + (RISE * (1 - kb)) + 'px)';
+      b.style.visibility = kb <= 0 ? 'hidden' : '';
+      stack.style.transform = 'translateY(' + (a.offsetHeight / 2 * (1 - km) - b.offsetHeight / 2 * km) + 'px)';
+    }
+    function kick(){ if (!raf) raf = requestAnimationFrame(update); }
+    window.addEventListener('scroll', kick, { passive: true });
+    window.addEventListener('resize', kick);
+    window.addEventListener('load', kick);
+    update();
+  })();
+</script>
+<script>
+  // AI use cases: which card shows in the ring = scroll progress through the pinned .rs-aiw
+  // (desktop gate only; the ring's colour sweep runs in js/dot-field.js off the same progress)
+  (function(){
+    var sec = document.querySelector('.rs-aiw'); if (!sec) return;
+    var cards = Array.prototype.slice.call(sec.querySelectorAll('.rs-ai__card'));
+    var mq = window.matchMedia('(min-width: 861px) and (pointer: fine)'), raf = 0, cur = -1;
+    function update(){
+      raf = 0;
+      if (!mq.matches){ cards.forEach(function(c){ c.classList.remove('is-active', 'is-past'); }); cur = -1; return; }
+      var r = sec.getBoundingClientRect(), span = r.height - window.innerHeight;
+      var p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+      var idx = Math.min(cards.length - 1, Math.floor(p * cards.length));
+      if (idx === cur) return;
+      cur = idx;
+      cards.forEach(function(c, i){ c.classList.toggle('is-active', i === idx); c.classList.toggle('is-past', i < idx); });
+    }
+    function kick(){ if (!raf) raf = requestAnimationFrame(update); }
+    window.addEventListener('scroll', kick, { passive: true });
+    window.addEventListener('resize', function(){ cur = -1; kick(); });
+    update();
+  })();
+</script>
 <script src="js/site-config.js?v=2"></script>
 <script src="js/site-chrome.js?v=5"></script>
-<script type="module" src="js/dot-field.js?v=2"></script>
+<script type="module" src="js/dot-field.js?v=22"></script>
 </body>
 </html>

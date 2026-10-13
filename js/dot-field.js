@@ -20,28 +20,52 @@
      Research  globe        360°: a dotted sphere with orbit rings
                isolated     classroom and home data as two grey clusters that never meet
                map          dot-matrix world map; data-dots-map="weird" lights the West,
-                            "blind" greys it and rings the South Asia / Middle East gap
+                            "blind" greys it and rings the South Asia / Middle East gap,
+                            "weird-blind" turns one into the other as a tall (pinned)
+                            section scrolls — data-dots-morph="a,b" = scroll progress range
                skills12     12 mini orbs: 6 cognitive (cyan) + 6 SEL (pink)
                rings        ecological rings around the child
-               star         4 data files wired to one subject_id node
+               star         4 data files streaming packets into one subject_id node
                neural       a small neural net, activation pulsing through the layers
+               cardring     a dot ring framing one card at a time; as the tall (pinned)
+                            section scrolls it sweeps to the next data-dots-colors colour
                release      open data streaming outward from one source
 
    Placement (all optional):
      data-dots-pos="x,y"        centre: x = fraction of viewport width, y = fraction of
                                 the section's height (kept inside its visible part)
      data-dots-r="0.18"         radius as a fraction of viewport height
+     data-dots-rw="0.36"        radius as a fraction of viewport WIDTH (wins over -r)
      data-dots-anchor="sel"     centre on an element (first match) — split / star use
                                 every match (one orb per element)
      data-dots-hub="sel"        star: the subject_id node's element
+     data-dots-hub-r="38"       star: hub orb radius, px (default min(4.5vh, 38))
+     data-dots-hub-off="x,y"    star: nudge the hub orb, px
+     data-dots-flow="0.3"       star: packet trips per second
+     data-dots-hub-n / -file-n  star: dots in the hub orb / in EACH file orb
+     data-dots-packets          star: packet dots per file (in flight file → hub)
+     data-dots-file-r="45"      star: file orb radius, px (default data-dots-r × vh)
+     data-dots-hub-size / -file-size   star: dot size multiplier (default 0.9)
      data-dots-fit              size from the anchor's box instead of data-dots-r
      data-dots-ay="0.5"         anchor point down the element (0 = top edge)
+     data-dots-off="x,y"        nudge the centre, both as fractions of viewport width
+     data-dots-speed="1"        animation speed multiplier (spin, drift, loops)
      data-dots-colors="a,b,c"   green|cyan|yellow|orange|pink
      data-dots-gap="0.14"       split row: distance between orb centres (× vw)
      data-dots-box="x0,y0,x1,y1" scatter/network/dim region, viewport fractions
      data-dots-void="0.2"       dim/scatter: empty circle in the middle (× vh)
      data-dots-avoid="sel"      hide dots that land on these elements
-   Page: <main data-dots-count="640"> overrides the dot count.
+     data-dots-clip             hide dots outside the section's box (crop at its edges)
+     data-dots-cut              no morph INTO this section: it and the one above each keep
+                                their own dots and simply scroll past one another
+   Page: <main data-dots-count="640" data-dots-size="9"> overrides dot count / size (px).
+   Cursor orb: a small orb of its own dots (own 2D canvas ABOVE the page content, under
+   the header) forms on the pointer once a
+   <section data-dots-cursor> reaches mid-screen and follows it from then on; it
+   dissolves again above that section or past a <section data-dots-cursor-end>.
+   <section data-dots-cursor-fill="img sel">: when the pointer comes in or near the child
+   in that image, the orb bursts and pours into its silhouette (mask for assets/Triad.svg:
+   TRIAD_CHILD) and stays there until the image is scrolled back below the screen.
 
    .dots-stage elements (css/site.css) reserve room for a formation on desktop.
    FAQ cards fire `tl-dots:burst` ({x,y,w,h,color}) → a burst of their colour.
@@ -79,6 +103,11 @@ async function init() {
     dimShow: 0.45,     // fraction of dots still lit in "dim" sections
     avoidPad: 16,      // px of clear space kept around text
     flow: 0.07,        // pipeline / release travel speed (cycles per second)
+    starFlow: 0.3,     // data files → hub: packet trips per second (data-dots-flow overrides)
+    starPackets: 0.22, // share of each file's dots travelling as packets
+    ringDots: 360,     // Research AI use cases: dots in the card ring
+    ringSpin: 0.12,    // card ring rotation, radians per second
+    ringSweep: 0.18,   // share of each card's scroll over which the ring changes colour
     weekRate: 5,       // weeks timeline: weeks lit per second
     qPeriod: 6.4,      // FAQ ? → ✓ loop length, seconds
     burstCount: 36,    // FAQ flip burst: particles per flip
@@ -154,7 +183,9 @@ async function init() {
   const camera = new THREE.OrthographicCamera(0, 1, 0, 1, -10, 10);
   let W = 1, H = 1, DPR = 1;
 
-  const N = parseInt((document.querySelector('main') || {}).dataset?.dotsCount, 10) || cfg.count;
+  const mainDs = (document.querySelector('main') || {}).dataset || {};
+  const N = parseInt(mainDs.dotsCount, 10) || cfg.count;
+  cfg.dotSize = parseFloat(mainDs.dotsSize) || cfg.dotSize;
   const pointsMat = () => new THREE.ShaderMaterial({
     transparent: true, depthTest: false, depthWrite: false,
     uniforms: { uDpr: { value: 1 } },
@@ -191,6 +222,9 @@ async function init() {
     return buf;
   }
   const field = makePoints(N, 2);
+  // formations across a data-dots-cut edge (one above, one below the active section)
+  const cutLayers = [makePoints(N, 2), makePoints(N, 2)];
+  const cutOn = [false, false];
   const { P, C: COL, A: ALPHA, S: SIZE } = field;
 
   /* ── per-dot constants ─────────────────────────────────────────────────── */
@@ -322,11 +356,26 @@ async function init() {
         pos: nums(d.dotsPos, 2, [0.5, 0.5]),
         r: parseFloat(d.dotsR) || 0.18,
         rSet: !!d.dotsR,
+        rw: parseFloat(d.dotsRw) || 0,
+        clip: d.dotsClip !== undefined,
+        cut: d.dotsCut !== undefined,
         fit: d.dotsFit !== undefined,
         anchor: d.dotsAnchor ? el.querySelector(d.dotsAnchor) : null,
         anchors: d.dotsAnchor ? Array.from(el.querySelectorAll(d.dotsAnchor)) : [],
         hub: d.dotsHub ? el.querySelector(d.dotsHub) : null,
         ay: d.dotsAy !== undefined ? parseFloat(d.dotsAy) : 0.5,
+        off: nums(d.dotsOff, 2, [0, 0]),
+        speed: d.dotsSpeed !== undefined ? parseFloat(d.dotsSpeed) : 1,
+        morph: nums(d.dotsMorph, 2, [0.3, 0.7]),
+        hubR: parseFloat(d.dotsHubR) || 0,
+        hubOff: nums(d.dotsHubOff, 2, [0, 0]),
+        flow: d.dotsFlow !== undefined ? parseFloat(d.dotsFlow) : cfg.starFlow,
+        hubN: parseInt(d.dotsHubN, 10) || 0,
+        fileN: parseInt(d.dotsFileN, 10) || 0,
+        packets: d.dotsPackets !== undefined ? parseInt(d.dotsPackets, 10) : -1,
+        fileR: parseFloat(d.dotsFileR) || 0,
+        hubSize: parseFloat(d.dotsHubSize) || 0.9,
+        fileSize: parseFloat(d.dotsFileSize) || 0.9,
         colors: (d.dotsColors || 'green,cyan,yellow,orange,pink').split(',').map((s) => NAMED[s.trim()] || NAMED.cyan),
         gap: parseFloat(d.dotsGap) || 0.14,
         box: nums(d.dotsBox, 4, [0, 0, 1, 1]),
@@ -340,6 +389,11 @@ async function init() {
       };
       (BUILD[f.type] || (() => {}))(f);
       return f;
+    });
+    // either side of a hard cut is cropped at the shared edge
+    formations.forEach((f, i) => {
+      f.clipTop = f.clip || f.cut;
+      f.clipBot = f.clip || !!(formations[i + 1] && formations[i + 1].cut);
     });
   }
 
@@ -391,14 +445,6 @@ async function init() {
       const u = (i) => starXY(i);
       makeLines(f, nearPairs(ids, (i) => u(i)[0], (i) => u(i)[1], 2));
     },
-    star(f) {
-      // each data file wired to the subject_id hub by a small bundle of links
-      const pairs = [], hub = (i) => i < Math.round(N * 0.16);
-      const hubIds = [], files = [[], [], [], []];
-      for (let i = 0; i < N; i++) hub(i) ? hubIds.push(i) : files[i % 4].push(i);
-      files.forEach((ids, g) => { for (let k = 0; k < 5; k++) pairs.push(hubIds[(g * 5 + k * 3) % hubIds.length], ids[k * 7 % ids.length]); });
-      makeLines(f, pairs);
-    },
     neural(f) {
       const pairs = [], first = neuralNodes().first;
       NEURAL.forEach((n, l) => {
@@ -439,15 +485,25 @@ async function init() {
   function place(f, rect) {
     if (f.anchor) {
       const b = f.anchor.getBoundingClientRect();
-      const R = f.rSet ? f.r * H : Math.min(b.width, b.height) * 0.42;
-      return { cx: b.left + b.width / 2, cy: b.top + b.height * f.ay,
+      const R = f.rw ? f.rw * W : f.rSet ? f.r * H : Math.min(b.width, b.height) * 0.42;
+      return { cx: b.left + b.width / 2 + f.off[0] * W, cy: b.top + b.height * f.ay + f.off[1] * W,
         rx: f.fit ? b.width / 2 : R, ry: f.fit ? b.height / 2 : R, b };
     }
     const R = f.r * H;
     let cy = rect.top + f.pos[1] * rect.height;
     const lo = Math.max(rect.top, 0) + R, hi = Math.min(rect.bottom, H) - R;
     cy = lo < hi ? clamp(cy, lo, hi) : (Math.max(rect.top, 0) + Math.min(rect.bottom, H)) / 2;
-    return { cx: f.pos[0] * W, cy, rx: R, ry: R };
+    return { cx: (f.pos[0] + f.off[0]) * W, cy: cy + f.off[1] * W, rx: R, ry: R };
+  }
+
+  // star dot budget: defaults keep the original split (hub 16%, files share the rest, cfg.starPackets
+  // of each file in flight); explicit counts are clamped so the total never exceeds N
+  function starCounts(f) {
+    const hubN = Math.min(N, f.hubN || Math.round(N * 0.16));
+    const perFile = Math.floor((N - hubN) / 4);
+    const fileN = Math.max(1, Math.min(perFile, f.fileN || Math.floor(perFile * (1 - cfg.starPackets))));
+    const packets = Math.max(0, Math.min(perFile - fileN, f.packets >= 0 ? f.packets : perFile - fileN));
+    return { hubN, fileN, packets, used: hubN + 4 * (fileN + packets) };
   }
 
   /* ── drawing ───────────────────────────────────────────────────────────── */
@@ -455,9 +511,11 @@ async function init() {
   const col = (i, rgb) => { Cc[i * 3] = rgb[0]; Cc[i * 3 + 1] = rgb[1]; Cc[i * 3 + 2] = rgb[2]; };
   const dot = (i, x, y, rgb, a = 1, s = 1) => { X[i] = x; Y[i] = y; col(i, rgb); Aa[i] = a; Ss[i] = cfg.dotSize * s; };
   const hide = (i, x, y) => { X[i] = x; Y[i] = y; Aa[i] = 0; Ss[i] = cfg.dotSize * 0.5; col(i, GREY); };
-  // a point on a spinning, tilted ball (src = BALL filled / SHELL surface)
-  function orbDot(i, cx, cy, R, ang, rgb, sMul = 1, src = BALL) {
-    const bx = src[i * 3], by = src[i * 3 + 1], bz = src[i * 3 + 2];
+  // a point on a spinning, tilted ball (src = BALL filled / SHELL surface). si = which ball
+  // point to use: the ball is a Fibonacci spiral pole→pole, so a run of consecutive indices
+  // is only a cap — spread si over 0…N for an orb built from a contiguous block of dots
+  function orbDot(i, cx, cy, R, ang, rgb, sMul = 1, src = BALL, si = i) {
+    const bx = src[si * 3], by = src[si * 3 + 1], bz = src[si * 3 + 2];
     const ca = Math.cos(ang), sa = Math.sin(ang), ct = Math.cos(cfg.tilt), st = Math.sin(cfg.tilt);
     const rx = bx * ca + bz * sa, rz0 = -bx * sa + bz * ca;
     const ry = by * ct - rz0 * st, rz = by * st + rz0 * ct;
@@ -690,27 +748,39 @@ async function init() {
       }
     },
     /* RESEARCH ─ the world: W.E.I.R.D. lights the West; the blind spot rings the gap */
-    map(f, p, t) {
+    map(f, p, t, rect) {
       if (!LAND) buildLand();
       const spanLon = MAP.lon1 - MAP.lon0, spanLat = MAP.lat1 - MAP.lat0;
       const sc = Math.min((p.rx * 2) / spanLon, (p.ry * 2) / spanLat);
       const px = (lon) => p.cx + (lon - (MAP.lon0 + MAP.lon1) / 2) * sc;
       const py = (lat) => p.cy - (lat - (MAP.lat0 + MAP.lat1) / 2) * sc;
-      const gx = px(63.5), gy = py(23), gr = 30 * sc, blind = f.map === 'blind';
+      const gx = px(63.5), gy = py(23), gr = 30 * sc;
+      // 0 = W.E.I.R.D. (West lit), 1 = blind spot (all grey + ring); "weird-blind" follows scroll
+      let K = f.map === 'blind' ? 1 : 0;
+      if (f.map === 'weird-blind') {
+        const span = rect.height - H, prog = span > 0 ? clamp(-rect.top / span) : 0;
+        K = smooth(clamp((prog - f.morph[0]) / (f.morph[1] - f.morph[0])));
+      }
       let gi = 0, gN = 0;
-      if (blind) LAND.forEach((c) => { if (c && c.gap) gN++; });
+      if (K > 0) LAND.forEach((c) => { if (c && c.gap) gN++; });
+      const lerp = (a, b, k) => a + (b - a) * k;
       for (let i = 0; i < N; i++) {
         const c = LAND[i];
         if (!c) { hide(i, p.cx, p.cy); continue; }
-        if (!blind) {
-          const tw = c.west ? 0.85 + 0.15 * Math.sin(t * 2 + PHASE[i]) : 0.6;
-          dot(i, px(c.lon), py(c.lat), c.west ? PALETTE[i % 5] : GREY, tw, c.west ? 1 : 0.7);
-        } else if (c.gap) {                               // the blind spot: an empty, pulsing ring
+        const x0 = px(c.lon), y0 = py(c.lat);
+        // weird state
+        const c0 = c.west ? PALETTE[i % 5] : GREY;
+        const a0 = c.west ? 0.85 + 0.15 * Math.sin(t * 2 + PHASE[i]) : 0.6, s0 = c.west ? 1 : 0.7;
+        if (K <= 0) { dot(i, x0, y0, c0, a0, s0); if (c.gap) gi++; continue; }
+        // blind state
+        let x1 = x0, y1 = y0, c1 = GREY, a1 = 0.32, s1 = 0.7;
+        if (c.gap) {                                      // the blind spot: an empty, pulsing ring
           const a = (gi++ / gN) * Math.PI * 2 + t * 0.25, pr = gr * (1 + 0.06 * Math.sin(t * 2));
-          dot(i, gx + Math.cos(a) * pr, gy + Math.sin(a) * pr, WHITE, 0.55 + 0.4 * Math.sin(t * 2 + a * 2), 0.75);
-        } else {
-          dot(i, px(c.lon), py(c.lat), GREY, 0.32, 0.7);
+          x1 = gx + Math.cos(a) * pr; y1 = gy + Math.sin(a) * pr;
+          c1 = WHITE; a1 = 0.55 + 0.4 * Math.sin(t * 2 + a * 2); s1 = 0.75;
         }
+        const k = K >= 1 ? 1 : smooth(clamp((K - LEAVE[i] * 0.3) / 0.7));
+        dot(i, lerp(x0, x1, k), lerp(y0, y1, k), mix(c0, c1, k), lerp(a0, a1, k), lerp(s0, s1, k));
       }
     },
     /* RESEARCH ─ 12 skills: six cognitive orbs (cyan), six SEL orbs (pink) */
@@ -735,15 +805,43 @@ async function init() {
     },
     /* RESEARCH ─ four files, one subject_id */
     star(f, p, t) {
-      const hubN = Math.round(N * 0.16), files = f.anchors.slice(0, 4).map((el) => el.getBoundingClientRect());
+      const st = starCounts(f), files = f.anchors.slice(0, 4).map((el) => el.getBoundingClientRect());
       const hb = f.hub ? f.hub.getBoundingClientRect() : null;
-      const hx = hb ? hb.left + hb.width / 2 : p.cx, hy = hb ? hb.top + hb.height / 2 : p.cy - p.ry;
+      const hx = (hb ? hb.left + hb.width / 2 : p.cx) + f.hubOff[0], hy = (hb ? hb.top + hb.height / 2 : p.cy - p.ry) + f.hubOff[1];
+      const flowT = f.el.__flowT || 0, fileR = f.fileR || f.r * H;
       const fileRGB = f.colors.length >= 4 ? f.colors : [NAMED.pink, NAMED.green, NAMED.cyan, NAMED.orange];
+      // dots: [hub × hubN] then files interleaved (g = j % 4): rank < fileN = orb, next `packets` = in flight
       for (let i = 0; i < N; i++) {
-        if (i < hubN) { orbDot(i, hx, hy, Math.min(0.045 * H, 38), t * cfg.spin, PALETTE[i % 5], 0.9); continue; }
-        const g = i % 4, b = files[g];
-        if (!b) { hide(i, hx, hy); continue; }
-        orbDot(i, b.left + b.width / 2, b.top + b.height * f.ay, f.r * H, t * cfg.spin + g * 1.7, fileRGB[g], 0.9);
+        if (i < st.hubN) { orbDot(i, hx, hy, f.hubR || Math.min(0.045 * H, 38), t * cfg.spin, PALETTE[i % 5], f.hubSize, BALL, Math.floor((i + 0.5) * N / st.hubN)); continue; }
+        const j = i - st.hubN, g = j % 4, rank = Math.floor(j / 4), b = files[g];
+        if (!b || rank >= st.fileN + st.packets) { hide(i, hx, hy); continue; }
+        const fx = b.left + b.width / 2, fy = b.top + b.height * f.ay;
+        if (rank >= st.fileN) {                            // a data packet on its way into the hub
+          const ph = frac(RND[i * 2] + flowT), e = ph * ph;      // speeds up as it nears the hub
+          const nx = -(hy - fy), ny = hx - fx, nl = Math.hypot(nx, ny) || 1, wob = (RND[i * 2 + 1] - 0.5) * 18 * Math.sin(Math.PI * ph);
+          dot(i, fx + (hx - fx) * e + nx / nl * wob, fy + (hy - fy) * e + ny / nl * wob, fileRGB[g],
+            0.9 * Math.min(1, ph * 8) * (1 - Math.pow(ph, 6)), 0.65);
+          continue;
+        }
+        // file orbs hold still (no spin); ball points spread pole→pole whatever fileN is
+        orbDot(i, fx, fy, fileR, g * 1.7, fileRGB[g], f.fileSize, BALL, Math.floor((rank + 0.5) * N / st.fileN));
+      }
+    },
+    /* RESEARCH ─ AI use cases: a three-band dot ring around the card, one colour per card */
+    cardring(f, p, t, rect) {
+      const C = f.colors, last = C.length - 1, ringN = Math.min(N, cfg.ringDots), per = Math.ceil(ringN / 3);
+      const span = rect.height - H, seg = (span > 0 ? clamp(-rect.top / span) : 0) * C.length;   // 0 … cards
+      const R = Math.min(p.rx, p.ry) * 0.94, TAU = Math.PI * 2;
+      for (let i = 0; i < N; i++) {
+        if (i >= ringN) { hide(i, p.cx, p.cy); continue; }
+        const band = i % 3, k = Math.floor(i / 3);
+        const a = (k / per) * TAU + t * cfg.ringSpin * (band === 1 ? -1 : 1) * (1 + band * 0.3);
+        const r = R * (1 - band * 0.055) + (RND[i * 2] - 0.5) * R * 0.02;
+        // colour sweeps around the ring near the end of each card's stretch of scroll
+        const s = clamp(seg + (frac(a / TAU) - 0.5) * cfg.ringSweep, 0, last + 0.999), base = Math.min(last, Math.floor(s));
+        const kk = smooth(clamp((s - base - (1 - cfg.ringSweep)) / cfg.ringSweep));
+        dot(i, p.cx + Math.cos(a) * r, p.cy + Math.sin(a) * r, mix(C[base], C[Math.min(last, base + 1)], kk),
+          0.55 + 0.35 * Math.sin(t * 1.6 + PHASE[i]), 1 - band * 0.2);
       }
     },
     /* RESEARCH ─ AI: a small neural net, activation pulsing input → output */
@@ -787,11 +885,15 @@ async function init() {
   }
 
   // write formation f's target for every dot at time t
-  function layout(f, t) {
+  function layout(f) {
+    const t = f.el.__dotsT || 0;      // per-section clock (data-dots-speed), advanced in frame()
     const rect = f.el.getBoundingClientRect();
     X = f.x; Y = f.y; Cc = f.c; Aa = f.a; Ss = f.s;
     if (REGION[f.type]) region(f, t);
     else (DRAW[f.type] || DRAW.orb)(f, place(f, rect), t, rect);
+    if (f.clipTop || f.clipBot) for (let i = 0; i < N; i++) {
+      if ((f.clipTop && Y[i] < rect.top) || (f.clipBot && Y[i] > rect.bottom)) Aa[i] = 0;
+    }
     if (!f.avoidOn) return;
     // text boxes on screen that the dots must stay off
     const keep = [], pad = cfg.avoidPad;
@@ -803,6 +905,177 @@ async function init() {
     for (let i = 0; i < N; i++) {
       if (Aa[i] && keep.some((b) => X[i] > b.left - pad && X[i] < b.right + pad && Y[i] > b.top - pad && Y[i] < b.bottom + pad)) Aa[i] = 0;
     }
+  }
+
+  /* ── cursor orb (own canvas above content; the field's formations carry on) ─ */
+  const CUR = {
+    n: 110,         // dots in the orb
+    r: 30,          // orb radius, px (~60px across)
+    size: 4.5,      // dot diameter, px
+    follow: 10,     // how tightly it trails the pointer (higher = snappier)
+    form: 0.7,      // seconds to gather / dissolve
+    scatter: 160,   // px the dots fly in from while forming
+    spin: 2,        // × cfg.spin
+    fill: 600,      // dots that end up inside the child silhouette (extra ones join in the burst)
+    fillSize: 5,    // dot diameter once settled in the silhouette, px
+    fillDur: 1.8,   // seconds: burst + pour into the silhouette
+    burst: 0.28,    // share of fillDur spent bursting outward
+    burstR: 190,    // px the burst throws dots (max)
+    near: 60,       // px around the child's outline that counts as "near" for the trigger
+  };
+  // interior of the child in assets/Triad.svg (viewBox 1440×810), inset ~8 units from the
+  // outline: rows of "start.length" cell spans, 4-unit cells from (x0, y0)
+  const TRIAD_CHILD = { vw: 1440, vh: 810, box: [987, 77, 1416, 806], x0: 1000, y0: 100, cell: 4,
+    rows: '40.11;37.17;36.19;34.23;33.25;32.27;31.29;30.31;29.33;29.33;28.35;28.35;27.37;27.37;27.37;26.39;26.39;26.39;26.39;26.39;26.39;26.39;26.39;27.37;27.37;27.37;27.37;28.35;28.35;29.33;30.31;30.31;31.29;32.27;33.25;35.21;36.19;38.15;41.11;44.7;45.6;46.5;46.5;46.5;45.7;45.8;43.17;35.32;31.39;28.42;27.44;27.44;27.45;26.46;26.47;25.48;25.49;24.51;24.51;23.53;23.53;22.55;22.56;21.57;21.58;20.59;19.61;19.62;18.63;18.64;17.66;17.66;16.68;16.69;15.70;15.71;14.72;14.73;13.75;12.76;12.77;11.79;11.79;10.81;10.82;9.83;9.84;8.65,77.17;7.65,79.15;7.15,28.43,79.16;6.15,29.42,80.15;6.15,29.42,80.16;5.15,29.42,81.15;5.15,29.42,82.15;4.15,29.42,82.15;4.15,29.42,83.15;3.15,29.43,84.14;3.14,29.43,85.13;3.14,29.43,86.12;3.13,29.43,87.11;2.13,29.43,88.10;2.12,29.43,89.9;2.11,29.43,90.8;2.10,29.43,92.5;3.8,29.43;3.7,28.45;4.4,28.45;28.45;28.45;28.45;28.45;28.45;28.45;28.45;28.45;28.45;29.44;29.44;29.19,54.19;29.17,56.17;29.16,57.16;29.16,57.16;29.16,58.15;29.16,58.15;29.16,58.15;29.16,58.15;29.16,58.16;29.16,58.16;29.16,58.16;29.16,58.16;29.16,58.16;29.16,58.16;29.16,58.16;29.16,58.16;29.16,58.16;29.16,58.16;29.16,58.16;29.16,58.16;29.16,59.15;29.16,59.15;30.15,59.15;30.15,59.15;30.15,59.15;30.15,59.15;30.15,59.15;30.15,59.15;30.15,59.15;30.15,59.15;30.15,59.15;30.15,59.15;30.15,59.15;30.15,59.15;30.15,59.15;30.15,59.15;30.15,59.15;31.14,59.15;31.14,59.15;31.14,59.15;31.14,59.14;31.14,59.14;31.14,59.14;31.14,59.14;31.14,59.14;32.13,59.14;32.13,60.12;32.13,60.12;33.12,60.12;33.11,61.10;33.11,62.9;34.9,63.7;35.6' };
+  const curStart = document.querySelector('main section[data-dots-cursor]');
+  const curEnd = document.querySelector('main section[data-dots-cursor-end]');
+  const fillSec = document.querySelector('main section[data-dots-cursor-fill]');
+  const fillImg = fillSec && fillSec.querySelector(fillSec.dataset.dotsCursorFill);
+  const POOL = fillImg ? Math.max(CUR.n, CUR.fill) : CUR.n;
+  let curCtx = null;
+  if (curStart) {
+    const c2 = document.createElement('canvas');
+    c2.id = 'tlDotsCursor';
+    c2.setAttribute('aria-hidden', 'true');
+    c2.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;z-index:50;pointer-events:none';
+    document.body.appendChild(c2);
+    curCtx = c2.getContext('2d');
+  }
+  const rgbCss = (c) => `rgb(${Math.round(c[0] * 255)},${Math.round(c[1] * 255)},${Math.round(c[2] * 255)})`;
+  const CCOL = PALETTE.map(rgbCss);
+  let curDrawn = false;
+  const CBALL = new Float32Array(CUR.n * 3), CSCAT = new Float32Array(CUR.n * 2);
+  const CBURST = new Float32Array(POOL * 2), CLEAVE = new Float32Array(POOL), CPH = new Float32Array(POOL);
+  {
+    const r = rng(23);
+    for (let i = 0; i < CUR.n; i++) {
+      const k = i + 0.5, phi = Math.acos(1 - 2 * k / CUR.n), th = Math.PI * (1 + Math.sqrt(5)) * k, rr = Math.cbrt(0.2 + 0.8 * r());
+      CBALL[i * 3] = Math.cos(th) * Math.sin(phi) * rr; CBALL[i * 3 + 1] = Math.cos(phi) * rr; CBALL[i * 3 + 2] = Math.sin(th) * Math.sin(phi) * rr;
+      const a = r() * Math.PI * 2, d = CUR.scatter * (0.4 + 0.6 * r());
+      CSCAT[i * 2] = Math.cos(a) * d; CSCAT[i * 2 + 1] = Math.sin(a) * d;
+    }
+    for (let i = 0; i < POOL; i++) {
+      const a = r() * Math.PI * 2, d = CUR.burstR * (0.35 + 0.65 * Math.sqrt(r()));
+      CBURST[i * 2] = Math.cos(a) * d; CBURST[i * 2 + 1] = Math.sin(a) * d;
+      CLEAVE[i] = r(); CPH[i] = r() * Math.PI * 2;
+    }
+  }
+  // silhouette targets (viewBox units): dart-throw over the mask cells so the fill is even
+  let CTGT = null;
+  function buildTargets() {
+    const M = TRIAD_CHILD, cells = [];
+    M.rows.split(';').forEach((row, ry) => {
+      if (!row) return;
+      row.split(',').forEach((sp) => {
+        const [s0, len] = sp.split('.').map(Number);
+        for (let k = 0; k < len; k++) cells.push(M.x0 + (s0 + k) * M.cell, M.y0 + ry * M.cell);
+      });
+    });
+    const nC = cells.length / 2, r = rng(31), order = Array.from({ length: nC }, (_, i) => i);
+    for (let i = nC - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    const minD = Math.sqrt(nC * M.cell * M.cell / CUR.fill) * 0.72, minD2 = minD * minD;
+    const out = [], grid = new Map(), key = (x, y) => Math.floor(x / minD) + ':' + Math.floor(y / minD);
+    for (let pass = 0; pass < 2 && out.length < CUR.fill * 2; pass++) {
+      for (let o = 0; o < nC && out.length < CUR.fill * 2; o++) {
+        const c = order[o], x = cells[c * 2] + r() * M.cell, y = cells[c * 2 + 1] + r() * M.cell;
+        if (!pass) {
+          const gx = Math.floor(x / minD), gy = Math.floor(y / minD);
+          let near = false;
+          for (let dx = -1; dx <= 1 && !near; dx++) for (let dy = -1; dy <= 1 && !near; dy++) {
+            (grid.get((gx + dx) + ':' + (gy + dy)) || []).forEach((q) => { if ((q[0] - x) ** 2 + (q[1] - y) ** 2 < minD2) near = true; });
+          }
+          if (near) continue;
+          const kk = key(x, y); (grid.get(kk) || grid.set(kk, []).get(kk)).push([x, y]);
+        }
+        out.push(x, y);
+      }
+    }
+    CTGT = new Float32Array(POOL * 2);
+    for (let i = 0; i < POOL; i++) { CTGT[i * 2] = out[(i % (out.length / 2)) * 2]; CTGT[i * 2 + 1] = out[(i % (out.length / 2)) * 2 + 1]; }
+  }
+
+  let mx = -1, my = -1, ox = 0, oy = 0, curK = 0, curF = 0, curIn = false, curLatch = false, curLast = performance.now();
+  const curT0 = curLast;
+  if (curStart) {
+    window.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; curIn = true; kick(); }, { passive: true });
+    document.addEventListener('mouseout', (e) => { if (!e.relatedTarget) { curIn = false; kick(); } });
+  }
+  const easeOut = (v) => 1 - (1 - v) * (1 - v) * (1 - v);
+  function stepCursor(now) {
+    const dt = Math.min(0.05, (now - curLast) / 1000); curLast = now;
+    if (!curCtx) return;
+    if (mx < 0) { mx = W / 2; my = H / 2; }                   // pointer not seen yet: start mid-screen
+    const mid = H * 0.5;
+    const started = curStart.getBoundingClientRect().top <= mid;
+    // fill trigger: pointer in / near the child's outline box; latched until the image is
+    // scrolled back below the screen
+    if (fillImg) {
+      const b = fillImg.getBoundingClientRect(), M = TRIAD_CHILD.box, fx = b.width / TRIAD_CHILD.vw, fy = b.height / TRIAD_CHILD.vh;
+      if (b.top > H) curLatch = false;
+      else if (!curLatch && curIn && started
+        && mx > b.left + M[0] * fx - CUR.near && mx < b.left + M[2] * fx + CUR.near
+        && my > b.top + M[1] * fy - CUR.near && my < b.top + M[3] * fy + CUR.near) curLatch = true;
+    }
+    const filling = curLatch;
+    const on = started && !(curEnd && curEnd.getBoundingClientRect().top <= mid) && (curIn || filling || curF > 0);
+    if (!curK && !on) {                                       // idle: park on the pointer, ready to form there
+      ox = mx; oy = my;
+      if (curDrawn) { curCtx.clearRect(0, 0, W, H); curDrawn = false; }
+      return;
+    }
+    curK = reduced ? (on ? 1 : 0) : clamp(curK + (on ? dt : -dt) / CUR.form);
+    if (fillImg) curF = reduced ? (filling ? 1 : 0) : clamp(curF + (filling ? dt : -dt) / CUR.fillDur);
+    const ease = reduced ? 1 : 1 - Math.exp(-dt * CUR.follow);
+    ox += (mx - ox) * ease; oy += (my - oy) * ease;
+
+    // settled in the silhouette and scrolled out of view: nothing to draw
+    let ib = null;
+    if (curF > 0) {
+      ib = fillImg.getBoundingClientRect();
+      if (curF >= 1 && (ib.bottom < 0 || ib.top > H)) {
+        if (curDrawn) { curCtx.clearRect(0, 0, W, H); curDrawn = false; }
+        return;
+      }
+      if (!CTGT) buildTargets();
+    }
+
+    const k = smooth(curK), tt = reduced ? 0 : (now - curT0) / 1000, ang = tt * cfg.spin * CUR.spin;
+    const ca = Math.cos(ang), sa = Math.sin(ang), ct = Math.cos(cfg.tilt), st = Math.sin(cfg.tilt);
+    const bk = easeOut(clamp(curF / CUR.burst)), sx = ib ? ib.width / TRIAD_CHILD.vw : 0, sy = ib ? ib.height / TRIAD_CHILD.vh : 0;
+    curCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    curCtx.clearRect(0, 0, W, H);
+    const count = curF > 0 ? POOL : CUR.n;
+    for (let i = 0; i < count; i++) {
+      // 1 · the orb on the pointer (extra fill dots wait, hidden, at its centre)
+      let x = ox, y = oy, a = 0, sz = CUR.size;
+      if (i < CUR.n) {
+        const bx = CBALL[i * 3], by = CBALL[i * 3 + 1], bz = CBALL[i * 3 + 2];
+        const rx = bx * ca + bz * sa, rz0 = -bx * sa + bz * ca, ry = by * ct - rz0 * st, rz = by * st + rz0 * ct;
+        const d = 1 + rz * cfg.depth;
+        x = ox + rx * CUR.r * d + CSCAT[i * 2] * (1 - k);
+        y = oy - ry * CUR.r * d + CSCAT[i * 2 + 1] * (1 - k);
+        a = k * (cfg.backAlpha + (1 - cfg.backAlpha) * (rz + 1) / 2);
+        sz = CUR.size * d;
+      }
+      // 2 · burst outward, then 3 · pour into the silhouette (staggered per dot)
+      if (curF > 0) {
+        const tr = smooth(clamp((curF - CUR.burst - CLEAVE[i] * 0.3) / (1 - CUR.burst - 0.3)));
+        const bxp = ox + CBURST[i * 2], byp = oy + CBURST[i * 2 + 1];
+        const tx = ib.left + CTGT[i * 2] * sx, ty = ib.top + CTGT[i * 2 + 1] * sy;
+        x = x + (bxp - x) * bk; y = y + (byp - y) * bk;
+        x = x + (tx - x) * tr; y = y + (ty - y) * tr;
+        const settled = 0.8 + 0.2 * Math.sin(tt * 2 + CPH[i]);
+        a = (i < CUR.n ? a : bk * 0.9) * (1 - tr) + settled * tr * k;   // k: fades with the orb past data-dots-cursor-end
+        sz = sz + (CUR.fillSize - sz) * tr;
+      }
+      if (a <= 0.01) continue;
+      curCtx.globalAlpha = a * cfg.opacity;
+      curCtx.fillStyle = CCOL[i % 5];
+      curCtx.beginPath();
+      curCtx.arc(x, y, sz / 2, 0, Math.PI * 2);
+      curCtx.fill();
+    }
+    curDrawn = true;
   }
 
   /* ── FAQ flip bursts (separate particles; the field is left alone) ──────── */
@@ -846,12 +1119,22 @@ async function init() {
   }
 
   /* ── frame ─────────────────────────────────────────────────────────────── */
-  const t0 = performance.now();
+  let tPrev = performance.now();
+  const XYZ = new Float32Array(N * 3);
+  function interleave(f) {
+    for (let i = 0; i < N; i++) { XYZ[i * 3] = f.x[i]; XYZ[i * 3 + 1] = f.y[i]; }
+    return XYZ;
+  }
   function frame() {
     const now = performance.now();
     stepBursts(now);
+    stepCursor(now);
     if (!formations.length) { renderer.render(scene, camera); return; }
-    const t = reduced ? 0 : (now - t0) / 1000;
+    const dt = reduced ? 0 : Math.min(0.1, (now - tPrev) / 1000); tPrev = now;
+    formations.forEach((f) => {
+      f.el.__dotsT = (f.el.__dotsT || 0) + dt * f.speed;
+      f.el.__flowT = (f.el.__flowT || 0) + dt * f.flow;     // own clock so flow speed can change smoothly
+    });
     const mid = H * 0.5;
 
     // active pair: the last section whose top has passed mid-screen, and the next
@@ -867,8 +1150,24 @@ async function init() {
       // a short first section never starts half-morphed: hold it until the visitor scrolls
       if (ai === 0) w *= clamp(window.scrollY / (H * 0.25));
     }
-    layout(A, t);
-    if (B && w > 0) layout(B, t);
+    // hard cut: no morph; the section on the other side of each cut edge gets its own layer
+    const prev = formations[ai - 1];
+    const others = [
+      A.cut && prev && prev.el.getBoundingClientRect().bottom > 0 ? prev : null,
+      B && B.cut && B.el.getBoundingClientRect().top < H ? B : null,
+    ];
+    if (B && B.cut) w = 0;
+    layout(A);
+    if (B && w > 0) layout(B);
+    others.forEach((o, k) => {
+      const L = cutLayers[k];
+      if (o) {
+        layout(o);
+        L.P.set(interleave(o)); L.C.set(o.c); L.S.set(o.s);
+        for (let i = 0; i < N; i++) L.A[i] = o.a[i] * cfg.opacity;
+        L.dirty(); cutOn[k] = true;
+      } else if (cutOn[k]) { L.A.fill(0); L.dirty(); cutOn[k] = false; }
+    });
 
     const sg = clamp(cfg.stagger, 0, 0.9);
     for (let i = 0; i < N; i++) {
@@ -885,7 +1184,9 @@ async function init() {
     // lines ride on the live dot positions
     formations.forEach((f) => {
       if (!f.lines) return;
-      const weight = f === A ? 1 - w : f === B ? w : 0;
+      // a formation across a cut edge draws its links from its own layer, at full weight
+      const ck = others.indexOf(f), src = ck >= 0 ? cutLayers[ck] : field;
+      const weight = ck >= 0 ? 1 : f === A ? 1 - w : f === B ? w : 0;
       f.lines.visible = weight > 0.01;
       if (!f.lines.visible) return;
       f.lines.material.opacity = weight * weight * cfg.lineOpacity * cfg.opacity;
@@ -893,11 +1194,11 @@ async function init() {
       for (let p = 0; p < f.pairs.length; p += 2) {
         // a link whose end dot is hidden (over text) collapses to nothing
         const i = f.pairs[p], j = f.pairs[p + 1];
-        const hide = ALPHA[i] < 0.05 || ALPHA[j] < 0.05;
+        const hide = src.A[i] < 0.05 || src.A[j] < 0.05;
         for (let e = 0; e < 2; e++) {
           const v = hide ? i : f.pairs[p + e], q = (p + e) * 3;
-          lp[q] = P[v * 3]; lp[q + 1] = P[v * 3 + 1]; lp[q + 2] = 0;
-          lc[q] = COL[v * 3]; lc[q + 1] = COL[v * 3 + 1]; lc[q + 2] = COL[v * 3 + 2];
+          lp[q] = src.P[v * 3]; lp[q + 1] = src.P[v * 3 + 1]; lp[q + 2] = 0;
+          lc[q] = src.C[v * 3]; lc[q + 1] = src.C[v * 3 + 1]; lc[q + 2] = src.C[v * 3 + 2];
         }
       }
       f.lines.geometry.attributes.position.needsUpdate = true;
@@ -914,6 +1215,8 @@ async function init() {
     renderer.setSize(W, H, false);
     field.mat.uniforms.uDpr.value = DPR;
     burst.mat.uniforms.uDpr.value = DPR;
+    cutLayers.forEach((L) => { L.mat.uniforms.uDpr.value = DPR; });
+    if (curCtx) { curCtx.canvas.width = Math.round(W * DPR); curCtx.canvas.height = Math.round(H * DPR); curDrawn = false; }
     camera.left = 0; camera.right = W; camera.top = 0; camera.bottom = H;
     camera.updateProjectionMatrix();
     readFormations();

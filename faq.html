@@ -27,13 +27,17 @@
   /* page-local: FAQ flip cards. Front = question on a brand fill, back = the
      one-line answer; both faces share one grid cell so the card is as tall as
      its taller face and every card in a row matches. */
+  .fq-cards { padding-top: 8px; }                 /* hero already carries the space above */
+  .fq-more { margin: 40px 0 0; text-align: center; }
   .fq-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
   @media (max-width: 1000px) { .fq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 640px)  { .fq-grid { grid-template-columns: 1fr; } .fc__inner { min-height: 220px; } }
-  .fc { perspective: 1400px; cursor: pointer; }
+  .fc { perspective: 1400px; cursor: pointer; --fc-mix: 78%; }
+  /* softened card colour: brand colour washed toward white by --fc-mix */
+  .fc--green, .fc--cyan, .fc--pink, .fc--yellow, .fc--orange { --fc-fill: color-mix(in srgb, var(--fc) var(--fc-mix), #fff); }
   .fc--green  { --fc: var(--tl-green-500);  --fc-ink: var(--tl-ink-900); --fc-t: var(--tl-green-600); }
   .fc--cyan   { --fc: var(--tl-cyan-500);   --fc-ink: var(--tl-ink-900); --fc-t: var(--tl-cyan-700); }
-  .fc--pink   { --fc: var(--tl-pink-600);   --fc-ink: var(--tl-white);   --fc-t: var(--tl-pink-600); }
+  .fc--pink   { --fc: var(--tl-pink-600);   --fc-ink: var(--tl-ink-900); --fc-t: var(--tl-pink-600); }
   .fc--yellow { --fc: var(--tl-yellow-500); --fc-ink: var(--tl-ink-900); --fc-t: var(--tl-yellow-700); }
   .fc--orange { --fc: var(--tl-orange-500); --fc-ink: var(--tl-ink-900); --fc-t: var(--tl-ink-900); }
   .fc__inner { display: grid; height: 100%; min-height: 280px; transform-style: preserve-3d;
@@ -41,8 +45,8 @@
   .fc__face { grid-area: 1 / 1; display: flex; flex-direction: column; border-radius: var(--tl-radius-lg);
     padding: 28px 26px 24px; backface-visibility: hidden; -webkit-backface-visibility: hidden;
     box-shadow: var(--tl-shadow-card); }
-  .fc__front { background: var(--fc); color: var(--fc-ink); }
-  .fc__back { background: var(--tl-white); border: 3px solid var(--fc); transform: rotateY(180deg); }
+  .fc__front { background: var(--fc-fill); color: var(--fc-ink); }
+  .fc__back { background: var(--tl-white); border: 3px solid var(--fc-fill); transform: rotateY(180deg); }
   .fc.is-flipped .fc__inner, .fc:focus-within .fc__inner { transform: rotateY(180deg); }
   @media (hover: hover) and (pointer: fine) { .fc:hover .fc__inner { transform: rotateY(180deg); } }
   .fc__num { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); opacity: .75; }
@@ -53,7 +57,7 @@
     border: 1.5px solid currentColor; border-radius: var(--tl-radius-pill); padding: 8px 16px; cursor: pointer; }
   .fc__lead { margin: 0 0 20px; font-size: var(--tl-fs-base); font-weight: 700; line-height: 1.55; color: var(--tl-ink-900); }
   .fc__actions { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .fc__more { font: inherit; font-size: var(--tl-fs-sm); font-weight: 700; color: var(--fc-ink); background: var(--fc);
+  .fc__more { font: inherit; font-size: var(--tl-fs-sm); font-weight: 700; color: var(--fc-ink); background: var(--fc-fill);
     border: 0; border-radius: var(--tl-radius-pill); padding: 10px 20px; cursor: pointer; }
   .fc__more:hover { filter: brightness(.94); }
   .fc__back-btn { font: inherit; font-size: var(--tl-fs-lg); line-height: 1; color: var(--fc-t); background: transparent;
@@ -95,15 +99,14 @@
     <div class="tl-container tl-narrow" style="text-align:center">
       <p class="tl-eyebrow">FAQs</p>
       <h1 class="tl-h1">Questions, answered</h1>
-      <p class="tl-lead">Everything schools and families ask us most often. Can't find what you need?
-        <a href="#" data-tl-open-form style="color:var(--tl-pink-600);font-weight:700">Book a 30-minute call</a>.</p>
+      <p class="tl-lead">Everything schools and families ask us most often.</p>
     </div>
   </section>
 
   <!-- FAQ flip cards: hover (or tap) a question to flip it; the back carries the
        one-line answer, and "Read full answer" opens the full text in a modal.
        Full answers stay in the DOM (hidden) for search + no-JS. -->
-  <section class="tl-section" data-dots="network" data-dots-box="0.01,0.06,0.99,0.94" data-dots-avoid=".fc">
+  <section class="tl-section fq-cards" data-dots="off">
     <div class="tl-container">
       <div class="fq-grid">
 
@@ -325,6 +328,8 @@
         </article>
 
       </div>
+      <p class="tl-lead fq-more">Can't find what you need?
+        <a href="https://www.linkedin.com/in/kavindyathennakoon/" target="_blank" rel="noopener" style="color:var(--tl-pink-600);font-weight:700">Drop Kavi a message on LinkedIn</a>.</p>
     </div>
   </section>
 
@@ -396,6 +401,6 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeFull(); });
   })();
 </script>
-<script type="module" src="js/dot-field.js?v=2"></script>
+<script type="module" src="js/dot-field.js?v=22"></script>
 </body>
 </html>
