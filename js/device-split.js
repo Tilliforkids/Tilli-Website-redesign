@@ -11,6 +11,9 @@
 
    Forked pages (each has a desktop file at root AND a mobile twin in /m/):
      index.html · research.html · success.html
+   EXCEPT Home on capable phones: they stay on index.html in "mobile mode"
+   (html.tl-mobile → main.js portrait config). m/index.html is the fallback for
+   reduced-motion / no-WebGL / Save-Data / low-memory phones (?view=lite).
    Pages NOT listed here (faq, privacy-policy) are responsive-only and never
    redirected — they serve the same file to every device.
 
@@ -58,6 +61,19 @@
     // Target keeps the page name (Home collapses to the directory for clean URLs).
     var page = (file === 'index.html') ? '' : file;
 
+    // HOME "MOBILE MODE": capable phones stay on the desktop 3JS Home (main.js
+    // switches to its portrait config off `html.tl-mobile`). m/index.html is only
+    // the fallback for phones that can't or shouldn't run it.
+    if (file === 'index.html' && isMobile && !forcedMobileBuild()) {
+      if (onMobileBuild) {
+        if (!needsLite()) location.replace('../' + location.search + location.hash);
+        return;
+      }
+      if (needsLite()) { location.replace('m/' + location.search + location.hash); return; }
+      markMobile();
+      return;
+    }
+
     // Fork. Redirect targets are relative to the PAGE, so they hold on both sides.
     if (onMobileBuild && !isMobile) {
       location.replace('../' + page + location.search + location.hash);
@@ -65,4 +81,38 @@
       location.replace('m/' + page + location.search + location.hash);
     }
   } catch (e) {}
+
+  // ?view=lite pins a phone to the m/ fallback Home (testing the fallback).
+  function forcedMobileBuild() {
+    return new URLSearchParams(location.search).get('view') === 'lite';
+  }
+
+  // Phones that get the lightweight m/ Home instead of the 3JS one.
+  function needsLite() {
+    try {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+      var c = navigator.connection;
+      if (c && c.saveData) return true;
+      if (navigator.deviceMemory && navigator.deviceMemory <= 2) return true;
+      var cv = document.createElement('canvas');
+      if (!(cv.getContext('webgl2') || cv.getContext('webgl'))) return true;
+    } catch (e) { return true; }
+    return false;
+  }
 })();
+
+/* Mobile-mode flag — the single switch CSS + JS key off for the phone build of
+   the 3JS pages. Set on <html> before any stylesheet parses. Called above for
+   Home, and by any page that opts in with  <script>TL_MOBILE_PAGE=1</script>. */
+function markMobile() {
+  var h = document.documentElement;
+  h.classList.add('tl-mobile');
+  var portrait = function () {
+    var p = window.innerHeight >= window.innerWidth;
+    h.classList.toggle('tl-portrait', p);
+    h.classList.toggle('tl-landscape', !p);
+  };
+  portrait();
+  window.addEventListener('orientationchange', function () { setTimeout(portrait, 250); });
+  window.addEventListener('resize', portrait);
+}

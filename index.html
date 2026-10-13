@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Device Split gate — MUST stay before any stylesheet/3JS. See js/device-split.js -->
-<script src="js/device-split.js?v=2"></script>
+<script src="js/device-split.js?v=3"></script>
 <!-- HTML cache self-heal — forces a fresh shell when /version.json bumps. See js/cache-guard.js -->
 <script src="js/cache-guard.js"></script>
 <title>Tilli — Developmentally on track by age 10</title>
@@ -485,6 +485,104 @@
     .sch-logo--lg { width: min(160px, 40vw); height: 124px; }
     .sch-logo--sm { width: min(120px, 27vw); height: 74px; }
   }
+
+  /* ══ MOBILE MODE — phones running this 3JS Home (html.tl-mobile, set by
+     js/device-split.js). Builds on the 900/600px rules above; desktop never
+     matches these selectors. ════════════════════════════════════════════ */
+  /* native scroll: no ↑/↓ detent buttons */
+  html.tl-mobile #arrows { display: none; }
+  /* the world is laid out against the LARGE viewport (URL bar hidden) so the
+     URL bar never re-lays anything — the stages match it */
+  html.tl-mobile .stage { bottom: auto; height: 100vh; height: 100lvh; }
+  html.tl-mobile #scrollHint { bottom: 92px; }
+
+  /* hero: the headline sits under the (smaller, higher) orb */
+  html.tl-portrait #beatA { transform: translateY(17vh) !important; }
+
+  /* reports: three narrow cards that fan into one overlapping spread */
+  html.tl-portrait [data-fan] { width: 40vw !important; }
+  html.tl-portrait [data-fan="2"] { width: 44vw !important; }
+  html.tl-portrait .fan-row { height: min(280px, 30vh) !important; margin-bottom: 2vh !important; }
+
+  /* hero beat B: a narrower copy column so the ring wraps it */
+  html.tl-portrait .hero-lead, html.tl-portrait .hero-stat-lbl { max-width: 72vw; }
+
+  /* 3 views: a tighter heading over the stacked orbs */
+  html.tl-portrait [data-v-h] { font-size: 26px !important; max-width: 92vw !important; }
+  html.tl-portrait .view-label .n { font-size: var(--tl-fs-base); }
+  html.tl-portrait .view-label .d { font-size: var(--tl-fs-xs); margin-top: 2px; }
+
+  /* on track: compact pills */
+  html.tl-portrait [data-pop] { padding: 7px 14px !important; font-size: var(--tl-fs-xs) !important; }
+  html.tl-portrait [data-st-h] + p, html.tl-portrait [data-st-p] { font-size: var(--tl-fs-sm) !important; }
+
+  /* measure: copy on the left ~62%, the helix stands up the right edge */
+  html.tl-portrait .dna-grid { padding: 0 38vw 0 16px; gap: 12px; }
+  html.tl-portrait .dna-grid .eyebrow { font-size: var(--tl-fs-lg) !important; }
+  html.tl-portrait .dna-grid .stage-title { padding: 10px 12px; }
+  html.tl-portrait .dna-grid .stage-title > div { font-size: var(--tl-fs-sm) !important; }
+  html.tl-portrait .dna-panels { height: min(300px, 40vh) !important; }
+  html.tl-portrait .stage-panel > div { padding: 16px !important; flex-direction: column; align-items: flex-start !important; }
+  html.tl-portrait .stage-panel img { width: 96px !important; }
+
+  /* 12 skills: one column per step (Thinking, then People) beside the helix */
+  html.tl-portrait .skills-wrap { padding: 0 16px; }
+  html.tl-portrait .skills-main { max-width: 72vw; }
+  html.tl-portrait .skills-main > div:first-child { text-align: left !important; padding: 0 !important; }
+  html.tl-portrait .skills-grid { grid-template-columns: 1fr; gap: 8px; }
+  html.tl-portrait .skill-card { padding: 9px 12px; }
+
+  /* ask-tilli: two stacked, compact chat cards */
+  html.tl-portrait [data-ai-p] { margin-bottom: 14px !important; }
+  html.tl-portrait [data-ai-card] { padding: 12px 14px !important; gap: 8px !important; }
+  html.tl-portrait [data-ai-card] + [data-ai-card] { margin-top: 0; }
+  html.tl-portrait [data-ai-card] [data-ai-q], html.tl-portrait [data-ai-card] [data-ai-r] { font-size: var(--tl-fs-xs) !important; padding: 8px 11px !important; }
+  html.tl-portrait [data-ai-foot] { padding-top: 6px !important; font-size: var(--tl-fs-xs) !important; }
+  html.tl-portrait .ai-cards { gap: 12px !important; min-height: 0 !important; }
+
+  /* impact: the baked desktop scale-ups are dropped */
+  html.tl-mobile #schCopy { --tx: 0px; --tsc: 1; }
+  html.tl-portrait .sch-panel { padding: 16px 12px; gap: 18px; }
+  html.tl-portrait .sch-head { font-size: 46px !important; }
+  html.tl-portrait .sch-sub { font-size: var(--tl-fs-sm); margin-top: 8px; }
+  html.tl-portrait .sch-grid { gap: 8px; }
+  html.tl-portrait .sch-logo { width: 28vw; height: 62px; padding: 8px; }
+  html.tl-portrait .sch-logo--lg { width: 36vw; height: 96px; }
+  html.tl-portrait .sch-logo--sm { width: 26vw; height: 58px; }
+  html.tl-mobile .imp2-carousel { --imp2-scale: 0.75 !important; top: 34%; }
+  html.tl-mobile .imp2-move { --x: 0px !important; --sc: 1 !important; }
+  html.tl-mobile #impQuote2 { --x: 0px; --sc: 1; }
+  html.tl-portrait .imp2-bottom { bottom: max(14vh, 96px); gap: 14px; }
+  html.tl-portrait .imp2-qtext { font-size: var(--tl-fs-sm) !important; }
+
+  /* journey: compact heading, the marble jar returns (between heading and card) */
+  html.tl-portrait .j-stage { --jh-sc: 0.82; --jjar: min(30vw, 15vh); }
+  html.tl-portrait .j-heading { margin-top: calc(4vh + 8px); white-space: normal; max-width: 92vw; }
+  html.tl-portrait .j-jar { display: block; left: 50%; top: calc(4vh + 8px + min(var(--tl-fs-xl), 5vh) * 1.25 + 1.5vh);
+    width: var(--jjar) !important; height: var(--jjar) !important; transform: translateX(-50%) !important; }
+  html.tl-portrait .j-stage .step { padding-top: calc(4vh + 8px + min(var(--tl-fs-xl), 5vh) * 1.25 + var(--jjar) + 3vh); align-items: flex-start; }
+  html.tl-portrait .j-card { padding: 14px 16px; gap: 10px; }
+  html.tl-portrait .j-card p { font-size: var(--tl-fs-xs) !important; line-height: 1.5 !important; margin-top: 8px !important; }
+  html.tl-portrait .j-card .j-when { margin-bottom: 8px; padding: 7px 10px; }
+  html.tl-portrait .j-card .j-when-txt { font-size: var(--tl-fs-xs); }
+  html.tl-portrait .j-card > div > div:first-child { margin-bottom: 8px !important; }
+  html.tl-portrait .j-step-pill { font-size: var(--tl-fs-xs); padding: 6px 10px; }
+  html.tl-portrait .j-steps { flex-wrap: nowrap; gap: 6px; }
+  html.tl-portrait .j-stage .step { padding-bottom: calc(6vh + 120px) !important; }
+  html.tl-portrait .j-card .j-img { width: 110px !important; }
+  html.tl-portrait .j-card .j-chat { display: none !important; }
+  html.tl-portrait .j-card .j-books img { width: 58px !important; }
+  html.tl-portrait .j-steps { bottom: max(3vh, 20px); }
+  html.tl-portrait body.tl-chrome-hidden .j-steps { bottom: 72px; }
+
+  /* let's talk + footer */
+  html.tl-portrait #letsTalkCard { padding: 0 8px; margin-top: -12vh !important; }
+  html.tl-portrait #letsTalkCard p { font-size: var(--tl-fs-sm) !important; margin-bottom: 20px !important; }
+  html.tl-portrait #letsTalkCard > div { flex-direction: column; gap: 14px !important; }
+  html.tl-portrait .foot { padding: 10px 16px; font-size: var(--tl-fs-xs); }
+  html.tl-portrait .foot span[style*="italic"] { display: none; }
+  html.tl-portrait .foot a, html.tl-portrait .foot div { font-size: var(--tl-fs-xs) !important; }
+  html.tl-portrait .foot > div > div:first-child > div:last-child { gap: 10px 14px !important; }
 </style>
 </head>
 <body>
@@ -585,7 +683,7 @@
     <div class="step">
       <div class="step-in">
         <div class="wrap" style="text-align: center;">
-          <div style="display: flex; justify-content: center; align-items: center; height: min(500px, 52vh); margin-bottom: min(40px, 4vh);">
+          <div class="fan-row" style="display: flex; justify-content: center; align-items: center; height: min(500px, 52vh); margin-bottom: min(40px, 4vh);">
             <img data-fan="1" src="assets/report-page-1.png" alt="Tilli parent report: cover page" style="width: 338px; max-height: min(470px, 50vh); object-fit: contain; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised); position: relative; will-change: transform;">
             <img data-fan="2" src="assets/report-page-3.png" alt="Tilli parent report: skill levels" style="width: 354px; max-height: min(490px, 52vh); object-fit: contain; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised); position: relative; z-index: 2; will-change: transform;">
             <img data-fan="3" src="assets/report-page-4.png" alt="Tilli parent report: what to do at home" style="width: 338px; max-height: min(470px, 50vh); object-fit: contain; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised); position: relative; will-change: transform;">
@@ -655,7 +753,7 @@
             </div>
           </div>
           <div class="dna-spacer"><!-- the dotted DNA weaves itself here --></div>
-          <div style="position: relative; height: min(440px, 62vh);">
+          <div class="dna-panels" style="position: relative; height: min(440px, 62vh);">
             <div class="stage-panel">
               <div style="background: var(--tl-white); border: 2px solid var(--tl-green-500); border-radius: var(--tl-radius-lg); padding: 26px; width: 100%;">
                 <div style="font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-green-600); margin-bottom: 14px;">TEACHER OBSERVATION</div>
@@ -766,7 +864,7 @@
         <div class="wrap" style="text-align: center;">
           <h2 data-ai-h style="font-size: min(var(--tl-fs-xl), 5vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); margin: 14px auto 12px; max-width: 760px; opacity: 0; will-change: transform, opacity;">Any AI can answer. <span style="color: var(--tl-cyan-700);">Only Tilli knows your student.</span></h2>
           <p data-ai-p style="font-size: min(var(--tl-fs-lg), 2.6vh); line-height: 1.6; max-width: 620px; margin: 0 auto min(40px, 4vh); opacity: 0; will-change: opacity;">The same question, asked two ways. One answer is for any child. One is for <em>this</em> child.</p>
-          <div style="display: flex; gap: 32px; justify-content: center; align-items: stretch; flex-wrap: wrap; text-align: left; min-height: min(430px, 54vh);">
+          <div class="ai-cards" style="display: flex; gap: 32px; justify-content: center; align-items: stretch; flex-wrap: wrap; text-align: left; min-height: min(430px, 54vh);">
             <div data-ai-card style="flex: 1; min-width: 300px; max-width: 470px; background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-lg); padding: min(28px, 3vh); display: flex; flex-direction: column; gap: min(12px, 1.4vh); box-shadow: var(--tl-shadow-card); opacity: 0; will-change: transform, opacity;">
               <div style="font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-ink-300); margin-bottom: 6px;">A GENERIC AI CHATBOT</div>
               <div data-ai-q style="align-self: flex-end; background: var(--tl-surface-100); color: var(--tl-ink-700); border-radius: var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-xs) var(--tl-radius-md); padding: 11px 15px; font-size: var(--tl-fs-sm); line-height: 1.5; max-width: 320px; display: none; opacity: 0; transform-origin: bottom right; will-change: transform, opacity;">How do I help a 7-year-old who keeps losing focus in class?</div>
@@ -990,7 +1088,7 @@
             <p style="font-size: min(var(--tl-fs-base), 2.3vh); line-height: 1.6; margin: 12px 0 0;">In the first weeks, every child is assessed across all 12 skills: teacher observation, parent report, and direct tasks. We repeat it three times a year, so growth shows up in the data instead of being guessed at.</p>
             <div style="font-size: var(--tl-fs-sm); font-weight: 700; color: var(--tl-pink-600); margin-top: 14px;">579 data points per child each year — 2,895 over five years.</div>
           </div>
-          <img src="assets/report-page-3.png" alt="Skill levels from a Tilli report" style="width: 190px; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised);">
+          <img class="j-img" src="assets/report-page-3.png" alt="Skill levels from a Tilli report" style="width: 190px; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised);">
         </div>
       </div>
     </div>
@@ -1007,7 +1105,7 @@
             <div style="font-size: min(var(--tl-fs-lg), 3.4vh); font-weight: 800; color: var(--tl-ink-900); letter-spacing: var(--tl-tracking-tight);">AskTilli</div>
             <p style="font-size: min(var(--tl-fs-base), 2.3vh); line-height: 1.6; margin: 12px 0 0;">Teachers ask about a child or a class and get lesson plans, behaviour guidance, and that child's own data, in the middle of a school day, in seconds.</p>
           </div>
-          <div style="width: 250px; background: var(--tl-wash-cyan); border: 4px solid var(--tl-cyan-500); border-radius: var(--tl-radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <div class="j-chat" style="width: 250px; background: var(--tl-wash-cyan); border: 4px solid var(--tl-cyan-500); border-radius: var(--tl-radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 10px;">
             <div style="align-self: flex-end; background: var(--tl-cyan-500); color: var(--tl-white); border-radius: var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-xs) var(--tl-radius-md); padding: 10px 14px; font-size: var(--tl-fs-sm); line-height: 1.45; max-width: 200px;">How do I support Dhruv's focus during group work?</div>
             <div style="align-self: flex-start; background: var(--tl-white); color: var(--tl-ink-700); border-radius: var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-md) var(--tl-radius-xs); padding: 10px 14px; font-size: var(--tl-fs-sm); line-height: 1.45; max-width: 210px;">Dhruv's attention is at <b>Learner</b>. Try a 2-minute attention warm-up before the task. Here's one from Week 14.</div>
             <div style="font-size: var(--tl-fs-xs); font-weight: 700; color: var(--tl-cyan-700); text-align: center; margin-top: 4px;">ASKTILLI</div>
@@ -1028,7 +1126,7 @@
             <div style="font-size: min(var(--tl-fs-lg), 3.4vh); font-weight: 800; color: var(--tl-ink-900); letter-spacing: var(--tl-tracking-tight);">A curriculum, not a workshop</div>
             <p style="font-size: min(var(--tl-fs-base), 2.3vh); line-height: 1.6; margin: 12px 0 0;">36 weeks of play-based lessons for every class: Feelings Time workbooks, Teacher's Guidebooks, and the Teaching Kit. 30 minutes a week. No new period, no extra prep.</p>
           </div>
-          <div style="display: flex; gap: 12px; align-items: flex-end;">
+          <div class="j-books" style="display: flex; gap: 12px; align-items: flex-end;">
             <img src="assets/ds/feelings-time-1.png" alt="Feelings Time workbook" style="width: 96px; border-radius: var(--tl-radius-sm); box-shadow: var(--tl-shadow-raised);">
             <img src="assets/ds/guidebook-l1.png" alt="Teacher's Guidebook" style="width: 96px; border-radius: var(--tl-radius-sm); box-shadow: var(--tl-shadow-raised); margin-bottom: 16px;">
             <img src="assets/ds/my-first-feelings-book.png" alt="My First Feelings Book" style="width: 96px; border-radius: var(--tl-radius-sm); box-shadow: var(--tl-shadow-raised);">
@@ -1097,7 +1195,7 @@
 <script src="js/ask-tilli-demo.js?v=2"></script>
 <script src="js/impact-orbits.js?v=7"></script>
 <script src="js/impact-carousel.js?v=7"></script>
-<script type="module" src="js/main.js?v=131"></script>
+<script type="module" src="js/main.js?v=132"></script>
 <script src="js/site-config.js?v=2"></script>
 <script src="js/site-chrome.js?v=5"></script>
 </body>

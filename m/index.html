@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Device Split gate — MUST stay before any stylesheet. See ../js/device-split.js -->
-<script src="../js/device-split.js?v=2"></script>
+<script src="../js/device-split.js?v=3"></script>
 <!-- HTML cache self-heal — forces a fresh shell when /version.json bumps. See ../js/cache-guard.js -->
 <script src="../js/cache-guard.js"></script>
 <title>Tilli — Developmentally on track by age 10</title>
-<meta name="description" content="How do you know which children are quietly falling behind? Tilli measures 12 foundational skills for every child, three ways, three times a year — then you ask Tilli what to do next.">
+<meta name="description" content="Tilli helps schools measure 12 foundational skills for every child — from teachers, parents, and the child — then ask Tilli what to do next. Developmentally on track by age 10.">
 <meta name="theme-color" content="#26BDE2">
 <link rel="icon" type="image/png" href="../assets/ds/tilli-wordmark.png">
 <link rel="apple-touch-icon" href="../assets/ds/tilli-wordmark.png">
@@ -19,7 +19,10 @@
 <meta property="og:description" content="Schools measure 12 foundational skills for every child — from teachers, parents, and the child themselves — then ask Tilli what to do next.">
 <meta property="og:url" content="https://tillinewwebsite.ishanirai.com/">
 <meta property="og:image" content="https://tillinewwebsite.ishanirai.com/assets/ds/tilli-wordmark.png">
+<meta property="og:image:alt" content="Tilli">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tilli — Developmentally on track by age 10">
+<meta name="twitter:description" content="Schools measure 12 foundational skills for every child, then ask Tilli what to do next.">
 <meta name="twitter:image" content="https://tillinewwebsite.ishanirai.com/assets/ds/tilli-wordmark.png">
 <link rel="stylesheet" href="../_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/fonts.css">
 <link rel="stylesheet" href="../_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
@@ -77,6 +80,15 @@
     border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised);
     background: var(--tl-white); }
   .shot video, .shot img { width: 100%; display: block; }
+
+  /* ── 3 views: one dotted circle per source (echoes the desktop split) ── */
+  .views-row { display: flex; flex-direction: column; align-items: center; gap: 28px; margin-top: 30px; }
+  .view-label .v-dot { display: block; width: 84px; height: 84px; margin: 0 auto 12px; border-radius: 50%;
+    background: radial-gradient(circle, var(--c) 2.4px, transparent 3px) 0 0 / 10px 10px;
+    -webkit-mask: radial-gradient(circle, #000 69%, transparent 70%);
+    mask: radial-gradient(circle, #000 69%, transparent 70%); }
+  .view-label .n { font-family: var(--tl-font-core); font-weight: 800; font-size: var(--tl-fs-lg); line-height: 1.2; }
+  .view-label .d { font-size: var(--tl-fs-sm); color: var(--tl-ink-500); margin-top: 5px; }
 
   /* ── Measure: strands + sample cards ────────────────── */
   .strand .h { font-size: var(--tl-fs-sm); font-weight: 800; }
@@ -180,13 +192,9 @@
   .imp-quote .qmark { display: block; font-family: var(--tl-font-core); font-weight: 800;
     font-size: var(--tl-fs-xl); line-height: 0.5; color: var(--tl-green-500); opacity: 0.55; margin-bottom: 12px; }
   .imp-quote p { font-size: var(--tl-fs-base); font-weight: 500; line-height: 1.6; color: var(--tl-ink-700); }
-  .imp-quote footer { margin-top: 18px; }
-  .imp-quote .qwho b { font-weight: 700; font-size: var(--tl-fs-sm); color: var(--tl-ink-700); }
-  .imp-quote .qwho span { display: block; font-size: var(--tl-fs-xs); font-weight: 500; color: var(--tl-ink-300);
-    line-height: 1.4; margin-top: 3px; }
-  .imp-quote .rpp-credit { margin-top: 14px; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
+  .imp-quote .qcite { margin-top: 18px; font-size: var(--tl-fs-xs); font-weight: 500; color: var(--tl-ink-300); line-height: 1.4; }
+  .imp-quote .rpp-credit { margin-bottom: 16px; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
     text-transform: uppercase; color: var(--tl-ink-300); }
-  .impact .big { margin-top: 34px; }   /* stat now sits below the quote */
 
   /* ── Journey ────────────────────────────────────────── */
   .j-steps { display: flex; gap: 8px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
@@ -217,6 +225,9 @@
   .j-card .data { font-size: var(--tl-fs-sm); font-weight: 700; color: var(--tl-pink-600); margin-top: 12px; }
   .j-card .books { display: flex; gap: 10px; margin-top: 18px; }
   .j-card .books img { width: 30%; border-radius: var(--tl-radius-sm); box-shadow: var(--tl-shadow-raised); }
+  .j-chat { margin-top: 16px; padding: 16px; }
+  .j-chat .j-chat-lab { font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
+    color: var(--tl-cyan-700); text-align: center; margin-top: 4px; }
   .j-card .rep { width: 46%; border-radius: var(--tl-radius-md); margin-top: 16px; border: 1px solid var(--tl-line-200);
     box-shadow: var(--tl-shadow-raised); }
 
@@ -341,9 +352,9 @@
   <!-- 3 · REPORTS -->
   <section id="reports" class="wash-green wrap" style="text-align:center">
     <div class="rdeck" id="reportDeck" aria-label="Tilli parent report pages — swipe to browse">
-      <div class="rdeck-card"><img src="../assets/report-page-1.png" alt="Tilli parent report: cover" loading="lazy"></div>
+      <div class="rdeck-card"><img src="../assets/report-page-1.png" alt="Tilli parent report: cover page" loading="lazy"></div>
       <div class="rdeck-card"><img src="../assets/report-page-3.png" alt="Tilli parent report: skill levels" loading="lazy"></div>
-      <div class="rdeck-card"><img src="../assets/report-page-4.png" alt="Tilli parent report: what to try at home" loading="lazy"></div>
+      <div class="rdeck-card"><img src="../assets/report-page-4.png" alt="Tilli parent report: what to do at home" loading="lazy"></div>
     </div>
     <div class="rdeck-hint" aria-hidden="true">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -360,10 +371,31 @@
     </div>
   </section>
 
+  <!-- 4 · 3 VIEWS — the three people who know the child best -->
+  <section id="views" class="wash-cyan wrap" style="text-align:center">
+    <h2 class="title">Every data point comes from the <span class="c-cyan">3 people who know the child best</span>.</h2>
+    <div class="views-row">
+      <div class="view-label" style="--c:var(--tl-green-500)">
+        <span class="v-dot" aria-hidden="true"></span>
+        <div class="n" style="color:var(--tl-green-600)">Teacher</div>
+        <div class="d">What they observe in the classroom</div>
+      </div>
+      <div class="view-label" style="--c:var(--tl-yellow-500)">
+        <span class="v-dot" aria-hidden="true"></span>
+        <div class="n" style="color:var(--tl-yellow-700)">The student themselves</div>
+        <div class="d">Direct tasks, in the child's own voice</div>
+      </div>
+      <div class="view-label" style="--c:var(--tl-cyan-500)">
+        <span class="v-dot" aria-hidden="true"></span>
+        <div class="n" style="color:var(--tl-cyan-700)">Parents</div>
+        <div class="d">What home sees that school can't</div>
+      </div>
+    </div>
+  </section>
+
   <!-- 5 · MEASURE / 360° view -->
   <section id="measure" class="wrap">
     <div class="eyebrow measure-head">Measure · 360° View</div>
-    <h2 class="title">Three strands, one measurement.</h2>
     <!-- CHG-01 · each strand bound to its own example box, one per swipe card -->
     <div class="mrail">
       <div class="mcard">
@@ -416,7 +448,7 @@
     <div class="skill-bucket">
       <div class="bucket-head">
         <span class="b-ic b-ef"><img src="../assets/Brain.png" alt=""></span>
-        <div><div class="b-name">Thinking skills</div><div class="b-sub">How a child learns</div></div>
+        <div><div class="b-name">Thinking skills</div><div class="b-sub">how a child learns</div></div>
       </div>
       <div class="skills-grid" style="text-align:left">
         <div class="skill-card">
@@ -450,7 +482,7 @@
     <div class="skill-bucket">
       <div class="bucket-head">
         <span class="b-ic b-sel"><img src="../assets/Heart.png" alt=""></span>
-        <div><div class="b-name">People skills</div><div class="b-sub">How a child feels, gets along and reflects</div></div>
+        <div><div class="b-name">People skills</div><div class="b-sub">how a child feels, gets along and reflects</div></div>
       </div>
       <div class="skills-grid" style="text-align:left">
         <div class="skill-card">
@@ -488,7 +520,7 @@
     <div class="pops">
       <span class="pop">12 skills measured</span>
       <span class="pop c">3× a year</span>
-      <span class="pop p">579 data points per child, per year</span>
+      <span class="pop p">579 data points per child, every year</span>
       <span class="pop y">Growth visible, not guessed</span>
     </div>
     <!-- CHG-03 · row of children, outline traced by multi-colour dots — mirrors the
@@ -498,7 +530,6 @@
 
   <!-- 8 · ASK-TILLI -->
   <section id="ask-tilli" class="wash-pink wrap" style="text-align:center">
-    <div class="eyebrow pink">Ask</div>
     <h2 class="title">Any AI can answer. <span class="c-cyan">Only Tilli knows your student.</span></h2>
     <p class="lede">The same question, asked two ways. One answer is for any child. One is for <em>this</em> child.</p>
     <div class="ai-cards">
@@ -518,15 +549,15 @@
     </div>
 
     <!-- CHG-04 · Interactive Ask-Tilli demo (ported from desktop) -->
-    <div class="eyebrow pink" style="margin-top:40px">Now you try</div>
+    <div class="eyebrow cyan" style="margin-top:40px">Now you try</div>
     <h2 class="title">Ask Tilli anything about <span class="c-cyan">your school</span>.</h2>
-    <p class="atl-intro-sub"><b>Sunrise Academy</b> · Pre-K to Grade 5 · 35 students a class</p>
+    <p class="atl-intro-sub"><b>Sunrise Academy</b> · 6 grades, Pre-K to Grade 5 · 35 students a class</p>
 
     <div class="atl-card" id="askTilliLive">
       <div class="atl-loghead">ASKTILLI · SUNRISE ACADEMY</div>
       <div class="atl-log" data-atl-log></div>
       <div class="atl-inputbar" data-atl-inputbar>
-        <textarea class="atl-input" data-atl-input rows="1" placeholder="Ask a question…" aria-label="Ask Tilli a question"></textarea>
+        <textarea class="atl-input" data-atl-input rows="1" placeholder="Ask about Sunrise Academy…" aria-label="Ask Tilli a question"></textarea>
         <button class="atl-btn atl-mic" data-atl-mic type="button" aria-label="Speak your question" title="Speak your question" style="display:none">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
         </button>
@@ -559,15 +590,6 @@
 
   <!-- 9 · IMPACT -->
   <section id="impact" class="wrap impact">
-    <blockquote class="imp-quote">
-      <span class="qmark" aria-hidden="true">&ldquo;</span>
-      <p>What makes this work so powerful is the way it brings research, data and classroom practice together, turning evidence into insights that can genuinely support teachers and children.</p>
-      <footer>
-        <span class="qwho"><b>Abhimanyu Basu</b><span>Dean &amp; CEO · Dhirubhai Ambani International School, on the NMAJS partnership</span></span>
-      </footer>
-      <div class="rpp-credit">Research-Practice Partnership with Stanford &amp; NMAJS</div>
-    </blockquote>
-    <!-- HM-12 · teacher quote slot (pending): a short quote from a teacher about the classroom or workload goes here. -->
     <div class="big"><span>53</span> schools</div>
     <div class="sub">across India and Sri Lanka, from CBSE and ICSE to IB and Cambridge, have joined.</div>
     <div class="school-logos">
@@ -598,15 +620,22 @@
       <div><div class="num">12,510</div><div class="lbl">Children<br>assessed</div></div>
       <div><div class="num">4,541</div><div class="lbl">Educators<br>trained</div></div>
     </div>
+    <blockquote class="imp-quote">
+      <div class="rpp-credit">Research-Practice Partnership with Stanford &amp; NMAJS</div>
+      <span class="qmark" aria-hidden="true">&ldquo;</span>
+      <p>What makes this work so powerful is the way it brings research, data and classroom practice together, turning evidence into insights that can genuinely support teachers and children.</p>
+      <footer class="qcite">Abhimanyu Basu, Dean and CEO,<br>Dhirubhai Ambani International School, on the NMAJS partnership</footer>
+    </blockquote>
+    <!-- HM-12 · teacher quote slot (pending): a short quote from a teacher about the classroom or workload goes here. -->
   </section>
 
   <!-- 10 · JOURNEY -->
   <section id="journey" class="wrap" style="text-align:center">
     <h2 class="title">What a year with Tilli looks like</h2>
     <div class="j-steps">
-      <button class="j-pill on" type="button" data-step="measure"   style="border-color:var(--tl-green-500);color:var(--tl-green-600)">1 — Measure</button>
-      <button class="j-pill" type="button" data-step="ask"       style="border-color:var(--tl-cyan-500);color:var(--tl-cyan-700)">2 — Ask</button>
-      <button class="j-pill" type="button" data-step="intervene" style="border-color:var(--tl-yellow-500);color:var(--tl-yellow-700)">3 — Intervene</button>
+      <button class="j-pill on" type="button" data-step="measure"   style="border-color:var(--tl-green-500);color:var(--tl-green-600)">1 - Measure</button>
+      <button class="j-pill" type="button" data-step="ask"       style="border-color:var(--tl-cyan-500);color:var(--tl-cyan-700)">2 - Ask</button>
+      <button class="j-pill" type="button" data-step="intervene" style="border-color:var(--tl-yellow-500);color:var(--tl-yellow-700)">3 - Intervene</button>
     </div>
     <div class="j-cards" style="text-align:left">
       <div class="j-card g show" id="j-measure" data-step="measure">
@@ -622,6 +651,12 @@
         <div class="j-when"><span class="t">Right after the measures</span><span class="d">Walk through the results with AskTilli as soon as the measures are complete.</span></div>
         <h3>AskTilli</h3>
         <p>Teachers ask about a child or a class and get lesson plans, behaviour guidance, and that child's own data, in the middle of a school day, in seconds.</p>
+        <!-- mini chat — mirrors the desktop Ask card; reuses the .ai-card.tilli bubbles -->
+        <div class="ai-card tilli j-chat">
+          <div class="bub q">How do I support Dhruv's focus during group work?</div>
+          <div class="bub r">Dhruv's attention is at <b>Learner</b>. Try a 2-minute attention warm-up before the task. Here's one from Week 14.</div>
+          <div class="j-chat-lab">ASKTILLI</div>
+        </div>
       </div>
       <div class="j-card y" id="j-intervene" data-step="intervene">
         <div class="top"><div class="ic"><img src="../assets/ds/icon-book.png" alt=""></div><div class="kicker" style="color:var(--tl-yellow-700)">INTERVENE</div></div>
@@ -639,7 +674,6 @@
 
   <!-- 11 · LET'S TALK / Contact -->
   <section id="contact" class="contact wrap">
-    <div class="eyebrow" style="text-align:center">Let's talk</div>
     <h2>Start with one grade, one year.</h2>
     <p>Your data, your pace. In 30 minutes with our founding team, we'll fit Tilli to your timetable, your section sizes and your budget.</p>
     <div class="cta-col">

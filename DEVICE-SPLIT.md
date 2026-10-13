@@ -17,6 +17,28 @@ responsive layout that reflows.
 Each side has its **own markup/CSS/JS**. We switch at load time, not with
 media queries on one DOM.
 
+## UPDATE 2026-10-13 — Home "mobile mode" (phones run the 3JS Home)
+
+Phones no longer get `m/index.html` by default. Capable phones stay on
+`index.html` and `js/main.js` switches to a **mobile mode** off `html.tl-mobile`
+(set by `device-split.js` before any CSS loads; `tl-portrait`/`tl-landscape` too):
+
+- **Native momentum scroll** — no wheel/touch hijack, no detents; dots + DOM are
+  still scrubbed from scroll position.
+- World + stages laid out against the **large viewport** (100lvh) and re-laid
+  only on a **width** change, so the URL bar never re-measures anything. A
+  portrait⇄landscape flip reloads in place (formations are built per orientation).
+- Perf: 300 dots, 0.74× dot size, DPR ≤ 1.5, no MSAA, 160 dust particles,
+  scenes 0.85× as long.
+- Portrait layouts per scene: `PORTRAIT_*` configs in `js/main.js` +
+  `html.tl-portrait` rules at the end of `index.html`'s `<style>`.
+- `m/index.html` is now only the **fallback**: reduced-motion, no WebGL,
+  Save-Data or `deviceMemory ≤ 2`. Test it with `?view=lite`.
+
+Research / Success keep their `m/` twins, which now load `js/dot-field.js` with
+phone formations (globe, map, venn, file orbs, pipeline · child, ten kids,
+vertical weeks). FAQ (responsive) gets the dot field + tap bursts on phones.
+
 ## "Lighter tech, not a lighter look"
 
 The mobile build keeps the **SAME visual language** as desktop — same sections,

@@ -76,12 +76,20 @@
    .dots-stage elements (css/site.css) reserve room for a formation on desktop.
    FAQ cards fire `tl-dots:burst` ({x,y,w,h,color}) → a burst of their colour.
 
-   Desktop only: skipped below 861px or on coarse pointers. Reduced motion →
-   no spin/drift/loops, still follows scroll. ?debug=1 → window.__dotField.
+   Desktop, plus PHONES (the m/ twins, and touch screens ≤860px on responsive
+   pages like FAQ). Phones get fewer dots (<main data-dots-count-m / -size-m>),
+   a capped pixel ratio, width-only re-layout (the URL bar never rebuilds) and
+   an idle render loop; low-memory or reduced-motion phones are skipped.
+   Reduced motion (desktop) → no spin/drift/loops, still follows scroll.
+   ?debug=1 → window.__dotField.
    ─────────────────────────────────────────────────────────────────────────── */
 
 const GATE = '(min-width: 861px) and (pointer: fine)';
-if (window.matchMedia && window.matchMedia(GATE).matches) init();
+const PHONE = /\/m\/[^/]*$/.test(location.pathname) ||
+  !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches && window.matchMedia('(max-width: 860px)').matches);
+const PHONE_OK = PHONE && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) &&
+  !(navigator.deviceMemory && navigator.deviceMemory <= 2);
+if (window.matchMedia && (window.matchMedia(GATE).matches || PHONE_OK)) init();
 
 async function init() {
   let THREE;
@@ -126,6 +134,8 @@ async function init() {
     pipeFocus: 0.55,   // depth in focus: −1 far wall … 0 tube axis … 1 near wall
     pipeDof: 0.4,      // depth of field: blur per unit of depth away from the focus (0 = all sharp)
     weekRate: 5,       // weeks timeline: weeks lit per second
+    phoneDots: 360,    // phones: default dot count (<main data-dots-count-m> overrides)
+    phoneDpr: 1.5,     // phones: max devicePixelRatio
     qPeriod: 6.4,      // FAQ ? → ✓ loop length, seconds
     burstCount: 36,    // FAQ flip burst: particles per flip
     burstLife: 0.9,    // FAQ flip burst: seconds
@@ -181,13 +191,17 @@ async function init() {
   document.head.appendChild(style);
 
   let renderer;
-  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); }
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: !PHONE, alpha: true }); }
   catch (e) { canvas.remove(); return; }
   renderer.outputColorSpace = THREE.LinearSRGBColorSpace;   // token hex in, same hex out (lines too)
   document.documentElement.classList.add('tl-dots');
 
-  // Layering: section backgrounds < dots < section content. Lift each
-  // section's direct children above the canvas (keeps absolute ones absolute).
+  // Layering: section backgrounds < dots < section content. A stacking context
+  // on <main> (m.css gives .content z-index 1) would put every section — dark
+  // backgrounds included — above the canvas, so release it.
+  const mainEl = document.querySelector('main');
+  if (mainEl && getComputedStyle(mainEl).zIndex !== 'auto') mainEl.style.zIndex = 'auto';
+  // Lift each section's direct children above the canvas (keeps absolute ones absolute).
   document.querySelectorAll('main > section').forEach((sec) => {
     if (getComputedStyle(sec).position === 'static') sec.style.position = 'relative';
     Array.from(sec.children).forEach((c) => {
@@ -203,8 +217,10 @@ async function init() {
   const mainDs = (document.querySelector('main') || {}).dataset || {};
   // ?debug=1&dots=N previews a dot count (the Kids panel reloads with it — N sizes every buffer)
   const urlDots = DEBUG && parseInt((location.search.match(/[?&]dots=(\d+)/) || [])[1], 10);
-  const N = urlDots || parseInt(mainDs.dotsCount, 10) || cfg.count;
-  cfg.dotSize = parseFloat(mainDs.dotsSize) || cfg.dotSize;
+  const N = urlDots || (PHONE
+    ? parseInt(mainDs.dotsCountM, 10) || Math.min(cfg.phoneDots, parseInt(mainDs.dotsCount, 10) || cfg.count)
+    : parseInt(mainDs.dotsCount, 10) || cfg.count);
+  cfg.dotSize = parseFloat(PHONE && mainDs.dotsSizeM) || parseFloat(mainDs.dotsSize) || cfg.dotSize;
   const pointsMat = () => new THREE.ShaderMaterial({
     transparent: true, depthTest: false, depthWrite: false,
     uniforms: { uDpr: { value: 1 } },
@@ -404,6 +420,7 @@ async function init() {
         box: nums(d.dotsBox, 4, [0, 0, 1, 1]),
         voidR: parseFloat(d.dotsVoid) || 0,
         map: d.dotsMap || 'weird',
+        dir: d.dotsDir || 'h',
         avoid: d.dotsAvoid || AVOID,
         avoidOn: !!REGION[d.dots] || !!d.dotsAvoid,
         lines: null, pairs: null,
@@ -790,6 +807,7 @@ async function init() {
     /* RESULTS ─ the year: 36 weekly lessons, three terms, a playhead lighting them */
     weeks(f, p, t) {
       const b = p.b || { left: p.cx - p.rx, width: p.rx * 2, top: p.cy };
+      if (f.dir === 'v') return DRAW.weeksV(f, p, t, b);
       const x0 = b.left + b.width * 0.12, x1 = b.left + b.width * 0.88, y = b.top + 10;
       const head = reduced ? 36 : (t * cfg.weekRate) % 42, termRGB = [NAMED.green, NAMED.cyan, NAMED.pink];
       for (let i = 0; i < N; i++) {
@@ -798,6 +816,19 @@ async function init() {
           dot(i, x, y, lit ? termRGB[Math.floor(i / 12)] : GREY, 1,
             (end ? 1.9 : 0.85) * (lit && head - i < 1 ? 1.4 : 1));
         } else hide(i, x0 + (x1 - x0) * clamp(head / 36), y);
+      }
+    },
+    /* phones: the year runs DOWN a column at the anchor's left edge (the term
+       list is stacked vertically on the m/ page), playhead top → bottom */
+    weeksV(f, p, t, b) {
+      const x = b.left + 16, y0 = b.top + 10, y1 = b.top + b.height - 10;   // down the term markers
+      const head = reduced ? 36 : (t * cfg.weekRate) % 42, termRGB = [NAMED.green, NAMED.cyan, NAMED.pink];
+      for (let i = 0; i < N; i++) {
+        if (i < 36) {
+          const y = y0 + (y1 - y0) * i / 35, end = i % 12 === 11, lit = i < head;
+          dot(i, x, y, lit ? termRGB[Math.floor(i / 12)] : GREY, 1,
+            (end ? 1.7 : 0.75) * (lit && head - i < 1 ? 1.4 : 1));
+        } else hide(i, x, y0 + (y1 - y0) * clamp(head / 36));
       }
     },
     /* RESULTS ─ 53 partner schools, and an empty slot for the next story */
@@ -1249,6 +1280,7 @@ async function init() {
     for (let i = 0; i < N; i++) { XYZ[i * 3] = f.x[i]; XYZ[i * 3 + 1] = f.y[i]; }
     return XYZ;
   }
+  let liveOnScreen = true;
   function frame() {
     const now = performance.now();
     stepBursts(now);
@@ -1267,6 +1299,9 @@ async function init() {
       if (formations[i].el.getBoundingClientRect().top <= mid) ai = i;
     }
     const A = formations[ai], B = formations[ai + 1];
+    liveOnScreen = [A, B, formations[ai - 1]].some((f) => f && f.type !== 'off' && (() => {
+      const r = f.el.getBoundingClientRect(); return r.bottom > -H * 0.5 && r.top < H * 1.5;
+    })());
     let w = 0;
     if (B) {
       const edge = B.el.getBoundingClientRect().top, band = cfg.morphBand * H;
@@ -1333,9 +1368,20 @@ async function init() {
     renderer.render(scene, camera);
   }
 
+  /* phones: lay out against the LARGE viewport so the URL bar showing /
+     hiding never shifts a formation */
+  function viewportH() {
+    if (!PHONE) return window.innerHeight;
+    const pr = document.createElement('div');
+    pr.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:100vh;height:100lvh;visibility:hidden;pointer-events:none';
+    document.documentElement.appendChild(pr);
+    const h = pr.getBoundingClientRect().height;
+    pr.remove();
+    return Math.max(window.innerHeight, h || 0);
+  }
   function resize() {
-    W = window.innerWidth; H = window.innerHeight;
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = viewportH();
+    DPR = Math.min(window.devicePixelRatio || 1, PHONE ? cfg.phoneDpr : 2);
     renderer.setPixelRatio(DPR);
     renderer.setSize(W, H, false);
     field.mat.uniforms.uDpr.value = DPR;
@@ -1351,10 +1397,18 @@ async function init() {
   let raf = 0;
   const loop = () => {
     raf = 0; frame();
-    if ((!reduced || bAlive) && !document.hidden) raf = requestAnimationFrame(loop);
+    /* keep animating only while something can move: a live formation on
+       screen, a burst in flight, or the cursor orb — a page parked on
+       data-dots="off" sections stops drawing (phones' battery) */
+    if ((!reduced || bAlive) && !document.hidden && (liveOnScreen || bAlive || curCtx)) raf = requestAnimationFrame(loop);
   };
   function kick() { if (!raf) raf = requestAnimationFrame(loop); }
-  window.addEventListener('resize', () => { resize(); kick(); });
+  let lastW = window.innerWidth;
+  window.addEventListener('resize', () => {
+    if (PHONE && window.innerWidth === lastW) return;   // URL bar / keyboard: height-only
+    lastW = window.innerWidth;
+    resize(); kick();
+  });
   window.addEventListener('scroll', kick, { passive: true });
   document.addEventListener('visibilitychange', kick);
   // images/fonts shift section heights after first paint

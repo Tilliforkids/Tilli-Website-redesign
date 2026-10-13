@@ -53,6 +53,63 @@ const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
    ship to visitors. Append ?debug=1 to the URL to expose them for console tuning. */
 const DEBUG = /[?&]debug=1\b/.test(location.search);
 
+/* ── MOBILE MODE ───────────────────────────────────────────────────────
+   Phones run this SAME 3JS Home, tuned for a portrait screen (see
+   js/device-split.js, which sets html.tl-mobile before anything loads).
+   Differences from desktop:
+     • native momentum scroll — no wheel/touch hijack, no detents; the
+       dots + DOM are still scrubbed from scroll position (renderF)
+     • the world is sized to the LARGE viewport (100lvh) and only re-laid
+       on a WIDTH change, so the URL bar showing/hiding never re-measures
+     • fewer, smaller dots and a capped pixel ratio (perf)
+     • per-scene portrait layouts (PORTRAIT_* overrides below each config)
+   Desktop never reads any of this: every override is gated on MOBILE. */
+const MOBILE = document.documentElement.classList.contains('tl-mobile');
+const PORTRAIT = MOBILE && window.innerHeight >= window.innerWidth;
+const MOBILE_CFG = {
+  dots: 300,         // field size on phones (desktop 400)
+  dotScale: 0.74,    // dot size multiplier on phones
+  dprCap: 1.5,       // max devicePixelRatio for the WebGL canvas
+  dust: 160,         // ambient dust particles (desktop 420)
+  sceneScale: 0.85,  // scroll length of every scene × this (native flicks travel further)
+};
+/* the height the world + stages are laid out against. Desktop: the window.
+   Mobile: the LARGE viewport (URL bar hidden), measured once per width, so
+   the URL bar collapsing/expanding never shifts or rebuilds anything. */
+let LVH = window.innerHeight;
+function measureLVH() {
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:100vh;height:100lvh;visibility:hidden;pointer-events:none';
+  document.documentElement.appendChild(probe);
+  LVH = Math.max(window.innerHeight, probe.getBoundingClientRect().height || 0);
+  probe.remove();
+}
+if (MOBILE) measureLVH();
+const viewH = () => (MOBILE ? LVH : window.innerHeight);
+/* the resize event every layout listener subscribes to. On phones it only
+   fires when the WIDTH changes (rotation, split-screen) — the URL bar
+   showing/hiding changes innerHeight on every scroll and must be ignored. */
+const RESIZE_EVT = MOBILE ? 'tl-resize' : 'resize';
+if (MOBILE) {
+  let lastW = window.innerWidth;
+  window.addEventListener('resize', () => {
+    if (window.innerWidth === lastW) return;
+    lastW = window.innerWidth;
+    /* a portrait ⇄ landscape flip swaps the whole formation set (built once
+       at load) — reload, keeping the reader's place */
+    if ((window.innerHeight >= window.innerWidth) !== PORTRAIT) {
+      try {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        sessionStorage.setItem('tl-rot', String(max > 0 ? window.scrollY / max : 0));
+      } catch (e) {}
+      location.reload();
+      return;
+    }
+    measureLVH();
+    window.dispatchEvent(new Event('tl-resize'));
+  });
+}
+
 /* Boot — a scroll-jacked narrative must always open on the hero, so we take over
    scroll restoration (browsers otherwise restore a mid-experience scroll on
    reload / back-forward and flash a half-set scene — e.g. the dashboard card).
@@ -115,6 +172,32 @@ let FUNNEL_VH = 34;      // Funnel-scene scroll length (vh) — driven by the GU
                          // (the Dashboard's lower half + Reports approach add ~66vh).
 const FIT_NAV = 84;
 
+/* ── Phone DOM tweaks (before the scene registry reads the steps) ─────
+   • every scene's scroll length × MOBILE_CFG.sceneScale
+   • PORTRAIT: the 12-skills screen can't hold 12 cards beside the helix, so
+     it becomes TWO steps — Thinking skills, then People skills — each a
+     one-column list, cross-fading like any multi-step scene. */
+if (MOBILE) {
+  document.querySelectorAll('[data-scene]').forEach((el) => {
+    const m = /([\d.]+)vh/.exec(el.style.height);
+    if (m) el.style.height = `${(+m[1] * MOBILE_CFG.sceneScale).toFixed(1)}vh`;
+  });
+}
+if (PORTRAIT) {
+  const sk = document.querySelector('[data-label="12 skills"] .step');
+  if (sk) {
+    const sk2 = sk.cloneNode(true);
+    sk.parentNode.insertBefore(sk2, sk.nextSibling);
+    const drop = (step, from) => {
+      const heads = step.querySelectorAll('.skill-group-head'), grids = step.querySelectorAll('.skills-grid');
+      heads[from] && heads[from].remove();
+      grids[from] && grids[from].remove();
+    };
+    drop(sk, 1);    // step 1 keeps Thinking skills
+    drop(sk2, 0);   // step 2 keeps People skills
+  }
+}
+
 /* ── Scene registry (DOM order = station order) ───────────────────── */
 const sceneEls = Array.from(document.querySelectorAll('[data-scene]'));
 const scenes = sceneEls.map((el) => {
@@ -142,7 +225,7 @@ scenes.forEach((s, i) => { ST[s.label] = i; });
 /* Scene tops / scroll lengths. The last scene can only be scrolled to
    `height - vh`, so its progress is measured against that. */
 function measure() {
-  const vh = window.innerHeight;
+  const vh = viewH();
   const y0 = window.scrollY;
   scenes.forEach((s, i) => {
     s.top = Math.round(s.el.getBoundingClientRect().top + y0);
@@ -158,6 +241,8 @@ function measure() {
   anchorDashPaths();
   layoutOnTrackText();
   measureReportTop();
+  anchorAskFlow();
+  measureFan();
   const helixMoved = fitSkillsHelix();
   if (three) {
     three.layoutReportsFunnel();
@@ -176,11 +261,16 @@ function fitSteps() {
     if (!inner) return;
     /* fit inside the step's own padded box with the nav showing (the worst
        case), so a scaled step never runs under the top bar or the nav */
-    const vh = window.innerHeight;
+    const vh = viewH();
     const padTop = parseFloat(getComputedStyle(inner.parentElement).paddingTop) || 0;
     const avail = vh - padTop - (vh * 0.06 + FIT_NAV);
     inner.style.transform = 'none';
+    /* the AskTilli chat bubbles are display:none until they pop in — measure
+       the finished exchange, or the fit misses the space they'll take */
+    const hidden = Array.from(inner.querySelectorAll('[data-ai-q], [data-ai-r]')).filter((b) => b.style.display === 'none');
+    hidden.forEach((b) => { b.style.display = 'block'; });
     const h = inner.offsetHeight;
+    hidden.forEach((b) => { b.style.display = 'none'; });
     const k = h > avail ? Math.max(0.5, avail / h) : 1;
     inner.style.transform = k < 1 ? `scale(${k.toFixed(4)})` : 'none';
   }));
@@ -475,6 +565,11 @@ const BURST = {
   linkFade:  3,      // how fast threads fade in/out as the nearest-neighbour set changes (1/s)
   colors: DOT_PALETTE.slice(),   // green · cyan · yellow · orange · pink
 };
+/* PORTRAIT (phones): the CTA copy spans the full width, so the ring runs
+   wider than the screen (bleeding off the sides), sits in a thinner band and
+   holds fewer dots — it frames the copy above and below instead of crossing it */
+const PORTRAIT_BURST = { dots: 150, ringW: 0.62, ringH: 0.42, spread: 0.2 };
+if (PORTRAIT) Object.assign(BURST, PORTRAIT_BURST);
 let burst = null;   // { canvas, ctx, dots:[…], links:[[i,j]…], dpr, jarRect, N }
 
 /* one dot's ring resting spot, in screen px (recomputed live so it tracks the
@@ -482,7 +577,7 @@ let burst = null;   // { canvas, ctx, dots:[…], links:[[i,j]…], dpr, jarRect
    `drift` (0..1) mixes in a slow per-dot Lissajous wander around that spot
    (time = burst.t) — only once the ring has settled, see renderBurst. */
 function burstRingXY(d, drift = 0) {
-  const vw = window.innerWidth, vh = window.innerHeight;
+  const vw = window.innerWidth, vh = viewH();
   const ang = d.baseAngle + d.angJit * BURST.angJit;
   const rr = 1 + d.radJit * BURST.spread;
   let x = vw / 2 + Math.cos(ang) * vw * BURST.ringW * rr;
@@ -500,7 +595,7 @@ function burstRingXY(d, drift = 0) {
    and marks each live link in burst.linkOn (keyed a*1e6+b) for the fades. */
 function computeBurstLinks(pos) {
   if (!burst) return;
-  const md = Math.min(window.innerWidth, window.innerHeight) * BURST.linkDist;
+  const md = Math.min(window.innerWidth, viewH()) * BURST.linkDist;
   if (!pos) pos = burst.dots.map((d) => burstRingXY(d));
   const seen = new Set(), out = [];
   for (let i = 0; i < pos.length; i++) {
@@ -556,7 +651,7 @@ function buildBurst() {
   }
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = Math.round(window.innerWidth * dpr);
-  canvas.height = Math.round(window.innerHeight * dpr);
+  canvas.height = Math.round(viewH() * dpr);
   const total = Math.max(20, Math.round(BURST.dots));
   // the jar's own marble rest-grid drives the pile, so the hand-off from the DOM
   // jar to the canvas is pixel-identical. jarSig tracks the jar it was built from
@@ -652,7 +747,7 @@ function renderBurst(bt, dt) {
   const { ctx, dpr, dots, px, py } = burst;
   // settled ring → slow wander; zero during the jar → burst → ring choreography
   const driftIn = smooth(clamp((bt - 0.80) / 0.20));
-  const vw = window.innerWidth, vh = window.innerHeight, scx = vw / 2, scy = vh / 2;
+  const vw = window.innerWidth, vh = viewH(), scx = vw / 2, scy = vh / 2;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, vw, vh);
 
@@ -785,7 +880,7 @@ function updateBurst(dt, f) {
 function setCrossVH(vh) {
   CROSS_VH = clamp(vh, 60, 400);
   const s = scenes[ST['Cross']];
-  if (s) s.el.style.height = `${Math.round(CROSS_VH)}vh`;
+  if (s) s.el.style.height = `${Math.round(CROSS_VH * (MOBILE ? MOBILE_CFG.sceneScale : 1))}vh`;
   measure();
   if (typeof onScroll === 'function') onScroll();
 }
@@ -819,7 +914,7 @@ const C = {
 };
 const DEPTH = 40;
 const CAM_DIST = 26;
-const N = 400;
+const N = MOBILE ? MOBILE_CFG.dots : 400;
 
 /* ON-TRACK "kids" formation — the dots trace the Student Outline figure(s).
    count    number of children in the row
@@ -833,11 +928,27 @@ const KID = {
   gap: 9.5,
   x: 0, y: 2.5, z: -3,
   height: 11,
-  dot: 1.2,
+  dot: 1.2 * (MOBILE ? MOBILE_CFG.dotScale : 1),
   colors: [C.green, C.yellow, C.cyan],
+  cols: 6,          // kids per row (phones: 3 → two rows)
+  rowGap: 0,        // world units between row centres
 };
-/* x-centre of child k, laid out symmetrically around the group's x */
-const kidCenterX = (k) => KID.x + (k - (KID.count - 1) / 2) * KID.gap;
+/* PORTRAIT (phones): the six children stand in TWO rows of three, sized to
+   the screen width. The top row exits left, the bottom row right.
+     gap/height  fractions of the visible half-width
+     y           the group's centre (world)    rowGap  world units between rows */
+const PORTRAIT_KIDS = { gap: 0.64, height: 0.8, y: 5.0, rowGap: 6.6 };
+if (PORTRAIT) {
+  const w = (CAM_DIST - KID.z) * Math.tan((50 * Math.PI / 180) / 2) * (window.innerWidth / Math.max(1, viewH()));
+  Object.assign(KID, { cols: 3, gap: w * PORTRAIT_KIDS.gap, height: w * PORTRAIT_KIDS.height,
+    y: PORTRAIT_KIDS.y, rowGap: PORTRAIT_KIDS.rowGap });
+}
+const kidRows = () => Math.ceil(KID.count / KID.cols);
+/* centre of child k, laid out symmetrically around the group's x / y */
+const kidCenterX = (k) => KID.x + ((k % KID.cols) - (KID.cols - 1) / 2) * KID.gap;
+const kidCenterY = (k) => KID.y - (Math.floor(k / KID.cols) - (kidRows() - 1) / 2) * KID.rowGap;
+/* world y of the lowest row's feet */
+const kidsFeetY = () => KID.y - ((kidRows() - 1) / 2) * KID.rowGap - KID.height / 2;
 
 /* ON-TRACK headline/subtext block offset (moves the whole .wrap together).
    x,y = screen translation in px; z = depth as a scale multiplier (1 = default). */
@@ -854,9 +965,9 @@ function layoutOnTrackText() {
   const sc = scenes[ST['On track']];
   const wrap = sc && sc.stage && sc.stage.querySelector('.wrap');
   if (!wrap || !wrap.offsetHeight) return;
-  const H = window.innerHeight;
+  const H = viewH();
   /* kids' feet: the bottom of the figure row in screen px, plus the gap */
-  STATE_FIT.feet = (0.5 + (KID.height / 2 - KID.y) / (2 * visHalf(KID.z).h)) * H + STATE_FIT.gap;
+  STATE_FIT.feet = (0.5 - kidsFeetY() / (2 * visHalf(KID.z).h)) * H + STATE_FIT.gap;
   const nav = document.getElementById('quicknav');
   const navTop = nav ? nav.getBoundingClientRect().top : H;
   const bottom = (navTop > H * 0.5 ? navTop : H) - STATE_FIT.navPad;
@@ -897,7 +1008,10 @@ function dotTexture() {
    field always reaches the edges of the viewport, whatever the aspect */
 function visHalf(z) {
   const h = (CAM_DIST - z) * Math.tan((50 * Math.PI / 180) / 2);
-  return { h, w: h * Math.max(0.65, window.innerWidth / Math.max(1, window.innerHeight)) };
+  /* the 0.65 floor keeps narrow DESKTOP windows tuned like 4:3; a phone uses
+     its true aspect so screen-fraction layouts land on screen */
+  const asp = window.innerWidth / Math.max(1, viewH());
+  return { h, w: h * (MOBILE ? asp : Math.max(0.65, asp)) };
 }
 function rng(seed) {
   let s = seed >>> 0;
@@ -993,6 +1107,21 @@ const HANDS = {
    travels away from the orb; `rotX/rotZ` = shared degrees on those axes as
    it pulls back (Y is per-hand, see HANDS.*.burstRotY). Baked. */
 const HAND_BURST = { move: 7, rotX: 0, rotZ: 0 };
+/* PORTRAIT (phones): a narrower frame — the orb shrinks to the screen width,
+   sits a touch higher, and the hands reach in bigger from the top corners.
+     orbY    orb centre, screen fraction from the top
+     orbR    orb radius as a fraction of the visible half-width
+     hands   per-hand screen-fraction centre + width (scale × screen width) */
+const PORTRAIT_HERO = {
+  orbY: 0.34, orbR: 0.62,
+  hands: { left: { x: 0.15, y: 0.15, scale: 0.58 }, right: { x: 0.85, y: 0.15, scale: 0.58 } },
+};
+if (PORTRAIT) {
+  ORB.y = PORTRAIT_HERO.orbY;
+  SPHERE.radius = Math.min(SPHERE.radius, visHalf(SPHERE_Z).w * PORTRAIT_HERO.orbR);
+  Object.assign(HANDS.left, PORTRAIT_HERO.hands.left);
+  Object.assign(HANDS.right, PORTRAIT_HERO.hands.right);
+}
 
 /* map a screen fraction (0..1, top-left origin) to a world point on plane z */
 function screenFracToWorld(fx, fy, z) {
@@ -1015,7 +1144,7 @@ const ORB_DEPTH = 1.0;               // keep 1.0 — a true sphere at every angl
 const DNA_DEPTH_CENTER = -3;         // z the helix twists around (its rotate2D pivot)
 const DNA_DEPTH_HALF   = 3.6;        // z half-span used to normalise near↔far (≈ helix radius)
 const DNA_DEPTH_WASH   = 0.6;        // how far the FARTHEST dots fade into the backdrop (0..1)
-const BASE_DOT_SIZE    = 1.2;        // the field's default point size (world units)
+const BASE_DOT_SIZE    = 1.2 * (MOBILE ? MOBILE_CFG.dotScale : 1);        // the field's default point size (world units)
 const DOT_OPACITY      = 0.9;        // the field's default master opacity (faded out on the Ask-live screen)
 /* MINI DNA — the helix as it sits on the "Get a 360° view" (12-skills) screen.
    x/y/z place it, scale sets its overall size (height + radius, kept in
@@ -1026,9 +1155,24 @@ const DNA2_CFG = { x: 10.9, y: -0.6, z: 4.4, scale: 0.96, dotScale: 0.99 };
    further right (in screen fractions) and its third column ran under the
    helix, so fitSkillsHelix() pushes the helix right until its outer strand
    clears the grid by SKILLS_HELIX_GAP px — never left of the tuned spot. */
+/* PORTRAIT (phones): the strand copy fills the left of the screen, so the
+   Measure helix stands up the RIGHT side (bleeding off the edge), and on the
+   12-skills screen the mini helix keeps to that right edge beside the
+   one-column card list.
+     x      helix centre as a fraction of the visible half-width (+1 = right edge)
+     scale  helix size (height, radius and twist kept in proportion)
+     mini   the 12-skills copy: same idea, plus y (world) and dotScale */
+const PORTRAIT_DNA = { x: 0.68, scale: 0.68, mini: { x: 0.86, y: -0.8, scale: 0.6, dotScale: 0.9 } };
+const DNA_X = PORTRAIT ? visHalf(DNA_DEPTH_CENTER).w * PORTRAIT_DNA.x : 0;
+const DNA_SCALE = PORTRAIT ? PORTRAIT_DNA.scale : 1;
+if (PORTRAIT) {
+  const m = PORTRAIT_DNA.mini;
+  Object.assign(DNA2_CFG, { x: visHalf(DNA_DEPTH_CENTER).w * m.x, y: m.y, z: 0, scale: m.scale, dotScale: m.dotScale });
+}
 const DNA2_BASE_X = DNA2_CFG.x;
 const SKILLS_HELIX_GAP = 28;
 function fitSkillsHelix() {
+  if (PORTRAIT) return false;   // the phone layout places the mini helix itself
   const sc = scenes[ST['12 skills']];
   const grid = sc && sc.stage && sc.stage.querySelector('.skills-grid');
   if (!grid) return false;
@@ -1121,11 +1265,12 @@ const ASK_CARRY = {
   z: -3, cloud: 2.7, lag: 5.5, spin: 0.7, plugRadius: 260, plugSpeed: 2.4,
 };
 /* live cursor, in both pixels (socket proximity) and screen-frac (world). */
-const POINTER = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.4, fx: 0.5, fy: 0.4, seen: false };
+const POINTER = { x: window.innerWidth * 0.5, y: viewH() * 0.4, fx: 0.5, fy: 0.4, seen: false };
 window.addEventListener('pointermove', (e) => {
+  if (e.pointerType && e.pointerType !== 'mouse') return;   // a finger drag is a scroll, not a cursor
   POINTER.x = e.clientX; POINTER.y = e.clientY;
   POINTER.fx = e.clientX / window.innerWidth;
-  POINTER.fy = e.clientY / window.innerHeight;
+  POINTER.fy = e.clientY / viewH();
   POINTER.seen = true;
 }, { passive: true });
 
@@ -1149,14 +1294,14 @@ function askSocketWorld() {
   let fx, fy, prox;
   if (live) {
     fx = (sr.left + sr.width / 2) / window.innerWidth;
-    fy = (sr.top + sr.height / 2) / window.innerHeight;
+    fy = (sr.top + sr.height / 2) / viewH();
     prox = _askBarEl;
   } else {
     if (!_askCardEl) return null;
     const cr = _askCardEl.getBoundingClientRect();
     if (cr.width === 0 && cr.height === 0) return null;    // not laid out yet
     fx = (cr.right - 18) / window.innerWidth;              // just inside the right edge
-    fy = (cr.top + cr.height / 2) / window.innerHeight;
+    fy = (cr.top + cr.height / 2) / viewH();
     prox = _askCardEl;
   }
   const w = screenFracToWorld(fx, fy, ASK_CARRY.z);
@@ -1268,6 +1413,10 @@ function buildHeroNetwork(cfg) {
             larger = wider, flatter ring) — sets how the ellipse hugs the text
      maxRy  cap on the exclusion half-height, as a fraction of the visible half-height */
 const RING_FIT = { pad: 1.0, gap: 1.5, tall: 0.8, maxRy: 0.8 };
+/* PORTRAIT: how far past the side edges the ring may run (× visible half-width) */
+const PORTRAIT_RING_BLEED = 1.35;
+/* PORTRAIT: a taller ellipse (smaller `tall`) hugs the long, narrow copy */
+if (PORTRAIT) RING_FIT.tall = 0.6;
 let heroTextBox = null;   // { a, b, cy, cyFrac } — beat-B copy half-extents + centre, world units at RING_Z
 /* px box of an element's VISIBLE content — the union of its text LINE boxes
    (a text node's range) + images, not the block widths (a <p> spans the
@@ -1289,7 +1438,7 @@ function measureHeroText() {
   const el = document.getElementById('beatB');
   const bx = el && inkBox(el);
   if (!bx) return;
-  const v = visHalf(RING_Z), W = window.innerWidth, H = window.innerHeight;
+  const v = visHalf(RING_Z), W = window.innerWidth, H = viewH();
   const toX = (px) => Math.abs(px / W - 0.5) * 2 * v.w;
   /* the ring is centred on the copy block (not the screen), so it can hug it */
   const cyFrac = (bx.top + bx.bottom) / 2 / H;
@@ -1324,7 +1473,7 @@ function anchorDashPaths() {
      cancelled out; the card's zoom is a scale about its centre, so only its
      size needs un-scaling */
   const st = sc.stage.getBoundingClientRect();
-  const W = window.innerWidth, H = window.innerHeight;
+  const W = window.innerWidth, H = viewH();
   const cr = card.getBoundingClientRect();
   const m = /scale\(([\d.]+)\)/.exec(card.style.transform || '');
   const cs = m ? parseFloat(m[1]) : 1;
@@ -1350,7 +1499,9 @@ function ringRadii() {
   let ey = b / k;
   const eyMax = v.h * RING_FIT.maxRy;
   if (ey > eyMax) { ey = Math.max(eyMax, b * 1.05); k = b / ey; }
-  const ex = Math.min(a / Math.sqrt(1 - k * k), v.w * 0.92 - RING_FIT.gap);
+  /* phones: the copy spans nearly the full width, so the ring may bleed off
+     the side edges (it reads as top + bottom arcs) rather than cut the words */
+  const ex = Math.min(a / Math.sqrt(1 - k * k), v.w * (PORTRAIT ? PORTRAIT_RING_BLEED : 0.92) - RING_FIT.gap);
   return { rx: ex + RING_FIT.gap, ry: ey + RING_FIT.gap, ex, ey, cy: heroTextBox.cy, cyFrac: heroTextBox.cyFrac };
 }
 /* n angles round an rx×ry ellipse at EQUAL ARC LENGTH, starting at a0 and
@@ -1597,6 +1748,14 @@ const FUNNEL_CFG = {
   y: 16,          // mouth Y (top of the pour); the spout end tracks the card top
   fallSpeed: 0.2, // waterfall speed — falls top→bottom per second (GUI "Fall speed")
 };
+/* PORTRAIT (phones): the pour narrows to fit the screen width (fractions of
+   the visible half-width at the funnel plane) */
+const PORTRAIT_FUNNEL = { maxWidth: 1.15, minWidth: 0.24 };
+if (PORTRAIT) {
+  const w = visHalf(-5.5).w;
+  FUNNEL_CFG.maxWidth = Math.min(FUNNEL_CFG.maxWidth, w * PORTRAIT_FUNNEL.maxWidth);
+  FUNNEL_CFG.minWidth = Math.min(FUNNEL_CFG.minWidth, w * PORTRAIT_FUNNEL.minWidth);
+}
 /* the report card's top edge in world-Y at rest (measured), and one viewport
    expressed in world units at the funnel plane. The waterfall's spout ends
    exactly at the card's top edge, tracked live as the card slides up into
@@ -1614,8 +1773,22 @@ function measureReportTop() {
   if (!card) return;
   const cr = card.getBoundingClientRect();
   if (cr.height < 1) return;
-  const topFrac = (cr.top - sc.stage.getBoundingClientRect().top) / window.innerHeight;
+  const topFrac = (cr.top - sc.stage.getBoundingClientRect().top) / viewH();
   REPORT_CARD_TOP_Y = (0.5 - topFrac) * VIEWPORT_WORLD_H - REPORT_SPOUT_SINK;
+}
+/* Report-card fan: the side cards start tucked behind the middle one (`from`
+   px) and fan out to `to` px. Desktop values are baked for 338px cards; on
+   phones they're derived from the live card width (PORTRAIT_FAN, × width):
+   `to` is larger so the three narrow cards still overlap into one fan. */
+const FAN = { from: 377, to: 31 };
+const PORTRAIT_FAN = { from: 1.115, to: 0.36 };
+function measureFan() {
+  if (!PORTRAIT) return;
+  const img = document.querySelector('[data-fan="1"]');
+  const w = img && img.offsetWidth;
+  if (!w) return;
+  FAN.from = w * PORTRAIT_FAN.from;
+  FAN.to = w * PORTRAIT_FAN.to;
 }
 /* per-dot waterfall state: a stable horizontal slot, a phase offset (where the
    dot sits in its fall), and a depth. The step loop advances each dot's phase
@@ -1661,6 +1834,8 @@ const COLLECT_ARC = {
      end      Collect fraction where the last dot has landed in the ball
      emit     share of the split over which dots are released one after another
      travel   share of the split each dot takes to travel its whole arc */
+/* PORTRAIT (phones): the Collect ball's radius as a fraction of the visible half-width */
+const PORTRAIT_COLLECT_R = 0.82;
 const COLLECT_FLOW = { pourOut: [0.46, 0.55], start: 0.55, end: 0.42, emit: 0.55, travel: 0.42 };
 
 /* ASK-TILLI in-flow — two cubic Bézier paths the dots stream along as they pour
@@ -1683,6 +1858,26 @@ const ASK_FLOW = {
   red:  { pts: [[-0.03, -0.06], [0.05, 0.30], [0.15, 0.58], [0.28, 0.60]], speed: 0.62 },
   blue: { pts: [[1.03, -0.06], [0.95, 0.30], [0.85, 0.58], [0.72, 0.60]], speed: 0.72 },
 };
+/* PORTRAIT (phones): the two chat cards STACK, so the streams drop in from
+   the top corners and pour into the near SIDE of each card — grey into the
+   generic card's left edge (top card), colour into AskTilli's right edge
+   (bottom card). Endpoints are anchored to the live card rects on measure;
+   `inset` = how far inside the card edge (fraction of the screen width) the
+   stream ends, `c1`/`c2` shape the curve (screen fractions). */
+const PORTRAIT_ASK = { inset: 0.05, c1: [0.06, 0.16], c2x: -0.06 };
+function anchorAskFlow() {
+  if (!PORTRAIT) return;
+  const sc = scenes[ST['Ask-Tilli']];
+  const cards = sc && sc.stage ? sc.stage.querySelectorAll('[data-ai-card]') : [];
+  if (cards.length < 2) return;
+  const st = sc.stage.getBoundingClientRect();
+  const W = window.innerWidth, H = viewH();
+  const box = (el) => { const r = el.getBoundingClientRect(); return { l: (r.left - st.left) / W, r: (r.right - st.left) / W, cy: ((r.top + r.bottom) / 2 - st.top) / H }; };
+  const a = box(cards[0]), b = box(cards[1]);
+  const A = PORTRAIT_ASK;
+  ASK_FLOW.red.pts = [[-0.06, -0.05], [A.c1[0], A.c1[1]], [A.c2x, a.cy], [a.l + A.inset, a.cy]];
+  ASK_FLOW.blue.pts = [[1.06, -0.05], [1 - A.c1[0], A.c1[1] + 0.2], [1 - A.c2x, b.cy], [b.r - A.inset, b.cy]];
+}
 /* one coordinate of a cubic Bézier at t */
 const bez3 = (a, b, c, d, t) => { const u = 1 - t; return u * u * u * a + 3 * u * u * t * b + 3 * u * t * t * c + t * t * t * d; };
 
@@ -1695,12 +1890,24 @@ const bez3 = (a, b, c, d, t) => { const u = 1 - t; return u * u * u * a + 3 * u 
    narrow viewports that overflows both edges (side orbs get clipped), so we
    fit the spread + radius to the actual visible width at the orb plane (z=-4).
    The clamps mean any desktop-ish aspect resolves back to the original values. */
-const _vwAsp  = Math.max(0.001, window.innerWidth / window.innerHeight);
+/* PORTRAIT (phones): the row can't fit three orbs, so they STACK in a left
+   column (top · middle · bottom), each label beside its orb (layoutViewsText).
+   PORTRAIT_VIEWS: col = orb column x as a fraction of the visible half-width
+   (−1 = left edge); gap = world units between orb centres; cy = the stack's
+   centre (world y); r = orb radius as a fraction of the visible half-width. */
+const PORTRAIT_VIEWS = { col: -0.52, gap: 5.6, cy: -1.0, r: 0.31 };
+const _vwAsp  = Math.max(0.001, window.innerWidth / viewH());
 const _vwHalf = (CAM_DIST + 4) * Math.tan((50 * Math.PI / 180) / 2) * _vwAsp; // half visible world-width at z=-4
-const VIEWS_R = Math.min(3.4, Math.max(1.9, _vwHalf * 0.30));                  // shrink the sphere on narrow screens
+const VIEWS_R = PORTRAIT ? Math.min(2.6, _vwHalf * PORTRAIT_VIEWS.r) : Math.min(3.4, Math.max(1.9, _vwHalf * 0.30));   // shrink the sphere on narrow screens
 const _vwSpread = Math.min(9, Math.max(VIEWS_R + 0.6, _vwHalf * 0.92 - VIEWS_R)); // keep the outer edge ~92% of half-width
-const VIEWS_CX = [-_vwSpread, 0, _vwSpread];
-const VIEWS_CY = 0.8;
+const VIEWS_CX = PORTRAIT
+  ? [0, 0, 0].fill(_vwHalf * PORTRAIT_VIEWS.col)
+  : [-_vwSpread, 0, _vwSpread];
+const VIEWS_CY = PORTRAIT ? PORTRAIT_VIEWS.cy : 0.8;
+/* per-orb centre y (desktop: one shared row) */
+const VIEWS_CYS = PORTRAIT
+  ? [PORTRAIT_VIEWS.cy + PORTRAIT_VIEWS.gap, PORTRAIT_VIEWS.cy, PORTRAIT_VIEWS.cy - PORTRAIT_VIEWS.gap]
+  : [VIEWS_CY, VIEWS_CY, VIEWS_CY];
 const VIEWS_Z = -4;
 const VIEWS_ZD = 1.0;                      // 1 = a true sphere (no z-stretch → no egg wobble)
 const VIEWS_SPIN = [0.26, -0.19, 0.32];    // rad/s per orb (sign = direction)
@@ -1721,6 +1928,7 @@ const VIEWS_EXIT = { orbit: [0.46, 0.76], turns: 1, depth: 0.6, fade: [0.64, 0.7
    each orb is, the sweeping orb's swell, and the wipe's trailing-edge screen
    fraction (0 = nothing wiped). Shared by step() (dots) and onScroll (clip). */
 function viewsExit(vp) {
+  if (PORTRAIT) return viewsExitPortrait(vp);
   const X = VIEWS_EXIT, s = Math.abs(VIEWS_CX[0]);
   const u = clamp((vp - X.orbit[0]) / (X.orbit[1] - X.orbit[0]));
   const th = Math.PI * 2 * X.turns * easeInOut(u);
@@ -1742,7 +1950,36 @@ function viewsExit(vp) {
     cz[0] = z;
     wipeFrac = clamp(0.5 + (cx[0] - VIEWS_R * grow) / (2 * half));
   }
-  return { cx, cz, gone, grow, wipeFrac };
+  return { cx, cy: VIEWS_CYS.slice(), cz, gone, grow, wipeFrac };
+}
+/* the same exit, turned 90° for the stacked phone column: the top + bottom
+   orbs orbit the middle one (a y–z carousel), two shrink away, and the TOP
+   orb drops down the screen as the wipe — the copy is clipped away from the
+   top (onScroll reads wipeFrac as an inset from the top in portrait). */
+function viewsExitPortrait(vp) {
+  const X = VIEWS_EXIT, s = PORTRAIT_VIEWS.gap, cy0 = PORTRAIT_VIEWS.cy;
+  const u = clamp((vp - X.orbit[0]) / (X.orbit[1] - X.orbit[0]));
+  const th = Math.PI * 2 * X.turns * easeInOut(u);
+  const cx = VIEWS_CX.slice(), cy = VIEWS_CYS.slice(), cz = [VIEWS_Z, VIEWS_Z, VIEWS_Z];
+  [[0, Math.PI / 2], [2, -Math.PI / 2]].forEach(([o, a0]) => {
+    const a = a0 + th;
+    cy[o] = cy0 + s * Math.sin(a);
+    cz[o] = VIEWS_Z + s * Math.cos(a) * X.depth;
+  });
+  const fade = smooth(clamp((vp - X.fade[0]) / (X.fade[1] - X.fade[0])));
+  const gone = [0, fade, fade];
+  const w = smooth(clamp((vp - X.wipe[0]) / (X.wipe[1] - X.wipe[0])));
+  let grow = 1, wipeFrac = 0;
+  if (w > 0) {
+    const z = lerp(cz[0], VIEWS_Z + X.wipeZ, w);
+    grow = lerp(1, X.grow, w);
+    const half = visHalf(z).h;
+    cy[0] = lerp(cy[0], -(half + VIEWS_R * grow + 1), w);
+    cx[0] = lerp(cx[0], 0, w);
+    cz[0] = z;
+    wipeFrac = clamp(0.5 - (cy[0] + VIEWS_R * grow) / (2 * half));
+  }
+  return { cx, cy, cz, gone, grow, wipeFrac };
 }
 
 /* 3 VIEWS — the two Milo hands that frame the orbs from the sides (image
@@ -1869,7 +2106,7 @@ function buildFormations() {
   {
     const cl = make();
     const r = rng(44);
-    const R = 7.4;                                   // cluster radius (world) — the big centred ball
+    const R = PORTRAIT ? visHalf(-4.5).w * PORTRAIT_COLLECT_R : 7.4;   // cluster radius (world) — the big centred ball
     for (let i = 0; i < N; i++) {
       const ang = r() * Math.PI * 2;
       const rad = Math.sqrt(r()) * R;                // sqrt → uniform area density
@@ -1901,7 +2138,7 @@ function buildFormations() {
       const rq = Math.sqrt(Math.max(0, 1 - yy * yy));        // ring radius at this latitude
       const th = GOLD * j;
       const rad = VIEWS_R * (0.95 + r() * 0.05);             // sit near the surface, faint jitter
-      setP(v, i, VIEWS_CX[k] + Math.cos(th) * rq * rad, VIEWS_CY + yy * rad, VIEWS_Z + Math.sin(th) * rq * rad);
+      setP(v, i, VIEWS_CX[k] + Math.cos(th) * rq * rad, VIEWS_CYS[k] + yy * rad, VIEWS_Z + Math.sin(th) * rq * rad);
       setC(v, i, colors[k], 0.06);
     }
     F.push(v);
@@ -1938,7 +2175,7 @@ function buildFormations() {
       }
     }
   };
-  { const dna = make(); helixDots(dna, 0, 0, 0, 1, 66); F.push(dna); }
+  { const dna = make(); helixDots(dna, DNA_X, 0, 0, DNA_SCALE, 66); F.push(dna); }
 
   /* 6 · 12 SKILLS — the same DNA, offset + scaled down (DNA2_CFG). Kept as its
      own form so the GUI can re-lay it live: rebuildDNA2() re-runs helixDots
@@ -1956,7 +2193,7 @@ function buildFormations() {
     for (let i = 0; i < N; i++) {
       const k = i % KID.count, m = (i - k) / KID.count, M = Math.ceil((N - k) / KID.count);
       const t = (m / M) * Math.PI * 2, rad = 4.2;   // clean ring outline
-      setP(kids, i, kidCenterX(k) + Math.cos(t) * rad, KID.y + Math.sin(t) * rad, KID.z);
+      setP(kids, i, kidCenterX(k) + Math.cos(t) * rad, kidCenterY(k) + Math.sin(t) * rad, KID.z);
       setC(kids, i, KID.colors[m % KID.colors.length], 0.06);
     }
     F.push(kids);
@@ -2050,7 +2287,7 @@ function relayoutKids() {
       const ny = (y - vy) / vh - 0.5;    // SVG y runs downward
       const i = idxs[m];
       form.pos[i * 3]     = cx + nx * KID_W;
-      form.pos[i * 3 + 1] = KID.y - ny * KID.height;   // flip to world-up
+      form.pos[i * 3 + 1] = kidCenterY(k) - ny * KID.height;   // flip to world-up
       form.pos[i * 3 + 2] = KID.z;
       tmp.set(pal[m % pal.length]).lerp(white, 0.06);   // cycle the palette
       form.col[i * 3]     = tmp.r;
@@ -2092,29 +2329,29 @@ function initThree() {
   const canvas = document.getElementById('world');
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !MOBILE, powerPreference: MOBILE ? 'default' : 'high-performance' });
   } catch (e) {
     canvas.style.display = 'none';
     return null;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, MOBILE ? MOBILE_CFG.dprCap : 2));
+  renderer.setSize(window.innerWidth, viewH());
 
   const scene3 = new THREE.Scene();
   scene3.fog = new THREE.Fog(0xffffff, CAM_DIST + 8, CAM_DIST + 46);
-  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 400);
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / viewH(), 0.1, 400);
   camera.position.set(0, 0, CAM_DIST);
   const tex = dotTexture();
 
   /* ambient dust — fixed in the world, makes the flight felt */
   {
-    const M = 420;
+    const M = MOBILE ? MOBILE_CFG.dust : 420;
     const pos = new Float32Array(M * 3);
     const col = new Float32Array(M * 3);
     const r = rng(7);
     const c = new THREE.Color();
     for (let i = 0; i < M; i++) {
-      pos[i * 3] = (r() - 0.5) * 44 * Math.max(1, (window.innerWidth / Math.max(1, window.innerHeight)) / 1.6);
+      pos[i * 3] = (r() - 0.5) * 44 * Math.max(1, (window.innerWidth / Math.max(1, viewH())) / 1.6);
       pos[i * 3 + 1] = (r() - 0.5) * 26;
       pos[i * 3 + 2] = 30 - r() * (scenes.length * DEPTH + 60);
       c.set(r() < 0.55 ? C.gray : DOT_PALETTE[Math.floor(r() * 5)]);
@@ -2401,7 +2638,7 @@ function initThree() {
   function pick(clientX, clientY) {
     const ndc = new THREE.Vector2(
       (clientX / window.innerWidth) * 2 - 1,
-      -(clientY / window.innerHeight) * 2 + 1,
+      -(clientY / viewH()) * 2 + 1,
     );
     raycaster.setFromCamera(ndc, camera);
     const hits = raycaster.intersectObject(pts);
@@ -2494,13 +2731,14 @@ function initThree() {
 
   const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
   window.addEventListener('pointermove', (e) => {
+    if (e.pointerType && e.pointerType !== 'mouse') return;
     mouse.tx = (e.clientX / window.innerWidth - 0.5) * 2;
-    mouse.ty = (e.clientY / window.innerHeight - 0.5) * 2;
+    mouse.ty = (e.clientY / viewH() - 0.5) * 2;
   }, { passive: true });
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
+  window.addEventListener(RESIZE_EVT, () => {
+    camera.aspect = window.innerWidth / viewH();
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth, viewH());
     sphereHero(built.F[0].pos);
     spreadHero(heroSpread);
     hands.update();
@@ -2604,7 +2842,7 @@ function stopY(stop) {
 /* input multiplier at scroll position y: 1 in open water, easing down to
    DETENT.resist right on a detent */
 function detentFactor(y) {
-  const zonePx = DETENT.zone * window.innerHeight;
+  const zonePx = DETENT.zone * viewH();
   let k = 1;
   for (const d of snapStops) {
     const dy = Math.abs(y - stopY(d));
@@ -2645,7 +2883,7 @@ function glideTo(y) {
   if (reduced) { window.scrollTo(0, y); return; }
   glY0 = window.scrollY; glY1 = y;
   if (Math.abs(glY1 - glY0) < 1) { scrollMode = 'idle'; return; }
-  glDur = clamp(Math.abs(glY1 - glY0) / Math.max(1, window.innerHeight), 0.22, 1) * SNAP.dur;
+  glDur = clamp(Math.abs(glY1 - glY0) / Math.max(1, viewH()), 0.22, 1) * SNAP.dur;
   glT0 = performance.now();
   scrollMode = 'glide';
 }
@@ -2691,7 +2929,7 @@ function advanceScroll(now, dt) {
     /* idle near a detent → ease onto it (once per pause) */
     if (!settled && now - lastInputT > DETENT.settleMs) {
       settled = true;
-      const reach = DETENT.settle * window.innerHeight;
+      const reach = DETENT.settle * viewH();
       let best = null, bd = reach;
       for (const d of snapStops) { const dy = Math.abs(stopY(d) - aimY); if (dy < bd) { bd = dy; best = d; } }
       if (best) aimY = clamp(stopY(best), 0, maxY);
@@ -2742,7 +2980,7 @@ const NAV_ITEMS = [
   /* highlight the section whose top we've most recently passed */
   let activeIdx = -1;
   const syncActive = () => {
-    const y = window.scrollY + window.innerHeight * 0.4;
+    const y = window.scrollY + viewH() * 0.4;
     let cur = 0;
     for (let k = 0; k < buttons.length; k++) {
       if (y >= scenes[buttons[k].i].top) cur = k;
@@ -2755,7 +2993,7 @@ const NAV_ITEMS = [
     buttons[cur].el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   };
   window.addEventListener('scroll', syncActive, { passive: true });
-  window.addEventListener('resize', syncActive);
+  window.addEventListener(RESIZE_EVT, syncActive);
   syncActive();
 })();
 
@@ -2774,7 +3012,12 @@ document.querySelectorAll('a[href^="#"]').forEach((a) => {
    Native scroll is intercepted and re-emitted through the eased, detent-
    damped model above. Skipped under prefers-reduced-motion (native scroll
    stays). */
-if (!reduced) {
+/* phones keep NATIVE momentum scroll (the frame loop still reads scrollY
+   every frame); a finger on the glass cancels any nav glide in flight */
+if (MOBILE) {
+  window.addEventListener('touchstart', () => { if (scrollMode === 'glide') scrollMode = 'idle'; }, { passive: true });
+}
+if (!reduced && !MOBILE) {
   const PAGE = new Set(['PageDown', 'PageUp', ' ', 'Spacebar']);
   window.addEventListener('wheel', (e) => {
     if (e.ctrlKey) return;                  // leave pinch-zoom to the browser
@@ -2784,7 +3027,7 @@ if (!reduced) {
 
   window.addEventListener('keydown', (e) => {
     if (e.target.closest('input, textarea, select, button, a, [contenteditable]')) return;
-    const vh = window.innerHeight;
+    const vh = viewH();
     if (e.key === 'Home') { e.preventDefault(); glideTo(0); return; }
     if (e.key === 'End') { e.preventDefault(); glideTo(maxY); return; }
     if (e.key === 'ArrowDown') { e.preventDefault(); pushScroll(vh * 0.2); return; }
@@ -2913,17 +3156,41 @@ function fitViewsHead() {
   const r = h.getBoundingClientRect(), top0 = sc.stage.getBoundingClientRect().top;
   h.style.transform = prev;
   sc.stage.style.transform = prevSt;
-  const vh = window.innerHeight;
+  const vh = viewH();
   const k = r.height / h.offsetHeight;                   // the step's fit-to-viewport scale
   const half = (r.height * VIEWS_HEAD.scale) / 2, cy = (r.top + r.bottom) / 2 - top0;
-  const orbTop = (0.5 - (VIEWS_CY + VIEWS_R) / (2 * visHalf(VIEWS_Z).h)) * vh;
+  const orbTop = (0.5 - (Math.max(...VIEWS_CYS) + VIEWS_R) / (2 * visHalf(VIEWS_Z).h)) * vh;
   const want = Math.max(orbTop - VIEWS_HEAD_FIT.gap * vh - half, VIEWS_HEAD_FIT.minTop + half);
   viewsHeadDy = (want - cy) / k;
 }
 function layoutViewsText() {
   if (!viewsRow) return;
-  const aspect = Math.max(0.65, window.innerWidth / Math.max(1, window.innerHeight));
+  const asp = window.innerWidth / Math.max(1, viewH());
+  const aspect = MOBILE ? asp : Math.max(0.65, asp);
   const visW = (CAM_DIST - VIEWS_Z) * Math.tan((50 * Math.PI / 180) / 2) * aspect;   // half visible width at the orb plane
+  if (PORTRAIT) {
+    /* stacked column: each label sits to the RIGHT of its orb, vertically
+       centred on it. Positions are stage-relative px from the same
+       perspective the orbs use. */
+    const W = window.innerWidth, H = viewH(), visH = visW / aspect;
+    const left = (0.5 + (VIEWS_CX[0] + VIEWS_R) / (2 * visW)) * W + 14;
+    viewsRow.style.position = 'absolute';
+    viewsRow.style.inset = '0';
+    viewsRow.style.width = 'auto';
+    viewsRow.style.maxWidth = 'none';
+    viewsRow.style.pointerEvents = 'none';
+    viewsLabels.forEach((el, k) => {
+      const cyPx = (0.5 - VIEWS_CYS[k] / (2 * visH)) * H;
+      el.style.position = 'absolute';
+      el.style.left = left + 'px';
+      el.style.right = '16px';
+      el.style.top = cyPx + 'px';
+      el.style.marginTop = -(el.offsetHeight / 2) + 'px';
+      el.style.textAlign = 'left';
+    });
+    fitViewsHead();
+    return;
+  }
   const orbPx = (Math.abs(VIEWS_CX[0]) / visW) * (window.innerWidth / 2);             // px, screen centre → a side orb
   viewsRow.style.maxWidth = 'none';
   viewsRow.style.width = Math.min(3 * orbPx - 24, window.innerWidth - 48) + 'px';     // side labels land under the side orbs
@@ -2931,7 +3198,7 @@ function layoutViewsText() {
   fitViewsHead();
 }
 layoutViewsText();
-window.addEventListener('resize', layoutViewsText);
+window.addEventListener(RESIZE_EVT, layoutViewsText);
 
 /* the frame loop reads these back */
 const S = { f: 0, i: 0, p: 0, wt: 0, repIn: 0 };
@@ -3062,7 +3329,7 @@ function onScroll(fOverride) {
       ty = 1 - askIn;
       op = smooth(clamp(askIn / 0.08)) * (1 - askOut);
       exScale = 1 + askOut * 0.7;    // grow past the camera
-      exBlur = askOut * 16;          // px
+      exBlur = MOBILE ? 0 : askOut * 16;   // px (phones: a full-screen blur is too costly)
     } else if (k === fitsI) {
       /* "Works with what you already have" (HM-15) — plain fade in after the
          Ask-live zoom, then the SAME zoom-through exit so Impact's early
@@ -3071,7 +3338,7 @@ function onScroll(fOverride) {
       const out = smooth(clamp((f - (k + 0.62)) / 0.34));
       op = inn * (1 - out);
       exScale = 1 + out * 0.7;
-      exBlur = out * 16;
+      exBlur = MOBILE ? 0 : out * 16;
     } else if (k === impactI) {
       /* "30+ schools…" — the stage is held opaque across the Ask-live→Impact
          boundary while #impactCard does the reveal (fade in + scale up + unblur,
@@ -3111,7 +3378,9 @@ function onScroll(fOverride) {
       if (tStr !== sc._tStr) { sc.stage.style.transform = tStr; sc._tStr = tStr; }
       const fStr = exBlur > 0.05 ? `blur(${exBlur.toFixed(1)}px)` : '';
       if (fStr !== sc._fStr) { sc.stage.style.filter = fStr; sc._fStr = fStr; }
-      const cStr = clipL > 0.0005 ? `inset(0 0 0 ${(clipL * 100).toFixed(2)}%)` : '';
+      const cStr = clipL > 0.0005
+        ? (PORTRAIT ? `inset(${(clipL * 100).toFixed(2)}% 0 0 0)` : `inset(0 0 0 ${(clipL * 100).toFixed(2)}%)`)
+        : '';
       if (cStr !== sc._cStr) { sc.stage.style.clipPath = cStr; sc._cStr = cStr; }
     }
 
@@ -3212,8 +3481,9 @@ function runPin(sc, p) {
   }
   if (sc.pin === 'fan' && T.fans[0]) {
     const q = ease(clamp(p / 0.32));   // fanned out by the Reports detent (0.36), not after it
-    T.fans[0].style.transform = `rotate(${-7 * q}deg) translateX(${377 - 346 * q}px)`;
-    T.fans[2].style.transform = `rotate(${7 * q}deg) translateX(${-(377 - 346 * q)}px)`;
+    const off = FAN.from - (FAN.from - FAN.to) * q;
+    T.fans[0].style.transform = `rotate(${-7 * q}deg) translateX(${off}px)`;
+    T.fans[2].style.transform = `rotate(${7 * q}deg) translateX(${-off}px)`;
     T.fans[1].style.transform = `scale(${0.96 + 0.04 * q})`;
     return;
   }
@@ -3326,7 +3596,11 @@ function runPin(sc, p) {
   }
   if (sc.pin === 'dna' && T.stageTitles.length) {
     const stage = p < 0.30 ? 0 : p < 0.58 ? 1 : 2;
-    T.stageTitles.forEach((el, k) => { el.style.opacity = k === stage ? '1' : '0.25'; });
+    T.stageTitles.forEach((el, k) => {
+      el.style.opacity = k === stage ? '1' : '0.25';
+      /* phones: only the active strand's caption, so copy + card fit the screen */
+      if (PORTRAIT) el.style.display = k === stage ? '' : 'none';
+    });
     T.stagePanels.forEach((el, k) => {
       const on = k === stage;
       el.style.opacity = on ? '1' : '0';
@@ -3361,7 +3635,19 @@ function runPin(sc, p) {
    re-measure once webfonts and images have settled. setCrossVH sizes the
    Cross scene and measures. */
 setCrossVH(CROSS_VH);
-window.addEventListener('resize', measure);
+window.addEventListener(RESIZE_EVT, measure);
+/* a phone rotated mid-page reloads (formations are built per orientation) —
+   put the reader back where they were */
+if (MOBILE) {
+  try {
+    const r = sessionStorage.getItem('tl-rot');
+    if (r != null) {
+      sessionStorage.removeItem('tl-rot');
+      refreshMaxY();
+      window.scrollTo(0, clamp(+r) * maxY);
+    }
+  } catch (e) {}
+}
 window.addEventListener('load', measure);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
 
@@ -3413,7 +3699,7 @@ function buildAskPathEditor() {
   });
   const redraw = () => {
     ['red', 'blue'].forEach((side) => {
-      const q = ASK_FLOW[side].pts.map((p) => [p[0] * window.innerWidth, p[1] * window.innerHeight]);
+      const q = ASK_FLOW[side].pts.map((p) => [p[0] * window.innerWidth, p[1] * viewH()]);
       paths[side].setAttribute('d', `M${q[0][0]},${q[0][1]} C${q[1][0]},${q[1][1]} ${q[2][0]},${q[2][1]} ${q[3][0]},${q[3][1]}`);
       handles[side].forEach((c, i) => { c.setAttribute('cx', q[i][0]); c.setAttribute('cy', q[i][1]); });
     });
@@ -3426,11 +3712,11 @@ function buildAskPathEditor() {
   });
   svg.addEventListener('pointermove', (e) => {
     if (!drag) return;
-    ASK_FLOW[drag.side].pts[drag.i] = [clamp(e.clientX / window.innerWidth, -0.25, 1.25), clamp(e.clientY / window.innerHeight, -0.25, 1.25)];
+    ASK_FLOW[drag.side].pts[drag.i] = [clamp(e.clientX / window.innerWidth, -0.25, 1.25), clamp(e.clientY / viewH(), -0.25, 1.25)];
     redraw();
   });
   svg.addEventListener('pointerup', () => { drag = null; });
-  window.addEventListener('resize', redraw);
+  window.addEventListener(RESIZE_EVT, redraw);
   document.body.appendChild(svg);
   redraw();
   return { toggle: (on) => { svg.style.display = on ? 'block' : 'none'; if (on) redraw(); } };
@@ -3745,7 +4031,7 @@ if (reduced) {
           /* carry the whole sphere to its exit pose (the sweeping orb swells) */
           const g = o === 0 ? ex.grow : 1;
           P[k]     = ex.cx[o] + (P[k] - VIEWS_CX[o]) * g;
-          P[k + 1] = VIEWS_CY + (P[k + 1] - VIEWS_CY) * g;
+          P[k + 1] = ex.cy[o] + (P[k + 1] - VIEWS_CYS[o]) * g;
           P[k + 2] = ex.cz[o] + (P[k + 2] - VIEWS_Z) * g;
           vanish(n, ex.gone[o]);
         }
@@ -3760,14 +4046,14 @@ if (reduced) {
       const wgt = (f >= dnaI ? 1 : 0) * (1 - clamp((f - (skI + 0.9)) / 0.35));
       if (wgt > 0.01) {
         const slide = smooth(clamp((f - (dnaI + 0.86)) / 0.14));
-        const cx = lerp(0, DNA2_CFG.x, slide);
+        const cx = lerp(DNA_X, DNA2_CFG.x, slide);
         const cz = lerp(DNA_DEPTH_CENTER, DNA_DEPTH_CENTER + DNA2_CFG.z, slide);
         /* the depth read tracks the helix's live centre + radius, so the
            back-half fade keeps working once it shrinks (scale) and moves in z.
            Pinned to the full-size span, every mini dot reads as "near" and the
            strand goes flat — this is what gives the mini the same 3D depth as
            the full-size helix on the Measure screen. */
-        const zh = DNA_DEPTH_HALF * lerp(1, DNA2_CFG.scale, slide);
+        const zh = DNA_DEPTH_HALF * lerp(DNA_SCALE, DNA2_CFG.scale, slide);
         /* idle spin: ACCUMULATE the angle while the helix owns the screen, then
            FREEZE it at the 12-skills→On-track handover (f > skI+0.9). Freezing
            (rather than the old `time*0.4 * wgt`, which scaled a large absolute
@@ -4041,6 +4327,9 @@ if (reduced) {
                neither moving the cursor away nor the demo ending can pull the
                dots out. Resets only when you leave the Ask-live scene (below). */
             if (sock && (sock.near || sock.locked)) th._askLatched = true;
+            /* phones have no cursor to carry the dots — the stream plugs into
+               the socket as soon as the screen has landed */
+            if (MOBILE && S.p > 0.12) th._askLatched = true;
             th._askPlugF = lerp(th._askPlugF || 0, th._askLatched ? 1 : 0, 1 - Math.exp(-dt * 7));
             const s = sock || th._askSockLast;
             if (s) { tgtX = lerp(cur[0], s.wx, th._askPlugF); tgtY = lerp(cur[1], s.wy, th._askPlugF); }

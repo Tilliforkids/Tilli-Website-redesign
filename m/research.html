@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Device Split gate — MUST stay before any stylesheet. See ../js/device-split.js -->
-<script src="../js/device-split.js?v=2"></script>
+<script src="../js/device-split.js?v=3"></script>
 <!-- HTML cache self-heal — forces a fresh shell when /version.json bumps. See ../js/cache-guard.js -->
 <script src="../js/cache-guard.js"></script>
 <title>Tilli for Research</title>
@@ -61,10 +61,25 @@
 
   /* ── PROBLEM (dark) · CHG-12 deferred (B3): ported as-is ── */
   .r-dark { background: var(--tl-ink-900); color: var(--tl-white); }
+  /* ── Phone dot field (js/dot-field.js) — formations + the empty stages that
+     reserve room for them; only shown once the field is running (html.tl-dots) */
+  .m-dots-stage { display: none; }
+  html.tl-dots .m-dots-stage { display: block; pointer-events: none; }
+  .m-globe { height: 46vw; margin: 0 auto 6px; }
+  .m-map { height: 44vw; margin: 18px 0 6px; }
+  .m-venn { height: 58vw; margin: 4px 0 12px; }
+  .m-files { display: none; justify-content: space-around; height: 64px; margin: 4px 0 10px; }
+  html.tl-dots .m-files { display: flex; }
+  .m-file { width: 1px; height: 64px; }
+  .m-pipe { height: 40vw; margin: 0 0 12px; }
+  html.tl-dots .r-ai__arrow { display: none; }
+
   .r-dark .title { color: var(--tl-white); text-align: center; }
   .r-pcards { display: flex; flex-direction: column; gap: 14px; margin-top: 28px; }
   .r-pcard { position: relative; background: var(--tl-white); border-radius: var(--tl-radius-md); padding: 22px 20px 44px; }
   .r-pcard h3 { margin: 0 0 8px; }
+  .r-pcard__n { display: inline-block; margin: 0 0 12px; color: var(--tl-ink-900); background: var(--c);
+    border-radius: var(--tl-radius-pill); padding: 5px 12px; }
   .r-pcard__ic { position: absolute; right: 14px; bottom: 10px; font-size: var(--tl-fs-lg); }
   .r-weird { position: relative; margin: 28px -22px 24px; overflow: hidden; }
   .r-weird__art { display: block; width: 100%; height: clamp(300px,74vw,460px); }
@@ -73,6 +88,9 @@
   .r-weird__pre { font-weight: 800; color: var(--tl-ink-900); font-size: var(--tl-fs-base); }
   .r-weird__big { font-weight: 800; color: var(--tl-white); font-size: var(--tl-fs-display); line-height: var(--tl-leading-tight); margin: 6px 0; text-shadow: 0 2px 12px color-mix(in srgb, var(--tl-ink-900) 28%, transparent); }
   .r-weird__post { font-weight: 600; color: var(--tl-ink-900); font-size: var(--tl-fs-sm); }
+  .r-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: -6px 0 30px; }
+  .r-chip { font-size: var(--tl-fs-sm); font-weight: 700; color: var(--tl-white); border: 2px solid var(--c);
+    border-radius: var(--tl-radius-pill); padding: 7px 15px; }
   .r-blind { text-align: center; }
   .r-blind__pre { font-weight: 700; color: var(--tl-cyan-500); font-size: var(--tl-fs-base); margin-bottom: 4px; }
   .r-blind__big { font-weight: 800; color: var(--tl-white); font-size: var(--tl-fs-xl); line-height: var(--tl-leading-snug); }
@@ -145,6 +163,7 @@
   .r-ai__arrow { font-size: var(--tl-fs-xl); margin: 8px 0 18px; }
   .r-ai__item { margin: 0 0 18px; }
   .r-ai__item h3 { margin: 0 0 5px; }
+  .r-ai__mouth { color: var(--tl-ink-500); margin: 0; }
 
   /* ── RESOURCES ── */
   .r-res { display: flex; flex-direction: column; gap: 26px; margin-top: 30px; }
@@ -158,17 +177,18 @@
 
   <!-- Topbar + header/hamburger injected by ../js/m-chrome.js -->
 
-  <main class="content">
+  <main class="content" data-dots-count-m="420" data-dots-size-m="6">
 
   <!-- HERO (CHG-11) · text-first, photo band below -->
-  <section class="r-hero">
+  <section class="r-hero" data-dots="globe" data-dots-anchor=".m-globe" data-dots-rw="0.2" data-dots-speed="0.45">
     <div class="r-hero__text wrap">
+      <div class="m-dots-stage m-globe" aria-hidden="true"></div>
       <h1 class="r-hero__ttl">Tilli <span class="c-cyan">Measures!</span></h1>
       <p class="r-hero__st">The 360-degree Foundational Skills Dataset</p>
       <p class="r-hero__desc">Unlocking longitudinal, multi-informant insights into cognitive and social-emotional development for non-WEIRD populations.</p>
       <p class="r-hero__safe"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 1a3.5 3.5 0 0 0-3.5 3.5V6H4a1.5 1.5 0 0 0-1.5 1.5v6A1.5 1.5 0 0 0 4 15h8a1.5 1.5 0 0 0 1.5-1.5v-6A1.5 1.5 0 0 0 12 6h-.5V4.5A3.5 3.5 0 0 0 8 1Zm2 5H6V4.5a2 2 0 1 1 4 0V6Z"/></svg>Every record is de-identified: children appear only as a coded ID, never by name.</p>
       <div class="cta-col">
-        <a class="btn btn-pink btn-block" href="https://docs.google.com/document/d/1Z4WzUvg_SncT_7UvYd1HRvN7paDR-px8mRZ8rLkK-rw/edit?usp=drive_link" target="_blank" rel="noopener">Explore the Data Dictionary</a>
+        <a class="btn btn-pink btn-block" href="https://docs.google.com/document/d/1Z4WzUvg_SncT_7UvYd1HRvN7paDR-px8mRZ8rLkK-rw/edit?usp=drive_link" target="_blank" rel="noopener">Explore The Data Dictionary</a>
         <a class="btn btn-green btn-block" href="https://drive.google.com/drive/folders/1lnV730XYbq1U8BbJ4031M_BSKqjxFaP2?usp=drive_link" target="_blank" rel="noopener">Access Data Repository</a>
       </div>
     </div>
@@ -176,12 +196,12 @@
   </section>
 
   <!-- PROBLEM + WEIRD (dark) · CHG-12 deferred (B3) -->
-  <section class="r-dark wrap">
-    <h2 class="title">The Problem: &ldquo;Data Blindness&rdquo; in AI</h2>
+  <section class="r-dark wrap" data-dots="map" data-dots-map="weird-blind" data-dots-morph="0.42,0.78" data-dots-anchor=".m-map" data-dots-fit data-dots-cut>
+    <h2 class="title">The Problem: "Data Blindness" in AI</h2>
     <div class="r-pcards">
-      <div class="r-pcard"><h3>1. Sparse Outcomes</h3><p>Most datasets focus only on static final scores, ignoring the &ldquo;process&rdquo; of how a child learns.</p><span class="r-pcard__ic">🌍</span></div>
-      <div class="r-pcard"><h3>2. Isolated Data</h3><p>Research is often siloed — looking at classroom performance or home environments, but never triangulating both.</p><span class="r-pcard__ic">🔗</span></div>
-      <div class="r-pcard"><h3>3. Expensive Protocols</h3><p>Standardised assessments require high-cost, in-person trained assessors, leaving resource-poor communities out of the AI evolution.</p><span class="r-pcard__ic">💰</span></div>
+      <div class="r-pcard" style="--c:var(--tl-pink-400)"><span class="eyebrow r-pcard__n">01</span><h3>Sparse Outcomes</h3><p>Most datasets focus only on static final scores, ignoring the "process" of how a child learns.</p><span class="r-pcard__ic">🌍</span></div>
+      <div class="r-pcard" style="--c:var(--tl-yellow-500)"><span class="eyebrow r-pcard__n">02</span><h3>Isolated Data</h3><p>Research is often siloed either looking at classroom performance or home environments, but never triangulating both.</p><span class="r-pcard__ic">🔗</span></div>
+      <div class="r-pcard" style="--c:var(--tl-cyan-500)"><span class="eyebrow r-pcard__n">03</span><h3>Expensive Protocols</h3><p>Standardised assessments require high-cost, in-person trained assessors, leaving resource-poor communities out of the AI evolution.</p><span class="r-pcard__ic">💰</span></div>
     </div>
     <div class="r-weird">
       <svg class="r-weird__art" viewBox="0 0 1440 660" preserveAspectRatio="none" aria-hidden="true" focusable="false">
@@ -198,17 +218,25 @@
         <p class="r-weird__post">Western, Educated, Industrialized, Rich, and Democratic populations.</p>
       </div>
     </div>
+    <div class="r-chips" aria-hidden="true">
+      <span class="r-chip" style="--c:var(--tl-pink-400)">Western</span>
+      <span class="r-chip" style="--c:var(--tl-orange-500)">Educated</span>
+      <span class="r-chip" style="--c:var(--tl-green-500)">Industrialized</span>
+      <span class="r-chip" style="--c:var(--tl-cyan-500)">Rich</span>
+      <span class="r-chip" style="--c:var(--tl-yellow-500)">Democratic</span>
+    </div>
+    <div class="m-dots-stage m-map" aria-hidden="true"></div>
     <div class="r-blind">
       <p class="r-blind__pre">This creates a</p>
-      <p class="r-blind__big">&ldquo;data blind spot&rdquo; for children in</p>
+      <p class="r-blind__big">"data blind spot" for children in</p>
       <p class="r-blind__post">South Asia, the Middle East, and other diverse contexts.</p>
     </div>
   </section>
 
   <!-- COMPETENCIES · CHG-13: live 2-col skill grid -->
   <section class="wrap t-center">
-    <h2 class="title">We provide a unified view of <span class="c-green">child development</span>.</h2>
-    <p class="lede">Across 12 core competencies, in two critical domains.</p>
+    <h2 class="title">We provide a <span class="c-green">unified view</span><br>of child development!</h2>
+    <p class="lede">Across 12 core competencies, categorised into two critical domains.</p>
     <p class="r-comp__label c-cyan">6 Cognitive Skills</p>
     <div class="r-skills">
       <div class="r-skill r-skill--cyan"><span class="r-skill__ic">🎯</span><div class="r-skill__n">Attention</div><div class="r-skill__d">Focusing on relevant information and sustaining it on a task.</div></div>
@@ -219,29 +247,29 @@
       <div class="r-skill r-skill--orange"><span class="r-skill__ic">🗂️</span><div class="r-skill__n">Planning &amp; Organisation</div><div class="r-skill__d">Setting goals, planning steps, and structuring tasks.</div></div>
     </div>
     <div class="r-skills-div" aria-hidden="true"></div>
-    <p class="r-comp__label c-pink">6 Social-Emotional (SEL) Skills</p>
+    <p class="r-comp__label c-pink">6 Social-Emotional Learning (SEL) Skills</p>
     <div class="r-skills">
       <div class="r-skill r-skill--green"><span class="r-skill__ic">😌</span><div class="r-skill__n">Emotion Awareness</div><div class="r-skill__d">Recognising and understanding one's own emotions.</div></div>
       <div class="r-skill r-skill--pink"><span class="r-skill__ic">🧘</span><div class="r-skill__n">Emotion Regulation</div><div class="r-skill__d">Managing and responding to emotions appropriately.</div></div>
-      <div class="r-skill r-skill--cyan"><span class="r-skill__ic">🤗</span><div class="r-skill__n">Empathy</div><div class="r-skill__d">Understanding and sharing the feelings of others.</div></div>
-      <div class="r-skill r-skill--orange"><span class="r-skill__ic">🤝</span><div class="r-skill__n">Relationship Skills</div><div class="r-skill__d">Building and maintaining positive interactions with others.</div></div>
-      <div class="r-skill r-skill--green"><span class="r-skill__ic">💭</span><div class="r-skill__n">Metacognition</div><div class="r-skill__d">Reflecting on and understanding one's own thinking.</div></div>
+      <div class="r-skill r-skill--cyan"><span class="r-skill__ic">🤝</span><div class="r-skill__n">Relationship Skills</div><div class="r-skill__d">Building and maintaining positive interactions with others.</div></div>
+      <div class="r-skill r-skill--orange"><span class="r-skill__ic">💭</span><div class="r-skill__n">Metacognition</div><div class="r-skill__d">Reflecting on and understanding one's own thinking.</div></div>
+      <div class="r-skill r-skill--green"><span class="r-skill__ic">🤗</span><div class="r-skill__n">Empathy</div><div class="r-skill__d">Understanding and sharing the feelings of others.</div></div>
       <div class="r-skill r-skill--pink"><span class="r-skill__ic">🔍</span><div class="r-skill__n">Critical Thinking</div><div class="r-skill__d">Analysing and evaluating information to form judgments.</div></div>
     </div>
   </section>
 
   <!-- OTHER DOMAINS (tabs) · CHG-14 deferred (B5) -->
   <section class="wash-grey wrap">
-    <h2 class="title">Other domains &amp; parameters</h2>
+    <h2 class="title">Other Domain and <span class="c-pink">Parameters</span></h2>
     <div class="r-tabs" role="tablist">
-      <button class="r-tab" role="tab" aria-selected="true"  data-tab="academic">Academic</button>
-      <button class="r-tab" role="tab" aria-selected="false" data-tab="child">Child-Level</button>
-      <button class="r-tab" role="tab" aria-selected="false" data-tab="eco">Ecological</button>
+      <button class="r-tab" role="tab" aria-selected="true"  data-tab="academic">Academic Domain</button>
+      <button class="r-tab" role="tab" aria-selected="false" data-tab="child">Child-Level Predictors</button>
+      <button class="r-tab" role="tab" aria-selected="false" data-tab="eco">Ecological Predictors</button>
     </div>
     <div class="r-panel" data-panel="academic" data-active="true">
       <h3>Academic Domain</h3>
       <ul><li>Math Scores</li><li>Literacy Scores</li></ul>
-      <p>Captures core learning outcomes through math and literacy. Math reflects problem-solving and numerical understanding; literacy measures reading, comprehension, and expression — together indicating overall academic proficiency.</p>
+      <p>Captures core learning outcomes through math and literacy. Math reflects problem-solving and numerical understanding, while literacy measures reading, comprehension, and expression—together indicating overall academic proficiency.</p>
       <img class="r-panel__ill" src="../assets/dataset/domain-academic.png" alt="">
     </div>
     <div class="r-panel" data-panel="child" data-active="false">
@@ -254,17 +282,18 @@
       <h3>Ecological Predictors</h3>
       <p>Captures school and home influences, including teacher quality, resources, parental education, socioeconomic status, and access to learning materials.</p>
       <h4 class="eyebrow">Classroom</h4>
-      <p>Teacher education levels · access to professional development · school PIN / postal code · material &amp; infrastructure access.</p>
+      <p>Teacher education levels · Teacher access to professional development · PIN / postal code of the school · Material and infrastructure access of the school.</p>
       <h4 class="eyebrow">Home</h4>
-      <p>Parental education levels · home PIN / postal code · parental socioeconomic status · access to learning materials at home.</p>
+      <p>Parental education levels · Home PIN / postal code · Parental socioeconomic status · Access to learning materials at home.</p>
       <img class="r-panel__ill" src="../assets/dataset/domain-ecology.png" alt="">
     </div>
   </section>
 
   <!-- TRIADIC (CHG-15: rebuilt in code) -->
-  <section class="wrap">
-    <h2 class="title">How we measure: the <span class="c-cyan">Triadic Assessment Protocol</span></h2>
-    <p class="lede r-triadic__sub">We move beyond single-informant bias by capturing three perspectives for every child, using a digitized, voice-supported, localized protocol.</p>
+  <section class="wrap" data-dots="venn" data-dots-anchor=".m-venn" data-dots-fit data-dots-cut>
+    <h2 class="title">How We Measure:<br>The Triadic Assessment Protocol</h2>
+    <p class="lede r-triadic__sub">We move beyond single-informant bias by capturing three perspectives for every child, using a digitized, voice-supported, and localized protocol:</p>
+    <div class="m-dots-stage m-venn" aria-hidden="true"></div>
     <div class="r-streams">
       <div class="r-stream s-green">
         <div class="r-stream__ic">🧒</div>
@@ -284,48 +313,52 @@
       <div class="eyebrow r-profile__k">ONE COMPREHENSIVE</div>
       <div class="r-profile__t">Developmental profile for every child</div>
     </div>
-    <p class="r-note">All data is de-identified, privacy-first, and delivered via low-bandwidth messaging platforms to ensure inclusivity.</p>
+    <p class="r-note">Note: All data is de-identified, privacy-first, and delivered via low-bandwidth messaging platforms to ensure inclusivity.</p>
   </section>
 
   <!-- DATA STRUCTURE folders (CHG-16 redesigned; CHG-17 banner removed) -->
-  <section class="wrap t-center">
-    <h2 class="title">What we measure: data structure</h2>
-    <p class="lede r-ds-sub">Four interoperable CSV files, linked by a unique <code>subject_id</code>.</p>
+  <section class="wrap t-center" data-dots="split" data-dots-anchor=".m-file" data-dots-colors="pink,green,cyan,orange" data-dots-r="0.032" data-dots-cut>
+    <h2 class="title">What We Measure: <span class="c-cyan">Data Structure</span></h2>
+    <p class="lede r-ds-sub">Our dataset is composed of four interoperable CSV files linked by a unique <code>subject_id</code>.</p>
+    <div class="m-dots-stage m-files" aria-hidden="true"><span class="m-file"></span><span class="m-file"></span><span class="m-file"></span><span class="m-file"></span></div>
     <div class="r-folders t-left">
-      <div class="r-folder r-folder--pink"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Demographics &amp; Ecology</div><div class="r-folder__d">Equity markers, home environment, family structure, and special-needs status.</div></div></div>
+      <div class="r-folder r-folder--pink"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Demographics &amp; Ecology</div><div class="r-folder__d">Equity markers, home environment, family structure, and special needs status.</div></div></div>
       <div class="r-folder r-folder--green"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Direct Assessments</div><div class="r-folder__d">Behavioural interaction streams, raw latency, task-switching performance, and foundational literacy/numeracy readiness.</div></div></div>
-      <div class="r-folder r-folder--cyan"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Caregiver Report</div><div class="r-folder__d">Home-based emotional symptoms, behavioural outcomes, and executive-function ratings.</div></div></div>
+      <div class="r-folder r-folder--cyan"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Caregiver Report</div><div class="r-folder__d">Home-based emotional symptoms, behavioural outcomes, and executive function ratings.</div></div></div>
       <div class="r-folder r-folder--orange"><svg class="r-folder__body" viewBox="50 157 900 686" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M902 843H98c-26.5 0-48-21.5-48-48V205c0-26.5 21.5-48 48-48h804c26.5 0 48 21.5 48 48v590c0 26.5-21.5 48-48 48z"/></svg><svg class="r-folder__frame" viewBox="33 38 133.333 125" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M158 150.5a4.174 4.174 0 0 1-4.167 4.167H45.5a4.174 4.174 0 0 1-4.167-4.167V71.333h112.5c2.3 0 4.167 1.875 4.167 4.167v75ZM41.333 50.5a4.174 4.174 0 0 1 4.167-4.167h45.542c1.391 0 2.691.692 3.466 1.859L104.383 63h-63.05V50.5Zm112.5 12.5H114.4l-12.958-19.433A12.49 12.49 0 0 0 91.042 38H45.5C38.608 38 33 43.608 33 50.5v100c0 6.892 5.608 12.5 12.5 12.5h108.333c6.892 0 12.5-5.608 12.5-12.5v-75c0-6.892-5.608-12.5-12.5-12.5Z"/></svg><div class="r-folder__text"><div class="r-folder__t">Teacher / Classroom Report</div><div class="r-folder__d">Pedagogical context, concentration/distractibility ratings, and interpersonal assessments.</div></div></div>
     </div>
   </section>
 
   <!-- AI USE CASES · CHG-18 deferred (B5) -->
-  <section class="wrap">
-    <h2 class="title">AI use cases: from <span class="c-pink">research to action</span></h2>
+  <section class="wrap" data-dots="pipeline" data-dots-anchor=".m-pipe" data-dots-fit data-dots-cut>
+    <h2 class="title">AI Use Cases: <span class="c-pink">From Research to Action</span></h2>
+    <div class="eyebrow r-ai__mouth" aria-hidden="true">Research</div>
     <div class="r-ai__arrow" aria-hidden="true">↘</div>
+    <div class="m-dots-stage m-pipe" aria-hidden="true"></div>
     <div class="r-ai__item"><h3>1 / Predictive Intervention</h3><p>Identify Grade 3 cognitive signatures that serve as early warning signs for academic struggle.</p></div>
-    <div class="r-ai__item"><h3>2 / Context-Aware Profiling</h3><p>Use AI to weigh conflicting reports from parents vs. teachers, turning &ldquo;discrepancies&rdquo; into signals for better child support.</p></div>
-    <div class="r-ai__item"><h3>3 / Synthetic Learner Profiles</h3><p>Train generative AI to simulate diverse, realistic student profiles for teacher training and curriculum stress-testing.</p></div>
+    <div class="r-ai__item"><h3>2 / Context-Aware Profiling</h3><p>Use AI to weigh conflicting reports from parents vs. teachers, turning "discrepancies" into signals for better child support.</p></div>
+    <div class="r-ai__item"><h3>3 / Synthetic Learner Profiles</h3><p>Train Generative AI (LLMs/LRMs) to simulate diverse, realistic student profiles for teacher training and curriculum stress-testing.</p></div>
     <div class="r-ai__item"><h3>4 / Algorithmic Fairness Audits</h3><p>Use our localized dataset to audit and improve the regional robustness of global SEL models.</p></div>
+    <div class="eyebrow r-ai__mouth" aria-hidden="true">Action</div>
   </section>
 
   <!-- RESOURCES -->
-  <section class="wash-grey wrap t-center">
-    <h2 class="title c-pink">Resources &amp; more</h2>
+  <section class="wash-grey wrap t-center" data-dots="off" data-dots-cut>
+    <h2 class="title">Resources <span class="c-green">and More!</span></h2>
     <div class="r-res t-left">
       <div class="r-res__item">
         <h3>Technical Documentation</h3>
-        <p>For software developers familiar with how web applications are built.</p>
-        <a class="btn btn-orange" href="https://drive.google.com/file/d/1VnE_FAYsuqPhWr4wZcvPcJpaY846dzVz/view?usp=drive_link" target="_blank" rel="noopener">PDF Manuals</a>
+        <p>This guide is intended for software developers who are familiar with how web applications are built.</p>
+        <a class="btn btn-orange" href="https://drive.google.com/file/d/1VnE_FAYsuqPhWr4wZcvPcJpaY846dzVz/view?usp=drive_link" target="_blank" rel="noopener">Link to PDF Manuals</a>
       </div>
       <div class="r-res__item">
         <h3>GitHub</h3>
-        <p>Open-source toolkits for developers working with the dataset.</p>
-        <a class="btn btn-orange" href="https://www.tillikids.com/opensource" target="_blank" rel="noopener">Open-source Toolkits</a>
+        <p>This guide is intended for developers using GitHub who are familiar with how web applications are built.</p>
+        <a class="btn btn-orange" href="https://www.tillikids.com/opensource" target="_blank" rel="noopener">Link to Open-source Toolkits</a>
       </div>
       <div class="r-res__item">
         <h3>Licence</h3>
-        <p>Creative Commons Attribution 4.0 (CC BY 4.0).</p>
+        <p>Creative Commons Attribution 4.0 (CC BY 4.0)</p>
       </div>
       <div class="r-res__item">
         <h3>About the Team</h3>
@@ -335,6 +368,7 @@
   </section>
 
   </main>
+<script type="module" src="../js/dot-field.js?v=41"></script>
 
   <!-- Footer + floating WhatsApp injected by ../js/m-chrome.js -->
 

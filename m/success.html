@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Device Split gate — MUST stay before any stylesheet. See ../js/device-split.js -->
-<script src="../js/device-split.js?v=2"></script>
+<script src="../js/device-split.js?v=3"></script>
 <!-- HTML cache self-heal — forces a fresh shell when /version.json bumps. See ../js/cache-guard.js -->
 <script src="../js/cache-guard.js"></script>
 <title>Success Stories — Tilli</title>
@@ -101,6 +101,8 @@
      green only on the ticks; sentence-case subhead; no category labels */
   .s-tw { --tw-accent: var(--tl-cyan-700); }
   .s-tw .title { color: var(--tw-accent); font-size: var(--tl-fs-2xl); }
+  /* heading sits on the illustration, after the results list (as desktop's right column) */
+  .s-tw .tw-title { margin: 34px 0 0; }
   /* "Tilli works" wave: each letter hops in turn, then a short rest before the next wave.
      Letters are aria-hidden; the h2's aria-label carries the text. */
   .tw-wave { --wave-dur: 2.2s; --wave-step: 70ms; --wave-h: 0.26em; }
@@ -129,6 +131,15 @@
   .tw-art { margin-top: 22px; aspect-ratio: 4/3; border-radius: var(--tl-radius-lg); background: var(--tl-surface-200);
     border: 1px solid var(--tl-line-200); display: flex; align-items: center; justify-content: center;
     color: var(--tl-ink-300); font-weight: 600; font-size: var(--tl-fs-sm); text-align: center; padding: 18px; }
+  .tw-art__ph { visibility: hidden; }
+  html.tl-dots .tw-art { background: transparent; }
+  /* ── Phone dot field (js/dot-field.js) — formations + the empty stages that
+     reserve room for them; only shown once the field is running (html.tl-dots) */
+  .m-dots-stage { display: none; }
+  html.tl-dots .m-dots-stage { display: block; pointer-events: none; }
+  .m-kid { height: 64vw; margin-top: 8px; }
+  html.tl-dots .yr::before { display: none; }   /* the year runs as dots instead */
+   /* placeholder label kept in the DOM until the real art lands */
 
   /* year timeline above the asks list: dot + when + what, joined by a dotted spine */
   .yr { list-style: none; margin: 22px 0 0; padding: 0 0 0 6px; display: flex; flex-direction: column; gap: 14px;
@@ -152,17 +163,18 @@
 
   <!-- Topbar + header/hamburger injected by ../js/m-chrome.js -->
 
-  <main class="content">
+  <main class="content" data-dots-count-m="300" data-dots-size-m="7">
 
   <!-- HERO (CHG-21) -->
-  <section class="s-hero wrap">
+  <section class="s-hero wrap" data-dots="child" data-dots-anchor=".m-kid" data-dots-r="0.12" data-dots-ay="0.55">
     <div class="eyebrow green">Success Stories</div>
-    <h1 class="title">Schools that measure the <span class="c-green">whole child</span></h1>
-    <p class="lede">From a three-year partnership reshaping thousands of childhoods to research-practice collaborations built on measurement.</p>
+    <h1 class="title">Schools that measure the whole child</h1>
+    <p class="lede">From a three-year partnership reshaping thousands of childhoods to a research-practice collaboration built on measurement.</p>
+    <div class="m-dots-stage m-kid" aria-hidden="true"></div>
   </section>
 
   <!-- SCHOOLS & TRAININGS CAROUSEL (CHG-22) — photos + partner logos, swipe -->
-  <section class="wrap" style="padding-block:26px">
+  <section class="wrap" style="padding-block:26px" data-dots="off" data-dots-cut>
     <div class="s-carousel" aria-label="Partner schools and trainings">
       <div class="s-slide s-slide--photo"><img src="../assets/ds/success-photo-1.jpg" alt="Teachers raising hands during a Tilli training session" loading="lazy" decoding="async"></div>
       <div class="s-slide s-slide--logo"><img src="../assets/ds/school-nmajs.png" alt="Nita Mukesh Ambani Junior School" loading="lazy" decoding="async"></div>
@@ -189,12 +201,12 @@
       <div class="s-ocard o-measure">
         <div class="k">1 — Measure</div>
         <h3>See the whole child</h3>
-        <p>Every child is assessed across all 12 foundational skills from three lenses — teacher, parent, and the child's own play-based tasks — three times a year.</p>
+        <p>Every child is assessed across all 12 foundational skills from three lenses — teacher, parent, and the child’s own play-based tasks — three times a year.</p>
       </div>
       <div class="s-ocard o-ask">
         <div class="k">2 — Ask</div>
         <h3>Guidance grounded in data</h3>
-        <p>Teachers ask AskTilli about any child and get specific, practical next steps grounded in that child's own assessment record — not generic advice.</p>
+        <p>Teachers ask AskTilli about any child and get specific, practical next steps grounded in that child’s own assessment record — not generic advice.</p>
       </div>
       <div class="s-ocard o-int">
         <div class="k">3 — Intervene</div>
@@ -206,8 +218,6 @@
 
   <!-- CASE STUDIES (CHG-21) -->
   <section class="wrap" style="text-align:center">
-    <h2 class="title">Partner schools</h2>
-
     <div class="cs-card">
       <div class="cs-media ss" data-ss-interval="5000">
           <img src="../assets/ds/success-hippo-1.jpg" alt="Hippocampus children working through Tilli activity books at a classroom table" style="object-position:50% 45%">
@@ -217,8 +227,8 @@
       <div class="cs-body">
         <div class="cs-place">Karnataka, India</div>
         <div class="cs-name">Hippocampus Learning Centres</div>
-        <div class="cs-stat"><b>+28%</b><span>growth in impulse control<br>(&ldquo;stop-and-think&rdquo;), 2025–26</span></div>
-        <p class="cs-text">Tilli's longest-standing partner: three years, and now more than <strong>3,500 children</strong> across the Hippocampus network. Over 2025–26, teachers reported growth in every skill Tilli measures: self-awareness up 20%, conflict management up 23%, impulse control up 28%. Given time and the right tools, foundational skills compound.</p>
+        <div class="cs-stat"><b>+28%</b><span>growth in impulse control<br>(“stop-and-think”), 2025–26</span></div>
+        <p class="cs-text">Tilli’s longest-standing partner: three years, and now more than <strong>3,500 children</strong> across the Hippocampus network. Over the 2025–26 year, teachers reported growth in every skill Tilli measures: self-awareness up 20%, conflict management up 23%, and impulse control up 28%. It’s the clearest proof of Tilli’s core belief: given time and the right tools, foundational skills compound.</p>
       </div>
     </div>
 
@@ -230,7 +240,7 @@
       <div class="cs-body">
         <div class="cs-place">Mumbai, India</div>
         <div class="cs-name">Nita Mukesh Ambani Junior School</div>
-        <p class="cs-text">A research-practice partnership built on one idea: measure the whole child, not just the answer sheet. From LKG to Grade 2, Tilli looks at <strong>12 developmental skills through three independent lenses</strong> (parent, teacher, and the child's own play-based tasks), so leaders can see where each child genuinely is — reading early-years data as growth on schedule rather than a child falling behind.</p>
+        <p class="cs-text">A research-practice partnership built on one idea: measure the whole child, not just the answer sheet. From LKG to Grade 2, Tilli looks at <strong>12 developmental skills through three independent lenses</strong> (parent, teacher, and the child’s own play-based tasks), so leaders can see where each child genuinely is, and read early-years data as growth emerging on schedule rather than a child falling behind.</p>
       </div>
     </div>
 
@@ -242,20 +252,19 @@
       <div class="cs-body">
         <div class="cs-place">Colombo, Sri Lanka</div>
         <div class="cs-name">Musaeus College</div>
-        <p class="cs-text">One of Sri Lanka's most respected girls' schools has brought SEL into Grade 1 with Tilli. What won them over was a model where teachers don't just receive data, they <strong>use</strong> it — each teacher designs a support plan for her class, sees multi-informant data on those same children, then redesigns it.</p>
+        <p class="cs-text">One of Sri Lanka’s most respected girls’ schools has brought SEL into Grade 1 with Tilli. What won them over was a model where teachers don’t just receive data, they <strong>use</strong> it. In Tilli’s intervention sessions, each teacher designs a support plan for her class, sees multi-informant data on those same children, then redesigns it, turning a dashboard into a concrete next step for every learner.</p>
       </div>
     </div>
   </section>
 
   <!-- TILLI WORKS (CHG-28 E3): headline + intro + Top Results checklist -->
-  <section class="s-tw wrap" style="text-align:center">
-    <h2 class="title tw-wave" aria-label="Tilli works"><span class="tw-wave__w" aria-hidden="true"><span style="--i:0">T</span><span style="--i:1">i</span><span style="--i:2">l</span><span style="--i:3">l</span><span style="--i:4">i</span></span> <span class="tw-wave__w" aria-hidden="true"><span style="--i:5">w</span><span style="--i:6">o</span><span style="--i:7">r</span><span style="--i:8">k</span><span style="--i:9">s</span></span></h2>
-    <p class="lede">See how Tilli's research-backed approach delivers measurable results. Explore our <a href="research.html">assessment</a>, <a href="research.html">the evidence</a>, and our <a href="research.html">Stanford research</a>.</p>
+  <section class="s-tw wrap" style="text-align:center" data-dots="tenkids" data-dots-anchor=".tw-art" data-dots-fit data-dots-cut>
+    <p class="lede">See how Tilli’s research-backed approach delivers measurable results. Explore our <a href="research.html">assessment</a>, <a href="research.html">the evidence</a>, and our <a href="research.html">Stanford research</a>.</p>
     <p class="tw-sub">Top results</p>
     <ul class="tw-list">
       <li>
         <span class="tw-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
-        <p class="tw-line"><b class="tw-fig">95%</b> of teachers rate Tilli's training highly effective — adoption built in, not bolted on.</p>
+        <p class="tw-line"><b class="tw-fig">95%</b> of teachers rate Tilli’s training highly effective — adoption built in, not bolted on.</p>
       </li>
       <li>
         <span class="tw-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
@@ -266,11 +275,12 @@
         <p class="tw-line">Built at <strong>Stanford</strong>, backed by <strong>UNICEF</strong>, validated with <b class="tw-fig">12,510 children</b>.</p>
       </li>
     </ul>
-    <div class="tw-art">Tilli illustration</div>
+    <h2 class="title tw-wave tw-title" aria-label="Tilli works"><span class="tw-wave__w" aria-hidden="true"><span style="--i:0">T</span><span style="--i:1">i</span><span style="--i:2">l</span><span style="--i:3">l</span><span style="--i:4">i</span></span> <span class="tw-wave__w" aria-hidden="true"><span style="--i:5">w</span><span style="--i:6">o</span><span style="--i:7">r</span><span style="--i:8">k</span><span style="--i:9">s</span></span></h2>
+    <div class="tw-art" aria-hidden="true"><span class="tw-art__ph">Tilli illustration</span></div>
   </section>
 
   <!-- WHAT IT ASKS (HM-14): time, training, cost, timetable -->
-  <section class="wrap" style="text-align:center">
+  <section class="wrap" style="text-align:center" data-dots="weeks" data-dots-dir="v" data-dots-anchor=".yr" data-dots-fit data-dots-cut>
     <div class="eyebrow">What it takes</div>
     <h2 class="title">What Tilli asks of your school.</h2>
     <p class="lede">Fewer surprises at the Parent‑Teacher Meet. Nothing new on the timetable.</p>
@@ -292,12 +302,12 @@
   </section>
 
   <!-- REACH OUT (CHG-27 E2): grouped contact block + Tilli character -->
-  <section class="s-hero wash-cyan wrap">
+  <section class="s-hero wash-cyan wrap" data-dots="off" data-dots-cut>
     <div class="rk-art">
       <img src="../assets/ds/tilli-girl-waving.png" alt="Tilli character waving" loading="lazy">
     </div>
     <div class="eyebrow" style="color:var(--tl-cyan-700)">Get in touch</div>
-    <h2 class="title">Your school could be the <span style="color:var(--tl-cyan-700)">next story</span></h2>
+    <h2 class="title">Your school could be the next story</h2>
     <div class="rk-links">
       <a class="rk-link rk-link--cta" href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school." target="_blank" rel="noopener">
         <span class="rk-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg></span>
@@ -315,6 +325,7 @@
   </section>
 
   </main>
+<script type="module" src="../js/dot-field.js?v=41"></script>
 
   <!-- Footer + floating WhatsApp injected by ../js/m-chrome.js -->
 
