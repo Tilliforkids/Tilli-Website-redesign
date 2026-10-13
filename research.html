@@ -54,17 +54,30 @@
   .rs-hero__copy{ max-width:760px; margin:0 auto; }
   .rs-hero__ttl{ margin:0; font-size:var(--tl-fs-2xl); font-weight:800; line-height:1.05; letter-spacing:var(--tl-tracking-tight); color:var(--tl-ink-900); }
   .rs-hero__st{ margin:14px 0 0; font-size:var(--tl-fs-lg); font-weight:800; line-height:1.3; color:var(--tl-ink-700); }
-  .rs-hero__desc{ margin:14px auto 30px; font-size:var(--tl-fs-base); line-height:1.65; color:var(--tl-ink-600); max-width:520px; }
+  .rs-hero__desc{ margin:14px auto 14px; font-size:var(--tl-fs-base); line-height:1.65; color:var(--tl-ink-600); max-width:520px; }
+  /* privacy reassurance for school leaders, between the description and the CTAs */
+  .rs-hero__safe{ display:flex; align-items:center; justify-content:center; gap:8px; margin:0 auto 30px;
+    font-size:var(--tl-fs-sm); font-weight:700; color:var(--tl-ink-700); }
+  .rs-hero__safe svg{ flex:none; color:var(--tl-green-600); }
   .rs-hero__cta{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px; }
   /* globe (desktop): sphere top sits under the CTAs, centre just below the hero —
      the dark section crops it (data-dots-clip). Height × ay ≈ rw keeps the top in view. */
   .rs-hero__orb{ height:19.4vw; margin-top:24px; }
-  @media (min-width:861px) and (pointer:fine){ .rs-hero{ padding-bottom:0; } }
-  /* classroom photo — closes the page, after Resources */
-  .rs-endphoto{ padding:72px 0 88px; background:var(--tl-white); }
-  .rs-hero__photo{ margin:0 auto; border-radius:var(--tl-radius-xl); overflow:hidden; aspect-ratio:1905/560;
-    box-shadow:var(--tl-shadow-overlay); border:6px solid var(--tl-white); }
-  .rs-hero__photo img{ display:block; width:100%; height:100%; object-fit:cover; object-position:center 35%; }
+  /* desktop: the hero fills the screen under the fixed header (main's 72px top padding).
+     The copy block takes the spare height and splits it 2 : 1 above / below its text
+     (::before / ::after), so the text sits nearer the globe than the header; the globe's
+     stage follows at a fixed gap and lands on the bottom, so the dome still meets the dark section. */
+  @media (min-width:861px) and (pointer:fine){
+    .rs-hero{ padding-bottom:0; min-height:calc(100vh - 72px); display:flex; flex-direction:column; }
+    .rs-hero > .wrap{ flex:1; display:flex; flex-direction:column; width:100%; }
+    .rs-hero__copy{ flex:1 0 auto; display:flex; flex-direction:column; width:100%; }
+    .rs-hero__copy::before{ content:''; flex:2; }
+    .rs-hero__copy::after{ content:''; flex:1; }
+    .rs-hero__orb{ margin-top:clamp(40px, 5vh, 64px); }
+  }
+  /* classroom photo — full-bleed band between the AI use cases and Resources */
+  .rs-photo{ background:var(--tl-white); }
+  .rs-photo img{ display:block; width:100%; aspect-ratio:1905/560; object-fit:cover; object-position:center 35%; }
 
   /* ---- PROBLEM (dark: "data blindness") ---- */
   .rs-dark{ background:var(--tl-ink-900); color:var(--tl-white); }
@@ -80,14 +93,14 @@
   .rs-pcard p{ margin:0; font-size:var(--tl-fs-sm); line-height:1.6; color:var(--tl-line-300); }
   .rs-pcard__ic{ position:absolute; right:22px; top:22px; font-size:var(--tl-fs-xl); filter:grayscale(1); opacity:.55; }
 
-  /* ---- W.E.I.R.D. (dark; colour carried by the letters, chips and lit West) ---- */
+  /* ---- W.E.I.R.D. (dark; colour carried by the chips and lit West) ---- */
   /* One section: W.E.I.R.D. copy fades out, the map turns into the blind-spot map
      (js/dot-field.js, data-dots-map="weird-blind"), then the blind-spot copy fades in
      below it. Desktop pins the stage (sticky) for the scroll; elsewhere it just stacks. */
   .rs-wb{ background:var(--tl-ink-900); padding:96px 0; text-align:center; }
   .rs-wb__b{ margin-top:56px; }
   @media (min-width:861px) and (pointer:fine){
-    .rs-wb{ height:240vh; padding:0; }
+    .rs-wb{ height:280vh; padding:0; }   /* scroll ranges below + data-dots-morph are fractions of (height − 100vh) */
     .rs-wb__pin{ position:sticky; top:0; height:100vh; display:flex; align-items:center; }
     .rs-wb__stack{ position:relative; width:100%; will-change:transform; }
     .rs-wb__map{ height:340px; }
@@ -96,11 +109,6 @@
   }
   .rs-weird__pre{ margin:0; font-size:var(--tl-fs-lg); font-weight:800; color:var(--tl-white); }
   .rs-weird__big{ margin:10px 0; font-size:var(--tl-fs-display); font-weight:800; line-height:1; letter-spacing:.04em; color:var(--tl-white); }
-  .rs-weird__big span:nth-of-type(1){ color:var(--tl-pink-600); }
-  .rs-weird__big span:nth-of-type(2){ color:var(--tl-orange-500); }
-  .rs-weird__big span:nth-of-type(3){ color:var(--tl-green-500); }
-  .rs-weird__big span:nth-of-type(4){ color:var(--tl-cyan-500); }
-  .rs-weird__big span:nth-of-type(5){ color:var(--tl-yellow-500); }
   .rs-weird__post{ margin:0 auto; max-width:620px; font-size:var(--tl-fs-base); font-weight:600; color:var(--tl-line-300); }
   .rs-weird__chips{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:26px 0 0; }
   .rs-chip{ font-size:var(--tl-fs-sm); font-weight:700; color:var(--tl-white); background:transparent;
@@ -160,11 +168,10 @@
   @media(max-width:920px){ .ds-folders{ grid-template-columns:repeat(2,1fr); } }
   @media(max-width:520px){ .ds-folders{ grid-template-columns:1fr; } }
   /* four data files as plain text columns; each file's dot cluster (desktop) sits under its
-     text in .ds-folder__dot (bottom-aligned across columns) and streams into the .ds-hub orb */
+     text in .ds-folder__dot (bottom-aligned across columns) */
   .ds-folder{ display:flex; flex-direction:column; text-align:center; }
   .ds-folder__text{ margin-bottom:18px; }
   .ds-folder__dot{ height:96px; margin-top:auto; }
-  .ds-hub{ height:246px; margin-top:123px; }   /* = hub orb diameter (data-dots-hub-r × 2); gap = stream length */
   .ds-folder__t{ font-weight:800; color:var(--frame); font-size:var(--tl-fs-lg); line-height:1.2; margin:0 0 10px; }
   .ds-folder__d{ font-weight:600; color:var(--tl-ink-900); font-size:var(--tl-fs-sm); line-height:1.35; margin:0; }
   .ds-folder--pink{ --frame:var(--tl-pink-600); }
@@ -181,20 +188,41 @@
     background:var(--c); color:var(--tl-ink-900); font-weight:800; font-size:var(--tl-fs-base); }
   .rs-ai__card h3{ margin:16px 0 8px; font-size:var(--tl-fs-lg); font-weight:800; color:var(--ct); }
   .rs-ai__card p{ margin:0; font-size:var(--tl-fs-sm); line-height:1.6; color:var(--tl-ink-600); }
-  /* AI use cases (desktop): pinned; one card at a time in the middle of a dot ring
-     (js/dot-field.js "cardring"); scroll steps through the cards. Elsewhere: the 2×2 grid. */
-  .rs-aiw{ padding-top:24px; }
+  /* AI use cases (desktop): a pipe snakes edge to edge — in from the left, a long horizontal run
+     per card, rounded U-turns at the screen edges, out on the right. Each card sits in the band
+     under its run (cards alternate left / right, always away from that band's U-turn) with its
+     checkpoint on the run right above it. The script below draws the tube (.rs-pipe__svg, under
+     the dots); js/dot-field.js "pipe" fills it as far as it is on screen.
+     Elsewhere: the 2×2 grid. */
+  .rs-aiw{ padding-top:24px; --pipe-w:120px; --pipe-wall:3px; --pipe-row:65vh; --pipe-edge:16px; --pipe-card-gap:40px; }
+  .rs-pipe__svg, .rs-pipe__cp, .rs-pipe__mouth{ display:none; }
   @media (min-width:861px) and (pointer:fine){
-    .rs-aiw{ --ring:min(560px, 62vh); height:360vh; padding:0; }
-    .rs-aiw__pin{ position:sticky; top:0; height:100vh; display:flex; flex-direction:column; justify-content:center; }
-    .rs-aiw .rs-head{ margin-bottom:8px; }
-    .rs-aiw__stage{ position:relative; height:var(--ring); display:flex; align-items:center; justify-content:center; }
-    .rs-aiw__ring{ position:absolute; top:0; left:50%; width:var(--ring); height:var(--ring); transform:translateX(-50%); }
-    .rs-aiw .rs-ai{ grid-template-columns:1fr; gap:0; width:min(400px, calc(var(--ring) * .7)); }
-    .rs-aiw .rs-ai__card{ grid-area:1 / 1; opacity:0; transform:translateY(28px); pointer-events:none;
-      transition:opacity .45s ease, transform .45s cubic-bezier(.2,.7,.2,1); }
-    .rs-aiw .rs-ai__card.is-past{ transform:translateY(-28px); }
-    .rs-aiw .rs-ai__card.is-active{ opacity:1; transform:none; pointer-events:auto; }
+    .rs-aiw{ position:relative; }
+    .rs-pipe{ position:relative; padding:64px 0 56px; }
+    /* one band per card: rows are --pipe-row tall, a run along the top of each and one under the last */
+    .rs-pipe .rs-ai{ grid-template-columns:repeat(2,minmax(0,1fr)); grid-auto-rows:var(--pipe-row); gap:0 48px; }
+    /* card hangs just under its run: --pipe-card-gap below the tube's bottom wall */
+    .rs-pipe .rs-ai__card{ align-self:start; justify-self:center; width:100%; max-width:460px;
+      margin-top:calc(var(--pipe-w) / 2 + var(--pipe-wall) + var(--pipe-card-gap)); }
+    .rs-pipe .rs-ai__card:nth-child(odd){ grid-column:1; }
+    .rs-pipe .rs-ai__card:nth-child(even){ grid-column:2; }
+    .rs-pipe .rs-ai__card:nth-child(1){ grid-row:1; } .rs-pipe .rs-ai__card:nth-child(2){ grid-row:2; }
+    .rs-pipe .rs-ai__card:nth-child(3){ grid-row:3; } .rs-pipe .rs-ai__card:nth-child(4){ grid-row:4; }
+    /* direct child of the section with z-index 0 so it sits UNDER the dot canvas (z 1) */
+    .rs-pipe__svg{ display:block; position:absolute; inset:0; width:100%; height:100%; z-index:0 !important; overflow:visible; pointer-events:none; }
+    .rs-pipe__wall{ fill:none; stroke:var(--tl-line-300); stroke-width:calc(var(--pipe-w) + var(--pipe-wall) * 2); }
+    .rs-pipe__core{ fill:none; stroke:var(--tl-surface-100); stroke-width:var(--pipe-w); }
+    .rs-pipe__link{ fill:none; stroke-width:2; stroke-dasharray:4 6; opacity:.35; transition:opacity .4s ease; }
+    .rs-pipe__link.is-reached{ opacity:.9; }
+    .rs-pipe.is-live .rs-pipe__mouth{ display:block; position:absolute; font-size:var(--tl-fs-xs); font-weight:800;
+      letter-spacing:var(--tl-tracking-kicker); text-transform:uppercase; color:var(--tl-ink-500); white-space:nowrap; }
+    .rs-pipe.is-live .rs-pipe__cp{ display:block; position:absolute; width:calc(var(--pipe-w) + 16px); height:calc(var(--pipe-w) + 16px);
+      margin:calc((var(--pipe-w) + 16px) / -2) 0 0 calc((var(--pipe-w) + 16px) / -2); border-radius:50%;
+      border:3px solid var(--c); opacity:.4; pointer-events:none; transition:opacity .4s ease, box-shadow .4s ease, transform .4s ease; }
+    .rs-pipe.is-live .rs-pipe__cp.is-reached{ opacity:1; }
+    .rs-pipe.is-live .rs-pipe__cp.is-current{ transform:scale(1.15); box-shadow:0 0 0 6px color-mix(in srgb, var(--c) 22%, transparent); }
+    .rs-pipe.is-live .rs-ai__card{ opacity:.5; transition:opacity .45s ease; }
+    .rs-pipe.is-live .rs-ai__card.is-reached{ opacity:1; }
   }
 
   /* ---- RESOURCES ---- */
@@ -227,6 +255,7 @@
         <h1 class="rs-hero__ttl">Tilli <span class="c-cyan">Measures!</span></h1>
         <p class="rs-hero__st">The 360-degree Foundational Skills Dataset</p>
         <p class="rs-hero__desc">Unlocking longitudinal, multi-informant insights into cognitive and social-emotional development for non-WEIRD populations.</p>
+        <p class="rs-hero__safe"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 1a3.5 3.5 0 0 0-3.5 3.5V6H4a1.5 1.5 0 0 0-1.5 1.5v6A1.5 1.5 0 0 0 4 15h8a1.5 1.5 0 0 0 1.5-1.5v-6A1.5 1.5 0 0 0 12 6h-.5V4.5A3.5 3.5 0 0 0 8 1Zm2 5H6V4.5a2 2 0 1 1 4 0V6Z"/></svg>Every record is de-identified: children appear only as a coded ID, never by name.</p>
         <div class="rs-hero__cta">
           <a class="tl-btn tl-btn--primary" href="https://docs.google.com/document/d/1Z4WzUvg_SncT_7UvYd1HRvN7paDR-px8mRZ8rLkK-rw/edit?usp=drive_link" target="_blank" rel="noopener">Explore The Data Dictionary</a>
           <a class="tl-btn tl-btn--green" href="https://drive.google.com/drive/folders/1lnV730XYbq1U8BbJ4031M_BSKqjxFaP2?usp=drive_link" target="_blank" rel="noopener">Access Data Repository</a>
@@ -258,7 +287,7 @@
   </section>
 
   <!-- ===== W.E.I.R.D. → "data blind spot" (one pinned section; the map morphs) ===== -->
-  <section class="rs-wb" data-dots="map" data-dots-map="weird-blind" data-dots-morph="0.32,0.68" data-dots-cut data-dots-anchor=".dots-stage" data-dots-fit>
+  <section class="rs-wb" data-dots="map" data-dots-map="weird-blind" data-dots-morph="0.25,0.53" data-dots-cut data-dots-anchor=".dots-stage" data-dots-fit>
     <div class="rs-wb__pin">
       <div class="wrap rs-wb__stack">
         <div class="rs-wb__a">
@@ -373,7 +402,7 @@
   </section>
 
   <!-- ===== DATA STRUCTURE ===== -->
-  <section class="rs-sec rs-data" data-dots="star" data-dots-cut data-dots-anchor=".ds-folder__dot" data-dots-hub=".ds-hub" data-dots-hub-n="429" data-dots-hub-r="123" data-dots-hub-size="1.4" data-dots-file-n="217" data-dots-file-r="50" data-dots-file-size="0.9" data-dots-packets="75" data-dots-flow="0.13" data-dots-ay="0.5" data-dots-r="0.05" data-dots-colors="pink,green,cyan,orange">
+  <section class="rs-sec rs-data" data-dots="star" data-dots-cut data-dots-anchor=".ds-folder__dot" data-dots-hub-n="0" data-dots-file-n="217" data-dots-file-r="50" data-dots-file-size="0.9" data-dots-packets="0" data-dots-ay="0.5" data-dots-r="0.05" data-dots-colors="pink,green,cyan,orange">
     <div class="wrap">
       <div class="rs-head">
         <p class="rs-kicker">What we measure</p>
@@ -398,31 +427,34 @@
           <div class="dots-stage ds-folder__dot" aria-hidden="true"></div>
         </div>
       </div>
-      <!-- dots: the subject_id hub — every file streams its data down into it -->
-      <div class="dots-stage ds-hub" aria-hidden="true"></div>
     </div>
   </section>
 
   <!-- ===== AI USE CASES ===== -->
-  <section class="rs-sec rs-aiw" data-dots="cardring" data-dots-colors="green,cyan,yellow,pink" data-dots-cut data-dots-cursor-end data-dots-anchor=".rs-aiw__ring" data-dots-fit>
-    <div class="rs-aiw__pin">
-      <div class="wrap">
-        <div class="rs-head">
-          <p class="rs-kicker">From research to action</p>
-          <h2 class="rs-h2">AI Use Cases: <span class="c-pink">From Research to Action</span></h2>
-        </div>
-        <div class="rs-aiw__stage">
-          <!-- dots: a ring around the card, recoloured to each card's colour as you scroll -->
-          <div class="dots-stage rs-aiw__ring" aria-hidden="true"></div>
-          <div class="rs-ai">
-            <div class="rs-ai__card" style="--c: var(--tl-green-500); --ct: var(--tl-green-600);"><span class="rs-ai__n">1</span><h3>Predictive Intervention</h3><p>Identify Grade 3 cognitive signatures that serve as early warning signs for academic struggle.</p></div>
-            <div class="rs-ai__card" style="--c: var(--tl-cyan-500); --ct: var(--tl-cyan-700);"><span class="rs-ai__n">2</span><h3>Context-Aware Profiling</h3><p>Use AI to weigh conflicting reports from parents vs. teachers, turning "discrepancies" into signals for better child support.</p></div>
-            <div class="rs-ai__card" style="--c: var(--tl-yellow-500); --ct: var(--tl-yellow-700);"><span class="rs-ai__n">3</span><h3>Synthetic Learner Profiles</h3><p>Train Generative AI (LLMs/LRMs) to simulate diverse, realistic student profiles for teacher training and curriculum stress-testing.</p></div>
-            <div class="rs-ai__card" style="--c: var(--tl-pink-400); --ct: var(--tl-pink-600);"><span class="rs-ai__n">4</span><h3>Algorithmic Fairness Audits</h3><p>Use our localized dataset to audit and improve the regional robustness of global SEL models.</p></div>
-          </div>
+  <section class="rs-sec rs-aiw" data-dots="pipe" data-dots-cut data-dots-cursor-end data-dots-anchor=".rs-pipe__core">
+    <!-- the tube (drawn by the script below); dots flow inside it -->
+    <svg class="rs-pipe__svg" aria-hidden="true"><path class="rs-pipe__wall"/><path class="rs-pipe__core"/></svg>
+    <div class="wrap">
+      <div class="rs-head">
+        <p class="rs-kicker">From research to action</p>
+        <h2 class="rs-h2">AI Use Cases: <span class="c-pink">From Research to Action</span></h2>
+      </div>
+      <div class="rs-pipe">
+        <span class="rs-pipe__mouth rs-pipe__mouth--start" aria-hidden="true">Research</span>
+        <span class="rs-pipe__mouth rs-pipe__mouth--end" aria-hidden="true">Action</span>
+        <div class="rs-ai">
+          <div class="rs-ai__card" style="--c: var(--tl-green-500); --ct: var(--tl-green-600);"><span class="rs-ai__n">1</span><h3>Predictive Intervention</h3><p>Identify Grade 3 cognitive signatures that serve as early warning signs for academic struggle.</p></div>
+          <div class="rs-ai__card" style="--c: var(--tl-cyan-500); --ct: var(--tl-cyan-700);"><span class="rs-ai__n">2</span><h3>Context-Aware Profiling</h3><p>Use AI to weigh conflicting reports from parents vs. teachers, turning "discrepancies" into signals for better child support.</p></div>
+          <div class="rs-ai__card" style="--c: var(--tl-yellow-500); --ct: var(--tl-yellow-700);"><span class="rs-ai__n">3</span><h3>Synthetic Learner Profiles</h3><p>Train Generative AI (LLMs/LRMs) to simulate diverse, realistic student profiles for teacher training and curriculum stress-testing.</p></div>
+          <div class="rs-ai__card" style="--c: var(--tl-pink-400); --ct: var(--tl-pink-600);"><span class="rs-ai__n">4</span><h3>Algorithmic Fairness Audits</h3><p>Use our localized dataset to audit and improve the regional robustness of global SEL models.</p></div>
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- ===== CLASSROOM PHOTO ===== -->
+  <section class="rs-photo">
+    <img src="assets/dataset/hero-children.jpg" alt="Children in a Tilli partner classroom">
   </section>
 
   <!-- ===== RESOURCES ===== -->
@@ -455,13 +487,6 @@
     </div>
   </section>
 
-  <!-- ===== CLOSING PHOTO ===== -->
-  <section class="rs-endphoto">
-    <div class="wrap">
-        <div class="rs-hero__photo"><img src="assets/dataset/hero-children.jpg" alt="Children in a Tilli partner classroom"></div>
-    </div>
-  </section>
-
 </main>
 
 <script>
@@ -485,8 +510,8 @@
     var sec = document.querySelector('.rs-wb'); if (!sec) return;
     var a = sec.querySelector('.rs-wb__a'), b = sec.querySelector('.rs-wb__b'), stack = sec.querySelector('.rs-wb__stack');
     var mq = window.matchMedia('(min-width: 861px) and (pointer: fine)');
-    var MORPH = (sec.getAttribute('data-dots-morph') || '0.32,0.68').split(',').map(parseFloat);
-    var A_OUT = [0.12, 0.32], B_IN = [0.68, 0.88];   // scroll-progress ranges for the copy fades
+    var MORPH = (sec.getAttribute('data-dots-morph') || '0.25,0.53').split(',').map(parseFloat);
+    var A_OUT = [0.09, 0.25], B_IN = [0.53, 0.68];   // scroll-progress ranges for the copy fades; fully in by 0.68, then holds
     var RISE = 24;                                   // px the copy drifts while fading
     function ease(p, r){ var v = Math.min(1, Math.max(0, (p - r[0]) / (r[1] - r[0]))); return v * v * (3 - 2 * v); }
     var raf = 0;
@@ -510,30 +535,88 @@
   })();
 </script>
 <script>
-  // AI use cases: which card shows in the ring = scroll progress through the pinned .rs-aiw
-  // (desktop gate only; the ring's colour sweep runs in js/dot-field.js off the same progress)
+  // AI use cases (desktop gate only): draws the pipe edge to edge — in off the left edge, one
+  // horizontal run along the top of each card's band, U-turns (semicircles, a proper C: radius =
+  // half the band) at the screen edges, and out off the right edge under the last band. Checkpoint k sits
+  // on run k right above card k; on scroll, cards whose top has entered the screen (and their
+  // checkpoints / links) are marked reached. The dots (js/dot-field.js "pipe") follow the screen.
   (function(){
     var sec = document.querySelector('.rs-aiw'); if (!sec) return;
+    var box = sec.querySelector('.rs-pipe'), svg = sec.querySelector('.rs-pipe__svg'), grid = sec.querySelector('.rs-ai');
+    var wall = svg.querySelector('.rs-pipe__wall'), core = svg.querySelector('.rs-pipe__core');
+    var mStart = sec.querySelector('.rs-pipe__mouth--start'), mEnd = sec.querySelector('.rs-pipe__mouth--end');
     var cards = Array.prototype.slice.call(sec.querySelectorAll('.rs-ai__card'));
-    var mq = window.matchMedia('(min-width: 861px) and (pointer: fine)'), raf = 0, cur = -1;
+    var mq = window.matchMedia('(min-width: 861px) and (pointer: fine)');
+    var NS = 'http://www.w3.org/2000/svg', LABEL = 24;   // px: Research / Action labels in from the screen edge
+    var links = cards.map(function(c){
+      var l = document.createElementNS(NS, 'path'); l.setAttribute('class', 'rs-pipe__link');
+      l.style.stroke = c.style.getPropertyValue('--c'); svg.insertBefore(l, wall); return l;
+    });
+    var marks = cards.map(function(c){
+      var m = document.createElement('span'); m.className = 'rs-pipe__cp'; m.setAttribute('aria-hidden', 'true');
+      m.style.setProperty('--c', c.style.getPropertyValue('--c')); box.appendChild(m); return m;
+    });
+    var cps = [], stage = -1, raf = 0;
+    function build(){
+      if (!mq.matches){
+        box.classList.remove('is-live'); [wall, core].concat(links).forEach(function(p){ p.removeAttribute('d'); });
+        cps = []; stage = -1;
+        cards.concat(marks, links).forEach(function(el){ el.classList.remove('is-reached', 'is-current'); });
+        return;
+      }
+      box.classList.add('is-live');
+      var s = svg.getBoundingClientRect(), b = box.getBoundingClientRect(), g = grid.getBoundingClientRect(), cs = getComputedStyle(sec);
+      var px = function(n){ return parseFloat(cs.getPropertyValue(n)) || 0; };
+      var pw = px('--pipe-w'), half = pw / 2 + px('--pipe-wall'), W = s.width;
+      var rowH = g.height / cards.length, r = rowH / 2;
+      var xL = px('--pipe-edge') + half + r, xR = W - xL;              // where the runs meet the U-turns
+      var ys = cards.map(function(c, i){ return g.top - s.top + i * rowH; }).concat([g.bottom - s.top]);
+      var d = 'M' + (-pw * 2) + ' ' + ys[0];
+      cps = cards.map(function(c, i){
+        var cr = c.getBoundingClientRect(), y = ys[i], y2 = ys[i + 1], right = i % 2 === 0;   // run i heads right?
+        // checkpoint above the card's centre, kept on the straight run (never on a bend)
+        var p = { x: Math.min(xR - half, Math.max(xL + half, cr.left + cr.width / 2 - s.left)), y: y, cardTop: cr.top - s.top };
+        // run i, then the U-turn down to the next run
+        var xe = right ? xR : xL, sw = right ? 1 : 0;
+        d += ' L' + xe + ' ' + y + ' A' + r + ' ' + r + ' 0 0 ' + sw + ' ' + xe + ' ' + y2;
+        return p;
+      });
+      var endY = ys[cards.length];
+      d += ' L' + (cards.length % 2 ? -pw * 2 : W + pw * 2) + ' ' + endY;
+      wall.setAttribute('d', d); core.setAttribute('d', d);
+      cps.forEach(function(p, i){
+        links[i].setAttribute('d', 'M' + p.x + ' ' + (p.y + half) + ' V' + p.cardTop);
+        marks[i].style.left = (p.x + s.left - b.left) + 'px'; marks[i].style.top = (p.y + s.top - b.top) + 'px';
+      });
+      // labels: Research above the way in (left), Action under the way out
+      mStart.style.left = (LABEL + s.left - b.left) + 'px'; mStart.style.top = (ys[0] - half - 26 + s.top - b.top) + 'px';
+      var outLeft = cards.length % 2 === 1;
+      mEnd.style.left = outLeft ? (LABEL + s.left - b.left) + 'px' : '';
+      mEnd.style.right = outLeft ? '' : (LABEL - (s.right - b.right)) + 'px';
+      mEnd.style.top = (endY + half + 10 + s.top - b.top) + 'px';
+      stage = -1; update();
+    }
     function update(){
       raf = 0;
-      if (!mq.matches){ cards.forEach(function(c){ c.classList.remove('is-active', 'is-past'); }); cur = -1; return; }
-      var r = sec.getBoundingClientRect(), span = r.height - window.innerHeight;
-      var p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
-      var idx = Math.min(cards.length - 1, Math.floor(p * cards.length));
-      if (idx === cur) return;
-      cur = idx;
-      cards.forEach(function(c, i){ c.classList.toggle('is-active', i === idx); c.classList.toggle('is-past', i < idx); });
+      if (!cps.length) return;
+      var top = svg.getBoundingClientRect().top, vh = window.innerHeight;
+      var k = cps.filter(function(p){ return top + p.cardTop <= vh; }).length;
+      if (k === stage) return;
+      stage = k;
+      [cards, marks, links].forEach(function(list){
+        list.forEach(function(el, i){ el.classList.toggle('is-reached', i < k); el.classList.toggle('is-current', i === k - 1); });
+      });
     }
     function kick(){ if (!raf) raf = requestAnimationFrame(update); }
     window.addEventListener('scroll', kick, { passive: true });
-    window.addEventListener('resize', function(){ cur = -1; kick(); });
-    update();
+    if (window.ResizeObserver) new ResizeObserver(build).observe(box);
+    window.addEventListener('resize', build);
+    window.addEventListener('load', build);
+    build();
   })();
 </script>
 <script src="js/site-config.js?v=2"></script>
 <script src="js/site-chrome.js?v=5"></script>
-<script type="module" src="js/dot-field.js?v=22"></script>
+<script type="module" src="js/dot-field.js?v=36"></script>
 </body>
 </html>

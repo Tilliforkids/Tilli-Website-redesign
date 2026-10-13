@@ -27,8 +27,10 @@
                rings        ecological rings around the child
                star         4 data files streaming packets into one subject_id node
                neural       a small neural net, activation pulsing through the layers
-               cardring     a dot ring framing one card at a time; as the tall (pinned)
-                            section scrolls it sweeps to the next data-dots-colors colour
+               pipe         a tube winding START → END (SVG drawn by the page, data-dots-anchor
+                            = its centre-line <path>); dots fill it as far as it is on screen —
+                            up to where it leaves the bottom edge — and further as you scroll;
+                            once END is on screen they pour out of it
                release      open data streaming outward from one source
 
    Placement (all optional):
@@ -42,7 +44,7 @@
      data-dots-hub-r="38"       star: hub orb radius, px (default min(4.5vh, 38))
      data-dots-hub-off="x,y"    star: nudge the hub orb, px
      data-dots-flow="0.3"       star: packet trips per second
-     data-dots-hub-n / -file-n  star: dots in the hub orb / in EACH file orb
+     data-dots-hub-n / -file-n  star: dots in the hub orb (0 = none) / in EACH file orb
      data-dots-packets          star: packet dots per file (in flight file → hub)
      data-dots-file-r="45"      star: file orb radius, px (default data-dots-r × vh)
      data-dots-hub-size / -file-size   star: dot size multiplier (default 0.9)
@@ -105,9 +107,20 @@ async function init() {
     flow: 0.07,        // pipeline / release travel speed (cycles per second)
     starFlow: 0.3,     // data files → hub: packet trips per second (data-dots-flow overrides)
     starPackets: 0.22, // share of each file's dots travelling as packets
-    ringDots: 360,     // Research AI use cases: dots in the card ring
-    ringSpin: 0.12,    // card ring rotation, radians per second
-    ringSweep: 0.18,   // share of each card's scroll over which the ring changes colour
+    pipeDots: 1500,    // Research AI use cases: max dots in the pipe
+    pipeDensity: 0.54, // pipe fill, dots per px of pipe length (capped so a screenful of pipe fits pipeDots)
+    pipeSpeed: 270,    // pipe flow, px per second along the pipe
+    pipeDotSize: 18 / 7, // pipe dot size, × dotSize (18px on Research)
+    pipeFade: 28,      // px over which dots fade in at START / out at the screen's bottom edge
+    pipeSpill: 70,     // px dots travel past END before vanishing
+    pipeDrain: 3,      // × pipeSpeed when dots run back after scrolling up
+    pipeFF: 2,         // fast-forward: max × pipeSpeed while the stream catches up after a fast scroll
+    pipeFFGap: 900,    // px the stream's head can trail the screen's bottom edge before fast-forward is at full
+    pipeTwist: 0.004,  // pipe dots spiral round the tube: radians per px travelled
+    pipePersp: 0.25,   // perspective: near-side dots up to (1 + this) × size, far side (1 − this) ×
+    pipeBack: 0.45,    // alpha of dots on the far side of the tube
+    pipeFocus: 0.55,   // depth in focus: −1 far wall … 0 tube axis … 1 near wall
+    pipeDof: 0.4,      // depth of field: blur per unit of depth away from the focus (0 = all sharp)
     weekRate: 5,       // weeks timeline: weeks lit per second
     qPeriod: 6.4,      // FAQ ? → ✓ loop length, seconds
     burstCount: 36,    // FAQ flip burst: particles per flip
@@ -190,42 +203,44 @@ async function init() {
     transparent: true, depthTest: false, depthWrite: false,
     uniforms: { uDpr: { value: 1 } },
     vertexShader: `
-      attribute vec3 aColor; attribute float aAlpha; attribute float aSize;
-      uniform float uDpr; varying vec3 vC; varying float vA;
+      attribute vec3 aColor; attribute float aAlpha; attribute float aSize; attribute float aBlur;
+      uniform float uDpr; varying vec3 vC; varying float vA; varying float vB;
       void main() {
-        vC = aColor; vA = aAlpha;
+        vC = aColor; vA = aAlpha; vB = aBlur;
         gl_PointSize = aSize * uDpr;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }`,
     fragmentShader: `
-      varying vec3 vC; varying float vA;
+      varying vec3 vC; varying float vA; varying float vB;
       void main() {
         float d = length(gl_PointCoord - 0.5);
         if (d > 0.5) discard;
-        gl_FragColor = vec4(vC, vA * smoothstep(0.5, 0.40, d));
+        // aBlur widens the soft rim from a crisp edge to a full falloff (depth of field)
+        gl_FragColor = vec4(vC, vA * smoothstep(0.5, mix(0.40, 0.0, vB), d));
       }`,
   });
   function makePoints(n, order) {
     const g = new THREE.BufferGeometry();
-    const buf = { P: new Float32Array(n * 3), C: new Float32Array(n * 3), A: new Float32Array(n), S: new Float32Array(n) };
+    const buf = { P: new Float32Array(n * 3), C: new Float32Array(n * 3), A: new Float32Array(n), S: new Float32Array(n), B: new Float32Array(n) };
     g.setAttribute('position', new THREE.BufferAttribute(buf.P, 3));
     g.setAttribute('aColor', new THREE.BufferAttribute(buf.C, 3));
     g.setAttribute('aAlpha', new THREE.BufferAttribute(buf.A, 1));
     g.setAttribute('aSize', new THREE.BufferAttribute(buf.S, 1));
+    g.setAttribute('aBlur', new THREE.BufferAttribute(buf.B, 1));
     const m = pointsMat();
     const pts = new THREE.Points(g, m);
     pts.frustumCulled = false;
     pts.renderOrder = order;
     scene.add(pts);
     buf.geo = g; buf.mat = m;
-    buf.dirty = () => ['position', 'aColor', 'aAlpha', 'aSize'].forEach((k) => { g.attributes[k].needsUpdate = true; });
+    buf.dirty = () => ['position', 'aColor', 'aAlpha', 'aSize', 'aBlur'].forEach((k) => { g.attributes[k].needsUpdate = true; });
     return buf;
   }
   const field = makePoints(N, 2);
   // formations across a data-dots-cut edge (one above, one below the active section)
   const cutLayers = [makePoints(N, 2), makePoints(N, 2)];
   const cutOn = [false, false];
-  const { P, C: COL, A: ALPHA, S: SIZE } = field;
+  const { P, C: COL, A: ALPHA, S: SIZE, B: BLUR } = field;
 
   /* ── per-dot constants ─────────────────────────────────────────────────── */
   const R0 = rng(11);
@@ -370,7 +385,7 @@ async function init() {
         hubR: parseFloat(d.dotsHubR) || 0,
         hubOff: nums(d.dotsHubOff, 2, [0, 0]),
         flow: d.dotsFlow !== undefined ? parseFloat(d.dotsFlow) : cfg.starFlow,
-        hubN: parseInt(d.dotsHubN, 10) || 0,
+        hubN: d.dotsHubN !== undefined ? parseInt(d.dotsHubN, 10) || 0 : -1,   // 0 = no hub orb
         fileN: parseInt(d.dotsFileN, 10) || 0,
         packets: d.dotsPackets !== undefined ? parseInt(d.dotsPackets, 10) : -1,
         fileR: parseFloat(d.dotsFileR) || 0,
@@ -385,7 +400,7 @@ async function init() {
         avoidOn: !!REGION[d.dots] || !!d.dotsAvoid,
         lines: null, pairs: null,
         x: new Float32Array(N), y: new Float32Array(N),
-        c: new Float32Array(N * 3), a: new Float32Array(N), s: new Float32Array(N),
+        c: new Float32Array(N * 3), a: new Float32Array(N), s: new Float32Array(N), b: new Float32Array(N),
       };
       (BUILD[f.type] || (() => {}))(f);
       return f;
@@ -499,18 +514,99 @@ async function init() {
   // star dot budget: defaults keep the original split (hub 16%, files share the rest, cfg.starPackets
   // of each file in flight); explicit counts are clamped so the total never exceeds N
   function starCounts(f) {
-    const hubN = Math.min(N, f.hubN || Math.round(N * 0.16));
+    const hubN = Math.min(N, f.hubN >= 0 ? f.hubN : Math.round(N * 0.16));
     const perFile = Math.floor((N - hubN) / 4);
     const fileN = Math.max(1, Math.min(perFile, f.fileN || Math.floor(perFile * (1 - cfg.starPackets))));
     const packets = Math.max(0, Math.min(perFile - fileN, f.packets >= 0 ? f.packets : perFile - fileN));
     return { hubN, fileN, packets, used: hubN + 4 * (fileN + packets) };
   }
 
+  /* ── pipe (Research AI use cases) ──────────────────────────────────────── */
+  // centre-line samples every `step` px, rebuilt whenever the page redraws the path
+  function pipeLUT(f, path, svg) {
+    const d = path.getAttribute('d') || '';
+    if (!d) return null;
+    if (f.lut && f.lut.d === d) return f.lut;
+    const total = path.getTotalLength(), step = 4, m = Math.max(2, Math.ceil(total / step) + 1);
+    const x = new Float32Array(m), y = new Float32Array(m);
+    for (let k = 0; k < m; k++) { const q = path.getPointAtLength(Math.min(total, k * step)); x[k] = q.x; y[k] = q.y; }
+    const pw = parseFloat(getComputedStyle(svg).getPropertyValue('--pipe-w')) || 28;
+    // the most pipe one screen can show (sets the density the dot budget can afford)
+    let maxVis = 0;
+    for (let i = 0, j = 0, win = H + pw * 2; i < m; i++) {
+      while (j < m - 1 && y[j + 1] <= y[i] + win) j++;
+      maxVis = Math.max(maxVis, (j - i) * step);
+    }
+    f.lut = { d, total, step, m, x, y, pw, maxVis: maxVis + cfg.pipeSpill };
+    return f.lut;
+  }
+  // how far along the pipe is on screen: the pipe only ever runs down (flat runs, semicircle
+  // turns), so it is the last sample above the viewport's bottom edge
+  function pipeVisible(lut, bottom) {
+    if (lut.y[0] > bottom) return 0;
+    let lo = 0, hi = lut.m - 1;
+    if (lut.y[hi] <= bottom) return Infinity;
+    while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (lut.y[mid] <= bottom) lo = mid; else hi = mid; }
+    return lo * lut.step;
+  }
+  // where the pipe comes in at the viewport's top edge: the first sample at or below it
+  function pipeTail(lut, top) {
+    if (lut.y[0] >= top) return 0;
+    let lo = 0, hi = lut.m - 1;
+    if (lut.y[hi] < top) return lut.total;
+    while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (lut.y[mid] < top) lo = mid; else hi = mid; }
+    return hi * lut.step;
+  }
+  // each dot keeps its distance along the pipe (-1 = parked). Only the on-screen stretch
+  // [tail, front] holds dots: they stream in at the tail (START, or the screen's top edge once
+  // START has scrolled away), run to the front and are recycled there or when the tail passes
+  // them. A front that moves back drains the dots beyond it; a tail that moves back (scrolling
+  // up) refills the stretch it uncovers in place, since that part was full all along; a stream
+  // head trailing far behind the front (fast scroll down) fast-forwards everything.
+  function pipeStep(f, n, tail, front, density) {
+    const now = performance.now(), dt = Math.min(0.05, (now - (f.pipeLast || now)) / 1000);
+    f.pipeLast = now;
+    if (!f.ps) { f.ps = new Float32Array(N).fill(-1); f.spawn = 0; f.next = 0; f.ff = 1; f.tail = tail; }
+    const ps = f.ps;
+    if (reduced) {                       // no flow: an even fill of the on-screen stretch
+      const len = Math.max(0, front - tail), k = Math.min(n, len * density);
+      for (let i = 0; i < n; i++) ps[i] = i < k ? tail + (i + 0.5) / k * len : -1;
+      return;
+    }
+    if (tail < f.tail - 1) {
+      const lo = tail, hi = Math.min(f.tail, front);
+      for (let i = 0, want = Math.round((hi - lo) * density); i < n && want > 0; i++) {
+        if (ps[i] < 0) { ps[i] = lo + Math.random() * (hi - lo); want--; }
+      }
+    }
+    f.tail = tail;
+    let head = -1;
+    for (let i = 0; i < n; i++) if (ps[i] > head) head = ps[i];
+    const gap = front - Math.max(head, tail);
+    const ff = 1 + (cfg.pipeFF - 1) * smooth(clamp((gap - cfg.pipeFFGap * 0.15) / cfg.pipeFFGap));
+    f.ff += (ff - f.ff) * Math.min(1, dt * 6);
+    const v = cfg.pipeSpeed * f.ff;
+    for (let i = 0; i < n; i++) {
+      let s = ps[i];
+      if (s < 0) continue;
+      const sp = v * (0.75 + 0.5 * RND[i * 2]);
+      if (s > front) s = Math.max(front - 0.01, s - sp * cfg.pipeDrain * dt);
+      else s += sp * dt;
+      ps[i] = s >= front || s < tail ? -1 : s;
+    }
+    if (front <= tail) { f.spawn = 0; return; }
+    f.spawn = Math.min(Math.max(4, n * 0.05) * f.ff, f.spawn + dt * density * v);
+    for (let k = 0; f.spawn >= 1 && k < n; k++) {
+      const i = f.next; f.next = (f.next + 1) % n;
+      if (ps[i] < 0) { ps[i] = tail + RND[i * 2 + 1] * 4; f.spawn -= 1; }
+    }
+  }
+
   /* ── drawing ───────────────────────────────────────────────────────────── */
-  let X, Y, Cc, Aa, Ss;               // the formation being written
+  let X, Y, Cc, Aa, Ss, Bb;           // the formation being written
   const col = (i, rgb) => { Cc[i * 3] = rgb[0]; Cc[i * 3 + 1] = rgb[1]; Cc[i * 3 + 2] = rgb[2]; };
-  const dot = (i, x, y, rgb, a = 1, s = 1) => { X[i] = x; Y[i] = y; col(i, rgb); Aa[i] = a; Ss[i] = cfg.dotSize * s; };
-  const hide = (i, x, y) => { X[i] = x; Y[i] = y; Aa[i] = 0; Ss[i] = cfg.dotSize * 0.5; col(i, GREY); };
+  const dot = (i, x, y, rgb, a = 1, s = 1, b = 0) => { X[i] = x; Y[i] = y; col(i, rgb); Aa[i] = a; Ss[i] = cfg.dotSize * s; Bb[i] = b; };
+  const hide = (i, x, y) => { X[i] = x; Y[i] = y; Aa[i] = 0; Ss[i] = cfg.dotSize * 0.5; Bb[i] = 0; col(i, GREY); };
   // a point on a spinning, tilted ball (src = BALL filled / SHELL surface). si = which ball
   // point to use: the ball is a Fibonacci spiral pole→pole, so a run of consecutive indices
   // is only a cap — spread si over 0…N for an orb built from a contiguous block of dots
@@ -827,21 +923,37 @@ async function init() {
         orbDot(i, fx, fy, fileR, g * 1.7, fileRGB[g], f.fileSize, BALL, Math.floor((rank + 0.5) * N / st.fileN));
       }
     },
-    /* RESEARCH ─ AI use cases: a three-band dot ring around the card, one colour per card */
-    cardring(f, p, t, rect) {
-      const C = f.colors, last = C.length - 1, ringN = Math.min(N, cfg.ringDots), per = Math.ceil(ringN / 3);
-      const span = rect.height - H, seg = (span > 0 ? clamp(-rect.top / span) : 0) * C.length;   // 0 … cards
-      const R = Math.min(p.rx, p.ry) * 0.94, TAU = Math.PI * 2;
+    /* RESEARCH ─ AI use cases: dots fill the on-screen stretch of a pipe, flowing START → END */
+    pipe(f, p, t) {
+      const path = f.anchor, svg = path && path.ownerSVGElement, lut = svg && pipeLUT(f, path, svg);
+      if (!lut) { for (let i = 0; i < N; i++) hide(i, p.cx, p.cy); return; }
+      const n = Math.min(N, cfg.pipeDots), sb = svg.getBoundingClientRect();
+      const last = lut.m - 1, px = cfg.dotSize * cfg.pipeDotSize;
+      // on-screen stretch, padded so dots enter / leave beyond the screen edges
+      const mg = lut.pw / 2 + px * (1 + cfg.pipePersp) + 4, end = lut.total + cfg.pipeSpill;
+      const tail = pipeTail(lut, -sb.top - mg), seen = pipeVisible(lut, H - sb.top + mg), open = seen === Infinity;
+      const front = tail >= lut.total ? tail : open ? end : seen;
+      pipeStep(f, n, tail, front, Math.min(cfg.pipeDensity, n * 0.9 / lut.maxVis));
+      const r = Math.max(2, lut.pw / 2 - px * (1 + cfg.pipePersp) / 2 - 3);   // even the nearest (biggest) dots stay inside the walls
       for (let i = 0; i < N; i++) {
-        if (i >= ringN) { hide(i, p.cx, p.cy); continue; }
-        const band = i % 3, k = Math.floor(i / 3);
-        const a = (k / per) * TAU + t * cfg.ringSpin * (band === 1 ? -1 : 1) * (1 + band * 0.3);
-        const r = R * (1 - band * 0.055) + (RND[i * 2] - 0.5) * R * 0.02;
-        // colour sweeps around the ring near the end of each card's stretch of scroll
-        const s = clamp(seg + (frac(a / TAU) - 0.5) * cfg.ringSweep, 0, last + 0.999), base = Math.min(last, Math.floor(s));
-        const kk = smooth(clamp((s - base - (1 - cfg.ringSweep)) / cfg.ringSweep));
-        dot(i, p.cx + Math.cos(a) * r, p.cy + Math.sin(a) * r, mix(C[base], C[Math.min(last, base + 1)], kk),
-          0.55 + 0.35 * Math.sin(t * 1.6 + PHASE[i]), 1 - band * 0.2);
+        const s = i < n ? f.ps[i] : -1;
+        if (s < 0) { hide(i, sb.left + lut.x[0], sb.top + lut.y[0]); continue; }
+        // point + direction on the centre-line (straight on past END)
+        const k = clamp(s / lut.step, 0, last - 0.001), k0 = Math.floor(k), u = k - k0;
+        let tx = lut.x[k0 + 1] - lut.x[k0], ty = lut.y[k0 + 1] - lut.y[k0];
+        const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
+        const over = Math.max(0, s - lut.total);
+        const cx = lut.x[k0] + (lut.x[k0 + 1] - lut.x[k0]) * u + tx * over;
+        const cy = lut.y[k0] + (lut.y[k0 + 1] - lut.y[k0]) * u + ty * over;
+        // the tube as a cylinder: each dot sits at its own radius / angle round the axis and spirals
+        // as it travels; seen side-on, cos = across the tube, sin = depth (+1 near wall, −1 far)
+        const rho = Math.sqrt(LEAVE[i]), th = PHASE[i] + s * cfg.pipeTwist;
+        const off = rho * Math.cos(th) * r + Math.sin(t * 2 + PHASE[i]) * 1.5, z = rho * Math.sin(th);
+        const blur = clamp(Math.abs(z - cfg.pipeFocus) * cfg.pipeDof);
+        const a = 0.9 * clamp(s / cfg.pipeFade) * clamp((front - s) / (open ? cfg.pipeSpill : cfg.pipeFade))
+          * (cfg.pipeBack + (1 - cfg.pipeBack) * (z + 1) / 2) * (1 - 0.3 * blur);
+        dot(i, sb.left + cx - ty * off, sb.top + cy + tx * off, PALETTE[i % 5], a,
+          cfg.pipeDotSize * (1 + cfg.pipePersp * z) * (1 + 0.35 * blur), blur);
       }
     },
     /* RESEARCH ─ AI: a small neural net, activation pulsing input → output */
@@ -888,7 +1000,7 @@ async function init() {
   function layout(f) {
     const t = f.el.__dotsT || 0;      // per-section clock (data-dots-speed), advanced in frame()
     const rect = f.el.getBoundingClientRect();
-    X = f.x; Y = f.y; Cc = f.c; Aa = f.a; Ss = f.s;
+    X = f.x; Y = f.y; Cc = f.c; Aa = f.a; Ss = f.s; Bb = f.b;
     if (REGION[f.type]) region(f, t);
     else (DRAW[f.type] || DRAW.orb)(f, place(f, rect), t, rect);
     if (f.clipTop || f.clipBot) for (let i = 0; i < N; i++) {
@@ -1163,7 +1275,7 @@ async function init() {
       const L = cutLayers[k];
       if (o) {
         layout(o);
-        L.P.set(interleave(o)); L.C.set(o.c); L.S.set(o.s);
+        L.P.set(interleave(o)); L.C.set(o.c); L.S.set(o.s); L.B.set(o.b);
         for (let i = 0; i < N; i++) L.A[i] = o.a[i] * cfg.opacity;
         L.dirty(); cutOn[k] = true;
       } else if (cutOn[k]) { L.A.fill(0); L.dirty(); cutOn[k] = false; }
@@ -1178,6 +1290,7 @@ async function init() {
       for (let k = 0; k < 3; k++) COL[i * 3 + k] = A.c[i * 3 + k] * ui + (wi ? B.c[i * 3 + k] * wi : 0);
       ALPHA[i] = (A.a[i] * ui + (wi ? B.a[i] * wi : 0)) * cfg.opacity;
       SIZE[i] = A.s[i] * ui + (wi ? B.s[i] * wi : 0);
+      BLUR[i] = A.b[i] * ui + (wi ? B.b[i] * wi : 0);
     }
     field.dirty();
 
@@ -1239,4 +1352,45 @@ async function init() {
   kick();
 
   if (DEBUG) window.__dotField = { cfg, rebuild: () => { readFormations(); kick(); }, formations: () => formations };
+
+  /* ── ?debug=1 tuning panel for the Research pipe ───────────────────────── */
+  const pipeSec = DEBUG && formations.find((f) => f.type === 'pipe');
+  if (pipeSec) {
+    const sec = pipeSec.el, panel = document.createElement('div');
+    panel.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:9999;width:240px;padding:12px 14px;' +
+      'background:#fff;border:1px solid #C7CDD8;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.12);' +
+      'font:12px/1.4 system-ui,sans-serif;color:#141414';
+    panel.innerHTML = '<b style="display:block;margin-bottom:6px">Pipe tuning</b>';
+    const css0 = (name) => parseFloat(getComputedStyle(sec).getPropertyValue(name));
+    const knobs = [
+      { label: 'Pipe width', unit: 'px', min: 12, max: 240, step: 1, get: () => css0('--pipe-w'),
+        set: (v) => { sec.style.setProperty('--pipe-w', v + 'px'); formations.forEach((f) => { if (f.type === 'pipe') f.lut = null; }); } },
+      { label: 'Speed', unit: 'px/s', min: 40, max: 1200, step: 10, get: () => cfg.pipeSpeed, set: (v) => { cfg.pipeSpeed = v; } },
+      { label: 'Dot size', unit: 'px', min: 2, max: 20, step: 0.5, get: () => +(cfg.dotSize * cfg.pipeDotSize).toFixed(1),
+        set: (v) => { cfg.pipeDotSize = v / cfg.dotSize; } },
+      { label: 'Perspective', unit: '', min: 0, max: 0.9, step: 0.05, get: () => cfg.pipePersp, set: (v) => { cfg.pipePersp = v; } },
+      { label: 'Depth of field', unit: '', min: 0, max: 3, step: 0.05, get: () => cfg.pipeDof, set: (v) => { cfg.pipeDof = v; } },
+      { label: 'Focus depth', unit: '', min: -1, max: 1, step: 0.05, get: () => cfg.pipeFocus, set: (v) => { cfg.pipeFocus = v; } },
+      // the pipe can only use pipeDots dots, so a long pipe caps the density it can actually show
+      { label: 'Density', unit: '/px', min: 0.02, max: 0.6, step: 0.01, get: () => cfg.pipeDensity, set: (v) => { cfg.pipeDensity = v; },
+        note: () => {
+          const f = formations.find((q) => q.type === 'pipe'), lut = f && f.lut;
+          if (!lut) return '';
+          const cap = Math.min(N, cfg.pipeDots) * 0.9 / lut.maxVis;
+          return cfg.pipeDensity > cap ? ' (max ' + cap.toFixed(2) + ')' : '';
+        } },
+    ];
+    knobs.forEach((k) => {
+      const row = document.createElement('label');
+      row.style.cssText = 'display:block;margin-top:8px';
+      row.innerHTML = '<span style="display:flex;justify-content:space-between"><span>' + k.label + '</span><output></output></span>' +
+        '<input type="range" style="width:100%" min="' + k.min + '" max="' + k.max + '" step="' + k.step + '" value="' + k.get() + '">';
+      const out = row.querySelector('output'), input = row.querySelector('input');
+      const show = () => { out.textContent = input.value + ' ' + k.unit + (k.note ? k.note() : ''); };
+      input.addEventListener('input', () => { k.set(parseFloat(input.value)); show(); kick(); });
+      show();
+      panel.appendChild(row);
+    });
+    document.body.appendChild(panel);
+  }
 }
