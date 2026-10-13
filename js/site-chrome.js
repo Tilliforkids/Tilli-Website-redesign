@@ -269,10 +269,38 @@
       header.classList.toggle("tl-header--hidden", v);
       document.body.classList.toggle("tl-chrome-hidden", v);
     }
+    /* Home only: main.js eases the page onto the nearest beat after you stop
+       scrolling, which can nudge it back UP a little — that must not read as
+       "user scrolled up". So on Home the header follows the direction of the
+       last real input (wheel / touch / keys), not every scrollY change. */
+    var intent = 0; // +1 down, -1 up, 0 unknown (no input yet)
+    if (IS_HOME) {
+      window.addEventListener("wheel", function (e) {
+        if (e.deltaY) intent = e.deltaY > 0 ? 1 : -1;
+      }, { passive: true });
+      var touchY = null;
+      window.addEventListener("touchstart", function (e) { touchY = e.touches[0].clientY; }, { passive: true });
+      window.addEventListener("touchmove", function (e) {
+        if (touchY == null) return;
+        var cur = e.touches[0].clientY;
+        if (cur !== touchY) intent = cur < touchY ? 1 : -1; // finger up → scroll down
+        touchY = cur;
+      }, { passive: true });
+      window.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if (k === "ArrowUp" || k === "PageUp" || k === "Home") intent = -1;
+        else if (k === "ArrowDown" || k === "PageDown" || k === "End" || k === " ") intent = 1;
+      });
+      // pointer input (scrollbar drag, nav clicks) → fall back to raw direction
+      window.addEventListener("mousedown", function () { intent = 0; }, { passive: true });
+    }
+
     function onFrame(y) {
+      var down = y > lastY + DELTA, up = y < lastY - DELTA;
+      if (IS_HOME && intent) { down = down && intent > 0; up = up && intent < 0; }
       if (y <= SHOW_AT_TOP) setHidden(false);
-      else if (y > lastY + DELTA) setHidden(true);   // scrolling down
-      else if (y < lastY - DELTA) setHidden(false);  // scrolling up
+      else if (down) setHidden(true);   // scrolling down
+      else if (up) setHidden(false);    // scrolling up
       if (Math.abs(y - lastY) > DELTA) lastY = y;
       ticking = false;
     }

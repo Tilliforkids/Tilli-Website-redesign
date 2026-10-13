@@ -99,6 +99,15 @@
   /* in-step stagger — opacity only, never translation */
   .rv { opacity: 0; transition: opacity .7s ease; }
   .rv.in { opacity: 1; }
+  /* typewriter (Fits in): untyped chars stay in-flow but invisible so the
+     centred heading never reflows; the caret is an absolutely-placed pseudo
+     at the end of the typed run, so it can't add width or a line break */
+  .tw-rest { visibility: hidden; }
+  .tw-done { position: relative; }
+  .tw-done::after { content: ""; position: absolute; right: -3px; bottom: 0.08em; width: 2px; height: 1em;
+    background: currentColor; animation: tw-blink 1s steps(1) infinite; transition: opacity .4s ease; }
+  .tw-done.tw-off::after { opacity: 0; animation: none; }
+  @keyframes tw-blink { 50% { opacity: 0; } }
 
   /* ── Impact: logo carousel + stats card ───────────────────── */
   /* #impactCard drives the "move into the scene" reveal — fade in + scale up
@@ -821,7 +830,7 @@
       <div class="step-in">
         <div class="wrap" style="text-align: center;">
           <div class="eyebrow rv">WORKS WITH WHAT YOU ALREADY HAVE</div>
-          <h2 class="rv" style="font-size: min(var(--tl-fs-xl), 5.2vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); line-height: 1.14; color: var(--tl-ink-900); max-width: 820px; margin: 14px auto 18px;">Tilli doesn't replace your counsellor. <span style="color: var(--tl-green-600);">It tells them which children to see first.</span></h2>
+          <h2 class="rv" style="font-size: min(var(--tl-fs-xl), 5.2vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); line-height: 1.14; color: var(--tl-ink-900); max-width: 820px; margin: 14px auto 18px;">Tilli doesn't replace your counsellor. <span data-typewrite style="color: var(--tl-green-600);">It tells them which children to see first.</span></h2>
           <p class="rv" style="font-size: min(var(--tl-fs-lg), 2.6vh); line-height: 1.6; color: var(--tl-ink-600); max-width: 640px; margin: 0 auto;">Your Life Skills period gets a 36-week plan. Your values assembly gets a skills language your teachers share. Your counsellor gets early signals, not end-of-term referrals.</p>
         </div>
       </div>
@@ -1057,8 +1066,8 @@
 <script src="js/ask-tilli-demo.js?v=2"></script>
 <script src="js/impact-orbits.js?v=7"></script>
 <script src="js/impact-carousel.js?v=7"></script>
-<script type="module" src="js/main.js?v=127"></script>
+<script type="module" src="js/main.js?v=128"></script>
 <script src="js/site-config.js?v=1"></script>
-<script src="js/site-chrome.js?v=4"></script>
+<script src="js/site-chrome.js?v=5"></script>
 </body>
 </html>

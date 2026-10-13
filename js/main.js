@@ -459,25 +459,38 @@ const BURST = {
   linkMax:   3,      // most threads drawn per dot
   jarGrow:   1.25,   // how much the jar scales up as it reaches centre
   overshoot: 0.14,   // outward pop past the ring before it settles (fraction of min(vw,vh))
+  drift:     0.025,  // settled ring: how far each dot wanders from its spot (fraction of min(vw,vh))
+  driftSpeed: 0.18,  // settled ring: wander speed (rad/s base; each dot varies ±40%)
+  linkFade:  3,      // how fast threads fade in/out as the nearest-neighbour set changes (1/s)
   colors: DOT_PALETTE.slice(),   // green · cyan · yellow · orange · pink
 };
 let burst = null;   // { canvas, ctx, dots:[…], links:[[i,j]…], dpr, jarRect, N }
 
 /* one dot's ring resting spot, in screen px (recomputed live so it tracks the
-   viewport + the GUI). Angular + radial jitter turn the ellipse into a band. */
-function burstRingXY(d) {
+   viewport + the GUI). Angular + radial jitter turn the ellipse into a band.
+   `drift` (0..1) mixes in a slow per-dot Lissajous wander around that spot
+   (time = burst.t) — only once the ring has settled, see renderBurst. */
+function burstRingXY(d, drift = 0) {
   const vw = window.innerWidth, vh = window.innerHeight;
   const ang = d.baseAngle + d.angJit * BURST.angJit;
   const rr = 1 + d.radJit * BURST.spread;
-  return [vw / 2 + Math.cos(ang) * vw * BURST.ringW * rr,
-          vh / 2 + Math.sin(ang) * vh * BURST.ringH * rr];
+  let x = vw / 2 + Math.cos(ang) * vw * BURST.ringW * rr;
+  let y = vh / 2 + Math.sin(ang) * vh * BURST.ringH * rr;
+  if (drift > 0) {
+    const amp = BURST.drift * Math.min(vw, vh) * drift, w = BURST.driftSpeed, t = burst.t;
+    x += Math.sin(t * w * d.wx + d.px0) * amp;
+    y += Math.cos(t * w * d.wy + d.py0) * amp;
+  }
+  return [x, y];
 }
 
-/* thread each dot to its few nearest ring neighbours (within linkDist), deduped */
-function computeBurstLinks() {
+/* thread each dot to its few nearest neighbours (within linkDist), deduped.
+   `pos` = [[x,y]…] per dot; defaults to the resting ring. Rebuilds burst.links
+   and marks each live link in burst.linkOn (keyed a*1e6+b) for the fades. */
+function computeBurstLinks(pos) {
   if (!burst) return;
   const md = Math.min(window.innerWidth, window.innerHeight) * BURST.linkDist;
-  const pos = burst.dots.map(burstRingXY);
+  if (!pos) pos = burst.dots.map((d) => burstRingXY(d));
   const seen = new Set(), out = [];
   for (let i = 0; i < pos.length; i++) {
     const near = [];
@@ -493,6 +506,26 @@ function computeBurstLinks() {
     }
   }
   burst.links = out;
+  burst.linkOn = seen;
+}
+
+/* per-link fade bookkeeping: links in the current nearest set ease toward 1,
+   links that dropped out ease toward 0 and are forgotten — so as the ring
+   drifts, threads cross-fade instead of popping. `snap` jumps straight to the
+   current set (used while the ring isn't drifting). */
+function fadeBurstLinks(dt, snap) {
+  const A = burst.linkA || (burst.linkA = new Map());
+  if (snap) {
+    A.clear();
+    for (const [a, b] of burst.links) A.set(a * 1e6 + b, 1);
+    return;
+  }
+  const k = 1 - Math.exp(-dt * BURST.linkFade);
+  for (const key of burst.linkOn) if (!A.has(key)) A.set(key, 0);
+  for (const [key, v] of A) {
+    const nv = v + ((burst.linkOn.has(key) ? 1 : 0) - v) * k;
+    if (nv < 0.01 && !burst.linkOn.has(key)) A.delete(key); else A.set(key, nv);
+  }
 }
 
 /* build (or resize) the burst canvas + dot field. Reseeded deterministically so
@@ -523,7 +556,7 @@ function buildBurst() {
     const N = built.dots.length;
     burst = { canvas, ctx: canvas.getContext('2d'), dots: built.dots, links: [], dpr,
               jarRect: null, N, jarSig, pileFrac: built.pileFrac, jarHalf: built.jarHalf,
-              px: new Float64Array(N), py: new Float64Array(N) };
+              px: new Float64Array(N), py: new Float64Array(N), t: 0 };
   } else {
     burst.canvas = canvas; burst.ctx = canvas.getContext('2d'); burst.dpr = dpr;
   }
@@ -572,7 +605,12 @@ function makeBurstDots(total) {
     const j = Math.floor(rand() * (i + 1)); const t = order[i]; order[i] = order[j]; order[j] = t;
   }
   order.forEach((di, pos) => { dots[di].baseAngle = (pos / dots.length) * Math.PI * 2; });
-  for (const d of dots) { d.angJit = (rand() - 0.5) * 2; d.radJit = (rand() - 0.5) * 2; d.phase = rand(); }
+  for (const d of dots) {
+    d.angJit = (rand() - 0.5) * 2; d.radJit = (rand() - 0.5) * 2; d.phase = rand();
+    // drift: per-dot wander rates (±40%) + phases, so no two dots move in step
+    d.wx = 0.6 + rand() * 0.8; d.wy = 0.6 + rand() * 0.8;
+    d.px0 = rand() * Math.PI * 2; d.py0 = rand() * Math.PI * 2;
+  }
   return { dots, pileFrac, jarHalf };
 }
 
@@ -597,8 +635,10 @@ function drawBurstGlass(ctx, cx, cy, R, a) {
 }
 
 /* draw one frame of the burst at progress bt (0..1) */
-function renderBurst(bt) {
+function renderBurst(bt, dt) {
   const { ctx, dpr, dots, px, py } = burst;
+  // settled ring → slow wander; zero during the jar → burst → ring choreography
+  const driftIn = smooth(clamp((bt - 0.80) / 0.20));
   const vw = window.innerWidth, vh = window.innerHeight, scx = vw / 2, scy = vh / 2;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, vw, vh);
@@ -618,7 +658,7 @@ function renderBurst(bt) {
   const addIn = smooth(clamp((bt - BURST.addAt) / BURST.addLen));
   for (let i = 0; i < dots.length; i++) {
     const d = dots[i];
-    const r = burstRingXY(d);
+    const r = burstRingXY(d, driftIn);
     const dx = r[0] - scx, dy = r[1] - scy, dl = Math.hypot(dx, dy) || 1;
     if (d.early) {
       // the marble's ACTUAL on-screen spot (live physics position), so the burst
@@ -639,17 +679,33 @@ function renderBurst(bt) {
     }
   }
 
-  // grey threads stitch on as the ring settles
+  // grey threads stitch on as the ring settles. Once drifting, the nearest-
+  // neighbour set is rebuilt from the live positions every frame and each
+  // thread cross-fades in/out (drawn in a few alpha buckets, one stroke each).
+  if (driftIn > 0) {
+    const pos = new Array(dots.length);
+    for (let i = 0; i < dots.length; i++) pos[i] = [px[i], py[i]];
+    computeBurstLinks(pos);
+    fadeBurstLinks(dt, false);
+  } else if (burst.drifted) {
+    computeBurstLinks();                     // back to the resting ring's threads
+    fadeBurstLinks(dt, true);
+  } else if (!burst.linkA) fadeBurstLinks(dt, true);
+  burst.drifted = driftIn > 0;
   const linkA = smooth(clamp((bt - 0.58) / 0.22)) * 0.5;
   if (linkA > 0.01) {
     ctx.lineWidth = 1;
-    ctx.strokeStyle = `rgba(140,140,150,${linkA.toFixed(3)})`;
-    ctx.beginPath();
-    for (let k = 0; k < burst.links.length; k++) {
-      const a = burst.links[k][0], b = burst.links[k][1];
-      ctx.moveTo(px[a], py[a]); ctx.lineTo(px[b], py[b]);
+    const BK = 8;                            // alpha buckets
+    const paths = Array.from({ length: BK }, () => new Path2D());
+    for (const [key, v] of burst.linkA) {
+      const a = Math.floor(key / 1e6), b = key - a * 1e6;
+      const p = paths[Math.min(BK - 1, Math.floor(v * BK))];
+      p.moveTo(px[a], py[a]); p.lineTo(px[b], py[b]);
     }
-    ctx.stroke();
+    for (let q = 0; q < BK; q++) {
+      ctx.strokeStyle = `rgba(140,140,150,${(linkA * (q + 0.5) / BK).toFixed(3)})`;
+      ctx.stroke(paths[q]);
+    }
   }
 
   // dots are marble-sized in the jar and shrink to the small ring size as they burst
@@ -689,7 +745,9 @@ function updateBurst(dt, f) {
   const win = burstWindow();
   if (!win) return;
   const jarEl = document.querySelector('.j-jar');
-  const active = f > win.start - 0.05 && f < win.end + 0.60;
+  // Let's talk is the last scene: once the burst starts, the ring stays on
+  // screen all the way down to the footer (no upper bound)
+  const active = f > win.start - 0.05;
   if (!active) {
     if (burst.canvas.style.display !== 'none') burst.canvas.style.display = 'none';
     if (jarEl && jarEl.dataset.burstHidden) { jarEl.style.opacity = ''; delete jarEl.dataset.burstHidden; }
@@ -704,7 +762,8 @@ function updateBurst(dt, f) {
     if (bt > 0.001) { jarEl.style.opacity = '0'; jarEl.dataset.burstHidden = '1'; }
     else if (jarEl.dataset.burstHidden) { jarEl.style.opacity = ''; delete jarEl.dataset.burstHidden; }
   }
-  renderBurst(bt);
+  burst.t += dt;
+  renderBurst(bt, dt);
 }
 
 /* Set the Cross-scene height (vh) — the scroll length of the dedicated
@@ -2709,6 +2768,38 @@ function countUp() {
 if (reduced) counted = true;
 else statEl.textContent = '0';
 
+/* Typewriter for [data-typewrite] spans (Fits in). The untyped tail stays in
+   flow but invisible (.tw-rest) so the centred heading never reflows; the
+   caret is .tw-done::after. Prepared up front, started once by the .rv reveal
+   in onScroll. Reduced-motion leaves the plain text alone. */
+const TW = {
+  charMs: 45,       // ms per character
+  startDelay: 450,  // ms after the heading's reveal begins (lets the black line fade in first)
+  caretHold: 1200,  // ms the caret keeps blinking after the last char before fading out
+};
+const twSpans = reduced ? [] : Array.from(document.querySelectorAll('[data-typewrite]'));
+twSpans.forEach((el) => {
+  const text = el.textContent;
+  el.setAttribute('aria-label', text);
+  el.innerHTML = '<span class="tw-done" aria-hidden="true"></span><span class="tw-rest" aria-hidden="true"></span>';
+  el._tw = { text, done: el.firstChild, rest: el.lastChild, started: false };
+  el._tw.rest.textContent = text;
+});
+function typewrite(el, delay) {
+  const tw = el._tw;
+  if (!tw || tw.started) return;
+  tw.started = true;
+  let i = 0;
+  const tick = () => {
+    i++;
+    tw.done.textContent = tw.text.slice(0, i);
+    tw.rest.textContent = tw.text.slice(i);
+    if (i < tw.text.length) setTimeout(tick, TW.charMs);
+    else setTimeout(() => tw.done.classList.add('tw-off'), TW.caretHold);
+  };
+  setTimeout(tick, delay + TW.startDelay);
+}
+
 function pinTargets(sc) {
   if (sc.t) return sc.t;
   const q = (s) => sc.el.querySelector(s);
@@ -2984,6 +3075,7 @@ function onScroll(fOverride) {
           st.querySelectorAll('.rv').forEach((el, r) => {
             el.style.transitionDelay = `${r * 110}ms`;
             el.classList.add('in');
+            el.querySelectorAll('[data-typewrite]').forEach((tw) => typewrite(tw, r * 110));
           });
         }
       });

@@ -61,4 +61,13 @@ h2.title { font-weight: 800; font-size: var(--tl-fs-xl); line-height: 1.14;
 .wash-pink  { background: var(--tl-wash-pink); }
 .wash-grey  { background: var(--tl-surface-100); }
 
+/* typewriter (Fits in): untyped tail in flow but invisible so the heading
+   never reflows; caret is an absolute pseudo (no width, no line break) */
+.tw-rest { visibility: hidden; }
+.tw-done { position: relative; }
+.tw-done::after { content: ""; position: absolute; right: -3px; bottom: 0.08em; width: 2px; height: 1em;
+  background: currentColor; animation: tw-blink 1s steps(1) infinite; transition: opacity .4s ease; }
+.tw-done.tw-off::after { opacity: 0; animation: none; }
+@keyframes tw-blink { 50% { opacity: 0; } }
+
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

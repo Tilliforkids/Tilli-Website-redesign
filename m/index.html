@@ -550,7 +550,7 @@
   <!-- 8b · FITS IN — "works with what you already have" (HM-15) -->
   <section id="fits-in" class="wrap" style="text-align:center">
     <div class="eyebrow">Works with what you already have</div>
-    <h2 class="title">Tilli doesn't replace your counsellor. <span class="c-green">It tells them which children to see first.</span></h2>
+    <h2 class="title">Tilli doesn't replace your counsellor. <span class="c-green" data-typewrite>It tells them which children to see first.</span></h2>
     <p class="lede">Your Life Skills period gets a 36-week plan. Your values assembly gets a skills language your teachers share. Your counsellor gets early signals, not end-of-term referrals.</p>
   </section>
 
@@ -657,6 +657,36 @@
 
 <script>
 /* Header hamburger + WhatsApp bubble toggles now live in ../js/m-chrome.js */
+
+/* ── FITS IN — the green line types out once, 1 char at a time, the first time
+      the section is half on screen. Untyped tail stays in flow but invisible
+      (.tw-rest) so the heading never reflows; caret = .tw-done::after. ── */
+(function () {
+  var TW = { charMs: 45, startDelay: 300, caretHold: 1200 };
+  var el = document.querySelector('[data-typewrite]');
+  var sec = document.getElementById('fits-in');
+  if (!el || !sec || !('IntersectionObserver' in window) ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var text = el.textContent;
+  el.setAttribute('aria-label', text);
+  el.innerHTML = '<span class="tw-done" aria-hidden="true"></span><span class="tw-rest" aria-hidden="true"></span>';
+  var done = el.firstChild, rest = el.lastChild;
+  rest.textContent = text;
+  var io = new IntersectionObserver(function (entries) {
+    if (!entries[0].isIntersecting) return;
+    io.disconnect();
+    var i = 0;
+    function tick() {
+      i++;
+      done.textContent = text.slice(0, i);
+      rest.textContent = text.slice(i);
+      if (i < text.length) setTimeout(tick, TW.charMs);
+      else setTimeout(function () { done.classList.add('tw-off'); }, TW.caretHold);
+    }
+    setTimeout(tick, TW.startDelay);
+  }, { threshold: 0.5 });
+  io.observe(sec);
+})();
 
 /* ── Report card deck — swipe the front card off (either direction) and it
       tucks behind the stack, revealing the next page. Pointer + touch. ── */
