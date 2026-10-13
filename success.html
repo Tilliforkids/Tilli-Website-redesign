@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
-<link rel="stylesheet" href="css/site.css?v=4">
+<link rel="stylesheet" href="css/site.css?v=6">
 <style>
   /* page-local: case-study layout */
   .cs { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
@@ -57,6 +57,12 @@
   .s-hero-flat { background: var(--tl-white);
     padding: clamp(104px, 13vw, 168px) 0 clamp(72px, 9vw, 112px); }
     .s-hero-flat .tl-lead { margin-top: 22px; }
+  /* desktop dot layer: the two dot children sit at 14% / 86% of the width and
+     are 0.34vh tall (~0.116vh half-width), so cap the copy to the gap between
+     them — on 4:3-ish screens the headline otherwise runs over both kids */
+  @media (min-width: 861px) {
+    .s-hero-flat .tl-narrow { max-width: min(780px, calc(72vw - 23vh)); }
+  }
 
   /* CHG-22: schools & trainings marquee — school photos interleaved with partner
      logos, one seamless auto-scrolling strip under the hero (white, like the hero).

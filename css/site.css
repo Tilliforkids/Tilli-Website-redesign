@@ -139,6 +139,11 @@ body.tl-at-end .tl-header { transform: none; }
 .tl-footer__reach a { font-weight: 700; color: var(--tl-ink-700); }
 .tl-footer__legal { font-size: var(--tl-fs-sm); color: var(--tl-ink-300); margin: 0; }
 .tl-footer img { height: 26px; }
+/* desktop: keep the footer's right end 96px clear of the screen edge so the
+   WhatsApp bubble (right: 22px, 62px wide) never sits on the links */
+@media (min-width: 861px) {
+  .tl-footer .tl-container { padding-right: max(24px, calc(96px - max(0px, (100vw - 1120px) / 2))); }
+}
 
 /* ── WhatsApp bubble + Kavi card ─────────────────────────────────────────── */
 .tl-wa { position: fixed; right: 22px; bottom: 22px; z-index: 70; }

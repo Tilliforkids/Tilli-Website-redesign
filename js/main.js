@@ -87,8 +87,10 @@ window.scrollTo(0, 0);
      MORPH_AT   the point in a scene (0..1) where the dots stop holding
                 their formation and start morphing towards the next
      SCROLL_AT  the Start fraction (0..1) where the hero rides up and out
-     FIT_PAD    px of breathing room kept around a step when it has to
-                be scaled down to fit a short viewport
+     FIT_NAV    px a step reserves at the bottom for the quick section nav
+                (mirrors `body.tl-chrome-hidden .step { padding-bottom:
+                calc(6vh + 84px) }` in index.html) — a step taller than the space left between its
+                top padding and that reserve is scaled down to fit
    ═══════════════════════════════════════════════════════════════════ */
 const FADE_LEN = 0.12;
 const FADE_OVER = 0.04;
@@ -111,7 +113,7 @@ let CROSS_VH = 150;      // Cross-scene scroll length (vh) — driven by the GUI
 let FUNNEL_VH = 34;      // Funnel-scene scroll length (vh) — driven by the GUI slider.
                          // 34vh here makes the video-bottom→report-top gap ≈ 100vh
                          // (the Dashboard's lower half + Reports approach add ~66vh).
-const FIT_PAD = 34;
+const FIT_NAV = 84;
 
 /* ── Scene registry (DOM order = station order) ───────────────────── */
 const sceneEls = Array.from(document.querySelectorAll('[data-scene]'));
@@ -148,13 +150,18 @@ function measure() {
     s.len = Math.max(1, i === LAST ? h - vh : h);
   });
   fitSteps();
+  fitViewsHead();   // after fitSteps: it reads the step's fit scale
   buildJar();
   buildBurst();
   /* the ring, the dashboard paths and the On-track copy are fitted to the live DOM layout */
   measureHeroText();
   anchorDashPaths();
   layoutOnTrackText();
+  measureReportTop();
+  const helixMoved = fitSkillsHelix();
   if (three) {
+    three.layoutReportsFunnel();
+    if (helixMoved) three.rebuildDNA2();
     layoutHeroRing(three.heroRing);
     three.relayoutDash();
     three.restitch();
@@ -165,9 +172,13 @@ function measure() {
    would be clipped with no way to reach it. Scale it down instead —
    this is what keeps every section in its "responsive position". */
 function fitSteps() {
-  const avail = window.innerHeight - FIT_PAD * 2;
   scenes.forEach((s) => s.fits.forEach((inner) => {
     if (!inner) return;
+    /* fit inside the step's own padded box with the nav showing (the worst
+       case), so a scaled step never runs under the top bar or the nav */
+    const vh = window.innerHeight;
+    const padTop = parseFloat(getComputedStyle(inner.parentElement).paddingTop) || 0;
+    const avail = vh - padTop - (vh * 0.06 + FIT_NAV);
     inner.style.transform = 'none';
     const h = inner.offsetHeight;
     const k = h > avail ? Math.max(0.5, avail / h) : 1;
@@ -618,7 +629,9 @@ function makeBurstDots(total) {
 function burstWindow() {
   const j = ST['Journey'];
   if (j == null) return null;
-  return { start: j + 0.70, end: j + 1.30, talkI: j + 1 };
+  /* starts just past the card-3 detent (0.84), so the jar holds still beside
+     the last card instead of flying in under it while it's being read */
+  return { start: j + 0.86, end: j + 1.30, talkI: j + 1 };
 }
 
 /* soft glass sphere with a bright rim — fades in, then shatters as dots leave */
@@ -1009,6 +1022,25 @@ const DOT_OPACITY      = 0.9;        // the field's default master opacity (fade
    proportion), dotScale shrinks the dots to match so it reads as a true
    scaled-down copy, not a same-dot clump. All live-tunable from the GUI. */
 const DNA2_CFG = { x: 10.9, y: -0.6, z: 4.4, scale: 0.96, dotScale: 0.99 };
+/* x above is tuned for 16:9. On a narrower aspect the skills grid reaches
+   further right (in screen fractions) and its third column ran under the
+   helix, so fitSkillsHelix() pushes the helix right until its outer strand
+   clears the grid by SKILLS_HELIX_GAP px — never left of the tuned spot. */
+const DNA2_BASE_X = DNA2_CFG.x;
+const SKILLS_HELIX_GAP = 28;
+function fitSkillsHelix() {
+  const sc = scenes[ST['12 skills']];
+  const grid = sc && sc.stage && sc.stage.querySelector('.skills-grid');
+  if (!grid) return false;
+  const gr = grid.getBoundingClientRect();
+  if (gr.width < 1) return false;
+  const edgeFrac = (gr.right - sc.stage.getBoundingClientRect().left + SKILLS_HELIX_GAP) / window.innerWidth;
+  const z0 = DNA_DEPTH_CENTER + DNA2_CFG.z, R = 3.4 * DNA2_CFG.scale;
+  const x = Math.max(DNA2_BASE_X, (edgeFrac - 0.5) * 2 * visHalf(z0).w + R);
+  if (Math.abs(x - DNA2_CFG.x) < 0.01) return false;
+  DNA2_CFG.x = x;
+  return true;
+}
 /* 12-skills → On-track handover choreography (driven in step()).
    start  the 12-skills scene fraction (0..1) where the handover begins — the
           screen holds fully readable until here, then the DNA eases out
@@ -1569,8 +1601,22 @@ const FUNNEL_CFG = {
    expressed in world units at the funnel plane. The waterfall's spout ends
    exactly at the card's top edge, tracked live as the card slides up into
    view (repIn) — so the pour always lands on the card, whatever its position. */
-const REPORT_CARD_TOP_Y = 9.7;
+let REPORT_CARD_TOP_Y = 9.7;          // fallback; measureReportTop() sets it from the live layout
+const REPORT_SPOUT_SINK = 1.0;        // world units the spout ends BELOW the card's top edge, so the shrinking tail hides behind the page
 const VIEWPORT_WORLD_H = (CAM_DIST + 4) * Math.tan((50 * Math.PI / 180) / 2) * 2; // ≈ 27.98
+/* the middle report page's rest top edge → world Y at the funnel plane. The
+   pages are px-capped, so on tall screens they sit lower than a fixed value
+   and the pour's tail showed as a clump above them. Stage-relative, so the
+   Reports slide-in is cancelled out. */
+function measureReportTop() {
+  const sc = scenes[ST['Reports']];
+  const card = sc && sc.stage && sc.stage.querySelector('[data-fan="2"]');
+  if (!card) return;
+  const cr = card.getBoundingClientRect();
+  if (cr.height < 1) return;
+  const topFrac = (cr.top - sc.stage.getBoundingClientRect().top) / window.innerHeight;
+  REPORT_CARD_TOP_Y = (0.5 - topFrac) * VIEWPORT_WORLD_H - REPORT_SPOUT_SINK;
+}
 /* per-dot waterfall state: a stable horizontal slot, a phase offset (where the
    dot sits in its fall), and a depth. The step loop advances each dot's phase
    over time, wraps it at the bottom, and fades it at the very top/bottom so the
@@ -2235,10 +2281,19 @@ function initThree() {
     /* reveal: one opacity for both hands, or [left, right] */
     frame(planeZ, reveal) {
       const DEG = Math.PI / 180, vw = visHalf(HAND_Z).w;
+      /* the hands are sized by screen WIDTH but the orbs by HEIGHT, so on a
+         narrower aspect (e.g. 4:3) the side orbs sit closer to the hands and
+         the hands ran over the labels. Push each hand outward until its inner
+         edge (x ± scale/2, in screen fractions) clears the side orb's outer
+         edge — a no-op on 16:9, where they were tuned to just meet. */
+      const orbEdge = 0.5 - (Math.abs(VIEWS_CX[0]) + VIEWS_R) / (2 * visHalf(VIEWS_Z).w);
       for (const key of ['left', 'right']) {
         const rv = Array.isArray(reveal) ? reveal[key === 'left' ? 0 : 1] : reveal;
         const cfg = VIEWS_HANDS[key], m = viewsHandMeshes[key];
-        const [wx, wy] = screenFracToWorld(cfg.x, cfg.y, HAND_Z);
+        const fx = key === 'left'
+          ? cfg.x - Math.max(0, cfg.x + cfg.scale / 2 - orbEdge)
+          : cfg.x + Math.max(0, (1 - orbEdge) - (cfg.x - cfg.scale / 2));
+        const [wx, wy] = screenFracToWorld(fx, cfg.y, HAND_Z);
         const w = cfg.scale * 2 * vw;
         m.position.set(wx, wy, HAND_Z + planeZ);
         m.scale.set(w * (cfg.flipX ? -1 : 1), w * HAND_ASPECT * (cfg.flipY ? -1 : 1), 1);
@@ -2839,6 +2894,32 @@ const VIEWS_TEXT_DY = [101, 101, 101];   // teacher, student, parents — px ver
 /* the "Every data point…" heading: nudge it in x/y and scale it. Applied on top
    of the scroll-driven reveal scale in the views-pin handler. Baked from the GUI. */
 const VIEWS_HEAD = { dx: 0, dy: -221, scale: 1.28 };
+/* VIEWS_HEAD.dy (-221px) was baked on a 1080px-tall screen, where it leaves the
+   heading's bottom ~1% of the height above the orbs. A fixed px nudge pushed the
+   heading off the top of shorter screens, so layoutViewsText() instead derives
+   dy from the live layout: heading bottom `gap` × vh above the side orbs' top,
+   but never closer than `minTop` px to the top (topbar + header). */
+const VIEWS_HEAD_FIT = { gap: 0.01, minTop: 84 };
+let viewsHeadDy = VIEWS_HEAD.dy;
+function fitViewsHead() {
+  const sc = scenes[ST['3 views']];
+  const h = sc && sc.el.querySelector('[data-v-h]');
+  if (!h || !h.offsetHeight) return;
+  /* measure the rest layout: drop the heading's own nudge and the stage's
+     cross-fade translate/scale for the read, then put both back */
+  const prev = h.style.transform, prevSt = sc.stage.style.transform;
+  h.style.transform = 'none';
+  sc.stage.style.transform = 'none';
+  const r = h.getBoundingClientRect(), top0 = sc.stage.getBoundingClientRect().top;
+  h.style.transform = prev;
+  sc.stage.style.transform = prevSt;
+  const vh = window.innerHeight;
+  const k = r.height / h.offsetHeight;                   // the step's fit-to-viewport scale
+  const half = (r.height * VIEWS_HEAD.scale) / 2, cy = (r.top + r.bottom) / 2 - top0;
+  const orbTop = (0.5 - (VIEWS_CY + VIEWS_R) / (2 * visHalf(VIEWS_Z).h)) * vh;
+  const want = Math.max(orbTop - VIEWS_HEAD_FIT.gap * vh - half, VIEWS_HEAD_FIT.minTop + half);
+  viewsHeadDy = (want - cy) / k;
+}
 function layoutViewsText() {
   if (!viewsRow) return;
   const aspect = Math.max(0.65, window.innerWidth / Math.max(1, window.innerHeight));
@@ -2847,6 +2928,7 @@ function layoutViewsText() {
   viewsRow.style.maxWidth = 'none';
   viewsRow.style.width = Math.min(3 * orbPx - 24, window.innerWidth - 48) + 'px';     // side labels land under the side orbs
   viewsLabels.forEach((el, k) => { el.style.position = 'relative'; el.style.top = (VIEWS_TEXT_DY[k] || 0) + 'px'; });
+  fitViewsHead();
 }
 layoutViewsText();
 window.addEventListener('resize', layoutViewsText);
@@ -3138,7 +3220,7 @@ function runPin(sc, p) {
   if (sc.pin === 'views' && T.vH) {
     const q = ease(clamp((p - 0.06) / 0.18));
     T.vH.style.opacity = String(q);
-    T.vH.style.transform = `translate(${VIEWS_HEAD.dx}px, ${VIEWS_HEAD.dy}px) scale(${(0.97 + 0.03 * q) * VIEWS_HEAD.scale})`;
+    T.vH.style.transform = `translate(${VIEWS_HEAD.dx}px, ${viewsHeadDy.toFixed(1)}px) scale(${(0.97 + 0.03 * q) * VIEWS_HEAD.scale})`;
     T.vLabels.forEach((el, k) => el.classList.toggle('in', p > 0.2 + k * 0.06));
     return;
   }

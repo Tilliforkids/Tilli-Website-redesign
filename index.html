@@ -31,7 +31,7 @@
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
 <link rel="stylesheet" href="css/ask-tilli.css">
-<link rel="stylesheet" href="css/site.css?v=4">
+<link rel="stylesheet" href="css/site.css?v=6">
 <style>
   * { box-sizing: border-box; }
   html { scroll-behavior: auto; }
@@ -58,7 +58,7 @@
   #quicknav { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(8px); z-index: 45;
     opacity: 0; pointer-events: none;
     transition: opacity .3s ease, transform .35s cubic-bezier(.4,0,.2,1);
-    display: flex; gap: 2px; max-width: calc(100vw - 32px); padding: 5px;
+    display: flex; gap: 2px; max-width: calc(100vw - 136px); padding: 5px;
     background: var(--tl-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-pill); box-shadow: var(--tl-shadow-card);
     overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
@@ -73,7 +73,8 @@
     color: var(--tl-ink-500); padding: 7px 14px; border-radius: var(--tl-radius-pill); transition: color .2s ease, background .2s ease; }
   #quicknav button:hover { color: var(--tl-ink-900); background: var(--tl-surface-100); }
   #quicknav button[aria-current="true"] { color: var(--tl-white); background: var(--tl-pink-600); }
-  @media (max-width: 640px) { #quicknav button { padding: 6px 11px; font-size: var(--tl-fs-xs); } }
+  /* 136px = 68px each side, so the centred pill bar clears the ↑/↓ column (right: 16px, 44px wide) */
+  @media (max-width: 640px) { #quicknav { max-width: calc(100vw - 32px); } #quicknav button { padding: 6px 11px; font-size: var(--tl-fs-xs); } }
 
   /* ── Nav arrows ───────────────────────────────────────────── */
   #arrows { position: fixed; right: 16px; bottom: 22px; z-index: 50; display: flex; flex-direction: column; gap: 10px; }
@@ -172,6 +173,11 @@
      dragging the block on the page. "Log values" prints them to bake in. */
   .sch-copy { flex: 0 0 30%; transform-origin: left center;
     transform: translate(var(--tx,0px), var(--ty,0px)) scale(var(--tsc,1)); }
+  /* baked offset/scale (-88px, ×1.65), capped so the block keeps 32px off the
+     left edge (panel side margin + padding) and, below 1100px, scaled down so
+     the enlarged copy doesn't run into the logo grid */
+  #schCopy { --tx: max(-88px, calc(32px - max(0px, (100vw - 1080px) / 2) - min(56px, 4.5vw))); --ty: 0px; --tsc: 1.65; }
+  @media (max-width: 1100px) { #schCopy { --tsc: 1.45; } }
   .sch-head { font-size: min(var(--tl-fs-display), 7vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight);
     line-height: 1.0; color: var(--tl-ink-900); }
   .sch-sub { font-size: min(var(--tl-fs-lg), 2.9vh); font-weight: 600; color: var(--tl-ink-500);
@@ -236,10 +242,15 @@
   @media (prefers-reduced-motion: reduce) { .imp2-track { animation: none; } }
 
   /* bottom band: stats (left) + quote (right) */
+  /* --imp2-side: room from the band's content edge to the screen edge (side
+     margin past max-width + padding). The baked --x nudges below are capped by
+     it, so the stats keep 24px off the left edge and the quote stays 90px clear
+     of the right edge (WhatsApp bubble + ↑/↓ buttons) on narrower screens. */
   .imp2-bottom { position: absolute; left: 50%; bottom: min(9vh, 84px);
     transform: translateX(-50%); width: 100%; max-width: 1240px;
     padding: 0 min(56px, 5vw); display: flex; align-items: flex-end;
-    justify-content: space-between; gap: 40px; }
+    justify-content: space-between; gap: 40px;
+    --imp2-side: calc(max(0px, (100vw - 1240px) / 2) + min(56px, 5vw)); }
   /* each text group is independently movable/scalable — baked as inline --x/--y/--sc */
   .imp2-move { transform: translate(var(--x, 0px), var(--y, 0px)) scale(var(--sc, 1)); }
   .imp2-stats { display: flex; align-items: flex-end; gap: min(56px, 6vw); }
@@ -250,6 +261,12 @@
     margin-top: 10px; line-height: 1.3; }
   .imp2-quote { display: grid; grid-template-columns: auto 1fr; column-gap: 14px;
     max-width: 470px; margin: 0; transform-origin: right bottom; }
+  /* the live partnership quote: baked +150px / ×1.15 / 560px, the nudge capped
+     to stay 90px clear of the right edge. Below 1100px the band can't hold the
+     scaled stats and the scaled quote side by side, so the quote narrows and
+     drops the scale-up instead of running into "4,541". */
+  #impQuote2 { --x: min(150px, calc(var(--imp2-side) - 90px)); --y: 0px; --sc: 1.15; max-width: 560px; }
+  @media (max-width: 1100px) { #impQuote2 { --sc: 1; max-width: 400px; } }
   .imp2-rpp { grid-row: 1; grid-column: 1 / -1; margin-bottom: 14px; font-size: var(--tl-fs-xs);
     font-weight: 700; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--tl-ink-300); }
   .imp2-qmark { grid-row: 2; grid-column: 1; font-size: var(--tl-fs-xl); font-weight: 800;
@@ -333,13 +350,21 @@
 
   /* ── Journey: a top-centre heading + a glass jar on the left,
         cards fade through on the right ───────────────────────── */
-  /* heading sits pinned at top-centre; --x/--y/--sc are baked from the GUI (press J) */
+  /* heading offset + scale (baked from the GUI on a 1920×1080 screen as
+     256px / 96px, kept in viewport units so it holds on every size).
+     --jh-bottom is where the heading ends; the card step starts below it and
+     the jar centres on the space that's left, so neither can slide under it. */
+  .j-stage { --jh-x: 13.3vw; --jh-y: 8.9vh; --jh-sc: 1.23;
+    --jh-bottom: calc(5vh + var(--jh-y) + min(var(--tl-fs-xl), 5vh) * var(--jh-sc) * 1.25); }
   .j-heading { position: absolute; top: 5vh; left: 50%; margin: 0; text-align: center;
     font-size: min(var(--tl-fs-xl), 5vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900);
-    transform: translate(-50%, 0) translate(var(--x, 0px), var(--y, 0px)) scale(var(--sc, 1));
+    transform: translate(-50%, 0) translate(var(--jh-x), var(--jh-y)) scale(var(--jh-sc));
     transform-origin: top center; }
-  /* spherical glass jar on the left of the cards; --jx/--jy offset, --jsize diameter */
-  .j-jar { position: absolute; left: 6vw; top: 50%;
+  /* spherical glass jar on the left of the cards; --jx/--jy offset, --jsize diameter.
+     --jsize is capped so the jar never runs under the card column (right: 6vw +
+     20px step padding, min(660px, 52vw) wide; 110px = --jx + padding + scrollbar
+     + a 24px gap) or past the space between heading and nav. */
+  .j-jar { position: absolute; left: 6vw; top: calc((var(--jh-bottom) + 2vh + 100% - 6vh - 84px) / 2);
     width: var(--jsize, 300px); height: var(--jsize, 300px); border-radius: 50%;
     transform: translate(var(--jx, 0px), calc(-50% + var(--jy, 0px)));
     background:
@@ -362,7 +387,10 @@
   /* step indicators — sit centred under the card column (mirrors the card's
      right-aligned width so they line up beneath it) */
   .j-steps { position: absolute; right: 6vw; width: min(660px, 52vw); bottom: 8vh;
-    display: flex; justify-content: center; gap: 14px; pointer-events: none; z-index: 4; }
+    display: flex; justify-content: center; gap: 14px; pointer-events: none; z-index: 4;
+    transition: bottom .35s cubic-bezier(.4,0,.2,1); }
+  /* while the quick section nav shows, sit above it (76px = its 16px inset + height) */
+  body.tl-chrome-hidden .j-steps { bottom: max(8vh, 76px); }
   .j-step-pill { font-size: min(var(--tl-fs-base), 2vh); font-weight: 600; letter-spacing: var(--tl-tracking-tight);
     color: var(--tl-ink-300); background: var(--tl-white); border: 2px solid var(--tl-line-300);
     border-radius: var(--tl-radius-md); padding: 8px 18px; white-space: nowrap;
@@ -380,8 +408,9 @@
   .j-when-txt { font-size: min(var(--tl-fs-sm), 2vh); font-weight: 600; line-height: 1.45; color: var(--tl-ink-700); }
   @media (max-width: 1080px) {
     .j-steps { right: 0; left: 0; width: auto; bottom: 5vh; }
+    body.tl-chrome-hidden .j-steps { bottom: max(5vh, 76px); }
   }
-  .j-stage .step { justify-content: flex-end; }
+  .j-stage .step { justify-content: flex-end; padding-top: calc(var(--jh-bottom) + 2vh); }
   /* perspective on the card wrapper (origin = card centre) so the Y-axis flip
      reads as real 3D depth, not a flat squash */
   .j-stage .step-in { width: min(660px, 52vw); margin-right: 6vw; perspective: 1400px; }
@@ -390,10 +419,13 @@
 
   /* ── Footer strip on the closing stage ────────────────────── */
   .foot { position: absolute; left: 0; right: 0; bottom: 0; border-top: 1px solid var(--tl-line-200); padding: 20px 24px; background: var(--tl-glass); pointer-events: auto; }
+  /* keep the footer's right end 72px clear of the screen edge so the ↑/↓ buttons don't cover it */
+  .foot > div { box-sizing: border-box; padding-right: max(0px, calc(48px - max(0px, (100vw - 1140px) / 2))); }
 
   /* ── Responsive ───────────────────────────────────────────── */
   @media (max-width: 1080px) {
-    .j-heading { position: static; transform: scale(var(--sc, 1)); margin: 0 auto 8px; }
+    .j-stage { --jh-bottom: calc(6vh + 8px + min(var(--tl-fs-xl), 5vh) * var(--jh-sc) * 1.25); }
+    .j-heading { position: static; transform: scale(var(--jh-sc)); margin: calc(6vh + 8px) auto 0; }
     .j-jar { display: none; }
     .j-stage .step { justify-content: center; }
     .j-stage .step-in { width: 100%; max-width: 660px; margin-right: 0; }
@@ -852,7 +884,7 @@
         <div id="impactCard" style="width: 100%; margin: 0 auto; text-align: center; position: relative;">
           <!-- heading block (left) + 3-tier school-logo grid (right), in one rounded card. -->
           <div class="sch-panel">
-            <div class="sch-copy" id="schCopy" style="--tx: -88px; --ty: 0px; --tsc: 1.65;">
+            <div class="sch-copy" id="schCopy">
               <h2 class="sch-head"><span style="color: var(--tl-pink-600);">53</span> schools</h2>
               <p class="sch-sub">across India and Sri Lanka, from CBSE and ICSE to IB and Cambridge, have joined.</p>
             </div>
@@ -900,10 +932,10 @@
         </div>
         <div class="imp2-bottom">
           <div class="imp2-stats">
-            <div class="imp2-stat imp2-move rv" style="--x:-42px; --y:0px; --sc:1.4;"><div class="imp2-num">12,510</div><div class="imp2-lbl">Children<br>assessed</div></div>
+            <div class="imp2-stat imp2-move rv" style="--x:max(-42px, calc(24px - var(--imp2-side))); --y:0px; --sc:1.4;"><div class="imp2-num">12,510</div><div class="imp2-lbl">Children<br>assessed</div></div>
             <div class="imp2-stat imp2-move rv" style="--x:42px; --y:0px; --sc:1.4;"><div class="imp2-num">4,541</div><div class="imp2-lbl">Educators<br>trained</div></div>
           </div>
-          <blockquote class="imp2-quote imp2-move rv" style="--x:150px; --y:0px; --sc:1.15; max-width:560px;">
+          <blockquote class="imp2-quote imp2-move rv" id="impQuote2">
             <div class="imp2-rpp">Research-Practice Partnership with Stanford &amp; NMAJS</div>
             <span class="imp2-qmark">&ldquo;</span>
             <p class="imp2-qtext" style="font-size:var(--tl-fs-base); line-height:1.5;">What makes this work so powerful is the way it brings research, data and classroom practice together, turning evidence into insights that can genuinely support teachers and children.</p>
@@ -932,10 +964,10 @@
 <div class="scene" data-scene data-wash="--tl-white" data-label="Journey" data-pin="journey" style="height: 330vh;">
   <div class="stage j-stage">
     <div class="stage-deco">
-      <!-- top-centre heading · position + scale tunable in the GUI (press J) -->
-      <h2 class="j-heading" style="--x:256px; --y:96px; --sc:1.23;">What a year with Tilli looks like</h2>
+      <!-- top-centre heading · position + scale live in the .j-stage CSS vars -->
+      <h2 class="j-heading">What a year with Tilli looks like</h2>
       <!-- spherical jar to the left of the cards · size + offset tunable (press J) -->
-      <div class="j-jar" style="--jx:43px; --jy:-3px; --jsize:435px;"></div>
+      <div class="j-jar" style="--jx:43px; --jy:-3px; --jsize:min(435px, 58vh, calc(88vw - min(660px, 52vw) - 110px));"></div>
       <!-- step indicators under the cards — the pill for the card on screen goes
            active (its colour); the others sit grey. main.js toggles .on. -->
       <div class="j-steps">
@@ -1065,7 +1097,7 @@
 <script src="js/ask-tilli-demo.js?v=2"></script>
 <script src="js/impact-orbits.js?v=7"></script>
 <script src="js/impact-carousel.js?v=7"></script>
-<script type="module" src="js/main.js?v=130"></script>
+<script type="module" src="js/main.js?v=131"></script>
 <script src="js/site-config.js?v=2"></script>
 <script src="js/site-chrome.js?v=5"></script>
 </body>
