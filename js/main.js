@@ -72,6 +72,8 @@ const MOBILE_CFG = {
   dprCap: 1.5,       // max devicePixelRatio for the WebGL canvas
   dust: 160,         // ambient dust particles (desktop 420)
   sceneScale: 0.85,  // scroll length of every scene × this (native flicks travel further)
+  kidDot: 0.7,       // extra dot-size multiplier for the On-track kids (smaller = finer outline)
+  kidsWalk: false,   // false = kids are already standing in place (grow in, no walk from the left)
 };
 /* the height the world + stages are laid out against. Desktop: the window.
    Mobile: the LARGE viewport (URL bar hidden), measured once per width, so
@@ -174,28 +176,13 @@ const FIT_NAV = 84;
 
 /* ── Phone DOM tweaks (before the scene registry reads the steps) ─────
    • every scene's scroll length × MOBILE_CFG.sceneScale
-   • PORTRAIT: the 12-skills screen can't hold 12 cards beside the helix, so
-     it becomes TWO steps — Thinking skills, then People skills — each a
-     one-column list, cross-fading like any multi-step scene. */
+   (the 12-skills screen stays ONE step on phones — all 12 names in a 2-col
+   grid, see the html.tl-portrait .skills-* rules; fitSteps shrinks it to fit) */
 if (MOBILE) {
   document.querySelectorAll('[data-scene]').forEach((el) => {
     const m = /([\d.]+)vh/.exec(el.style.height);
     if (m) el.style.height = `${(+m[1] * MOBILE_CFG.sceneScale).toFixed(1)}vh`;
   });
-}
-if (PORTRAIT) {
-  const sk = document.querySelector('[data-label="12 skills"] .step');
-  if (sk) {
-    const sk2 = sk.cloneNode(true);
-    sk.parentNode.insertBefore(sk2, sk.nextSibling);
-    const drop = (step, from) => {
-      const heads = step.querySelectorAll('.skill-group-head'), grids = step.querySelectorAll('.skills-grid');
-      heads[from] && heads[from].remove();
-      grids[from] && grids[from].remove();
-    };
-    drop(sk, 1);    // step 1 keeps Thinking skills
-    drop(sk2, 0);   // step 2 keeps People skills
-  }
 }
 
 /* ── Scene registry (DOM order = station order) ───────────────────── */
@@ -929,7 +916,7 @@ const KID = {
   gap: 9.5,
   x: 0, y: 2.5, z: -3,
   height: 11,
-  dot: 1.2 * (MOBILE ? MOBILE_CFG.dotScale : 1),
+  dot: 1.2 * (MOBILE ? MOBILE_CFG.dotScale * MOBILE_CFG.kidDot : 1),
   colors: [C.green, C.yellow, C.cyan],
   cols: 6,          // kids per row (phones: 3 → two rows)
   rowGap: 0,        // world units between row centres
@@ -4265,7 +4252,8 @@ if (reduced) {
         th.kidWalk = Math.min(1, (th.kidWalk || 0) + dt * WALK.speed);
         const kids = th.F[onI];
         const wlk = smoother(th.kidWalk);                // eased 0→1 arrival
-        const lx = WALK.slideL * (1 - wlk);              // remaining leftward offset → 0 at rest
+        /* phones: no walk — the kids are already standing in place, they just grow in */
+        const lx = MOBILE && !MOBILE_CFG.kidsWalk ? 0 : WALK.slideL * (1 - wlk);   // remaining leftward offset → 0 at rest
         const colIn = smooth(clamp(th.kidWalk / 0.1));   // grow in as they enter (a white fade would show on the tinted wash)
         /* the bob keeps hopping through the walk AND the whole On-track hold,
            at full strength right up to the exit — the straight exit below then

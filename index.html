@@ -546,13 +546,18 @@
   /* phones show ONE strand caption at a time (runPin 'dna'); hiding the other two
      by default means fitSteps measures the real height instead of all three */
   html.tl-portrait .dna-grid .stage-title ~ .stage-title { display: none; }
-  html.tl-portrait .dna-panels { height: min(260px, 36vh) !important; }
+  /* the three panels stack in ONE grid cell (not absolute in a fixed-height
+     box), so the box is as tall as the tallest panel — nothing spills over the
+     caption above, and fitSteps measures the real height and shrinks if needed */
+  html.tl-portrait .dna-panels { height: auto !important; display: grid; }
+  html.tl-portrait .stage-panel { position: relative; inset: auto; grid-area: 1 / 1; }
+  html.tl-portrait .stage-panel > div { box-sizing: border-box; }
   /* answer pills: small enough that all three sit on one row */
   html.tl-portrait .stage-panel span { padding: 6px 11px !important; font-size: var(--tl-fs-xs) !important; }
   html.tl-portrait .stage-panel > div { padding: 16px !important; flex-direction: column; align-items: flex-start !important; }
-  html.tl-portrait .stage-panel img { width: 96px !important; }
+  html.tl-portrait .stage-panel img { width: 80px !important; }   /* keeps the child-task card short enough to fit */
 
-  /* 12 skills: one column per step (Thinking, then People) beside the helix */
+  /* 12 skills: one screen on phones (no Thinking/People split) */
   html.tl-portrait .skills-wrap { padding: 0 16px; }
   /* all 12 on one screen: full width, 2 columns, skill NAMES only (the
      descriptions live on desktop + the Research page). The mini helix sits
@@ -1306,7 +1311,7 @@
 <script src="js/ask-tilli-demo.js?v=2"></script>
 <script src="js/impact-orbits.js?v=7"></script>
 <script src="js/impact-carousel.js?v=7"></script>
-<script type="module" src="js/main.js?v=140"></script>
+<script type="module" src="js/main.js?v=142"></script>
 <script src="js/site-config.js?v=2"></script>
 <script src="js/site-chrome.js?v=6"></script>
 </body>
