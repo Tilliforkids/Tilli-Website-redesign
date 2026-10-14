@@ -491,6 +491,9 @@
      matches these selectors. ════════════════════════════════════════════ */
   /* native scroll: no ↑/↓ detent buttons */
   html.tl-mobile #arrows { display: none; }
+  /* …so the WhatsApp bubble drops back to the corner (the 122px lift in
+     site.css only cleared those arrows); back-to-top stacks above it again */
+  html.tl-mobile .tl-wa { bottom: calc(22px + env(safe-area-inset-bottom)); }
   /* no section quick-nav pill bar on phones (header burger + back-to-top cover it) */
   html.tl-mobile #quicknav { display: none !important; }
   /* the world is laid out against the LARGE viewport (URL bar hidden) so the
@@ -1236,7 +1239,7 @@
 <script src="js/ask-tilli-demo.js?v=2"></script>
 <script src="js/impact-orbits.js?v=7"></script>
 <script src="js/impact-carousel.js?v=7"></script>
-<script type="module" src="js/main.js?v=138"></script>
+<script type="module" src="js/main.js?v=139"></script>
 <script src="js/site-config.js?v=2"></script>
 <script src="js/site-chrome.js?v=6"></script>
 </body>

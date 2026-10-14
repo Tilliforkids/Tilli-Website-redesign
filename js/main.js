@@ -1113,15 +1113,32 @@ const HAND_BURST = { move: 7, rotX: 0, rotZ: 0 };
      orbY    orb centre, screen fraction from the top
      orbR    orb radius as a fraction of the visible half-width
      hands   per-hand screen-fraction centre + width (scale × screen width) */
+/* Portrait hands sit on either SIDE of the orb (not the top corners): upright
+   image (arm curls down + off-screen), fingertip placed on the orb's edge.
+     handScale  hand image width as a fraction of the screen width
+     tipInset   fingertip position as a fraction of the orb radius from centre
+                (1 = exactly on the edge, <1 = overlapping into the orb)
+     tipDY      fingertip height offset from the orb centre, screen-height frac */
 const PORTRAIT_HERO = {
   orbY: 0.34, orbR: 0.62,
-  hands: { left: { x: 0.15, y: 0.15, scale: 0.58 }, right: { x: 0.85, y: 0.15, scale: 0.58 } },
+  handScale: 0.5, tipInset: 0.88, tipDY: 0,
 };
+/* fingertip location inside Milo Hand.png (fraction of width / height from
+   the top-left), and the image aspect (h / w) */
+const HAND_TIP = { u: 0.02, v: 0.19 }, HAND_IMG_ASPECT = 963 / 1412;
 if (PORTRAIT) {
   ORB.y = PORTRAIT_HERO.orbY;
-  SPHERE.radius = Math.min(SPHERE.radius, visHalf(SPHERE_Z).w * PORTRAIT_HERO.orbR);
-  Object.assign(HANDS.left, PORTRAIT_HERO.hands.left);
-  Object.assign(HANDS.right, PORTRAIT_HERO.hands.right);
+  const vh = visHalf(SPHERE_Z);
+  SPHERE.radius = Math.min(SPHERE.radius, vh.w * PORTRAIT_HERO.orbR);
+  /* derive centres from the live orb size + screen aspect so the fingertips
+     land on the orb's edge on any phone */
+  const s = PORTRAIT_HERO.handScale;
+  const tipX = 0.5 + (SPHERE.radius * PORTRAIT_HERO.tipInset) / (2 * vh.w);
+  const tipY = ORB.y + PORTRAIT_HERO.tipDY;
+  const cx = tipX + (0.5 - HAND_TIP.u) * s;
+  const cy = tipY + (0.5 - HAND_TIP.v) * s * HAND_IMG_ASPECT * (vh.w / vh.h);
+  Object.assign(HANDS.left,  { x: 1 - cx, y: cy, scale: s, flipY: false });
+  Object.assign(HANDS.right, { x: cx,     y: cy, scale: s, flipY: false });
 }
 
 /* map a screen fraction (0..1, top-left origin) to a world point on plane z */
