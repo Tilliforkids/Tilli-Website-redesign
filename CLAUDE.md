@@ -6,6 +6,9 @@
 
 <!-- Your rules go here. A few starters — keep, change or delete them. -->
 
+- **If you're confused or unsure about anything, always ask me — never
+  assume.** This applies to requirements, scope (desktop vs mobile),
+  placement, behaviour, and anything else that's ambiguous.
 - Don't re-explain code I can read. Explain the *why* when it isn't
   obvious from the diff.
 - Don't explain every minute detail of the changes unless i ask explicitely

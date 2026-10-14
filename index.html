@@ -574,11 +574,21 @@
      without it the step fits at full size (fitSteps no longer shrinks it) */
   html.tl-portrait [data-ai-p] { display: none !important; }
   html.tl-portrait [data-ai-h] { margin: 0 auto 14px !important; }
-  html.tl-portrait [data-ai-card] { padding: 14px 16px !important; gap: 8px !important; }
-  html.tl-portrait [data-ai-card] + [data-ai-card] { margin-top: 0; }
-  html.tl-portrait [data-ai-card] [data-ai-q], html.tl-portrait [data-ai-card] [data-ai-r] { font-size: var(--tl-fs-sm) !important; line-height: 1.45 !important; padding: 9px 12px !important; max-width: 94% !important; }
-  html.tl-portrait [data-ai-foot] { padding-top: 6px !important; font-size: var(--tl-fs-sm) !important; }
-  html.tl-portrait .ai-cards { gap: 12px !important; min-height: 0 !important; }
+  /* phones: ONE card in focus at a time. The generic card sits under the
+     heading; the AskTilli card hangs just below it (absolute, so it doesn't
+     count toward the fitted height) and peeks in at the bottom. Once the
+     generic answer lands, runPin('ai') slides the stack up so AskTilli takes
+     the generic card's spot (PHONE_ASK in js/main.js). */
+  html.tl-portrait .ai-cards { display: block !important; position: relative; min-height: 0 !important; will-change: transform; }
+  html.tl-portrait [data-ai-card] { flex: none !important; min-width: 0 !important; box-sizing: border-box;
+    padding: 18px 18px !important; gap: 10px !important; }
+  html.tl-portrait [data-ai-card]:first-child { width: var(--ai-gen-w); max-width: none !important; min-height: var(--ai-gen-h); margin: 0 auto; }
+  html.tl-portrait [data-ai-card] + [data-ai-card] { position: absolute; top: calc(100% + var(--ai-gap)); left: 50%;
+    width: var(--ai-tilli-w); max-width: none !important; margin: 0 0 0 calc(var(--ai-tilli-w) / -2); }
+  html.tl-portrait .ai-cards { --ai-gen-w: 66vw; --ai-gen-h: 48vh; --ai-tilli-w: 76vw; --ai-gap: 18px; }
+  html.tl-portrait [data-ai-card] [data-ai-q], html.tl-portrait [data-ai-card] [data-ai-r] { font-size: var(--m-fs-body, 15px) !important; line-height: 1.5 !important; padding: 10px 13px !important; max-width: 94% !important; }
+  html.tl-portrait [data-ai-foot] { padding-top: 8px !important; font-size: var(--m-fs-body, 15px) !important; }
+  html.tl-portrait [data-ai-foot] span { font-size: var(--m-fs-small, 12px) !important; }
 
   /* impact: the baked desktop scale-ups are dropped */
   html.tl-mobile #schCopy { --tx: 0px; --tsc: 1; }
@@ -1311,7 +1321,7 @@
 <script src="js/ask-tilli-demo.js?v=2"></script>
 <script src="js/impact-orbits.js?v=7"></script>
 <script src="js/impact-carousel.js?v=7"></script>
-<script type="module" src="js/main.js?v=143"></script>
+<script type="module" src="js/main.js?v=145"></script>
 <script src="js/site-config.js?v=2"></script>
 <script src="js/site-chrome.js?v=7"></script>
 </body>

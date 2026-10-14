@@ -1255,6 +1255,23 @@ const ASK = { headFrom: 0.72, headDur: 560, subAt: 360,
    AskTilli detent while it's set. `boost` = ms fast-forwarded by scrolling
    against that gate (added onto the clock). */
 const askChat = { ms: -1, locked: true, boost: 0 };
+/* PHONES: one chat card in focus at a time. The generic card plays its chat,
+   HOLDS, then the card stack slides up so the AskTilli card takes its spot,
+   and only then does AskTilli's prompt / dot stream / answer play.
+     hold     ms the finished generic answer stays on screen before the swap
+     swapDur  ms the slide-up takes
+     after    ms after the slide before AskTilli's prompt pops */
+const PHONE_ASK = { hold: 1500, swapDur: 650, after: 150 };
+/* the phone chat timeline (ms on the askChat clock), shared by runPin('ai')
+   and the dot-flow block so the streams and the cards agree */
+function phoneAskTimes() {
+  const resp0 = ASK.promptAt + ASK.flowGap + (ASK_FLOW.red.speed > 0 ? 1000 / ASK_FLOW.red.speed : 0);
+  const swapAt = resp0 + ASK.pop + PHONE_ASK.hold;
+  const swapEnd = swapAt + PHONE_ASK.swapDur;
+  return { swapAt, swapEnd, prompt1: swapEnd + PHONE_ASK.after };
+}
+/* swap progress (0 = generic in focus, 1 = AskTilli in focus) at clock `ms` */
+const phoneAskSwap = (ms) => (PORTRAIT && ms >= 0 ? ease(clamp((ms - phoneAskTimes().swapAt) / PHONE_ASK.swapDur)) : 0);
 /* ── ASK-LIVE cursor-carry + plug ─────────────────────────────────────
    Leaving the "Any AI can…" screen, the colourful dots detach from Dhruv's
    chat and CARRY on the cursor as a loose swirling cloud (carryP trails the
@@ -1928,8 +1945,20 @@ function anchorAskFlow() {
   if (cards.length < 2) return;
   const st = sc.stage.getBoundingClientRect();
   const W = window.innerWidth, H = viewH();
-  const box = (el) => { const r = el.getBoundingClientRect(); return { l: (r.left - st.left) / W, r: (r.right - st.left) / W, cy: ((r.top + r.bottom) / 2 - st.top) / H }; };
+  /* measure the stack at rest (no swap slide applied) with the finished
+     exchange showing — the bubbles are display:none until they pop in */
+  const stack = cards[0].parentElement, prevT = stack.style.transform;
+  stack.style.transform = 'none';
+  const hidden = Array.from(stack.querySelectorAll('[data-ai-q], [data-ai-r]')).filter((e) => e.style.display === 'none');
+  hidden.forEach((e) => { e.style.display = 'block'; });
+  const box = (el) => { const r = el.getBoundingClientRect(); return { l: (r.left - st.left) / W, r: (r.right - st.left) / W, t: (r.top - st.top) / H, h: r.height / H }; };
   const a = box(cards[0]), b = box(cards[1]);
+  hidden.forEach((e) => { e.style.display = 'none'; });
+  stack.style.transform = prevT;
+  a.cy = a.t + a.h / 2;
+  /* the colour stream only runs AFTER the swap, when AskTilli's top sits where
+     the generic card's top was — aim at the middle of that spot */
+  b.cy = a.t + b.h / 2;
   const A = PORTRAIT_ASK;
   ASK_FLOW.red.pts = [[-0.06, -0.05], [A.c1[0], A.c1[1]], [A.c2x, a.cy], [a.l + A.inset, a.cy]];
   ASK_FLOW.blue.pts = [[1.06, -0.05], [1 - A.c1[0], A.c1[1] + 0.2], [1 - A.c2x, b.cy], [b.r - A.inset, b.cy]];
@@ -3703,9 +3732,18 @@ function runPin(sc, p) {
     /* 4 · CHAT. Per box: prompt pops → a typing bubble shows while the dots
        stream down the path → the response replaces it the instant the first
        dot arrives. Track the LAST response so we know when to release scroll. */
+    /* phones: slide the stack up so AskTilli takes the generic card's spot;
+       the generic card fades as it leaves */
+    const swap = phoneAskSwap(ms);
+    if (PORTRAIT && T.aiCards.length > 1) {
+      const [g, a] = T.aiCards;
+      g.parentElement.style.transform = `translateY(${(-(a.offsetTop - g.offsetTop) * swap).toFixed(1)}px)`;
+      g.style.opacity = String(qc * (1 - clamp(swap * 1.6)));
+    }
     let lastResp = 0;
     T.aiCards.forEach((_, i) => {
-      const tPrompt = ASK.promptAt + i * ASK.stagger;   // the second box lags slightly
+      /* desktop: the second box lags slightly · phones: AskTilli waits for the swap */
+      const tPrompt = PORTRAIT && i === 1 ? phoneAskTimes().prompt1 : ASK.promptAt + i * ASK.stagger;
       /* the dots begin streaming flowGap after the prompt; the response pops the
          instant the FIRST dot reaches the box — i.e. one full path-traverse
          (1/speed sec) later. Same numbers the flow block uses, so they agree. */
@@ -4447,7 +4485,9 @@ if (reduced) {
         grey.set(ASK_FLOW.gray).lerp(white, 0.06);
         const pal = th._askPal || (th._askPal = [C.cyan, C.green, C.yellow].map((h) => new THREE.Color(h).lerp(white, 0.05)));
         const start0 = ASK.promptAt + ASK.flowGap;                  // grey box flow start (ms)
-        const start1 = ASK.stagger + ASK.promptAt + ASK.flowGap;    // colour box flow start
+        const start1 = PORTRAIT ? phoneAskTimes().prompt1 + ASK.flowGap   // phones: after the card swap
+          : ASK.stagger + ASK.promptAt + ASK.flowGap;               // colour box flow start
+        const greySwap = 1 - phoneAskSwap(ms);                      // phones: grey stream leaves with its card
         /* SCROLL-AWAY / SNAP: the COLOURFUL tail rubber-bands onto a moving
            target. The start (A) and first handle (C1) stay put — only the tail
            handle (C2) and endpoint (D) chase the target, so the stream keeps
@@ -4523,7 +4563,7 @@ if (reduced) {
                tail is attached to the cursor, drop that out-fade so the dots
                actually arrive at the pointer instead of vanishing. */
             const outFade = smooth(clamp((t - 0.82) / 0.18)) * (isGrey ? 1 : 1 - attach);
-            show = Math.min(smooth(clamp(t / 0.07)), 1 - outFade);
+            show = Math.min(smooth(clamp(t / 0.07)), 1 - outFade) * (isGrey ? greySwap : 1);
           } else {
             tx = arc[0][0]; ty = arc[0][1]; tz = AZ;             // un-born: parked (invisible) at the path start
             show = 0;
