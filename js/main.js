@@ -211,7 +211,7 @@ scenes.forEach((s, i) => { ST[s.label] = i; });
 
 /* Scene tops / scroll lengths. The last scene can only be scrolled to
    `height - vh`, so its progress is measured against that. */
-function measure() {
+function measureTops() {
   const vh = viewH();
   const y0 = window.scrollY;
   scenes.forEach((s, i) => {
@@ -219,6 +219,9 @@ function measure() {
     const h = s.el.offsetHeight;
     s.len = Math.max(1, i === LAST ? h - vh : h);
   });
+}
+function measure() {
+  measureTops();
   fitSteps();
   fitViewsHead();   // after fitSteps: it reads the step's fit scale
   buildJar();
@@ -229,6 +232,7 @@ function measure() {
   layoutOnTrackText();
   measureReportTop();
   anchorAskFlow();
+  if (PORTRAIT && fitAskScroll()) measureTops();   // phones: Ask-Tilli scene resized to its page-scroll length
   measureFan();
   const helixMoved = fitSkillsHelix();
   if (three) {
@@ -1255,23 +1259,27 @@ const ASK = { headFrom: 0.72, headDur: 560, subAt: 360,
    AskTilli detent while it's set. `boost` = ms fast-forwarded by scrolling
    against that gate (added onto the clock). */
 const askChat = { ms: -1, locked: true, boost: 0 };
-/* PHONES: one chat card in focus at a time. The generic card plays its chat,
-   HOLDS, then the card stack slides up so the AskTilli card takes its spot,
-   and only then does AskTilli's prompt / dot stream / answer play.
-     hold     ms the finished generic answer stays on screen before the swap
-     swapDur  ms the slide-up takes
-     after    ms after the slide before AskTilli's prompt pops */
-const PHONE_ASK = { hold: 1500, swapDur: 650, after: 150 };
-/* the phone chat timeline (ms on the askChat clock), shared by runPin('ai')
-   and the dot-flow block so the streams and the cards agree */
-function phoneAskTimes() {
-  const resp0 = ASK.promptAt + ASK.flowGap + (ASK_FLOW.red.speed > 0 ? 1000 / ASK_FLOW.red.speed : 0);
-  const swapAt = resp0 + ASK.pop + PHONE_ASK.hold;
-  const swapEnd = swapAt + PHONE_ASK.swapDur;
-  return { swapAt, swapEnd, prompt1: swapEnd + PHONE_ASK.after };
+/* PHONES: the Ask-Tilli section scrolls like a NORMAL PAGE. It lands (pinned)
+   with the generic card in focus and plays that chat on the clock; from the
+   landing point on, the whole stage moves 1:1 with the scroll, bringing the
+   AskTilli card (hung below the generic one) up into view — its chat starts
+   once it reaches focus — and the "Now you try" (Ask-live) stage follows
+   straight after it, tiled like the next block on a page.
+     gap      px between the bottom of the AskTilli card and the Ask-live copy
+     startAt  how far (0..1) into the generic→AskTilli scroll its chat starts
+     after    ms from that moment until AskTilli's prompt pops */
+const PHONE_ASK = { gap: 56, startAt: 0.85, after: 150 };
+/* live layout (fitAskScroll): focus = px of scroll from the landing point until
+   AskTilli sits where the generic card was (also a snap stop); T = px until the
+   Ask-live stage is at rest. prompt1 = AskTilli prompt time on the askChat
+   clock (Infinity until it reaches focus). */
+const phoneAsk = { focus: 0, T: 0, prompt1: Infinity };
+const PHONE_ASK_STOP = { i: -1, frac: 0, label: 'Ask-Tilli focus' };   // snap stop, placed by fitAskScroll
+/* px scrolled past the Ask-Tilli landing point (raw scroll, so it's 1:1) */
+function phoneAskD() {
+  const i = ST['Ask-Tilli'];
+  return i == null ? 0 : Math.max(0, window.scrollY - stopY({ i, frac: DETENT_AT['Ask-Tilli'][0] }));
 }
-/* swap progress (0 = generic in focus, 1 = AskTilli in focus) at clock `ms` */
-const phoneAskSwap = (ms) => (PORTRAIT && ms >= 0 ? ease(clamp((ms - phoneAskTimes().swapAt) / PHONE_ASK.swapDur)) : 0);
 /* ── ASK-LIVE cursor-carry + plug ─────────────────────────────────────
    Leaving the "Any AI can…" screen, the colourful dots detach from Dhruv's
    chat and CARRY on the cursor as a loose swirling cloud (carryP trails the
@@ -1956,13 +1964,48 @@ function anchorAskFlow() {
   hidden.forEach((e) => { e.style.display = 'none'; });
   stack.style.transform = prevT;
   a.cy = a.t + a.h / 2;
-  /* the colour stream only runs AFTER the swap, when AskTilli's top sits where
-     the generic card's top was — aim at the middle of that spot */
-  b.cy = a.t + b.h / 2;
+  b.cy = b.t + b.h / 2;   // (phones re-aim both ends every frame as the cards scroll — runPin 'ai')
   const A = PORTRAIT_ASK;
   ASK_FLOW.red.pts = [[-0.06, -0.05], [A.c1[0], A.c1[1]], [A.c2x, a.cy], [a.l + A.inset, a.cy]];
   ASK_FLOW.blue.pts = [[1.06, -0.05], [1 - A.c1[0], A.c1[1] + 0.2], [1 - A.c2x, b.cy], [b.r - A.inset, b.cy]];
 }
+/* PHONES: measure the Ask-Tilli page-scroll (see PHONE_ASK) and size the
+   scene so the Ask-live stage comes to rest exactly at its own landing point —
+   no dead scroll, no shortfall. Returns true when the scene height changed. */
+function fitAskScroll() {
+  const ai = scenes[ST['Ask-Tilli']], live = scenes[ST['Ask-live']];
+  if (!ai || !live || !ai.stage || !live.stage) return false;
+  const cards = ai.stage.querySelectorAll('[data-ai-card]');
+  const liveIn = live.stage.querySelector('.step-in');
+  if (cards.length < 2 || !liveIn) return false;
+  /* measure at rest (no stage slide) with the finished exchange showing */
+  const els = [ai.stage, live.stage], saved = els.map((e) => e.style.transform);
+  els.forEach((e) => { e.style.transform = 'none'; });
+  const hidden = Array.from(ai.stage.querySelectorAll('[data-ai-q], [data-ai-r]')).filter((e) => e.style.display === 'none');
+  hidden.forEach((e) => { e.style.display = 'block'; });
+  const g = cards[0].getBoundingClientRect(), a = cards[1].getBoundingClientRect();
+  const aiTop = ai.stage.getBoundingClientRect().top;
+  const liveOff = liveIn.getBoundingClientRect().top - live.stage.getBoundingClientRect().top;
+  hidden.forEach((e) => { e.style.display = 'none'; });
+  els.forEach((e, k) => { e.style.transform = saved[k]; });
+  phoneAsk.focus = Math.max(0, a.top - g.top);
+  phoneAsk.T = Math.max(phoneAsk.focus, a.bottom - aiTop + PHONE_ASK.gap - liveOff);
+  /* landing y0 + T must equal Ask-live's landing point. Growing the scene by Δ
+     moves y0 by Δ·f0 and Ask-live's landing by Δ, so Δ = shortfall / (1 − f0). */
+  if (!ai.el.dataset.h0) ai.el.dataset.h0 = ai.el.style.height;
+  const f0 = DETENT_AT['Ask-Tilli'][0], fl = DETENT_AT['Ask-live'][0];
+  ai.el.style.height = ai.el.dataset.h0;
+  measureTops();
+  const y0 = ai.top + ai.len * f0;
+  const liveRest = live.top + live.len * fl;
+  const delta = Math.round((y0 + phoneAsk.T - liveRest) / (1 - f0));
+  if (delta) ai.el.style.height = `calc(${ai.el.dataset.h0} + ${delta}px)`;
+  const len = ai.len + delta;
+  PHONE_ASK_STOP.i = ST['Ask-Tilli'];
+  PHONE_ASK_STOP.frac = f0 + phoneAsk.focus / len;
+  return true;
+}
+
 /* one coordinate of a cubic Bézier at t */
 const bez3 = (a, b, c, d, t) => { const u = 1 - t; return u * u * u * a + 3 * u * u * t * b + 3 * u * t * t * c + t * t * t * d; };
 
@@ -2933,6 +2976,14 @@ if (DEBUG) { window.__tilliSnap = SNAP; window.__tilliDetent = DETENT; }   // ?d
 const HERO = ST['Start'];
 const snapStops = [];
 scenes.forEach((s, i) => (DETENT_AT[s.label] || []).forEach((frac) => snapStops.push({ i, frac, label: s.label })));
+/* phones: an extra resting point with the AskTilli card in focus (frac set by
+   fitAskScroll), right after the Ask-Tilli landing so the list stays in order */
+if (PORTRAIT && ST['Ask-Tilli'] != null) {
+  PHONE_ASK_STOP.i = ST['Ask-Tilli'];
+  PHONE_ASK_STOP.frac = DETENT_AT['Ask-Tilli'][0];
+  const at = snapStops.findIndex((d) => d.label === 'Ask-Tilli');
+  snapStops.splice(at + 1, 0, PHONE_ASK_STOP);
+}
 function stopY(stop) {
   const s = scenes[clamp(stop.i, 0, LAST)];
   return s.top + s.len * stop.frac;
@@ -3459,9 +3510,17 @@ function onScroll(fOverride) {
          then physically translates UP and out (like a normal page scroll) as
          the Ask-live screen climbs in from below. */
       const inFade = smooth(clamp((f - (aiI - FADE_OVER)) / FADE_LEN));
-      const aiOut = smoother(clamp((f - (aiI + 0.58)) / 0.42));
-      ty = -aiOut;
-      op = inFade * (1 - smooth(clamp((aiOut - 0.92) / 0.08)));   // opaque until fully gone
+      if (PORTRAIT) {
+        /* phones: a plain page scroll — the stage rides up 1:1 with the scroll
+           from the landing point (PHONE_ASK), hidden once it's fully gone */
+        const d = phoneAskD(), H = sc.stage.offsetHeight || viewH();
+        ty = -d / H;
+        op = inFade * (d > phoneAsk.T + H ? 0 : 1);
+      } else {
+        const aiOut = smoother(clamp((f - (aiI + 0.58)) / 0.42));
+        ty = -aiOut;
+        op = inFade * (1 - smooth(clamp((aiOut - 0.92) / 0.08)));   // opaque until fully gone
+      }
     } else if (k === askLiveI) {
       /* "Ask Tilli anything…" SCROLLS IN from below (opaque the whole way), then
          on the way OUT to Impact it ZOOMS THROUGH the camera — scales up + fades
@@ -3469,8 +3528,17 @@ function onScroll(fOverride) {
          The dot field fades out over the same window (see the dotMat block). */
       const askIn = smoother(clamp((f - (askLiveI - 0.42)) / 0.42));
       const askOut = smooth(clamp((f - (askLiveI + 0.62)) / 0.34));   // exit ramp over the tail
-      ty = 1 - askIn;
-      op = smooth(clamp(askIn / 0.08)) * (1 - askOut);
+      if (PORTRAIT) {
+        /* phones: tiled right under the AskTilli card, riding the same 1:1
+           page scroll until it comes to rest at its landing point */
+        const H = sc.stage.offsetHeight || viewH();
+        const below = Math.max(0, phoneAsk.T - phoneAskD());
+        ty = below / H;
+        op = (f > aiI && below < H ? 1 : 0) * (1 - askOut);
+      } else {
+        ty = 1 - askIn;
+        op = smooth(clamp(askIn / 0.08)) * (1 - askOut);
+      }
       exScale = 1 + askOut * 0.7;    // grow past the camera
       exBlur = MOBILE ? 0 : askOut * 16;   // px (phones: a full-screen blur is too costly)
     } else if (k === fitsI) {
@@ -3695,7 +3763,7 @@ function runPin(sc, p) {
     /* reset (re-arm for replay) only when scrolled back BEFORE the chat — NOT
        once it has finished. That way the completed boxes scroll away with their
        content intact instead of blanking out the instant p passes TRIG_OUT. */
-    if (p < TRIG_IN) { sc._chatT = 0; askChat.locked = true; askChat.boost = 0; }
+    if (p < TRIG_IN) { sc._chatT = 0; askChat.locked = true; askChat.boost = 0; phoneAsk.prompt1 = Infinity; }
     else if (live && !sc._chatT) sc._chatT = performance.now();
     const rawMs = sc._chatT ? performance.now() - sc._chatT + askChat.boost : -1;
     /* DOM clock: real time while live, then HELD at the finished frame past
@@ -3732,18 +3800,24 @@ function runPin(sc, p) {
     /* 4 · CHAT. Per box: prompt pops → a typing bubble shows while the dots
        stream down the path → the response replaces it the instant the first
        dot arrives. Track the LAST response so we know when to release scroll. */
-    /* phones: slide the stack up so AskTilli takes the generic card's spot;
-       the generic card fades as it leaves */
-    const swap = phoneAskSwap(ms);
+    /* phones: AskTilli's chat starts once the page scroll has brought its card
+       into focus (arriving from below — the chat never ran — shows it finished) */
     if (PORTRAIT && T.aiCards.length > 1) {
-      const [g, a] = T.aiCards;
-      g.parentElement.style.transform = `translateY(${(-(a.offsetTop - g.offsetTop) * swap).toFixed(1)}px)`;
-      g.style.opacity = String(qc * (1 - clamp(swap * 1.6)));
+      if (phoneAsk.prompt1 === Infinity && ms >= 0) {
+        if (ms >= 1e7) phoneAsk.prompt1 = 0;
+        else if (phoneAskD() >= phoneAsk.focus * PHONE_ASK.startAt) phoneAsk.prompt1 = ms + PHONE_ASK.after;
+      }
+      /* both dot streams pour into their card's LIVE position as it scrolls */
+      const [g, a] = T.aiCards, W = window.innerWidth, H = viewH(), A = PORTRAIT_ASK;
+      const rg = g.getBoundingClientRect(), ra = a.getBoundingClientRect();
+      const gy = (rg.top + rg.bottom) / 2 / H, ay = (ra.top + ra.bottom) / 2 / H;
+      ASK_FLOW.red.pts[2][1] = gy;  ASK_FLOW.red.pts[3] = [rg.left / W + A.inset, gy];
+      ASK_FLOW.blue.pts[2][1] = ay; ASK_FLOW.blue.pts[3] = [ra.right / W - A.inset, ay];
     }
     let lastResp = 0;
     T.aiCards.forEach((_, i) => {
       /* desktop: the second box lags slightly · phones: AskTilli waits for the swap */
-      const tPrompt = PORTRAIT && i === 1 ? phoneAskTimes().prompt1 : ASK.promptAt + i * ASK.stagger;
+      const tPrompt = PORTRAIT && i === 1 ? phoneAsk.prompt1 : ASK.promptAt + i * ASK.stagger;
       /* the dots begin streaming flowGap after the prompt; the response pops the
          instant the FIRST dot reaches the box — i.e. one full path-traverse
          (1/speed sec) later. Same numbers the flow block uses, so they agree. */
@@ -4485,9 +4559,8 @@ if (reduced) {
         grey.set(ASK_FLOW.gray).lerp(white, 0.06);
         const pal = th._askPal || (th._askPal = [C.cyan, C.green, C.yellow].map((h) => new THREE.Color(h).lerp(white, 0.05)));
         const start0 = ASK.promptAt + ASK.flowGap;                  // grey box flow start (ms)
-        const start1 = PORTRAIT ? phoneAskTimes().prompt1 + ASK.flowGap   // phones: after the card swap
+        const start1 = PORTRAIT ? phoneAsk.prompt1 + ASK.flowGap    // phones: once AskTilli is in focus
           : ASK.stagger + ASK.promptAt + ASK.flowGap;               // colour box flow start
-        const greySwap = 1 - phoneAskSwap(ms);                      // phones: grey stream leaves with its card
         /* SCROLL-AWAY / SNAP: the COLOURFUL tail rubber-bands onto a moving
            target. The start (A) and first handle (C1) stay put — only the tail
            handle (C2) and endpoint (D) chase the target, so the stream keeps
@@ -4563,7 +4636,7 @@ if (reduced) {
                tail is attached to the cursor, drop that out-fade so the dots
                actually arrive at the pointer instead of vanishing. */
             const outFade = smooth(clamp((t - 0.82) / 0.18)) * (isGrey ? 1 : 1 - attach);
-            show = Math.min(smooth(clamp(t / 0.07)), 1 - outFade) * (isGrey ? greySwap : 1);
+            show = Math.min(smooth(clamp(t / 0.07)), 1 - outFade);
           } else {
             tx = arc[0][0]; ty = arc[0][1]; tz = AZ;             // un-born: parked (invisible) at the path start
             show = 0;
