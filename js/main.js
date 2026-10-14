@@ -3058,6 +3058,10 @@ function layoutSnapMarks() {
 }
 
 function goToScene(i) { glideTo(sceneScrollTop(i)); }
+/* back-to-top button (js/site-chrome.js) calls this on Home: a native smooth
+   scrollTo fights the phone's mandatory scroll-snap (iOS Safari stalls it on
+   the nearest beat), so go through glideTo, which lifts the snap while it runs */
+window.tilliScrollTop = () => glideTo(0);
 document.getElementById('goPrev').addEventListener('click', () => glideTo(adjacentStopY(window.scrollY, -1) ?? 0));
 document.getElementById('goNext').addEventListener('click', () => glideTo(adjacentStopY(window.scrollY, 1) ?? maxY));
 

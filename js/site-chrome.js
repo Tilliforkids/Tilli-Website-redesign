@@ -154,6 +154,9 @@
     document.body.appendChild(btn);
     var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     btn.addEventListener("click", function () {
+      /* Home registers its own glide (js/main.js) — it has to switch the phone
+         scroll-snap off for the trip, or the smooth scroll stalls */
+      if (typeof window.tilliScrollTop === "function") { window.tilliScrollTop(); return; }
       window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
     });
     var ticking = false;
