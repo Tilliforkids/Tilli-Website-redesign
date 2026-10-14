@@ -40,7 +40,7 @@
   .s-hero { text-align: center; }
 
   /* CHG-22: schools & trainings carousel — photos interleaved with partner logos.
-     Swipeable snap strip (no auto-scroll on touch). Photos 4:3 cover, logos square
+     Swipeable snap strip, auto-advances (script at end of page). Photos 4:3 cover, logos square
      white tiles; one shared height keeps the row even. */
   .s-carousel { --s-slide-h: 190px;
     display: flex; gap: 12px; overflow-x: auto; -webkit-overflow-scrolling: touch;
@@ -132,7 +132,7 @@
     border: 1px solid var(--tl-line-200); display: flex; align-items: center; justify-content: center;
     color: var(--tl-ink-300); font-weight: 600; font-size: var(--tl-fs-sm); text-align: center; padding: 18px; }
   .tw-art__ph { visibility: hidden; }
-  html.tl-dots .tw-art { background: transparent; }
+  html.tl-dots .tw-art { background: transparent; border-color: transparent; }   /* kids float free, no card (matches desktop) */
   /* ── Phone dot field (js/dot-field.js) — formations + the empty stages that
      reserve room for them; only shown once the field is running (html.tl-dots) */
   .m-dots-stage { display: none; }
@@ -175,7 +175,7 @@
 
   <!-- SCHOOLS & TRAININGS CAROUSEL (CHG-22) — photos + partner logos, swipe -->
   <section class="wrap" style="padding-block:26px" data-dots="off" data-dots-cut>
-    <div class="s-carousel" aria-label="Partner schools and trainings">
+    <div class="s-carousel" data-auto="3000" data-resume="4000" aria-label="Partner schools and trainings">
       <div class="s-slide s-slide--photo"><img src="../assets/ds/success-photo-1.jpg" alt="Teachers raising hands during a Tilli training session" loading="lazy" decoding="async"></div>
       <div class="s-slide s-slide--logo"><img src="../assets/ds/school-nmajs.png" alt="Nita Mukesh Ambani Junior School" loading="lazy" decoding="async"></div>
       <div class="s-slide s-slide--logo"><img src="../assets/ds/school-hippocampus.png" alt="Hippocampus Learning Centres" loading="lazy" decoding="async"></div>
@@ -325,7 +325,36 @@
   </section>
 
   </main>
-<script type="module" src="../js/dot-field.js?v=41"></script>
+<script type="module" src="../js/dot-field.js?v=42"></script>
+<script>
+/* CHG-22: auto-advance the schools strip one slide every data-auto ms; wraps to the
+   start after the last slide. A touch pauses it, and it picks up again
+   data-resume ms after the finger lifts. Stops off-screen, in a hidden tab, and for reduced motion. */
+(() => {
+  const strip = document.querySelector('.s-carousel');
+  if (!strip || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const wait = +strip.dataset.auto || 3000, resume = +strip.dataset.resume || 4000;
+  const slides = Array.from(strip.children);
+  let timer = 0, held = false, seen = false, idle = 0;
+
+  function step() {
+    const r = strip.getBoundingClientRect(), mid = r.left + r.width / 2;
+    const nxt = slides.find((s) => { const b = s.getBoundingClientRect(); return b.left + b.width / 2 > mid + 4; });
+    const atEnd = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 4;
+    let x = 0;
+    if (nxt && !atEnd) { const b = nxt.getBoundingClientRect(); x = strip.scrollLeft + (b.left + b.width / 2) - mid; }
+    strip.scrollTo({ left: x, behavior: 'smooth' });
+  }
+  function restart() {
+    clearInterval(timer); timer = 0;
+    if (!held && seen && !document.hidden) timer = setInterval(step, wait);
+  }
+  strip.addEventListener('touchstart', () => { held = true; clearTimeout(idle); restart(); }, { passive: true });
+  strip.addEventListener('touchend', () => { clearTimeout(idle); idle = setTimeout(() => { held = false; restart(); }, resume); }, { passive: true });
+  document.addEventListener('visibilitychange', restart);
+  new IntersectionObserver(([e]) => { seen = e.isIntersecting; restart(); }, { threshold: 0.4 }).observe(strip);
+})();
+</script>
 
   <!-- Footer + floating WhatsApp injected by ../js/m-chrome.js -->
 

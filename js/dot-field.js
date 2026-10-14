@@ -132,7 +132,8 @@ async function init() {
     pipePersp: 0.25,   // perspective: near-side dots up to (1 + this) × size, far side (1 − this) ×
     pipeBack: 0.45,    // alpha of dots on the far side of the tube
     pipeFocus: 0.55,   // depth in focus: −1 far wall … 0 tube axis … 1 near wall
-    pipeDof: 0.4,      // depth of field: blur per unit of depth away from the focus (0 = all sharp)
+    pipeDof: 0.4,
+    overscan: 0.25,    // canvas reaches this × viewport height past the top and bottom edges (scroll lock headroom)      // depth of field: blur per unit of depth away from the focus (0 = all sharp)
     weekRate: 5,       // weeks timeline: weeks lit per second
     phoneDots: 360,    // phones: default dot count (<main data-dots-count-m> overrides)
     phoneDpr: 1.5,     // phones: max devicePixelRatio
@@ -186,7 +187,9 @@ async function init() {
   document.body.prepend(canvas);
   const style = document.createElement('style');
   style.textContent =
-    '#tlDots{position:fixed;inset:0;width:100vw;height:100vh;z-index:1;pointer-events:none}' +
+    /* in the document, not fixed: between frames the browser scrolls it with the content,
+       so dots tied to a section don't lag a frame behind it and snap back (the jiggle) */
+    '#tlDots{position:absolute;top:0;left:0;z-index:1;pointer-events:none;will-change:transform}' +
     'html.tl-dots .tl-footer{position:relative;z-index:2}';
   document.head.appendChild(style);
 
@@ -213,6 +216,7 @@ async function init() {
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(0, 1, 0, 1, -10, 10);
   let W = 1, H = 1, DPR = 1;
+  let CW = 1, HC = 1, PAD = 0, baseX = 0, baseY = 0;   // canvas size, overscan px, canvas's own document offset
 
   const mainDs = (document.querySelector('main') || {}).dataset || {};
   // ?debug=1&dots=N previews a dot count (the Kids panel reloads with it — N sizes every buffer)
@@ -401,6 +405,7 @@ async function init() {
         fit: d.dotsFit !== undefined,
         anchor: d.dotsAnchor ? el.querySelector(d.dotsAnchor) : null,
         anchors: d.dotsAnchor ? Array.from(el.querySelectorAll(d.dotsAnchor)) : [],
+        pin: null,
         hub: d.dotsHub ? el.querySelector(d.dotsHub) : null,
         ay: d.dotsAy !== undefined ? parseFloat(d.dotsAy) : 0.5,
         off: nums(d.dotsOff, 2, [0, 0]),
@@ -1281,7 +1286,38 @@ async function init() {
     return XYZ;
   }
   let liveOnScreen = true;
+  // a formation whose anchor sits in a position:sticky block is held on screen while that
+  // block is stuck — the canvas has to stay screen-fixed then, or those dots lag the other way
+  function findPins() {
+    formations.forEach((f) => {
+      let e = f.anchor && f.anchor.parentElement;
+      while (e && e !== f.el && getComputedStyle(e).position !== 'sticky') e = e.parentElement;
+      f.pin = e && e !== f.el ? { el: e, top: parseFloat(getComputedStyle(e).top) || 0 } : null;
+    });
+  }
+  const stuck = (p) => {
+    const r = p.el.getBoundingClientRect(), box = p.el.parentElement.getBoundingClientRect();
+    return Math.abs(r.top - p.top) < 1 && box.top < p.top - 1 && box.bottom > r.bottom + 1;
+  };
+  // park the canvas around the current scroll and aim the camera so screen coords still map 1:1;
+  // clamped to the document so it never grows the page
+  function follow() {
+    if (formations.some((f) => f.pin && stuck(f.pin))) {
+      canvas.style.position = 'fixed';
+      canvas.style.transform = 'translate3d(0,' + -PAD + 'px,0)';
+      camera.top = -PAD; camera.bottom = HC - PAD;
+      camera.updateProjectionMatrix();
+      return;
+    }
+    canvas.style.position = '';
+    const sy = window.scrollY, docH = document.documentElement.scrollHeight;
+    const top = clamp(sy - PAD, 0, Math.max(0, docH - HC));
+    canvas.style.transform = 'translate3d(' + -baseX + 'px,' + (top - baseY) + 'px,0)';
+    camera.top = top - sy; camera.bottom = camera.top + HC;
+    camera.updateProjectionMatrix();
+  }
   function frame() {
+    follow();
     const now = performance.now();
     stepBursts(now);
     stepCursor(now);
@@ -1383,14 +1419,20 @@ async function init() {
     W = window.innerWidth; H = viewportH();
     DPR = Math.min(window.devicePixelRatio || 1, PHONE ? cfg.phoneDpr : 2);
     renderer.setPixelRatio(DPR);
-    renderer.setSize(W, H, false);
+    PAD = Math.round(H * cfg.overscan);
+    HC = Math.max(H, Math.min(H + 2 * PAD, document.documentElement.scrollHeight));
+    CW = document.documentElement.clientWidth || W;   // excludes the scrollbar, so the canvas never widens the page
+    renderer.setSize(CW, HC, false);
+    canvas.style.width = CW + 'px'; canvas.style.height = HC + 'px';
+    canvas.style.position = ''; canvas.style.transform = 'none';
+    const cb = canvas.getBoundingClientRect();
+    baseX = cb.left + window.scrollX; baseY = cb.top + window.scrollY;
     field.mat.uniforms.uDpr.value = DPR;
     burst.mat.uniforms.uDpr.value = DPR;
     cutLayers.forEach((L) => { L.mat.uniforms.uDpr.value = DPR; });
     if (curCtx) { curCtx.canvas.width = Math.round(W * DPR); curCtx.canvas.height = Math.round(H * DPR); curDrawn = false; }
-    camera.left = 0; camera.right = W; camera.top = 0; camera.bottom = H;
-    camera.updateProjectionMatrix();
-    readFormations();
+    camera.left = 0; camera.right = CW;
+    readFormations(); findPins();
     frame();
   }
 
