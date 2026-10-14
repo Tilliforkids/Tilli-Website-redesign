@@ -604,18 +604,23 @@
   html.tl-mobile .imp2-carousel { --imp2-scale: 0.75 !important; top: 34%; }
   html.tl-mobile .imp2-move { --x: 0px !important; --sc: 1 !important; }
   html.tl-mobile #impQuote2 { --x: 0px; --sc: 1; }
-  /* impact band on phones: bigger image strip up top → the quote centred in
-     the open middle → a compact stats row on the bottom (above the nav) */
+  /* impact band on phones: the quote sits just ABOVE the image strip, the
+     strip is centred on the screen, and the stats row sits at the bottom.
+     .imp2-bottom becomes a full-screen layer so the quote and the stats can
+     each be anchored on their own (the quote's bottom edge tracks the strip). */
   html.tl-portrait .imp2-carousel { --imp2-scale: var(--imp2-m-scale) !important; top: var(--imp2-m-top); }
-  html.tl-portrait .imp2-scene { --imp2-m-scale: 1.1; --imp2-m-top: 33%; }
-  html.tl-portrait .imp2-bottom { top: calc(var(--imp2-m-top) + 150px * var(--imp2-m-scale) / 2 + 16px);
-    bottom: max(14vh, 96px); flex-direction: column; align-items: center; justify-content: flex-start; gap: 0; }
-  html.tl-portrait #impQuote2 { order: 0; margin: auto 0; display: block; max-width: none; text-align: center; transform-origin: 50% 50%; }
+  html.tl-portrait .imp2-scene { --imp2-m-scale: 1.1; --imp2-m-top: 50%; --imp2-m-gap: 18px; --imp2-m-bottom: max(4vh, 28px);
+    --imp2-m-h: calc(150px * var(--imp2-m-scale)); }
+  html.tl-portrait .imp2-bottom { inset: 0; transform: none; max-width: none; padding: 0; display: block; }
+  html.tl-portrait #impQuote2 { position: absolute; left: 20px; right: 20px; margin: 0; display: block; max-width: none;
+    bottom: calc(100% - var(--imp2-m-top) + var(--imp2-m-h) / 2 + var(--imp2-m-gap));
+    text-align: center; transform-origin: 50% 100%; }
+  html.tl-portrait .imp2-stats { position: absolute; left: 0; right: 0; bottom: var(--imp2-m-bottom); }
   html.tl-portrait .imp2-rpp { margin-bottom: 10px; }
   html.tl-portrait .imp2-qmark { display: block; font-size: var(--tl-fs-2xl); line-height: .6; margin-bottom: 4px; }
   html.tl-portrait .imp2-qtext { font-size: min(var(--tl-fs-lg), 2.1vh) !important; line-height: 1.4 !important; }   /* vh cap: fits the middle band on short phones */
   html.tl-portrait .imp2-cite { margin-top: 10px; }
-  html.tl-portrait .imp2-stats { order: 1; justify-content: center; gap: 36px; }
+  html.tl-portrait .imp2-stats { justify-content: center; gap: 36px; }
   html.tl-portrait .imp2-stat { transform-origin: 50% 100%; }
   html.tl-portrait .imp2-num { font-size: 26px; }
   html.tl-portrait .imp2-lbl { font-size: var(--tl-fs-xs); margin-top: 4px; }
