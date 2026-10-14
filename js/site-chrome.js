@@ -170,6 +170,39 @@
     sync();
   }
 
+  /* ── Phones: WhatsApp + back-to-top fade out over the footer ────────────── */
+  /* They sit bottom-right, on top of the footer text. Fade both out once the
+     footer reaches the bubble, back in when it scrolls away. Home's footer
+     lives in its pinned last stage, so there "on screen" also means that stage
+     is showing — its fade lags the scroll, hence the trailing re-checks. */
+  function fadeOverFooter() {
+    var phone = document.documentElement.classList.contains("tl-mobile") ||
+      window.matchMedia("(max-width: 860px) and (pointer: coarse)").matches;
+    var wa = document.querySelector(".tl-wa");
+    if (!phone || !wa) return;
+    var timers = [];
+    function sync() {
+      var ft = document.querySelector(".tl-footer") || document.querySelector(".foot");
+      if (!ft) return;
+      var r = ft.getBoundingClientRect();
+      var stage = ft.closest(".stage"), shown = r.height > 0;
+      if (stage) {
+        var cs = getComputedStyle(stage);
+        shown = shown && cs.visibility !== "hidden" && parseFloat(cs.opacity) > 0.3;
+      }
+      var bubble = wa.querySelector(".tl-wa__bubble") || wa;
+      document.body.classList.toggle("tl-over-footer", shown && r.top < bubble.getBoundingClientRect().bottom && r.bottom > 0);
+    }
+    function kick() {
+      sync();
+      timers.forEach(clearTimeout);
+      timers = [setTimeout(sync, 300), setTimeout(sync, 800)];
+    }
+    window.addEventListener("scroll", kick, { passive: true });
+    window.addEventListener("resize", kick);
+    kick();
+  }
+
   /* ── Get-in-touch modal + form ──────────────────────────────────────────── */
   function buildForm() {
     var opts = CONFIG.SCHOOL_TYPES.map(function (s) {
@@ -350,6 +383,7 @@
     buildFooter();
     buildWhatsApp();
     buildToTop();
+    fadeOverFooter();
     buildForm();
     initHideOnScroll();
     // Dynamic copyright year — fills [data-tl-year] placeholders (interior footer + Home's static .foot).

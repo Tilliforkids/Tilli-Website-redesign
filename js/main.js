@@ -211,6 +211,24 @@ scenes.forEach((s, i) => { ST[s.label] = i; });
 
 /* Scene tops / scroll lengths. The last scene can only be scrolled to
    `height - vh`, so its progress is measured against that. */
+/* PHONES: Home's footer sits just BELOW the pinned "Let's talk" screen (CSS
+   html.tl-mobile .foot) and scrolls in like the end of a normal page. A spacer
+   after the last scene adds exactly one footer-height of scroll, so the last
+   scene's own progress (and its reveal) is untouched; onScroll lifts that
+   stage by the scroll spent in the spacer. */
+const footSpacer = MOBILE ? document.createElement('div') : null;
+if (footSpacer) {
+  footSpacer.setAttribute('aria-hidden', 'true');
+  const lastScene = document.querySelectorAll('[data-scene]');
+  lastScene[lastScene.length - 1].after(footSpacer);
+}
+const homeFoot = document.querySelector('.foot');
+let footH = 0;   // px of the footer scroll-in (0 on desktop)
+function measureFootSpacer() {
+  if (!footSpacer || !homeFoot) return;
+  footH = homeFoot.offsetHeight;
+  footSpacer.style.height = `${footH}px`;
+}
 function measureTops() {
   const vh = viewH();
   const y0 = window.scrollY;
@@ -221,6 +239,7 @@ function measureTops() {
   });
 }
 function measure() {
+  measureFootSpacer();
   measureTops();
   fitSteps();
   fitViewsHead();   // after fitSteps: it reads the step's fit scale
@@ -3124,7 +3143,7 @@ function layoutSnapMarks() {
     setPhoneSnap(true);
   }
   const base = snapLayer.getBoundingClientRect().top + window.scrollY;
-  const ys = [0, ...stopYs(), maxY]
+  const ys = [0, ...stopYs(), maxY, maxY - footH]   // maxY − footH: "Let's talk" with the footer still below
     .map((y) => Math.round(clamp(y, 0, maxY)))
     .sort((a, b) => a - b)
     .filter((y, i, a) => i === 0 || y - a[i - 1] > 4);
@@ -3581,6 +3600,14 @@ function onScroll(fOverride) {
          reveal (see BURST / updateBurst) once the ring has settled around it. */
       op = smooth(clamp((f - k) / 0.20));
       if (letsTalkCardEl) letsTalkCardEl.classList.toggle('in', f > k + 0.06);
+      /* phones: past the scene's end, the stage rides up 1:1 with the scroll
+         as the footer (hung below it) comes into view */
+      if (footH) {
+        const lift = clamp(window.scrollY - (sc.top + sc.len), 0, footH);
+        ty = -lift / (sc.stage.offsetHeight || viewH());
+        /* the dot ring around the card lives on the fixed canvas — lift it too */
+        if (worldEl) worldEl.style.transform = lift ? `translateY(${-lift}px)` : '';
+      }
     }
     if (sc.stage) {
       const tStr = (tx || ty || exScale !== 1)

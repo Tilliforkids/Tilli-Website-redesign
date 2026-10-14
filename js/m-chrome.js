@@ -70,9 +70,9 @@
         "align-items:center;gap:8px;font-weight:700;font-size:var(--tl-fs-base);padding:13px 22px;border-radius:var(--tl-radius-pill);" +
         "background:var(--tl-pink-600);box-shadow:var(--tl-shadow-glow-pink)}" +
       /* Footer */
-      ".ft{padding:32px 20px calc(84px + env(safe-area-inset-bottom));border-top:1px solid var(--tl-line-200);" +
+      ".ft{padding:32px 20px calc(32px + env(safe-area-inset-bottom));border-top:1px solid var(--tl-line-200);" +
         "text-align:center;background:var(--tl-white)}" +
-      ".ft .fbrand img{height:28px;width:auto;display:inline-block}" +
+      ".ft .fbrand img{height:28px;width:auto;display:block;margin:0 auto}" +
       ".ft .tag{font-size:var(--tl-fs-sm);font-style:italic;color:var(--tl-ink-500);margin-top:6px}" +
       ".ft .mail{font-size:var(--tl-fs-sm);color:var(--tl-ink-500);margin-top:4px}" +
       ".ft nav{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:20px 0 14px}" +
@@ -82,7 +82,7 @@
       ".ft .mail a{font-size:var(--tl-fs-sm);color:var(--tl-ink-500)}" +
       ".ft .copy{margin-top:16px;font-size:var(--tl-fs-xs);color:var(--tl-ink-300)}" +
       /* WhatsApp bubble + card */
-      ".wa{position:fixed;right:16px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:56}" +
+      ".wa{position:fixed;right:16px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:56;transition:opacity .25s ease,transform .25s ease}" +
       ".wa-bubble{width:52px;height:52px;border-radius:50%;border:0;cursor:pointer;margin-left:auto;" +
         "background:var(--tl-whatsapp);box-shadow:var(--tl-shadow-glow-whatsapp);display:flex;align-items:center;justify-content:center}" +
       ".wa-bubble svg{width:28px;height:28px;fill:var(--tl-white)}" +
@@ -111,7 +111,9 @@
         "opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .22s ease,transform .22s ease}" +
       ".totop svg{width:20px;height:20px}" +
       ".totop.show{opacity:1;pointer-events:auto;transform:translateY(0)}" +
-      ".wa.open~.totop{opacity:0;pointer-events:none}";
+      ".wa.open~.totop{opacity:0;pointer-events:none}" +
+      /* both buttons fade away while the footer is on screen (fadeOverFooter) */
+      "body.over-ft .wa:not(.open),body.over-ft .totop{opacity:0!important;pointer-events:none!important;transform:translateY(8px)}";
     var style = document.createElement("style");
     style.id = "m-chrome-css";
     style.textContent = css;
@@ -176,6 +178,22 @@
     main.appendChild(footer);
   }
 
+  /* ── WhatsApp + back-to-top fade out over the footer ───────────────────── */
+  /* They sit bottom-right, on top of the footer text: fade both out once the
+     footer reaches the bubble, back in when it scrolls away. */
+  function fadeOverFooter() {
+    var wa = document.querySelector(".wa"), ft = document.querySelector("footer.ft");
+    if (!wa || !ft) return;
+    var bubble = wa.querySelector(".wa-bubble") || wa;
+    function sync() {
+      var r = ft.getBoundingClientRect();
+      document.body.classList.toggle("over-ft", r.top < bubble.getBoundingClientRect().bottom && r.bottom > 0);
+    }
+    window.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    sync();
+  }
+
   /* ── WhatsApp bubble + Kavi card ─────────────────────────────────────────── */
   function buildWhatsApp() {
     var initials = "KT";
@@ -238,6 +256,7 @@
     buildFooter();
     buildWhatsApp();
     buildToTop();
+    fadeOverFooter();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();

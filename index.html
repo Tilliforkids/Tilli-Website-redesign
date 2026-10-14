@@ -31,7 +31,7 @@
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
 <link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
 <link rel="stylesheet" href="css/ask-tilli.css">
-<link rel="stylesheet" href="css/site.css?v=7">
+<link rel="stylesheet" href="css/site.css?v=8">
 <style>
   * { box-sizing: border-box; }
   html { scroll-behavior: auto; }
@@ -609,7 +609,7 @@
      .imp2-bottom becomes a full-screen layer so the quote and the stats can
      each be anchored on their own (the quote's bottom edge tracks the strip). */
   html.tl-portrait .imp2-carousel { --imp2-scale: var(--imp2-m-scale) !important; top: var(--imp2-m-top); }
-  html.tl-portrait .imp2-scene { --imp2-m-scale: 1.1; --imp2-m-top: 50%; --imp2-m-gap: 18px; --imp2-m-bottom: max(4vh, 28px);
+  html.tl-portrait .imp2-scene { --imp2-m-scale: 1.1; --imp2-m-top: calc(50% + 10vh); --imp2-m-gap: 18px; --imp2-m-bottom: max(4vh, 28px);
     --imp2-m-h: calc(150px * var(--imp2-m-scale)); }
   html.tl-portrait .imp2-bottom { inset: 0; transform: none; max-width: none; padding: 0; display: block; }
   html.tl-portrait #impQuote2 { position: absolute; left: 20px; right: 20px; margin: 0; display: block; max-width: none;
@@ -659,6 +659,28 @@
   html.tl-portrait .foot span[style*="italic"] { display: none; }
   html.tl-portrait .foot a, html.tl-portrait .foot div { font-size: var(--tl-fs-xs) !important; }
   html.tl-portrait .foot > div > div:first-child > div:last-child { gap: 10px 14px !important; }
+  /* PHONES (Home): the one phone footer standard — same as the m/ pages' .ft and
+     FAQ/Privacy's .tl-footer: centred column — logo, italic tagline, page links,
+     socials, Reach out, © line. The markup keeps its two desktop tiers; they're
+     re-flowed (and the socials ordered before Reach out) here. It hangs just
+     BELOW the pinned "Let's talk" screen and scrolls in like the end of a page
+     (footSpacer in js/main.js), so that stage must not clip it. */
+  html.tl-mobile [data-label="Let's talk"] .stage { overflow: visible; }
+  html.tl-mobile .foot { top: 100%; bottom: auto; padding: 32px 20px calc(32px + env(safe-area-inset-bottom));
+    background: var(--tl-white); text-align: center; line-height: 1.55; }
+  html.tl-mobile .foot > div { padding-right: 0; }
+  html.tl-mobile .foot > div > div { flex-direction: column; align-items: center !important; justify-content: flex-start !important;
+    gap: 0 !important; margin-top: 0 !important; padding-top: 0 !important; border-top: 0 !important; }
+  html.tl-mobile .foot > div > div:first-child > div:first-child { flex-direction: column; gap: 6px !important; }
+  html.tl-mobile .foot img { height: 28px !important; }
+  html.tl-mobile .foot span[style*="italic"] { display: block; font-size: var(--tl-fs-sm) !important; }
+  html.tl-mobile .foot a, html.tl-mobile .foot div { font-size: var(--tl-fs-sm) !important; }
+  html.tl-mobile .foot > div > div:first-child > div:last-child { justify-content: center; gap: 18px !important; margin: 20px 0 14px; }
+  html.tl-mobile .foot > div > div:last-child > div:nth-child(1) { order: 2; }
+  html.tl-mobile .foot > div > div:last-child > div:nth-child(1) a { font-weight: 400 !important; color: var(--tl-ink-500) !important; }
+  html.tl-mobile .foot > div > div:last-child > div:nth-child(2) { order: 1; justify-content: center; flex-wrap: wrap; gap: 16px !important; margin: 0 0 16px; }
+  html.tl-mobile .foot > div > div:last-child > div:nth-child(2) a { color: var(--tl-ink-500) !important; }
+  html.tl-mobile .foot > div > div:last-child > div:nth-child(3) { order: 3; margin-top: 16px; font-size: var(--tl-fs-xs) !important; }
 
   /* ══ PHONE TYPE SCALE — Home on phones uses exactly four text sizes:
      heading · sub heading · body · small (eyebrows, pills, captions, footer).
@@ -712,8 +734,7 @@
   html.tl-mobile .j-card > div > div:first-child > div:last-child,
   html.tl-mobile .j-card p + div:not(.j-chat):not(.j-books),
   html.tl-mobile .j-when-tag,
-  html.tl-mobile .j-step-pill,
-  html.tl-mobile .foot, html.tl-mobile .foot a, html.tl-mobile .foot div { font-size: var(--m-fs-small) !important; }
+  html.tl-mobile .j-step-pill { font-size: var(--m-fs-small) !important; }   /* (footer: the phone footer standard above, not this scale) */
 </style>
 </head>
 <body>
@@ -1328,8 +1349,8 @@
 <script src="js/ask-tilli-demo.js?v=2"></script>
 <script src="js/impact-orbits.js?v=7"></script>
 <script src="js/impact-carousel.js?v=7"></script>
-<script type="module" src="js/main.js?v=146"></script>
+<script type="module" src="js/main.js?v=148"></script>
 <script src="js/site-config.js?v=2"></script>
-<script src="js/site-chrome.js?v=7"></script>
+<script src="js/site-chrome.js?v=8"></script>
 </body>
 </html>

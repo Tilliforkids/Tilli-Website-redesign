@@ -139,6 +139,23 @@ body.tl-at-end .tl-header { transform: none; }
 .tl-footer__reach a { font-weight: 700; color: var(--tl-ink-700); }
 .tl-footer__legal { font-size: var(--tl-fs-sm); color: var(--tl-ink-300); margin: 0; }
 .tl-footer img { height: 26px; }
+/* PHONES: the one phone footer standard (same as the m/ pages' .ft and Home's
+   .foot): centred column — logo, italic tagline, page links, socials, Reach
+   out, © line. Desktop keeps the two-row layout above. */
+@media (max-width: 860px) and (pointer: coarse) {
+  .tl-footer { padding: 32px 0 calc(32px + env(safe-area-inset-bottom)); text-align: center; line-height: 1.55; }
+  .tl-footer .tl-container { padding: 0 20px; }
+  .tl-footer__row { flex-direction: column; align-items: center; justify-content: flex-start; gap: 0; }
+  .tl-footer__row--meta { margin-top: 0; padding-top: 0; border-top: 0; }
+  .tl-footer__brand { flex-direction: column; gap: 6px; }
+  .tl-footer img { height: 28px; }
+  .tl-footer__links { justify-content: center; gap: 18px; margin: 20px 0 14px; }
+  .tl-footer__social { order: 1; gap: 16px; margin: 0 0 16px; }
+  .tl-footer__social a { color: var(--tl-ink-500); }
+  .tl-footer__reach { order: 2; }
+  .tl-footer__reach a { font-weight: 400; color: var(--tl-ink-500); }
+  .tl-footer__legal { order: 3; margin-top: 16px; font-size: var(--tl-fs-xs); }
+}
 /* desktop: keep the footer's right end 96px clear of the screen edge so the
    WhatsApp bubble (right: 22px, 62px wide) never sits on the links */
 @media (min-width: 861px) {
@@ -146,7 +163,7 @@ body.tl-at-end .tl-header { transform: none; }
 }
 
 /* ── WhatsApp bubble + Kavi card ─────────────────────────────────────────── */
-.tl-wa { position: fixed; right: 22px; bottom: 22px; z-index: 70; }
+.tl-wa { position: fixed; right: 22px; bottom: 22px; z-index: 70; transition: opacity .25s ease, transform .25s ease; }
 .tl-wa__bubble { width: 62px; height: 62px; border-radius: 50%; border: 0; cursor: pointer;
   background: var(--tl-whatsapp); color: var(--tl-white); display: flex; align-items: center; justify-content: center;
   box-shadow: var(--tl-shadow-glow-whatsapp); transition: transform .2s ease; }
@@ -185,6 +202,10 @@ html.tl-mobile .tl-totop { display: flex; }
 .tl-totop--show { opacity: 1; pointer-events: auto; transform: translateY(0); }
 /* the open Kavi card rises over this spot — get out of its way */
 .tl-wa--open ~ .tl-totop { opacity: 0; pointer-events: none; }
+/* phones: both buttons fade away while the footer is on screen so they never
+   sit on its text (body.tl-over-footer is set by site-chrome.js) */
+body.tl-over-footer .tl-wa:not(.tl-wa--open),
+body.tl-over-footer .tl-totop { opacity: 0 !important; pointer-events: none !important; transform: translateY(8px); }
 
 /* ── Get-in-touch modal ──────────────────────────────────────────────────── */
 .tl-modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center;
