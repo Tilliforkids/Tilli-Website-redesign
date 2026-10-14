@@ -251,6 +251,7 @@ function measure() {
     three.relayoutDash();
     three.restitch();
   }
+  if (MOBILE) layoutSnapMarks();   // phone snap points follow the re-measured scene tops
 }
 
 /* Stages are viewport-locked, so a step that is taller than the screen
@@ -937,7 +938,7 @@ const KID = {
    the screen width. The top row exits left, the bottom row right.
      gap/height  fractions of the visible half-width
      y           the group's centre (world)    rowGap  world units between rows */
-const PORTRAIT_KIDS = { gap: 0.64, height: 0.8, y: 5.0, rowGap: 6.6 };
+const PORTRAIT_KIDS = { gap: 0.42, height: 0.5, y: 5.9, rowGap: 4.0 };   // smaller kids → room for full-size copy below
 if (PORTRAIT) {
   const w = (CAM_DIST - KID.z) * Math.tan((50 * Math.PI / 180) / 2) * (window.innerWidth / Math.max(1, viewH()));
   Object.assign(KID, { cols: 3, gap: w * PORTRAIT_KIDS.gap, height: w * PORTRAIT_KIDS.height,
@@ -1161,8 +1162,10 @@ const DNA2_CFG = { x: 10.9, y: -0.6, z: 4.4, scale: 0.96, dotScale: 0.99 };
    one-column card list.
      x      helix centre as a fraction of the visible half-width (+1 = right edge)
      scale  helix size (height, radius and twist kept in proportion)
-     mini   the 12-skills copy: same idea, plus y (world) and dotScale */
-const PORTRAIT_DNA = { x: 0.68, scale: 0.68, mini: { x: 0.86, y: -0.8, scale: 0.6, dotScale: 0.9 } };
+     mini   the 12-skills copy: centred BEHIND the 2-column skills grid, with
+            y (world), dotScale, and wash = how far its colours fade toward the
+            backdrop (0 = full colour, 1 = invisible) so it stays subtle */
+const PORTRAIT_DNA = { x: 0.68, scale: 0.68, mini: { x: 0, y: -1.2, scale: 0.72, dotScale: 0.9, wash: 0.72 } };
 const DNA_X = PORTRAIT ? visHalf(DNA_DEPTH_CENTER).w * PORTRAIT_DNA.x : 0;
 const DNA_SCALE = PORTRAIT ? PORTRAIT_DNA.scale : 1;
 if (PORTRAIT) {
@@ -1790,6 +1793,48 @@ function measureFan() {
   FAN.from = w * PORTRAIT_FAN.from;
   FAN.to = w * PORTRAIT_FAN.to;
 }
+/* Phones: once the fan is open, a horizontal swipe across it (or a tap on a
+   side card) rotates which report page sits front-and-centre. `fanFront` is
+   the card in the middle; every card eases toward its slot (-1 left, 0 centre,
+   +1 right) and takes that slot's position, tilt and size. Desktop never
+   reads any of this (runPin keeps its original fan when !MOBILE). */
+const FAN_SWIPE = {
+  min: 36,     // px of horizontal travel that counts as a swipe
+  lock: 10,    // px of movement before the gesture commits to horizontal / vertical
+  ease: 10,    // slot-change easing rate (higher = snappier)
+  ready: 0.95, // fan-out progress (0..1) before swipes are accepted
+};
+let fanFront = 1, fanQ = 0, fanT = 0;
+const fanU = [-1, 0, 1];                                  // each card's eased slot
+const fanSlot = (i) => ((i - fanFront + 4) % 3) - 1;      // card i's target slot
+function fanTo(front) {
+  if (fanQ < FAN_SWIPE.ready) return;
+  fanFront = (front + 3) % 3;
+}
+if (MOBILE) {
+  const row = document.querySelector('.fan-row');
+  if (row) {
+    let x0 = 0, y0 = 0, axis = null;
+    row.addEventListener('touchstart', (e) => {
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; axis = null;
+    }, { passive: true });
+    row.addEventListener('touchmove', (e) => {
+      if (axis) return;
+      const dx = e.touches[0].clientX - x0, dy = e.touches[0].clientY - y0;
+      if (Math.hypot(dx, dy) > FAN_SWIPE.lock) axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+    }, { passive: true });
+    row.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - x0;
+      if (axis === 'x' && Math.abs(dx) >= FAN_SWIPE.min) fanTo(fanFront + (dx < 0 ? 1 : -1));
+      axis = null;
+    }, { passive: true });
+    /* tap a side card → bring it forward */
+    row.querySelectorAll('[data-fan]').forEach((img) => img.addEventListener('click', () => {
+      const i = +img.dataset.fan - 1;
+      if (fanSlot(i) !== 0) fanTo(i);
+    }));
+  }
+}
 /* per-dot waterfall state: a stable horizontal slot, a phase offset (where the
    dot sits in its fall), and a depth. The step loop advances each dot's phase
    over time, wraps it at the bottom, and fades it at the very top/bottom so the
@@ -1893,12 +1938,25 @@ const bez3 = (a, b, c, d, t) => { const u = 1 - t; return u * u * u * a + 3 * u 
 /* PORTRAIT (phones): the row can't fit three orbs, so they STACK in a left
    column (top · middle · bottom), each label beside its orb (layoutViewsText).
    PORTRAIT_VIEWS: col = orb column x as a fraction of the visible half-width
-   (−1 = left edge); gap = world units between orb centres; cy = the stack's
-   centre (world y); r = orb radius as a fraction of the visible half-width. */
-const PORTRAIT_VIEWS = { col: -0.52, gap: 5.6, cy: -1.0, r: 0.31 };
+   (−1 = left edge); r = orb radius as a fraction of the visible half-width;
+   top / bottom = the stack's outer edges as fractions of the screen height —
+   the heading sits above `top` (fitViewsHead), `bottom` keeps the last label
+   clear of the WhatsApp bubble + quick-nav. gap (world units between orb
+   centres) and cy (stack centre, world y) are DERIVED from top/bottom below. */
+const PORTRAIT_VIEWS = { col: -0.52, r: 0.27, top: 0.34, bottom: 0.80, gap: 0, cy: 0 };
 const _vwAsp  = Math.max(0.001, window.innerWidth / viewH());
 const _vwHalf = (CAM_DIST + 4) * Math.tan((50 * Math.PI / 180) / 2) * _vwAsp; // half visible world-width at z=-4
-const VIEWS_R = PORTRAIT ? Math.min(2.6, _vwHalf * PORTRAIT_VIEWS.r) : Math.min(3.4, Math.max(1.9, _vwHalf * 0.30));   // shrink the sphere on narrow screens
+const VIEWS_R = PORTRAIT
+  /* also capped so three orbs + two ~0.4r gaps always fit between top and bottom */
+  ? Math.min(2.6, _vwHalf * PORTRAIT_VIEWS.r, (PORTRAIT_VIEWS.bottom - PORTRAIT_VIEWS.top) * VIEWPORT_WORLD_H / 6.8)
+  : Math.min(3.4, Math.max(1.9, _vwHalf * 0.30));   // shrink the sphere on narrow screens
+if (PORTRAIT) {
+  const yAt = (frac) => (0.5 - frac) * VIEWPORT_WORLD_H;   // screen-height fraction → world y at z=-4
+  const rF = VIEWS_R / VIEWPORT_WORLD_H;
+  const yTop = yAt(PORTRAIT_VIEWS.top + rF), yBot = yAt(PORTRAIT_VIEWS.bottom - rF);
+  PORTRAIT_VIEWS.cy = (yTop + yBot) / 2;
+  PORTRAIT_VIEWS.gap = (yTop - yBot) / 2;
+}
 const _vwSpread = Math.min(9, Math.max(VIEWS_R + 0.6, _vwHalf * 0.92 - VIEWS_R)); // keep the outer edge ~92% of half-width
 const VIEWS_CX = PORTRAIT
   ? [0, 0, 0].fill(_vwHalf * PORTRAIT_VIEWS.col)
@@ -2886,6 +2944,7 @@ function glideTo(y) {
   glDur = clamp(Math.abs(glY1 - glY0) / Math.max(1, viewH()), 0.22, 1) * SNAP.dur;
   glT0 = performance.now();
   scrollMode = 'glide';
+  setPhoneSnap(false);   // phones: mandatory snap would yank every scripted frame
 }
 
 /* AskTilli gate: while its chat is still playing, scrolling DOWN past the
@@ -2944,8 +3003,47 @@ function advanceScroll(now, dt) {
   } else if (scrollMode === 'glide') {
     const p = glDur ? clamp((now - glT0) / glDur) : 1;
     window.scrollTo(0, glY0 + (glY1 - glY0) * easeInOut(p));
-    if (p >= 1) scrollMode = 'idle';
+    if (p >= 1) { scrollMode = 'idle'; setPhoneSnap(true); }
   }
+}
+
+/* ── PHONE SNAP ────────────────────────────────────────────────────────
+   Phones keep native momentum scroll (no input hijack), but the page always
+   comes to REST on a content beat: CSS scroll-snap (mandatory) against
+   invisible markers placed at every detent (the same DETENT_AT beats
+   desktop lingers on), plus the very top and very bottom. Without
+   snap-stop:always, a hard flick may carry past one or more beats before it
+   lands — firm stops, but not one-swipe-per-beat paging.
+     type   'mandatory' = always lands on a beat · 'proximity' = only when near one
+     stop   'normal' = fast flicks can skip beats · 'always' = one beat per swipe */
+const PHONE_SNAP = { type: 'mandatory', stop: 'normal' };
+let snapLayer = null;
+function setPhoneSnap(on) {
+  if (!MOBILE) return;
+  document.documentElement.style.scrollSnapType = on ? `y ${PHONE_SNAP.type}` : 'none';
+}
+function layoutSnapMarks() {
+  if (!MOBILE) return;
+  refreshMaxY();
+  if (!snapLayer) {
+    snapLayer = document.createElement('div');
+    snapLayer.setAttribute('aria-hidden', 'true');
+    snapLayer.style.cssText = 'position:absolute;left:0;top:0;width:1px;height:0;pointer-events:none;visibility:hidden';
+    document.body.appendChild(snapLayer);
+    setPhoneSnap(true);
+  }
+  const base = snapLayer.getBoundingClientRect().top + window.scrollY;
+  const ys = [0, ...stopYs(), maxY]
+    .map((y) => Math.round(clamp(y, 0, maxY)))
+    .sort((a, b) => a - b)
+    .filter((y, i, a) => i === 0 || y - a[i - 1] > 4);
+  while (snapLayer.children.length < ys.length) {
+    const m = document.createElement('div');
+    m.style.cssText = `position:absolute;left:0;width:1px;height:1px;scroll-snap-align:start;scroll-snap-stop:${PHONE_SNAP.stop}`;
+    snapLayer.appendChild(m);
+  }
+  while (snapLayer.children.length > ys.length) snapLayer.lastChild.remove();
+  ys.forEach((y, i) => { snapLayer.children[i].style.top = `${y - base}px`; });
 }
 
 function goToScene(i) { glideTo(sceneScrollTop(i)); }
@@ -3137,6 +3235,7 @@ const VIEWS_TEXT_DY = [101, 101, 101];   // teacher, student, parents — px ver
 /* the "Every data point…" heading: nudge it in x/y and scale it. Applied on top
    of the scroll-driven reveal scale in the views-pin handler. Baked from the GUI. */
 const VIEWS_HEAD = { dx: 0, dy: -221, scale: 1.28 };
+if (PORTRAIT) VIEWS_HEAD.scale = 1;   // phones: CSS sizes the heading to the width; ×1.28 overflowed it
 /* VIEWS_HEAD.dy (-221px) was baked on a 1080px-tall screen, where it leaves the
    heading's bottom ~1% of the height above the orbs. A fixed px nudge pushed the
    heading off the top of shorter screens, so layoutViewsText() instead derives
@@ -3482,9 +3581,34 @@ function runPin(sc, p) {
   if (sc.pin === 'fan' && T.fans[0]) {
     const q = ease(clamp(p / 0.32));   // fanned out by the Reports detent (0.36), not after it
     const off = FAN.from - (FAN.from - FAN.to) * q;
-    T.fans[0].style.transform = `rotate(${-7 * q}deg) translateX(${off}px)`;
-    T.fans[2].style.transform = `rotate(${7 * q}deg) translateX(${-off}px)`;
-    T.fans[1].style.transform = `scale(${0.96 + 0.04 * q})`;
+    if (!MOBILE) {
+      T.fans[0].style.transform = `rotate(${-7 * q}deg) translateX(${off}px)`;
+      T.fans[2].style.transform = `rotate(${7 * q}deg) translateX(${-off}px)`;
+      T.fans[1].style.transform = `scale(${0.96 + 0.04 * q})`;
+      return;
+    }
+    /* phones: same fan, but each card is placed by its (swipeable) slot.
+       With fanFront = 1 this reproduces the desktop transforms exactly. */
+    fanQ = q;
+    if (q === 0) fanFront = 1;                       // scrolled back before the fan → reset order
+    const now = performance.now();
+    const k = 1 - Math.exp(-Math.min((now - (fanT || now)) / 1000, 0.05) * FAN_SWIPE.ease);
+    fanT = now;
+    const c = T.fans.map((el) => el.offsetLeft + el.offsetWidth / 2);   // untransformed centres
+    const w = T.fans.map((el) => el.offsetWidth);
+    const slotX = [c[0] + off, c[1], c[2] - off];    // left · centre · right
+    T.fans.forEach((el, i) => {
+      const tgt = fanSlot(i);
+      fanU[i] += (tgt - fanU[i]) * k;
+      if (Math.abs(tgt - fanU[i]) < 0.001) fanU[i] = tgt;
+      const u = fanU[i];
+      const a = u < 0 ? 0 : 1, t = u < 0 ? u + 1 : u;  // segment between slots a and a+1
+      const x = lerp(slotX[a], slotX[a + 1], t);
+      const sw = lerp(w[a], w[a + 1], t);              // take on that slot's card width
+      const scl = (sw / w[i]) * (1 - 0.04 * (1 - q) * (1 - Math.abs(u)));
+      el.style.transform = `rotate(${7 * u * q}deg) translateX(${x - c[i]}px) scale(${scl})`;
+      el.style.zIndex = tgt === 0 ? 3 : 1;
+    });
     return;
   }
   if (sc.pin === 'views' && T.vH) {
@@ -3599,7 +3723,7 @@ function runPin(sc, p) {
     T.stageTitles.forEach((el, k) => {
       el.style.opacity = k === stage ? '1' : '0.25';
       /* phones: only the active strand's caption, so copy + card fit the screen */
-      if (PORTRAIT) el.style.display = k === stage ? '' : 'none';
+      if (PORTRAIT) el.style.display = k === stage ? 'block' : 'none';   // 'block' beats the CSS default-hide
     });
     T.stagePanels.forEach((el, k) => {
       const on = k === stage;
@@ -4078,6 +4202,13 @@ if (reduced) {
           CL[k] = lerp(CL[k], white.r, dw);
           CL[k + 1] = lerp(CL[k + 1], white.g, dw);
           CL[k + 2] = lerp(CL[k + 2], white.b, dw);
+          /* phones: the mini helix on 12 skills is backdrop texture, not a feature */
+          if (PORTRAIT && slide > 0) {
+            const pw = PORTRAIT_DNA.mini.wash * slide * wgt;
+            CL[k] = lerp(CL[k], white.r, pw);
+            CL[k + 1] = lerp(CL[k + 1], white.g, pw);
+            CL[k + 2] = lerp(CL[k + 2], white.b, pw);
+          }
         }
       }
     }

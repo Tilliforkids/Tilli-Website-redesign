@@ -140,6 +140,33 @@
     close.addEventListener("click", function () { toggle(false); });
   }
 
+  /* ── Back-to-top arrow (phones only — CSS decides visibility) ───────────── */
+  /* Appended after the WhatsApp wrap so `.tl-wa--open ~ .tl-totop` can hide it.
+     Home on phones is native scroll (no detent hijack), so a plain smooth
+     scrollTo is safe there too. */
+  function buildToTop() {
+    var btn = el(
+      '<button class="tl-totop" type="button" aria-label="Back to top">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M12 19V5M5 12l7-7 7 7"/></svg>' +
+      '</button>'
+    );
+    document.body.appendChild(btn);
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    btn.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
+    });
+    var ticking = false;
+    function sync() {
+      btn.classList.toggle("tl-totop--show", (window.pageYOffset || 0) > window.innerHeight);
+      ticking = false;
+    }
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(sync); }
+    }, { passive: true });
+    sync();
+  }
+
   /* ── Get-in-touch modal + form ──────────────────────────────────────────── */
   function buildForm() {
     var opts = CONFIG.SCHOOL_TYPES.map(function (s) {
@@ -319,6 +346,7 @@
     buildHeader();
     buildFooter();
     buildWhatsApp();
+    buildToTop();
     buildForm();
     initHideOnScroll();
     // Dynamic copyright year — fills [data-tl-year] placeholders (interior footer + Home's static .foot).

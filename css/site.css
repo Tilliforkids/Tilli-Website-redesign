@@ -169,6 +169,23 @@ body.tl-at-end .tl-header { transform: none; }
 .tl-wa__foot { padding: 16px; }
 .tl-wa__start { width: 100%; justify-content: center; }
 
+/* ── Back-to-top arrow (phones only) ─────────────────────────────────────────
+   Stacked on the WhatsApp bubble's vertical axis, 12px above it. Shown on
+   phones running Home (html.tl-mobile) or any touch screen ≤860px wide. */
+.tl-totop { --totop-size: 44px; position: fixed; z-index: 69; display: none;
+  right: calc(22px + (62px - var(--totop-size)) / 2); bottom: calc(22px + 62px + 12px + env(safe-area-inset-bottom));
+  width: var(--totop-size); height: var(--totop-size); border-radius: 50%; cursor: pointer;
+  align-items: center; justify-content: center; color: var(--tl-ink-700);
+  background: var(--tl-glass-strong); border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .22s ease, transform .22s ease; }
+.tl-totop svg { width: 20px; height: 20px; }
+html.tl-mobile .tl-totop { display: flex; }
+@media (max-width: 860px) and (pointer: coarse) { .tl-totop { display: flex; } }
+.tl-totop--show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+/* the open Kavi card rises over this spot — get out of its way */
+.tl-wa--open ~ .tl-totop { opacity: 0; pointer-events: none; }
+
 /* ── Get-in-touch modal ──────────────────────────────────────────────────── */
 .tl-modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center;
   padding: 20px; background: var(--tl-scrim); backdrop-filter: blur(3px); }

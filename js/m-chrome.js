@@ -101,7 +101,17 @@
       ".wa-card__role{font-size:var(--tl-fs-sm);opacity:.95;margin:3px 0 0}" +
       ".wa-card__foot{padding:16px}" +
       ".wa-card__start{display:flex;width:100%;justify-content:center;align-items:center;background:var(--tl-green-500);" +
-        "color:var(--tl-white);font-weight:700;font-size:var(--tl-fs-base);padding:13px 22px;border-radius:var(--tl-radius-pill)}";
+        "color:var(--tl-white);font-weight:700;font-size:var(--tl-fs-base);padding:13px 22px;border-radius:var(--tl-radius-pill)}" +
+      /* Back-to-top arrow — on the WhatsApp bubble's axis, 12px above it */
+      ".totop{--totop-size:44px;position:fixed;z-index:55;display:flex;align-items:center;justify-content:center;" +
+        "right:calc(16px + (52px - var(--totop-size)) / 2);bottom:calc(74px + 52px + 12px + env(safe-area-inset-bottom));" +
+        "width:var(--totop-size);height:var(--totop-size);border-radius:50%;cursor:pointer;color:var(--tl-ink-700);" +
+        "background:var(--tl-glass-strong);border:1px solid var(--tl-line-200);box-shadow:var(--tl-shadow-raised);" +
+        "backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);" +
+        "opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .22s ease,transform .22s ease}" +
+      ".totop svg{width:20px;height:20px}" +
+      ".totop.show{opacity:1;pointer-events:auto;transform:translateY(0)}" +
+      ".wa.open~.totop{opacity:0;pointer-events:none}";
     var style = document.createElement("style");
     style.id = "m-chrome-css";
     style.textContent = css;
@@ -197,11 +207,37 @@
     document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) set(false); });
   }
 
+  /* ── Back-to-top arrow ───────────────────────────────────────────────────── */
+  /* Appended after the WhatsApp wrap so `.wa.open ~ .totop` can hide it. */
+  function buildToTop() {
+    var btn = el(
+      '<button class="totop" type="button" aria-label="Back to top">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M12 19V5M5 12l7-7 7 7"/></svg>' +
+      "</button>"
+    );
+    document.body.appendChild(btn);
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    btn.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
+    });
+    var ticking = false;
+    function sync() {
+      btn.classList.toggle("show", (window.pageYOffset || 0) > window.innerHeight);
+      ticking = false;
+    }
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(sync); }
+    }, { passive: true });
+    sync();
+  }
+
   function init() {
     injectCSS();
     buildHeader();
     buildFooter();
     buildWhatsApp();
+    buildToTop();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
