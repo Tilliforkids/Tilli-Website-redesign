@@ -609,8 +609,12 @@
      .imp2-bottom becomes a full-screen layer so the quote and the stats can
      each be anchored on their own (the quote's bottom edge tracks the strip). */
   html.tl-portrait .imp2-carousel { --imp2-scale: var(--imp2-m-scale) !important; top: var(--imp2-m-top); }
-  html.tl-portrait .imp2-scene { --imp2-m-scale: 1.1; --imp2-m-top: calc(50% + 10vh); --imp2-m-gap: 18px; --imp2-m-bottom: max(4vh, 28px);
-    --imp2-m-h: calc(150px * var(--imp2-m-scale)); }
+  /* the strip (and the quote riding on top of it) is anchored to the stats row,
+     not the screen middle: its bottom sits --imp2-m-stack-gap above the stats on
+     every phone, so the group sits low, clear of the dot motif up top */
+  html.tl-portrait .imp2-scene { --imp2-m-scale: 1.1; --imp2-m-gap: 18px; --imp2-m-bottom: max(4vh, 28px);
+    --imp2-m-h: calc(150px * var(--imp2-m-scale)); --imp2-m-stats-h: 72px; --imp2-m-stack-gap: 40px;
+    --imp2-m-top: calc(100% - var(--imp2-m-bottom) - var(--imp2-m-stats-h) - var(--imp2-m-stack-gap) - var(--imp2-m-h) / 2); }
   html.tl-portrait .imp2-bottom { inset: 0; transform: none; max-width: none; padding: 0; display: block; }
   html.tl-portrait #impQuote2 { position: absolute; left: 20px; right: 20px; margin: 0; display: block; max-width: none;
     bottom: calc(100% - var(--imp2-m-top) + var(--imp2-m-h) / 2 + var(--imp2-m-gap));
@@ -666,6 +670,11 @@
      BELOW the pinned "Let's talk" screen and scrolls in like the end of a page
      (footSpacer in js/main.js), so that stage must not clip it. */
   html.tl-mobile [data-label="Let's talk"] .stage { overflow: visible; }
+  /* the footer no longer sits on this screen, so the card drops its old -12vh
+     lift and the step's padding is made symmetric: the copy centres on the
+     screen, inside the dot ring (which is centred on the screen too) */
+  html.tl-mobile #letsTalkCard { margin-top: 0 !important; }
+  html.tl-mobile [data-label="Let's talk"] .step { padding-top: 6vh; padding-bottom: 6vh !important; }
   html.tl-mobile .foot { top: 100%; bottom: auto; padding: 32px 20px calc(32px + env(safe-area-inset-bottom));
     background: var(--tl-white); text-align: center; line-height: 1.55; }
   html.tl-mobile .foot > div { padding-right: 0; }
