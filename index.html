@@ -77,6 +77,10 @@
   @media (max-width: 640px) { #quicknav { max-width: calc(100vw - 32px); } #quicknav button { padding: 6px 11px; font-size: var(--tl-fs-xs); } }
 
   /* ── Nav arrows ───────────────────────────────────────────── */
+  /* report carousel dots — phones only (shown under html.tl-mobile) */
+  .fan-dots { display: none; justify-content: center; gap: 8px; margin: 0 0 min(18px, 2vh); }
+  .fan-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--tl-line-200); transition: background .2s ease, transform .2s ease; }
+  .fan-dots span.on { background: var(--tl-green-600); transform: scale(1.25); }
   #arrows { position: fixed; right: 16px; bottom: 22px; z-index: 50; display: flex; flex-direction: column; gap: 10px; }
   #arrows .btn { width: 44px; height: 44px; border-radius: 50%; background: var(--tl-white); border: 1.5px solid var(--tl-line-200); display: flex; align-items: center; justify-content: center; font-size: var(--tl-fs-lg); font-weight: 700; color: var(--tl-ink-700); cursor: pointer; box-shadow: var(--tl-shadow-card); user-select: none; transition: all .25s ease; }
   #arrows .btn:hover { border-color: var(--tl-pink-600); color: var(--tl-pink-600); }
@@ -508,8 +512,14 @@
   html.tl-portrait [data-fan] { width: 40vw !important; }
   html.tl-portrait [data-fan="2"] { width: 44vw !important; }
   html.tl-portrait .fan-row { height: min(280px, 30vh) !important; margin-bottom: 2vh !important; }
-  /* swipeable on phones (js/main.js FAN_SWIPE): keep vertical page scroll, own horizontal */
-  html.tl-mobile .fan-row { touch-action: pan-y; }
+  /* phones: no fan — a one-page-at-a-time swipe carousel (js/main.js FAN_SWIPE).
+     Cards are full row height, neighbours peek in and are clipped at the row
+     edges; keep vertical page scroll, own horizontal. */
+  html.tl-mobile .fan-row { touch-action: pan-y; overflow-x: clip; overflow-clip-margin: 24px; }
+  html.tl-mobile [data-fan] { width: auto !important; height: 100%; max-height: none !important;
+    aspect-ratio: 892 / 1262; flex-shrink: 0; }
+  html.tl-mobile .fan-row { margin-bottom: 10px !important; }
+  html.tl-mobile .fan-dots { display: flex; }
 
   /* hero beat B: a narrower copy column so the ring wraps it */
   html.tl-portrait .hero-lead, html.tl-portrait .hero-stat-lbl { max-width: 72vw; }
@@ -627,6 +637,61 @@
   html.tl-portrait .foot span[style*="italic"] { display: none; }
   html.tl-portrait .foot a, html.tl-portrait .foot div { font-size: var(--tl-fs-xs) !important; }
   html.tl-portrait .foot > div > div:first-child > div:last-child { gap: 10px 14px !important; }
+
+  /* ══ PHONE TYPE SCALE — Home on phones uses exactly four text sizes:
+     heading · sub heading · body · small (eyebrows, pills, captions, footer).
+     Each grows with screen width between a min and max; the heading is also
+     capped by height so short phones keep their scenes fitting. Mockups and
+     visuals (dashboard, report pages, survey panels, AI chat cards, Ask-Tilli
+     demo, skill cards, logos) and the big stat numerals keep their own sizes.
+     Kept last so it wins over the per-scene portrait rules above. ═════════ */
+  html.tl-mobile {
+    --m-fs-h:     min(clamp(24px, 6.8vw, 30px), 3.9vh);
+    --m-fs-sub:   clamp(17px, 4.6vw, 20px);
+    --m-fs-body:  clamp(15px, 4vw, 16.5px);
+    --m-fs-small: clamp(11px, 3.1vw, 12.5px);
+  }
+  /* heading */
+  html.tl-mobile .hero-inner h1,
+  html.tl-mobile .content h2,
+  html.tl-mobile .sch-head { font-size: var(--m-fs-h) !important; }
+  html.tl-mobile .j-stage { --jh-fs: var(--m-fs-h); }
+  /* sub heading */
+  html.tl-mobile .hero-lead,
+  html.tl-mobile .dna-grid .eyebrow,
+  html.tl-mobile .dna-grid .stage-title > div:first-child,
+  html.tl-mobile .view-label .n,
+  html.tl-mobile .skill-group-head .g-name,
+  html.tl-mobile .j-card .j-when + div { font-size: var(--m-fs-sub) !important; }
+  /* body */
+  html.tl-mobile .content .wrap > p,
+  html.tl-mobile [data-st-p],
+  html.tl-mobile #letsTalkCard p,
+  html.tl-mobile #letsTalkCard a,
+  html.tl-mobile .hero-stat-lbl,
+  html.tl-mobile #beatB a,
+  html.tl-mobile .dna-grid .stage-title > div + div,
+  html.tl-mobile .view-label .d,
+  html.tl-mobile .sch-sub,
+  html.tl-mobile .imp2-qtext,
+  html.tl-mobile .j-card .j-when-txt,
+  html.tl-mobile .j-card p,
+  html.tl-mobile .btn-pink,
+  html.tl-mobile .content .wrap > div > a { font-size: var(--m-fs-body) !important; }
+  /* small */
+  html.tl-mobile .eyebrow:not(.dna-grid .eyebrow),
+  html.tl-mobile #scrollHint > div,
+  html.tl-mobile #beatB > div:last-child > div:first-child,
+  html.tl-mobile [data-pin] [data-pop],
+  html.tl-mobile .skill-group-head .g-sub,
+  html.tl-mobile .imp2-lbl,
+  html.tl-mobile .imp2-rpp,
+  html.tl-mobile .imp2-cite,
+  html.tl-mobile .j-card > div > div:first-child > div:last-child,
+  html.tl-mobile .j-card p + div:not(.j-chat):not(.j-books),
+  html.tl-mobile .j-when-tag,
+  html.tl-mobile .j-step-pill,
+  html.tl-mobile .foot, html.tl-mobile .foot a, html.tl-mobile .foot div { font-size: var(--m-fs-small) !important; }
 </style>
 </head>
 <body>
@@ -732,6 +797,8 @@
             <img data-fan="2" src="assets/report-page-3.png" alt="Tilli parent report: skill levels" style="width: 354px; max-height: min(490px, 52vh); object-fit: contain; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised); position: relative; z-index: 2; will-change: transform;">
             <img data-fan="3" src="assets/report-page-4.png" alt="Tilli parent report: what to do at home" style="width: 338px; max-height: min(470px, 50vh); object-fit: contain; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised); position: relative; will-change: transform;">
           </div>
+          <!-- carousel position (phones only — see .fan-dots / FAN_SWIPE) -->
+          <div class="fan-dots" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
           <h2 style="font-size: min(var(--tl-fs-xl), 5vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); max-width: 700px; margin: 0 auto 12px;">Teachers share reports <span style="color: var(--tl-green-600);">parents love to receive</span>.</h2>
           <p style="font-size: min(var(--tl-fs-lg), 2.6vh); line-height: 1.6; max-width: 600px; margin: 0 auto min(20px, 2.2vh);">Term by term: strengths, growth areas, and two or three things to try at home in the language your parents easily apply. Answer the question 'Why is school spending time on this?'</p>
           <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap;">
@@ -1239,7 +1306,7 @@
 <script src="js/ask-tilli-demo.js?v=2"></script>
 <script src="js/impact-orbits.js?v=7"></script>
 <script src="js/impact-carousel.js?v=7"></script>
-<script type="module" src="js/main.js?v=139"></script>
+<script type="module" src="js/main.js?v=140"></script>
 <script src="js/site-config.js?v=2"></script>
 <script src="js/site-chrome.js?v=6"></script>
 </body>

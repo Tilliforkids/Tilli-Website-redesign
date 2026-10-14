@@ -1810,26 +1810,33 @@ function measureFan() {
   FAN.from = w * PORTRAIT_FAN.from;
   FAN.to = w * PORTRAIT_FAN.to;
 }
-/* Phones: once the fan is open, a horizontal swipe across it (or a tap on a
-   side card) rotates which report page sits front-and-centre. `fanFront` is
-   the card in the middle; every card eases toward its slot (-1 left, 0 centre,
-   +1 right) and takes that slot's position, tilt and size. Desktop never
-   reads any of this (runPin keeps its original fan when !MOBILE). */
+/* Phones: no fan — the report pages are a one-at-a-time carousel. A
+   horizontal swipe (or a tap on a peeking neighbour) moves to the next / prev
+   page; it stops at either end (no wrap). `fanFront` is the page in the
+   centre; every card eases toward its slot (i - fanFront: 0 centre, ±1 the
+   neighbours peeking at the row edges, ±2 clipped off). Desktop never reads
+   any of this (runPin keeps its original fan when !MOBILE). */
 const FAN_SWIPE = {
   min: 36,     // px of horizontal travel that counts as a swipe
   lock: 10,    // px of movement before the gesture commits to horizontal / vertical
-  ease: 10,    // slot-change easing rate (higher = snappier)
-  ready: 0.95, // fan-out progress (0..1) before swipes are accepted
+  ease: 10,    // slide easing rate (higher = snappier)
+  ready: 0.95, // reveal progress (0..1) before swipes are accepted
+  gap: 18,     // px between neighbouring cards in the carousel
+  sideScale: 0.9,   // neighbour card size relative to the centre card
+  sideOpacity: 0.5, // neighbour card opacity
 };
-let fanFront = 1, fanQ = 0, fanT = 0;
-const fanU = [-1, 0, 1];                                  // each card's eased slot
-const fanSlot = (i) => ((i - fanFront + 4) % 3) - 1;      // card i's target slot
-function fanTo(front) {
-  if (fanQ < FAN_SWIPE.ready) return;
-  fanFront = (front + 3) % 3;
+let fanFront = 0, fanQ = 0, fanT = 0;
+const fanU = [0, 1, 2];                                   // each card's eased slot
+const fanSlot = (i) => i - fanFront;                      // card i's target slot
+let fanDots = [];
+function fanTo(front, force) {
+  if (fanQ < FAN_SWIPE.ready && !force) return;
+  fanFront = clamp(front, 0, 2);
+  fanDots.forEach((d, i) => d.classList.toggle('on', i === fanFront));
 }
 if (MOBILE) {
   const row = document.querySelector('.fan-row');
+  fanDots = [...document.querySelectorAll('.fan-dots span')];
   if (row) {
     let x0 = 0, y0 = 0, axis = null;
     row.addEventListener('touchstart', (e) => {
@@ -1845,7 +1852,7 @@ if (MOBILE) {
       if (axis === 'x' && Math.abs(dx) >= FAN_SWIPE.min) fanTo(fanFront + (dx < 0 ? 1 : -1));
       axis = null;
     }, { passive: true });
-    /* tap a side card → bring it forward */
+    /* tap a peeking neighbour → bring it forward */
     row.querySelectorAll('[data-fan]').forEach((img) => img.addEventListener('click', () => {
       const i = +img.dataset.fan - 1;
       if (fanSlot(i) !== 0) fanTo(i);
@@ -3604,26 +3611,23 @@ function runPin(sc, p) {
       T.fans[1].style.transform = `scale(${0.96 + 0.04 * q})`;
       return;
     }
-    /* phones: same fan, but each card is placed by its (swipeable) slot.
-       With fanFront = 1 this reproduces the desktop transforms exactly. */
+    /* phones: a carousel, not a fan — each card is placed by its slot,
+       one step (card width + gap) apart around the centre card. */
     fanQ = q;
-    if (q === 0) fanFront = 1;                       // scrolled back before the fan → reset order
+    if (q === 0 && fanFront) fanTo(0, true);          // scrolled back before the reveal → first page
     const now = performance.now();
     const k = 1 - Math.exp(-Math.min((now - (fanT || now)) / 1000, 0.05) * FAN_SWIPE.ease);
     fanT = now;
     const c = T.fans.map((el) => el.offsetLeft + el.offsetWidth / 2);   // untransformed centres
-    const w = T.fans.map((el) => el.offsetWidth);
-    const slotX = [c[0] + off, c[1], c[2] - off];    // left · centre · right
+    const step = T.fans[1].offsetWidth + FAN_SWIPE.gap;
     T.fans.forEach((el, i) => {
       const tgt = fanSlot(i);
       fanU[i] += (tgt - fanU[i]) * k;
       if (Math.abs(tgt - fanU[i]) < 0.001) fanU[i] = tgt;
-      const u = fanU[i];
-      const a = u < 0 ? 0 : 1, t = u < 0 ? u + 1 : u;  // segment between slots a and a+1
-      const x = lerp(slotX[a], slotX[a + 1], t);
-      const sw = lerp(w[a], w[a + 1], t);              // take on that slot's card width
-      const scl = (sw / w[i]) * (1 - 0.04 * (1 - q) * (1 - Math.abs(u)));
-      el.style.transform = `rotate(${7 * u * q}deg) translateX(${x - c[i]}px) scale(${scl})`;
+      const a = Math.min(Math.abs(fanU[i]), 1);
+      const scl = lerp(1, FAN_SWIPE.sideScale, a) * (0.96 + 0.04 * q);
+      el.style.transform = `translateX(${c[1] + fanU[i] * step - c[i]}px) scale(${scl})`;
+      el.style.opacity = String(lerp(1, FAN_SWIPE.sideOpacity * q, a) * clamp(2 - Math.abs(fanU[i])));
       el.style.zIndex = tgt === 0 ? 3 : 1;
     });
     return;
