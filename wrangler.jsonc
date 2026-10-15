@@ -1,0 +1,10 @@
+// Cloudflare Workers — static site, no build step.
+// What gets published is filtered by .assetsignore (same folder).
+{
+  "name": "tilli-website-redesign",
+  "compatibility_date": "2026-10-12",
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "."
+  }
+}

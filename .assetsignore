@@ -1,0 +1,26 @@
+# Files Cloudflare must NOT publish (gitignore syntax).
+
+# repo / tooling
+.git
+.claude
+.DS_Store
+.nojekyll
+.gitignore
+.assetsignore
+wrangler.jsonc
+CNAME
+node_modules
+
+# internal docs (specs, trackers, reviews, AI working notes)
+*.md
+principal-review/
+assets/tilli-redesign-tasks.pdf
+
+# old Wix reference dump
+Dataset _ Tilli.html
+Dataset _ Tilli_files/
+Data set page.pdf
+
+# Claude Design prototypes (not part of the live site)
+Tilli Homepage*.dc.html
+support.js
