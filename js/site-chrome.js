@@ -17,7 +17,7 @@
   var CONFIG = window.TILLI || {
     WHATSAPP_NUMBER: "94741889706",
     WHATSAPP_PREFILL: "Hi Kavi! I'd love to learn more about bringing Tilli to our school.",
-    FORM_ENDPOINT: "", KAVI_PHOTO: "", ASSET_BASE: "assets/ds/", EMAIL: "info@tillikids.com",
+    FORM_ENDPOINT: "", CALENDLY_URL: "", KAVI_PHOTO: "", ASSET_BASE: "assets/ds/", EMAIL: "info@tillikids.com",
     SCHOOL_TYPES: [], NAV_ITEMS: [], FOOTER_LINKS: [], SOCIAL: [], WA_ICON: ""
   };
 
@@ -35,6 +35,28 @@
   function waLink() {
     return "https://wa.me/" + CONFIG.WHATSAPP_NUMBER +
       "?text=" + encodeURIComponent(CONFIG.WHATSAPP_PREFILL);
+  }
+  /* Phones/tablets skip the form and go straight to WhatsApp, matching the /m/
+     builds. Same rule as js/device-split.js (tl-mobile = Home in mobile mode;
+     FAQ/Privacy aren't forked, so they need the UA test). */
+  function isMobileDevice() {
+    if (document.documentElement.classList.contains("tl-mobile")) return true;
+    var ua = navigator.userAgent || "";
+    var touch = (navigator.maxTouchPoints || 0) > 0 || "ontouchstart" in window;
+    var narrow = Math.min(window.innerWidth || 9999, (window.screen && window.screen.width) || 9999) <= 820;
+    return /Android|iPhone|iPod|Windows Phone|BlackBerry|Opera Mini|IEMobile/i.test(ua) ||
+      /iPad/.test(ua) || (navigator.platform === "MacIntel" && (navigator.maxTouchPoints || 0) > 1) ||
+      (narrow && touch);
+  }
+  /* Calendly pre-filled from the form; a1 answers the event's first custom
+     question ("anything that will help prepare"). */
+  function calendlyLink(form) {
+    var note = [form.school.value.trim(), form.school_type.value, form.message.value.trim()]
+      .filter(Boolean).join(" · ");
+    return CONFIG.CALENDLY_URL +
+      "?name=" + encodeURIComponent(form.name.value.trim()) +
+      "&email=" + encodeURIComponent(form.email.value.trim()) +
+      (note ? "&a1=" + encodeURIComponent(note) : "");
   }
 
   /* ── Header ─────────────────────────────────────────────────────────────── */
@@ -216,6 +238,8 @@
           '<h2 class="tl-h2" style="margin:0 0 6px">Let’s talk about your school</h2>' +
           '<p class="tl-body tl-muted">Tell us a little about you and Kavi’s team will reach out.</p>' +
           '<form class="tl-form" novalidate>' +
+            /* honeypot — hidden from people; bots fill it and the backend drops them */
+            '<input name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">' +
             '<div class="tl-form__row">' +
               '<div class="tl-field">' +
                 '<label for="tlf-name">Name <span class="tl-req">*</span></label>' +
@@ -252,12 +276,14 @@
               '<textarea class="tl-textarea" id="tlf-msg" name="message"></textarea>' +
             '</div>' +
             '<button class="tl-btn tl-btn--primary tl-btn--lg tl-form__submit" type="submit">Send request</button>' +
+            '<p class="tl-form__note tl-form__fail" hidden>Sorry, that didn’t send. Please try again, or <a href="' + waLink() + '" target="_blank" rel="noopener">message us on WhatsApp</a>.</p>' +
             '<p class="tl-form__note">We’ll only use these details to get in touch about Tilli.</p>' +
           '</form>' +
           '<div class="tl-form__ok">' +
             '<h3 class="tl-h3">Thank you, we’ve got it! 🌱</h3>' +
-            '<p class="tl-body tl-muted">Kavi’s team will be in touch soon. Prefer to chat now?</p>' +
-            '<a class="tl-btn tl-btn--green" href="' + waLink() + '" target="_blank" rel="noopener" style="margin-top:10px">Message us on WhatsApp</a>' +
+            '<p class="tl-body tl-muted">Pick a time for your 30-minute call now, or Kavi’s team will reach out to you.</p>' +
+            '<a class="tl-btn tl-btn--primary tl-btn--lg tl-form__cal" href="' + CONFIG.CALENDLY_URL + '" target="_blank" rel="noopener" style="margin-top:10px">Pick a time now</a>' +
+            '<p class="tl-body tl-muted" style="margin:14px 0 0">Prefer to chat? <a href="' + waLink() + '" target="_blank" rel="noopener">Message us on WhatsApp</a></p>' +
           '</div>' +
         '</div>' +
       '</div>'
@@ -279,7 +305,10 @@
     // Any element with [data-tl-open-form] opens the modal.
     document.addEventListener("click", function (e) {
       var t = e.target.closest("[data-tl-open-form]");
-      if (t) { e.preventDefault(); open(); }
+      if (!t) return;
+      e.preventDefault();
+      if (isMobileDevice()) window.open(waLink(), "_blank", "noopener");
+      else open();
     });
 
     function showErr(input, on) {
@@ -301,17 +330,23 @@
       if (!ok) { var first = form.querySelector(".tl-input--err"); if (first) first.focus(); return; }
 
       var btn = form.querySelector(".tl-form__submit");
-      var done = function () { panel.parentElement.classList.add("tl-modal--done"); };
-      var data = new FormData(form);
+      var fail = form.querySelector(".tl-form__fail");
+      var done = function () {
+        modal.querySelector(".tl-form__cal").href = calendlyLink(form);
+        panel.parentElement.classList.add("tl-modal--done");
+      };
+      var data = new URLSearchParams(new FormData(form)); // urlencoded so Apps Script fills e.parameter
       data.append("page", location.pathname);
-      data.append("submitted_at", new Date().toISOString());
 
       if (!CONFIG.FORM_ENDPOINT) { done(); return; } // stub: no backend wired yet
 
+      fail.hidden = true;
       btn.disabled = true; btn.textContent = "Sending…";
-      fetch(CONFIG.FORM_ENDPOINT, { method: "POST", body: data })
+      // no-cors: Apps Script's redirect gives an opaque response, so a reject
+      // here means the request genuinely never left (offline, blocked).
+      fetch(CONFIG.FORM_ENDPOINT, { method: "POST", mode: "no-cors", body: data })
         .then(done)
-        .catch(function () { done(); }) // Apps Script often returns opaque; treat as sent
+        .catch(function () { fail.hidden = false; })
         .finally(function () { btn.disabled = false; btn.textContent = "Send request"; });
     });
   }

@@ -11,6 +11,9 @@ wrangler.jsonc
 CNAME
 node_modules
 
+# form backend source (runs in Google Apps Script, not on the site)
+backend/
+
 # internal docs (specs, trackers, reviews, AI working notes)
 *.md
 principal-review/
