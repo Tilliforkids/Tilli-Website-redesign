@@ -2344,6 +2344,10 @@ function buildFormations() {
   const rebuildDNA2 = () => helixDots(dna2, DNA2_CFG.x, DNA2_CFG.y, DNA2_CFG.z, DNA2_CFG.scale, 66);
   rebuildDNA2();
   F.push(dna2);
+  /* 6b · MEMORY LAYER — the 12-skills continuation holds the SAME mini helix
+     (shared buffers, so rebuildDNA2/GUI still drive it). Pushed twice so the
+     scene→formation index mapping stays aligned for every later scene. */
+  F.push(dna2);
 
   /* 7 · ON TRACK — the dots fill the Student Outline child silhouette.
      loadStudentSilhouette() patches this buffer once the SVG loads; the
@@ -2983,6 +2987,7 @@ const DETENT_AT = {
   '3 views':   [0.40],               // labels are in by 0.32; the orbit exit starts at 0.46
   'Measure':   [0.27, 0.55, 0.82],   // one per strand: teacher · parent · child (rungs)
   '12 skills': [0.42],
+  'Memory layer': [0.42],
   'On track':  [0.34],
   'Ask-Tilli': [0.36],
   'Ask-live':  [0.30],
@@ -3442,7 +3447,10 @@ function onScroll(fOverride) {
      hero and dashboard: the hero rides up and out over the Start tail as
      the crossing screen takes over, and the dashboard climbs in from below
      over the Cross tail. The dots carry the continuity across both. */
-  const crossI = ST['Cross'], dashI = ST['Dashboard'], skillsI = ST['12 skills'], onTrackI = skillsI + 1;
+  const crossI = ST['Cross'], dashI = ST['Dashboard'], onTrackI = ST['On track'];
+  /* the 12-skills → On-track handover now runs off the Memory-layer
+     continuation scene (the one directly before On track) */
+  const skillsI = ST['Memory layer'];
   const aiI = ST['Ask-Tilli'], askLiveI = ST['Ask-live'], impactI = ST['Impact'], journeyI = ST['Journey'];
   const fitsI = ST['Fits in'], viewsI = ST['3 views'];
   /* The dots now CROSS PATHS IN FRONT of the hero text. The hero stays
@@ -4110,7 +4118,7 @@ if (reduced) {
     /* 12 SKILLS → ON TRACK: the generic base-morph is switched OFF for this
        scene (tt = 0 holds the mini-helix) — the dedicated handover block below
        owns the whole choreography: DNA eases out right, kids walk in from left. */
-    if (si === ST['12 skills']) tt = 0;
+    if (si === ST['12 skills'] || si === ST['Memory layer']) tt = 0;
     /* ON TRACK → ASK-TILLI: base-morph off too — the kids don't melt into the
        AI formation, they slide straight off the sides (ONTRACK_EXIT block). */
     if (si === ST['On track']) tt = 0;
@@ -4128,7 +4136,7 @@ if (reduced) {
        the geometry as Measure→12-skills and grow back on the way out. */
     {
       const sizeOf = (idx) =>
-        idx === ST['12 skills'] ? DNA2_CFG.dotScale :
+        idx === ST['12 skills'] || idx === ST['Memory layer'] ? DNA2_CFG.dotScale :
         idx === ST['On track'] ? KID.dot / BASE_DOT_SIZE : 1;
       th.dotMat.size = BASE_DOT_SIZE * lerp(sizeOf(i), sizeOf(i + 1), tt);
     }
@@ -4315,7 +4323,7 @@ if (reduced) {
 
     /* DNA: strands appear in stage order, then the helix rotates */
     {
-      const dnaI = ST['Measure'], skI = ST['12 skills'];
+      const dnaI = ST['Measure'], skI = ST['Memory layer'];   // the helix holds through 12 skills + Memory layer
       /* starts exactly on the Measure screen — before it, the 3-views exit owns
          the field (the orbs must not rotate/whiten into the helix) */
       const wgt = (f >= dnaI ? 1 : 0) * (1 - clamp((f - (skI + 0.9)) / 0.35));
@@ -4369,7 +4377,7 @@ if (reduced) {
        The kids are NOT drawn here — they walk in via the time-based block below,
        which takes over once the helix is gone. The 360° cards slide left / the
        On-track text fades in first — see onScroll. */
-    if (si === ST['12 skills']) {
+    if (si === ST['Memory layer']) {
       const hb = clamp((S.p - SKILLS_EXIT.start) / (1 - SKILLS_EXIT.start));   // linear 0→1
       if (hb > 0 && hb < 0.5) {
         const outP = smoother(clamp(hb / 0.5));          // DNA exit: eased 0→1 over first half
@@ -4388,7 +4396,7 @@ if (reduced) {
        reads as walking. Spans the 12-skills tail into On-track, and fully owns
        the field there — overwriting the held DNA so it doesn't reappear. */
     {
-      const skI = ST['12 skills'], onI = skI + 1;
+      const skI = ST['Memory layer'], onI = ST['On track'];
       const f0 = skI + 0.8;                              // hb 0.5 — the DNA has fully exited
       const fEnd = onI + MORPH_AT;                        // where On-track starts morphing to the next scene
       if (f >= f0 && f < fEnd) {
