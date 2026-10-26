@@ -151,6 +151,66 @@
   .skill-card { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-md); padding: 14px; }
   .skill-card .n { font-size: var(--tl-fs-sm); font-weight: 800; line-height: 1.2; }
   .skill-card .d { font-size: var(--tl-fs-xs); color: var(--tl-ink-500); margin-top: 5px; line-height: 1.4; }
+  /* Memory layer (Kavi's deck): tiers → passport card → K→12 timeline. Static here. */
+  .mem-grid { display: grid; gap: 8px; margin-top: 22px; }
+  .mem-stack { display: flex; flex-direction: column; gap: 8px; }
+  .mem-layer { --mc: var(--tl-cyan-500); text-align: left; padding: 11px 13px; background: var(--tl-glass);
+    border: 1px solid var(--tl-line-200); border-left: 4px solid var(--mc); border-radius: var(--tl-radius-md); box-shadow: var(--tl-shadow-card); }
+  .mem-k small { display: block; font-size: var(--tl-fs-xs); font-weight: 600; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--tl-ink-500); }
+  .mem-k b { display: block; font-size: var(--tl-fs-sm); font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--tl-ink-900); margin: 2px 0 8px; }
+  .mem-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .mem-chips span { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-pill);
+    padding: 3px 9px; font-size: var(--tl-fs-xs); font-weight: 600; color: var(--tl-ink-700); }
+  .mem-base { background: var(--tl-ink-900); border-color: var(--tl-ink-900); border-left-color: var(--mc); }
+  .mem-base .mem-k small { color: var(--tl-green-500); }
+  .mem-base .mem-k b { color: var(--tl-white); }
+  .mem-base .mem-chips span { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.16); color: var(--tl-white); }
+  .mem-arrow svg { width: 40px; height: 16px; fill: none; stroke: var(--tl-pink-600); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+    display: block; margin: 0 auto; transform: rotate(90deg); }
+  .mem-pass { background: var(--tl-white); border: 2px solid var(--tl-pink-600); border-radius: var(--tl-radius-lg); padding: 14px 16px; }
+  .mem-pass-k { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--tl-pink-600); }
+  .mem-pass-h { margin: 6px 0 4px; font-size: var(--tl-fs-base); font-weight: 800; line-height: 1.3; color: var(--tl-ink-900); }
+  .mem-pass-d { margin: 0; font-size: var(--tl-fs-xs); line-height: 1.45; color: var(--tl-ink-500); }
+  .mem-tl { margin-top: 24px; }
+  .mem-tl-lbl { font-size: var(--tl-fs-xs); font-weight: 600; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--tl-ink-500); margin-bottom: 10px; }
+  .mem-tl ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, 1fr); position: relative; }
+  .mem-tl ol::before { content: ""; position: absolute; top: 5px; left: calc(100% / 14); right: calc(100% / 14); height: 3px;
+    border-radius: var(--tl-radius-pill); background: linear-gradient(90deg, var(--tl-green-500), var(--tl-cyan-500), var(--tl-yellow-500), var(--tl-pink-600)); }
+  .mem-tl li { position: relative; padding-top: 20px; font-size: 10px; font-weight: 700; color: var(--tl-ink-700); }
+  .mem-tl li::before { content: ""; position: absolute; top: 0; left: 50%; width: 13px; height: 13px; margin-left: -6.5px; border-radius: 50%;
+    background: var(--c); box-shadow: 0 0 0 3px var(--tl-white); }
+  .mem-tl li:not(:first-child):not(.end) { color: transparent; }   /* K + Grade 12 only: the in-between labels don't fit */
+  .mem-tl li.end { color: var(--tl-pink-600); white-space: nowrap; }
+  .mem-cap { margin: 14px auto 0; font-size: var(--tl-fs-xs); line-height: 1.5; color: var(--tl-ink-500); }
+
+  /* ── Oct-19 feedback furniture (mirrors index.html) ──── */
+  .dash-kicker { display: inline-block; background: var(--tl-glass); border: 1.5px solid var(--tl-cyan-500); border-radius: var(--tl-radius-pill);
+    padding: 5px 14px; margin-bottom: 14px; font-size: var(--tl-fs-xs); font-weight: 600; line-height: 1.4; color: var(--tl-ink-700); }
+  .dash-kicker b { color: var(--tl-cyan-700); font-weight: 800; }
+  #dashboard .title { text-wrap: balance; }
+  .dash-next { font-size: var(--tl-fs-sm); line-height: 1.5; color: var(--tl-ink-500); margin: 16px auto 0; text-wrap: balance; }
+  .dash-next span { display: inline-block; margin-right: 8px; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
+    text-transform: uppercase; color: var(--tl-cyan-700); background: var(--tl-wash-cyan); border-radius: var(--tl-radius-pill); padding: 2px 9px; }
+  .rep-tags, .rep-formula, .view-src { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; }
+  /* Reports: one quiet contents card + a plain ✓ line (mirrors index.html) */
+  .rep-formula { width: fit-content; max-width: 100%; gap: 4px 8px; margin: 12px auto 22px; padding: 10px 14px;
+    background: var(--tl-glass); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-md);
+    font-size: var(--tl-fs-sm); font-weight: 800; color: var(--tl-ink-900); }
+  .rep-formula em { flex-basis: 100%; font-style: normal; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
+    text-transform: uppercase; color: var(--tl-green-600); }
+  .rep-formula i { font-style: normal; color: var(--tl-green-600); }
+  .rep-tags { gap: 4px 14px; margin: 0 auto 14px; }
+  .rep-tags span { font-size: var(--tl-fs-xs); font-weight: 600; color: var(--tl-ink-500); }
+  .rep-tags span::before { content: "\2713"; color: var(--tl-green-600); font-weight: 800; margin-right: 5px; }
+  .view-src { gap: 4px; margin-top: 8px; }
+  .view-src span { border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-pill); background: var(--tl-glass);
+    padding: 2px 9px; font-size: var(--tl-fs-xs); font-weight: 600; color: var(--tl-ink-500); }
+  .fits-cards { display: grid; gap: 10px; margin-top: 22px; text-align: left; }
+  .fits-card { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-lg);
+    box-shadow: var(--tl-shadow-card); padding: 14px 16px; }
+  .fits-card > span { display: block; width: 26px; height: 4px; border-radius: var(--tl-radius-pill); margin-bottom: 8px; }
+  .fits-card p { margin: 0; font-size: var(--tl-fs-base); line-height: 1.5; color: var(--tl-ink-600); }
+  .fits-card b { color: var(--tl-ink-900); }
 
   /* ── On track: pills + dot-outlined children row ─────── */
   .pops { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 28px; }
@@ -326,10 +386,10 @@
       <canvas id="heroBall" class="hero-ball"></canvas>
     </div>
     <div class="eyebrow">Hello school leaders</div>
-    <h1>How do you know which children are quietly <span class="c-pink">falling behind</span>?</h1>
-    <p class="hero-sub">Most schools find out from marks. Tilli looks at the child beyond academics and from 3 unique people in the child's life.</p>
+    <h1>Figure out which children are quietly <span class="c-pink">falling behind</span>.</h1>
+    <p class="hero-sub">Most schools measure learning through academic scores. Tilli looks at every child beyond academics, measuring</p>
     <div class="hero-stat">579</div>
-    <div style="font-size:var(--tl-fs-base);color:var(--tl-ink-500)"><b>data points per child per year,</b> in about 40 minutes per child per term.</div>
+    <div style="font-size:var(--tl-fs-base);color:var(--tl-ink-500)"><b>data points per child every year,</b> within just 40 minutes.</div>
     <div class="badges">
       <div class="k">INCUBATED AT STANFORD · SCALED WITH UNICEF INNOVATION</div>
       <div class="logos">
@@ -342,11 +402,12 @@
   <!-- 2 · DASHBOARD -->
   <span id="how" aria-hidden="true"></span><!-- footer "How it works" anchor (= Dashboard) -->
   <section id="dashboard" class="wash-cyan wrap">
-    <h2 class="title">Schools see every data point in <span class="c-cyan">one simple dashboard</span>.</h2>
-    <p class="lede">Easy to use, easy to navigate. Built for teachers, not analysts.</p>
+    <div class="dash-kicker">Tilli measures the <b>12 foundational skills</b> that impact learning and well-being</div>
+    <h2 class="title">We bring together every single data point about a child into a <span class="c-cyan">developmental profile</span> that follows the child from kindergarten through Grade&nbsp;12.</h2>
     <div class="shot">
       <video src="../uploads/assets_dashboard-1785392844586.mp4" poster="../assets/ds/dashboard-poster.png" muted autoplay loop playsinline preload="metadata"></video>
     </div>
+    <p class="dash-next"><span>Coming next</span>This cognitive profile joins every other data source about the child, from academics to attendance.</p>
   </section>
 
   <!-- 3 · REPORTS -->
@@ -361,12 +422,11 @@
       Swipe to browse
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-    <h2 class="title">Teachers share reports <span class="c-green">parents love to receive</span>.</h2>
-    <p class="lede">Term by term: strengths, growth areas, and two or three things to try at home in the language your parents easily apply. Answer the question 'Why is school spending time on this?'</p>
+    <div class="rep-tags"><span>Evidence-based</span><span>Built on the child's data</span><span>Zero teacher prep</span></div>
+    <h2 class="title">Tilli designs reports <span class="c-green">parents love to receive</span>.</h2>
+    <p class="lede">Answer the question ‘Why is school spending time on this?’</p>
+    <div class="rep-formula"><em>In every report</em><span>Strengths</span><i>+</i><span>Growth areas</span><i>+</i><span>Home intervention plan</span></div>
     <div class="cta-col" style="align-items:center">
-      <a class="btn btn-pink btn-block" style="max-width:220px"
-         href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school."
-         target="_blank" rel="noopener">Book a 30-minute call</a>
       <a class="textlink" href="../uploads/Tilli_Parent%20Report_Example.pdf" target="_blank" rel="noopener">See an example parent report →</a>
     </div>
   </section>
@@ -382,12 +442,13 @@
       </div>
       <div class="view-label" style="--c:var(--tl-yellow-500)">
         <span class="v-dot" aria-hidden="true"></span>
-        <div class="n" style="color:var(--tl-yellow-700)">The student themselves</div>
+        <div class="n" style="color:var(--tl-yellow-700)">The student</div>
         <div class="d">Direct tasks, in the child's own voice</div>
+        <div class="view-src"><span>Psychometrics</span><span>Academic scores</span><span>Attendance</span><span>Other behavioural scores</span></div>
       </div>
       <div class="view-label" style="--c:var(--tl-cyan-500)">
         <span class="v-dot" aria-hidden="true"></span>
-        <div class="n" style="color:var(--tl-cyan-700)">Parents</div>
+        <div class="n" style="color:var(--tl-cyan-700)">Parent</div>
         <div class="d">What home sees that school can't</div>
       </div>
     </div>
@@ -417,7 +478,7 @@
         </div>
       </div>
       <div class="mcard">
-        <div class="mcard__lead"><div class="h" style="color:var(--tl-orange-500)">03 · The child connects them</div><div class="b">Direct tasks completed by the child tie both strands together.</div></div>
+        <div class="mcard__lead"><div class="h" style="color:var(--tl-orange-500)">03 · The child connects them</div><div class="b">Direct tasks completed by the child tie it all together: psychometrics, academic data, behavioural indicators, attendance, and everything in between.</div></div>
         <div class="sample o">
           <div class="lab">DIRECT-FROM-CHILD TASK</div>
           <div class="row">
@@ -442,8 +503,8 @@
 
   <!-- 6 · 12 SKILLS -->
   <section id="skills" class="wash-cyan wrap" style="text-align:center">
-    <h2 class="title">Get a <span class="c-pink">360° view</span> of the student.</h2>
-    <p class="lede">12 foundational skills, measured from every side, term after term.</p>
+    <h2 class="title">Get a <span class="c-pink">360° view</span> of each student.</h2>
+    <p class="lede">12 foundational skills that usually go unmeasured, paired with every single data point, from math to attendance.</p>
     <!-- Bucket 1 · Thinking skills (brain) -->
     <div class="skill-bucket">
       <div class="bucket-head">
@@ -513,6 +574,25 @@
     </div>
   </section>
 
+  <!-- 6b · MEMORY LAYER — Kavi's deck: tiers (measured today / coming next),
+       the learning passport, and the K→12 timeline (mirrors the desktop scene) -->
+  <section id="memory-layer" class="wash-cyan wrap" style="text-align:center">
+    <div class="eyebrow cyan">The memory layer</div>
+    <h2 class="title">One memory for <span class="c-cyan">every child</span>, K–12.</h2>
+    <p class="lede">Next, we combine each child's cognitive profile with every other data source about them: academics, attendance and more.</p>
+    <div class="mem-grid">
+      <div class="mem-stack">
+        <div class="mem-layer mem-base" style="--mc: var(--tl-green-500);"><div class="mem-k"><small>Since 2023</small><b>Measured by Tilli</b></div><div class="mem-chips"><span>6 Cognitive skills</span><span>6 Social-emotional skills</span><span>Teacher · parent · child</span><span>3× a year</span></div></div>
+        <div class="mem-layer" style="--mc: var(--tl-cyan-500);"><div class="mem-k"><small>Coming next</small><b>Pulled from the school</b></div><div class="mem-chips"><span>Attendance</span><span>Maths &amp; literacy scores</span><span>Weekly assessments</span><span>Behaviour notes</span><span>Portfolio</span></div></div>
+        <div class="mem-layer" style="--mc: var(--tl-yellow-500);"><div class="mem-k"><small>Coming next</small><b>Added by Tilli</b></div><div class="mem-chips"><span>Photo-graded work</span><span>Interventions tried</span><span>AskTilli over the whole record</span></div></div>
+      </div>
+      <div class="mem-arrow" aria-hidden="true"><svg viewBox="0 0 40 16"><line x1="1" y1="8" x2="34" y2="8"/><polyline points="28 2 36 8 28 14"/></svg></div>
+      <div class="mem-pass"><div class="mem-pass-k">One learning passport</div><p class="mem-pass-h">Per child. Owned by the family. Follows them to the next grade and the next school.</p><p class="mem-pass-d">Readable by teachers, parents and any AI tool or LMS the school chooses.</p></div>
+    </div>
+    <div class="mem-tl"><div class="mem-tl-lbl">The learning passport</div><ol><li style="--c: var(--tl-green-500);">K</li><li style="--c: var(--tl-green-500);">Grade 2</li><li style="--c: var(--tl-cyan-500);">Grade 4</li><li style="--c: var(--tl-cyan-500);">Grade 6</li><li style="--c: var(--tl-yellow-500);">Grade 8</li><li style="--c: var(--tl-orange-500);">Grade 10</li><li style="--c: var(--tl-pink-600);" class="end">Grade 12</li></ol></div>
+    <p class="mem-cap">579 data points per child per year today · 2,895 by Grade 5 · the passport carries them through Grade 12 and across school moves</p>
+  </section>
+
   <!-- 7 · ON TRACK / Progress -->
   <section id="progress" class="wash-green wrap" style="text-align:center">
     <h2 class="title">Know, term by term, whether every child is <span class="c-green">on track</span> for middle school.</h2>
@@ -530,8 +610,8 @@
 
   <!-- 8 · ASK-TILLI -->
   <section id="ask-tilli" class="wash-pink wrap" style="text-align:center">
-    <h2 class="title">Any AI can answer. <span class="c-cyan">Only Tilli knows your student.</span></h2>
-    <p class="lede">The same question, asked two ways. One answer is for any child. One is for <em>this</em> child.</p>
+    <h2 class="title">A generic AI prompt gives you a generic lesson plan. <span class="c-cyan">Only Tilli knows your student.</span></h2>
+    <p class="lede">The same question, asked two ways. One answer is for any average child. AskTilli is for <em>your</em> child.</p>
     <div class="ai-cards">
       <div class="ai-card generic">
         <div class="lab">A GENERIC AI CHATBOT</div>
@@ -570,7 +650,7 @@
         <span class="atl-chars" data-atl-chars>0 / 220</span>
       </div>
       <div class="atl-locked" data-atl-locked style="display:none">
-        <div class="atl-locked-t">That's your 2-question demo. On your real data, AskTilli knows every child, class, and skill in your school.</div>
+        <div class="atl-locked-t">That's your two-question demo. Let us show you what this looks like on your school's data.</div>
         <a href="https://wa.me/94741889706?text=Hi%20Kavi!%20I'd%20love%20to%20learn%20more%20about%20bringing%20Tilli%20to%20our%20school." target="_blank" rel="noopener">Book a 30-minute call →</a>
       </div>
     </div>
@@ -585,13 +665,17 @@
   <section id="fits-in" class="wrap" style="text-align:center">
     <div class="eyebrow">Works with what you already have</div>
     <h2 class="title">Tilli doesn't replace your counsellor. <span class="c-green" data-typewrite>It tells them which children to see first.</span></h2>
-    <p class="lede">Your Life Skills period gets a 36-week plan. Your values assembly gets a skills language your teachers share. Your counsellor gets early signals, not end-of-term referrals.</p>
+    <div class="fits-cards">
+      <div class="fits-card"><span style="background:var(--tl-green-500)"></span><p>Your Life Skills period now has a <b>structured 36-week plan</b>.</p></div>
+      <div class="fits-card"><span style="background:var(--tl-cyan-500)"></span><p>Your social-emotional curriculum is now a <b>personalized, data-driven plan</b>.</p></div>
+      <div class="fits-card"><span style="background:var(--tl-pink-400)"></span><p>Your counsellor gets <b>early signals</b>, not end-of-term referrals.</p></div>
+    </div>
   </section>
 
   <!-- 9 · IMPACT -->
   <section id="impact" class="wrap impact">
     <div class="big"><span>53</span> schools</div>
-    <div class="sub">across India and Sri Lanka, from CBSE and ICSE to IB and Cambridge, have joined.</div>
+    <div class="sub">across the world are now measuring foundational skills that matter.</div>
     <div class="school-logos">
       <div class="school-track">
         <!-- set 1 -->

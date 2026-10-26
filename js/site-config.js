@@ -28,12 +28,13 @@
     ],
 
     /* Header nav, in order (GL-01). Logo links Home, so no "Home" item.
-       "Pricing & FAQs" = faq.html (prices, teacher hours, evidence answers). */
+       "FAQs" = faq.html (prices, teacher hours, evidence answers). Pricing is
+       deliberately NOT named in the nav (Kavi, Oct 19: too much, too soon). */
     NAV_ITEMS: [
       { label: "How Tilli works", href: "index.html" },  /* no hash: lands on Home beat A */
-      { label: "Results", href: "success.html" },
-      { label: "Pricing & FAQs", href: "faq.html" },
-      { label: "For researchers", href: "research.html" }
+      { label: "Success stories", href: "success.html" },
+      { label: "Our research", href: "research.html" },
+      { label: "FAQs", href: "faq.html" }
     ],
 
     /* Header primary CTA label, both skins. GL-02 will unify the wording site-wide. */

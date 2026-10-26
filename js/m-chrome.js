@@ -51,7 +51,7 @@
         "padding:12px 20px;background:var(--tl-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);" +
         "border-bottom:1px solid var(--tl-line-200)}" +
       ".hdr .brand{display:flex;align-items:center}" +
-      ".hdr .brand img{height:30px;width:auto}" +
+      ".hdr .brand img{height:36px;width:auto}" +
       ".burger{display:flex;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;" +
         "padding:9px 8px;margin:-8px;background:none;border:0;cursor:pointer}" +
       ".burger span{display:block;height:2.5px;width:100%;border-radius:var(--tl-radius-xs);background:var(--tl-ink-700);" +

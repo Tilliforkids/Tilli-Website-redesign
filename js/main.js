@@ -2529,7 +2529,9 @@ function initThree() {
 
   /* the storytelling field */
   const built = buildFormations();
-  loadStudentSilhouette(built.F[9]);   // upgrade the ON-TRACK blob to the SVG kid
+  /* upgrade the ON-TRACK blob to the SVG kid — looked up by scene, never a fixed
+     slot (formations are positional, so inserting a scene shifts the index) */
+  loadStudentSilhouette(built.F[ST['On track']]);
   const P = new Float32Array(N * 3); P.set(built.F[0].pos);
   const CL = new Float32Array(N * 3); CL.set(built.F[0].col);
   const phases = new Float32Array(N * 3);
@@ -3337,7 +3339,7 @@ function pinTargets(sc) {
     aiQs: qa('[data-ai-q]'), aiTypings: qa('[data-ai-typing]'),
     aiRs: qa('[data-ai-r]'), aiFoots: qa('[data-ai-foot]'),
     stH: q('[data-st-h]'), stP: q('[data-st-p]'), pops: qa('[data-pop]'), stWrap: q('.wrap'),
-    skillCards: qa('.skill-card'),
+    skillCards: qa('.skill-card'), memLayers: qa('.mem-layer, .mem-rv'),
     vH: q('[data-v-h]'), vLabels: qa('.view-label'),
     stageTitles: qa('.stage-title'), stagePanels: qa('.stage-panel'),
   };
@@ -3762,8 +3764,10 @@ function runPin(sc, p) {
     T.vLabels.forEach((el, k) => el.classList.toggle('in', p > 0.2 + k * 0.06));
     return;
   }
-  if (sc.pin === 'skills' && T.skillCards.length) {
+  if (sc.pin === 'skills' && (T.skillCards.length || T.memLayers.length)) {
     T.skillCards.forEach((card, k) => card.classList.toggle('in', p > 0.06 + k * 0.022));
+    /* memory layer: tiers → arrow/passport → timeline, one beat each in DOM order */
+    T.memLayers.forEach((el, k) => el.classList.toggle('in', p > 0.08 + k * 0.06));
     return;
   }
   if (sc.pin === 'state' && T.stH) {
@@ -4025,7 +4029,7 @@ if (DEBUG) {
 if (reduced) {
   document.getElementById('world').style.display = 'none';
   beatA.querySelectorAll('[data-hb]').forEach((el) => el.classList.add('in'));
-  document.querySelectorAll('.skill-card, .view-label, .rv').forEach((el) => el.classList.add('in'));
+  document.querySelectorAll('.skill-card, .mem-layer, .mem-rv, .view-label, .rv').forEach((el) => el.classList.add('in'));
   statEl.textContent = '579';
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
