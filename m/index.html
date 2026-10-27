@@ -76,10 +76,24 @@
   @media (max-width: 360px) { .hero-stage { height: 220px; } .hero-ball { width: 170px; height: 170px; } }
 
   /* ── Framed media ───────────────────────────────────── */
-  .shot { margin-top: 26px; border-radius: var(--tl-radius-lg); overflow: hidden;
+  .shot { position: relative; margin-top: 26px; border-radius: var(--tl-radius-lg); overflow: hidden;
     border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised);
     background: var(--tl-white); }
   .shot video, .shot img { width: 100%; display: block; }
+  /* Dashboard walkthrough controls: pause/play + sound, over the video's corner.
+     Sound is on by default; if the browser blocks it until a tap, the video
+     plays muted and the first tap anywhere turns it on. Muting is remembered. */
+  .vid-ctrls { position: absolute; right: 12px; bottom: 12px; z-index: 2; display: flex; gap: 8px; }
+  .vid-btn { width: 44px; height: 44px; border: 0; border-radius: 50%; padding: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; color: var(--tl-white);
+    background: rgba(20, 20, 20, 0.62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 4px 14px rgba(20, 20, 20, 0.18); transition: background .2s ease, transform .2s ease; }
+  .vid-btn:hover { background: var(--tl-ink-900); transform: scale(1.06); }
+  .vid-btn:focus-visible { outline: 2px solid var(--tl-cyan-500); outline-offset: 2px; }
+  .vid-btn svg { width: 18px; height: 18px; fill: currentColor; }
+  .vid-btn svg .ln { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .vid-btn .i-b, .vid-btn.is-on .i-a { display: none; }
+  .vid-btn.is-on .i-b { display: block; }
 
   /* ── 3 views: one dotted circle per source (echoes the desktop split) ── */
   .views-row { display: flex; flex-direction: column; align-items: center; gap: 28px; margin-top: 30px; }
@@ -165,39 +179,26 @@
   .skill-card { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-md); padding: 14px; }
   .skill-card .n { font-size: var(--tl-fs-sm); font-weight: 800; line-height: 1.2; }
   .skill-card .d { font-size: var(--tl-fs-xs); color: var(--tl-ink-500); margin-top: 5px; line-height: 1.4; }
-  /* Memory layer (Kavi's deck): tiers → passport card → K→12 timeline. Static here. */
+  /* Memory layer (Kavi's deck): school-data line → passport tour cards. Static here. */
+  /* the school's data sources: one row of chips (wraps if it must) */
+  .mem-src { margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .mem-src span { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-pill);
+    padding: 5px 14px; font-size: var(--tl-fs-xs); font-weight: 600; line-height: 1.3; color: var(--tl-ink-700); box-shadow: var(--tl-shadow-card); }
+  #memory-layer > .mem-src { margin-top: 30px; }
+  /* passport tour (static): each card crops the screenshot to one stop —
+     the img is scaled to 1/--w of the frame and shifted by its own size */
+  .tour-list { margin-top: 34px; display: grid; gap: 22px; text-align: left; }
+  .tour-card { margin: 0; background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-lg);
+    box-shadow: var(--tl-shadow-card); overflow: hidden; }
+  .tour-crop { position: relative; overflow: hidden; background: #FFF8EC; border-bottom: 1px solid var(--tl-line-200); }
+  .tour-crop img { position: absolute; left: 0; top: 0; width: calc(100% / var(--w)); max-width: none; height: auto;
+    transform: translate(calc(var(--x) * -100%), calc(var(--y) * -100%)); }
+  .tour-card figcaption { padding: 14px 16px 16px; }
+  .tour-card b { display: block; font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-pink-600); }
+  .tour-card h3 { margin: 4px 0 6px; font-size: var(--tl-fs-lg); font-weight: 800; line-height: 1.2; color: var(--tl-ink-900); }
+  .tour-card p { margin: 0; font-size: var(--tl-fs-sm); line-height: 1.5; color: var(--tl-ink-500); }
   /* the 12-lobe memory ring (static SVG of the desktop 3JS ring) heads the section */
   .mem-ring-art { display: block; width: 180px; height: auto; margin: 0 auto 14px; }
-  .mem-grid { display: grid; gap: 8px; margin-top: 22px; }
-  .mem-stack { display: flex; flex-direction: column; gap: 8px; }
-  .mem-layer { --mc: var(--tl-cyan-500); text-align: left; padding: 11px 13px; background: var(--tl-glass);
-    border: 1px solid var(--tl-line-200); border-left: 4px solid var(--mc); border-radius: var(--tl-radius-md); box-shadow: var(--tl-shadow-card); }
-  .mem-k small { display: block; font-size: var(--tl-fs-xs); font-weight: 600; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--tl-ink-500); }
-  .mem-k b { display: block; font-size: var(--tl-fs-sm); font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--tl-ink-900); margin: 2px 0 8px; }
-  .mem-chips { display: flex; flex-wrap: wrap; gap: 5px; }
-  .mem-chips span { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-pill);
-    padding: 3px 9px; font-size: var(--tl-fs-xs); font-weight: 600; color: var(--tl-ink-700); }
-  .mem-base { background: var(--tl-ink-900); border-color: var(--tl-ink-900); border-left-color: var(--mc); }
-  .mem-base .mem-k small { color: var(--tl-green-500); }
-  .mem-base .mem-k b { color: var(--tl-white); }
-  .mem-base .mem-chips span { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.16); color: var(--tl-white); }
-  .mem-arrow svg { width: 40px; height: 16px; fill: none; stroke: var(--tl-pink-600); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
-    display: block; margin: 0 auto; transform: rotate(90deg); }
-  .mem-pass { background: var(--tl-white); border: 2px solid var(--tl-pink-600); border-radius: var(--tl-radius-lg); padding: 14px 16px; }
-  .mem-pass-k { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--tl-pink-600); }
-  .mem-pass-h { margin: 6px 0 4px; font-size: var(--tl-fs-base); font-weight: 800; line-height: 1.3; color: var(--tl-ink-900); }
-  .mem-pass-d { margin: 0; font-size: var(--tl-fs-xs); line-height: 1.45; color: var(--tl-ink-500); }
-  .mem-tl { margin-top: 24px; }
-  .mem-tl-lbl { font-size: var(--tl-fs-xs); font-weight: 600; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--tl-ink-500); margin-bottom: 10px; }
-  .mem-tl ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, 1fr); position: relative; }
-  .mem-tl ol::before { content: ""; position: absolute; top: 5px; left: calc(100% / 14); right: calc(100% / 14); height: 3px;
-    border-radius: var(--tl-radius-pill); background: linear-gradient(90deg, var(--tl-green-500), var(--tl-cyan-500), var(--tl-yellow-500), var(--tl-pink-600)); }
-  .mem-tl li { position: relative; padding-top: 20px; font-size: 10px; font-weight: 700; color: var(--tl-ink-700); }
-  .mem-tl li::before { content: ""; position: absolute; top: 0; left: 50%; width: 13px; height: 13px; margin-left: -6.5px; border-radius: 50%;
-    background: var(--c); box-shadow: 0 0 0 3px var(--tl-white); }
-  .mem-tl li:not(:first-child):not(.end) { color: transparent; }   /* K + Grade 12 only: the in-between labels don't fit */
-  .mem-tl li.end { color: var(--tl-pink-600); white-space: nowrap; }
-  .mem-cap { margin: 14px auto 0; font-size: var(--tl-fs-xs); line-height: 1.5; color: var(--tl-ink-500); }
 
   /* ── Oct-19 feedback furniture (mirrors index.html) ──── */
   /* headline styled like the hero sub-line, with one big bold cyan phrase on its own line */
@@ -438,7 +439,8 @@
   <section id="dashboard" class="wash-cyan wrap">
     <h2 class="title">We bring together every single data point about a child into a <span class="c-cyan">developmental profile</span> that follows the child from kindergarten through Grade&nbsp;12.</h2>
     <div class="shot">
-      <video src="../uploads/profile-walkthrough-web.mp4" poster="../uploads/profile-walkthrough-poster.jpg" muted autoplay loop playsinline preload="metadata"></video>
+      <video id="dashVideo" src="../uploads/profile-walkthrough-web.mp4" poster="../uploads/profile-walkthrough-poster.jpg" muted loop playsinline preload="metadata"></video>
+      <div class="vid-ctrls"><button type="button" class="vid-btn" data-vid-play aria-label="Pause video" title="Pause"><svg class="i-a" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="3.6" height="14" rx="1"/><rect x="13.9" y="5" width="3.6" height="14" rx="1"/></svg><svg class="i-b" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></button><button type="button" class="vid-btn" data-vid-mute aria-label="Turn sound on" aria-pressed="false" title="Sound on"><svg class="i-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="ln" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><svg class="i-b" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="ln" d="M15.5 9a4.2 4.2 0 0 1 0 6M18.2 6.5a8 8 0 0 1 0 11"/></svg></button></div>
     </div>
     <p class="dash-next"><span>Coming next</span>This cognitive profile joins every other data source about the child, from academics to attendance.</p>
   </section>
@@ -461,7 +463,7 @@
   </section>
 
   <!-- 4 · 3 VIEWS — the three people who know the child best -->
-  <section id="views" class="wash-cyan wrap" style="text-align:center">
+  <section id="views" class="wrap" style="text-align:center">
     <h2 class="title">Every data point comes from the <span class="c-cyan">3 people who know the child best</span>.</h2>
     <div class="views-row">
       <div class="view-label" style="--c:var(--tl-green-500)">
@@ -605,28 +607,28 @@
     </div>
   </section>
 
-  <!-- 6b · MEMORY LAYER — Kavi's deck: tiers (measured today / coming next),
-       the learning passport, and the K→12 timeline (mirrors the desktop scene) -->
+  <!-- 6b · MEMORY LAYER — Kavi's deck: the school-data tier, the
+       learning passport tour (mirrors the desktop scene) -->
   <section id="memory-layer" class="wrap" style="text-align:center">
     <img class="mem-ring-art" src="../assets/memory-ring.svg" alt="" aria-hidden="true" width="240" height="240">
-    <div class="eyebrow cyan">The memory layer</div>
-    <h2 class="title">One memory for <span class="c-cyan">every child</span>, K–12.</h2>
-    <p class="lede">Next, we combine each child's cognitive profile with every other data source about them: academics, attendance and more.</p>
-    <div class="mem-grid">
-      <div class="mem-stack">
-        <div class="mem-layer mem-base" style="--mc: var(--tl-green-500);"><div class="mem-k"><small>Since 2023</small><b>Measured by Tilli</b></div><div class="mem-chips"><span>6 Cognitive skills</span><span>6 Social-emotional skills</span><span>Teacher · parent · child</span><span>3× a year</span></div></div>
-        <div class="mem-layer" style="--mc: var(--tl-cyan-500);"><div class="mem-k"><small>Coming next</small><b>Pulled from the school</b></div><div class="mem-chips"><span>Attendance</span><span>Maths &amp; literacy scores</span><span>Weekly assessments</span><span>Behaviour notes</span><span>Portfolio</span></div></div>
-        <div class="mem-layer" style="--mc: var(--tl-yellow-500);"><div class="mem-k"><small>Coming next</small><b>Added by Tilli</b></div><div class="mem-chips"><span>Photo-graded work</span><span>Interventions tried</span><span>AskTilli over the whole record</span></div></div>
-      </div>
-      <div class="mem-arrow" aria-hidden="true"><svg viewBox="0 0 40 16"><line x1="1" y1="8" x2="34" y2="8"/><polyline points="28 2 36 8 28 14"/></svg></div>
-      <div class="mem-pass"><div class="mem-pass-k">One learning passport</div><p class="mem-pass-h">Per child. Owned by the family. Follows them to the next grade and the next school.</p><p class="mem-pass-d">Readable by teachers, parents and any AI tool or LMS the school chooses.</p></div>
+    <div class="eyebrow cyan">The memory layer · coming next</div>
+    <h2 class="title">One learning passport for <span class="c-cyan">every child</span>.</h2>
+    <p class="lede">Tilli’s skills data, joined with everything your school already records.</p>
+    <!-- beat 1 · the whole passport under the headline -->
+    <div class="tour-list">
+      <figure class="tour-card"><div class="tour-crop" style="--x:0;--y:0;--w:1;aspect-ratio:1694 / 1400;"><img src="../assets/measure/kia-passport.webp" alt="Kia’s learning passport in the Tilli parent portal: this week’s working-memory plan, the 12 foundational skills with the evidence behind each level, and school subjects with math scores linked to her skills profile" loading="lazy" decoding="async"></div><figcaption><b>01</b><h3>Kia’s learning passport</h3><p>Per child. Owned by the family. Follows them to the next grade and the next school.</p></figcaption></figure>
     </div>
-    <div class="mem-tl"><div class="mem-tl-lbl">The learning passport</div><ol><li style="--c: var(--tl-green-500);">K</li><li style="--c: var(--tl-green-500);">Grade 2</li><li style="--c: var(--tl-cyan-500);">Grade 4</li><li style="--c: var(--tl-cyan-500);">Grade 6</li><li style="--c: var(--tl-yellow-500);">Grade 8</li><li style="--c: var(--tl-orange-500);">Grade 10</li><li style="--c: var(--tl-pink-600);" class="end">Grade 12</li></ol></div>
-    <p class="mem-cap">579 data points per child per year today · 2,895 by Grade 5 · the passport carries them through Grade 12 and across school moves</p>
+    <!-- beat 2 · what the school adds (one line), then the passport up close (crops of the same screenshot) -->
+    <p class="mem-src" aria-label="Data pulled from the school"><span>Attendance</span><span>Maths &amp; literacy scores</span><span>Weekly assessments</span><span>Behaviour notes</span><span>Portfolio</span></p>
+    <div class="tour-list">
+      <figure class="tour-card"><div class="tour-crop" style="--x:0.645;--y:0.3;--w:0.345;aspect-ratio:584 / 504;"><img src="../assets/measure/kia-passport.webp" alt="" loading="lazy" decoding="async"></div><figcaption><b>02</b><h3>Marks, explained</h3><p>45% on word problems isn’t a math gap. She loses track after 3 steps, which is working memory.</p></figcaption></figure>
+      <figure class="tour-card"><div class="tour-crop" style="--x:0.292;--y:0.075;--w:0.345;aspect-ratio:584 / 441;"><img src="../assets/measure/kia-passport.webp" alt="" loading="lazy" decoding="async"></div><figcaption><b>03</b><h3>Every skill, with its evidence</h3><p>Each level shows where it came from: her game, her teacher, and home.</p></figcaption></figure>
+      <figure class="tour-card"><div class="tour-crop" style="--x:0.003;--y:0.075;--w:0.282;aspect-ratio:478 / 455;"><img src="../assets/measure/kia-passport.webp" alt="" loading="lazy" decoding="async"></div><figcaption><b>04</b><h3>Tonight’s plan, built from her data</h3><p>A 14-day plan targets the one skill holding her back, with a 10-minute activity tonight.</p></figcaption></figure>
+    </div>
   </section>
 
   <!-- 7 · ON TRACK / Progress -->
-  <section id="progress" class="wash-green wrap" style="text-align:center">
+  <section id="progress" class="wrap" style="text-align:center">
     <h2 class="title">Know, term by term, whether every child is <span class="c-green">on track</span> for middle school.</h2>
     <p class="lede">See where each child stands, how far they've moved since last term, and what to do next.</p>
     <div class="pops">
@@ -990,6 +992,58 @@
       setActive(Math.max(0, Math.min(cards.length - 1, i)));
     }, { passive: true });
   }
+})();
+
+/* ── DASHBOARD — the walkthrough plays from the start when it scrolls into view
+      and pauses + rewinds when it leaves; pause/play + sound buttons. Sound is
+      ON by default (unless muted this visit); if the browser blocks unmuted
+      play it runs muted and the first tap/key outside the buttons unmutes. ── */
+(function () {
+  var v = document.getElementById('dashVideo');
+  if (!v) return;
+  var box = v.parentElement, bp = box.querySelector('[data-vid-play]'), bm = box.querySelector('[data-vid-mute]');
+  var KEY = 'tl-dash-sound', userPaused = false, autoMuted = false;
+  function sync() {
+    bp.classList.toggle('is-on', v.paused);
+    bp.setAttribute('aria-label', v.paused ? 'Play video' : 'Pause video');
+    bm.classList.toggle('is-on', !v.muted);
+    bm.setAttribute('aria-pressed', String(!v.muted));
+    bm.setAttribute('aria-label', v.muted ? 'Turn sound on' : 'Mute');
+  }
+  function play() { var p = v.play(); if (p) p.catch(function () { if (!v.muted) { v.muted = true; autoMuted = true; v.play().catch(function () {}); } }); }
+  function start() {
+    var want = true;
+    try { want = sessionStorage.getItem(KEY) !== '0'; } catch (e) {}
+    v.muted = !want;
+    if (want) v.volume = 0.8;
+    play();
+  }
+  ['play', 'pause', 'volumechange'].forEach(function (ev) { v.addEventListener(ev, sync); });
+  bp.addEventListener('click', function () {
+    if (v.paused) { userPaused = false; play(); } else { userPaused = true; v.pause(); }
+  });
+  ['pointerup', 'keydown'].forEach(function (ev) {
+    window.addEventListener(ev, function (e) {
+      if (!autoMuted || (e.target.closest && e.target.closest('.vid-ctrls'))) return;
+      autoMuted = false;
+      if (!v.paused) { v.muted = false; v.volume = 0.8; }
+    }, { passive: true });
+  });
+  bm.addEventListener('click', function () {
+    autoMuted = false;
+    v.muted = !v.muted;
+    if (!v.muted) v.volume = 0.8;
+    try { sessionStorage.setItem(KEY, v.muted ? '0' : '1'); } catch (e) {}
+    if (!v.muted && v.paused && !userPaused) play();
+  });
+  sync();
+  if (!('IntersectionObserver' in window)) { start(); return; }
+  new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (e.intersectionRatio >= 0.5) { if (v.paused && !userPaused) start(); }
+      else if (!e.isIntersecting) { userPaused = false; v.pause(); v.currentTime = 0; }
+    });
+  }, { threshold: [0, 0.5] }).observe(v);
 })();
 
 /* ── REPORTS — tick each card's proof chip once the deck scrolls into view ── */

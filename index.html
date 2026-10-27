@@ -368,54 +368,61 @@
   .skill-group-head .g-sub { font-size: var(--tl-fs-xs); color: var(--tl-ink-500); }
   /* short laptops: the pinned skills scene can't scroll, so tighten the cards */
   @media (max-height: 820px) { .skill-card { padding: 12px 16px; } }
-  /* ── Memory layer (Kavi's deck): three tiers — measured by Tilli today (dark
-        base), then two "coming next" tiers — an arrow into the learning-passport
-        card, and a K→12 passport timeline. Tiers keep a slight skew so they read
-        as stacked layers (--skew: 0deg flattens them). Reveal: .mem-layer /
-        .mem-rv get .in in DOM order (runPin, data-pin="skills"). ─────────── */
+  /* ── Memory layer (Kavi's deck): the "pulled from the school"
+        tier, an arrow into the learning-passport card, and a K→12 passport
+        timeline. Reveal: .mem-rv get .in in DOM order (runPin,
+        data-pin="memory"). ───────────────────────────────────────────── */
+  /* Dashboard walkthrough controls: pause/play + sound, over the video's corner.
+     Sound is on by default; if the browser blocks it until a tap, the video
+     plays muted and the first tap anywhere turns it on. Muting is remembered. */
+  .vid-ctrls { position: absolute; right: 24px; bottom: 24px; z-index: 2; display: flex; gap: 8px; }
+  .vid-btn { width: 40px; height: 40px; border: 0; border-radius: 50%; padding: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; color: var(--tl-white);
+    background: rgba(20, 20, 20, 0.62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 4px 14px rgba(20, 20, 20, 0.18); transition: background .2s ease, transform .2s ease; }
+  .vid-btn:hover { background: var(--tl-ink-900); transform: scale(1.06); }
+  .vid-btn:focus-visible { outline: 2px solid var(--tl-cyan-500); outline-offset: 2px; }
+  .vid-btn svg { width: 18px; height: 18px; fill: currentColor; }
+  .vid-btn svg .ln { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .vid-btn .i-b, .vid-btn.is-on .i-a { display: none; }
+  .vid-btn.is-on .i-b { display: block; }
   .mem-wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 24px; }
-  .mem-head { text-align: center; padding: 0 8px; }
-  .mem-grid { display: grid; grid-template-columns: minmax(0, 1fr) 56px minmax(240px, 320px); align-items: center; gap: 14px;
-    margin-top: min(26px, 3vh); }
-  .mem-stack { display: flex; flex-direction: column; gap: min(10px, 1.2vh); padding-left: 10px; }
-  .mem-layer { --mc: var(--tl-cyan-500); --skew: -6deg; display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: center; gap: 14px;
-    padding: min(12px, 1.4vh) 18px; background: var(--tl-glass); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    border: 1px solid var(--tl-line-200); border-left: 4px solid var(--mc); border-radius: var(--tl-radius-md); box-shadow: var(--tl-shadow-card);
-    opacity: 0; transform: translateY(16px) skewX(var(--skew)); transition: opacity .55s ease, transform .55s cubic-bezier(.22,.61,.36,1); }
-  .mem-layer.in { opacity: 1; transform: skewX(var(--skew)); }
-  .mem-layer > * { transform: skewX(calc(var(--skew) * -1)); }          /* keep the content upright */
-  .mem-k { text-align: left; line-height: 1.25; }
-  .mem-k small { display: block; font-size: var(--tl-fs-xs); font-weight: 600; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--tl-ink-500); }
-  .mem-k b { display: block; font-size: var(--tl-fs-sm); font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--tl-ink-900); margin-top: 2px; }
-  .mem-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .mem-chips span { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-pill);
-    padding: 4px 11px; font-size: var(--tl-fs-xs); font-weight: 600; color: var(--tl-ink-700); }
-  .mem-base { background: var(--tl-ink-900); border-color: var(--tl-ink-900); border-left-color: var(--mc); }
-  .mem-base .mem-k small { color: var(--tl-green-500); }
-  .mem-base .mem-k b { color: var(--tl-white); }
-  .mem-base .mem-chips span { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.16); color: var(--tl-white); }
-  .mem-arrow svg { width: 40px; height: 16px; fill: none; stroke: var(--tl-pink-600); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; display: block; }
-  .mem-pass { background: var(--tl-white); border: 2px solid var(--tl-pink-600); border-radius: var(--tl-radius-lg); box-shadow: var(--tl-shadow-card);
-    padding: min(18px, 2vh) 18px; text-align: center; }
-  .mem-pass-k { font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--tl-pink-600); }
-  .mem-pass-h { margin: 8px 0 6px; font-size: var(--tl-fs-base); font-weight: 800; line-height: 1.3; color: var(--tl-ink-900); text-wrap: balance; }
-  .mem-pass-d { margin: 0; font-size: var(--tl-fs-xs); line-height: 1.45; color: var(--tl-ink-500); }
-  /* K → Grade 12 timeline: the rail fills left→right as it reveals */
-  .mem-tl { display: grid; grid-template-columns: 92px minmax(0, 1fr); align-items: start; gap: 12px; margin-top: min(22px, 2.6vh); }
-  .mem-tl-lbl { font-size: var(--tl-fs-xs); font-weight: 600; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase; color: var(--tl-ink-500);
-    text-align: right; line-height: 1.3; padding-top: 2px; }
-  .mem-tl ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, 1fr); position: relative; }
-  .mem-tl ol::before, .mem-tl ol::after { content: ""; position: absolute; top: 6px; left: calc(100% / 14); right: calc(100% / 14); height: 3px;
-    border-radius: var(--tl-radius-pill); background: var(--tl-line-300); }
-  .mem-tl ol::after { background: linear-gradient(90deg, var(--tl-green-500), var(--tl-cyan-500), var(--tl-yellow-500), var(--tl-pink-600));
-    transform: scaleX(0); transform-origin: left; transition: transform 1.4s cubic-bezier(.22,.61,.36,1) .2s; }
-  .mem-tl.in ol::after { transform: scaleX(1); }
-  .mem-tl li { position: relative; z-index: 1; padding-top: 22px; text-align: center; font-size: var(--tl-fs-xs); font-weight: 700; color: var(--tl-ink-700); }
-  .mem-tl li::before { content: ""; position: absolute; top: 0; left: 50%; width: 15px; height: 15px; margin-left: -7.5px; border-radius: 50%;
-    background: var(--c); box-shadow: 0 0 0 3px var(--tl-white); }
-  .mem-tl li.end { color: var(--tl-pink-600); }
-  .mem-tl li.end::before { width: 19px; height: 19px; margin-left: -9.5px; top: -2px; }
-  .mem-cap { margin: min(12px, 1.4vh) auto 0; text-align: center; font-size: var(--tl-fs-xs); line-height: 1.5; color: var(--tl-ink-500); text-wrap: balance; }
+  /* Memory layer, one screen: copy (left) + the passport window the camera
+     tours (right); the window keeps the screenshot's aspect so the overview
+     fills it edge to edge */
+  .mem-one { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; gap: min(26px, 3vh);
+    text-align: center; will-change: transform; }
+  /* the school's data sources: one row of chips (wraps if it must) */
+  .mem-src { margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .mem-src span { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-pill);
+    padding: 5px 14px; font-size: min(var(--tl-fs-sm), 2vh); font-weight: 600; line-height: 1.3; color: var(--tl-ink-700); box-shadow: var(--tl-shadow-card); }
+  .mem-src { grid-area: 1 / 1; align-self: end; opacity: 0; visibility: hidden; }   /* shares the top cell with beat 1 */
+  /* two beats share the left column (one grid cell): beat 1 the headline,
+     beat 2 the school tier + tour captions — runPin cross-fades them while
+     the passport window stays put on the right */
+  .mem-left { display: grid; width: 100%; max-width: 1000px; }
+  .mem-copy { grid-area: 1 / 1; align-self: center; min-width: 0; }
+  /* beat 2 hangs BELOW the window, out of flow (so the fit only counts beat 1 +
+     the window); runPin shifts .mem-one up as it fades in */
+  .mem-copy-b { opacity: 0; visibility: hidden; text-align: center;
+    position: absolute; left: 0; right: 0; top: calc(100% + min(26px, 3vh)); max-width: 1000px; margin: 0 auto; }
+  .mem-copy-b .tour-caps { margin: 0 auto 12px; max-width: 720px; }
+  .mem-copy-b .tour-dots { justify-content: center; }
+  .mem-copy-b .tour-cap h3 { font-size: min(var(--tl-fs-xl), 3.6vh); }   /* smaller: it shares the screen with the window */
+  .tour-caps { display: grid; margin: min(22px, 2.6vh) 0 12px; }
+  .tour-cap { grid-area: 1 / 1; opacity: 0; }
+  .tour-cap:first-child { opacity: 1; }
+  .tour-cap b { display: block; font-size: var(--tl-fs-xs); font-weight: 800; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-pink-600); }
+  .tour-cap h3 { margin: 6px 0 8px; font-size: min(var(--tl-fs-xl), 4.4vh); font-weight: 800; line-height: 1.12; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); }
+  .tour-cap p { margin: 0; font-size: min(var(--tl-fs-lg), 2.3vh); line-height: 1.5; color: var(--tl-ink-500); }
+  .tour-dots { display: flex; gap: 8px; }
+  .tour-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--tl-line-300); transition: background .25s ease, transform .25s ease; }
+  .tour-dots i.on { background: var(--tl-pink-600); transform: scale(1.3); }
+  .tour-win { justify-self: center; width: min(100%, 1000px, calc(52vh * 1694 / 1400)); background: var(--tl-white); border: 1px solid var(--tl-line-200);
+    border-radius: var(--tl-radius-lg); box-shadow: var(--tl-shadow-raised); overflow: hidden; }
+  .tour-view { position: relative; aspect-ratio: 1694 / 1400; overflow: hidden; background: #FFF8EC; }
+  .tour-view img { position: absolute; left: 0; top: 0; width: 1694px; height: 1400px; max-width: none;
+    transform-origin: 0 0; will-change: transform; }
   .mem-rv { opacity: 0; transform: translateY(12px); transition: opacity .6s ease, transform .6s cubic-bezier(.22,.61,.36,1); }
   .mem-rv.in { opacity: 1; transform: none; }
 
@@ -575,8 +582,8 @@
     .skills-grid { grid-template-columns: repeat(2, 1fr); }
     .views-row { flex-direction: column; gap: 10px; }
     .fits-cards { grid-template-columns: 1fr; max-width: 520px; gap: 10px; }
-    .mem-grid { grid-template-columns: 1fr; max-width: 640px; margin-inline: auto; }
-    .mem-arrow { justify-self: center; } .mem-arrow svg { transform: rotate(90deg); }
+    .mem-one { gap: 18px; max-width: 640px; margin-inline: auto; }
+    .tour-win { width: min(100%, calc(44vh * 1694 / 1400)); }
     .j-card { flex-direction: column; text-align: center; padding: 24px; }
     h2 { font-size: var(--tl-fs-xl) !important; }
     .foot { padding: 14px 20px; }
@@ -701,23 +708,16 @@
   html.tl-portrait .skill-card { padding: 10px 12px; display: flex; align-items: center; }
   html.tl-portrait .skill-card .n { font-size: var(--tl-fs-sm); line-height: 1.25; }
   html.tl-portrait .skill-card .d { display: none; }
-  /* memory layer on phones: tiers stack with the label above the chips, the
-     passport card drops below (arrow turns down), timeline keeps K + Grade 12 */
-  html.tl-portrait .mem-grid { grid-template-columns: 1fr; gap: 6px; }
-  html.tl-portrait .mem-stack { padding-left: 4px; gap: 7px; }
-  html.tl-portrait .mem-layer { --skew: -3deg; grid-template-columns: 1fr; gap: 6px; padding: 9px 12px; }
-  html.tl-portrait .mem-chips span { padding: 2px 8px; }
-  html.tl-portrait .mem-arrow { justify-self: center; }
-  html.tl-portrait .mem-arrow svg { transform: rotate(90deg); }
-  html.tl-portrait .mem-pass { padding: 10px 14px; }
-  html.tl-portrait .mem-pass-d, html.tl-portrait .mem-cap { display: none; }
-  html.tl-portrait .mem-tl { grid-template-columns: 1fr; gap: 6px; }
-  html.tl-portrait .mem-tl-lbl { text-align: left; }
-  html.tl-portrait .mem-tl li:not(:first-child):not(.end) { color: transparent; }
+  /* memory layer on phones: copy, then the passport window */
+  html.tl-portrait .mem-one { gap: 10px; }
+  html.tl-portrait .tour-caps { margin: 8px 0 8px; }
+  html.tl-portrait .tour-win { width: 100%; }
   /* Oct-19 additions: keep the chip rows + counsellor cards compact on phones */
   html.tl-portrait .view-src { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 5px; margin-top: 8px; }
   html.tl-portrait .view-src span { padding: 2px 8px; }
   html.tl-portrait .rep-copy { margin-top: 26px; }
+  html.tl-portrait .vid-ctrls { right: 18px; bottom: 18px; }
+  html.tl-portrait .vid-btn { width: 44px; height: 44px; }   /* finger-sized */
   html.tl-portrait .fan-chip { bottom: -14px; padding: 5px 11px 5px 5px; gap: 6px; font-size: var(--tl-fs-xs); }
   html.tl-portrait .rep-tick { width: 20px; height: 20px; }
   html.tl-portrait .rep-tick svg { width: 12px; height: 12px; }
@@ -906,16 +906,12 @@
   html.tl-mobile .content .wrap > p.dash-next,
   html.tl-mobile .dash-next span,
   html.tl-mobile .rep-formula em,
-  html.tl-mobile .mem-k small,
-  html.tl-mobile .mem-chips span,
-  html.tl-mobile .mem-pass-k,
-  html.tl-mobile .mem-tl li,
-  html.tl-mobile .mem-tl-lbl,
-  html.tl-mobile .view-src span { font-size: var(--m-fs-small) !important; }
+  html.tl-mobile .view-src span,
+  html.tl-mobile .mem-src span { font-size: var(--m-fs-small) !important; }
   html.tl-mobile .rep-formula,
   html.tl-mobile .rep-link,
-  html.tl-mobile .mem-k b,
-  html.tl-mobile .mem-pass-h,
+  html.tl-mobile .tour-cap h3,
+  html.tl-mobile .tour-cap p,
   html.tl-mobile .fits-card p { font-size: var(--m-fs-body) !important; }
 </style>
 </head>
@@ -996,8 +992,9 @@
       <div class="step-in">
         <div class="wrap" style="text-align: center;">
           <h2 class="dash-h">We bring together every single data point about a child into a <span class="dash-hl">developmental profile</span> that follows the child from kindergarten through Grade&nbsp;12.</h2>
-          <div data-zoom style="max-width: 940px; margin: 0 auto; background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-lg); padding: 14px; box-shadow: var(--tl-shadow-card); will-change: transform;">
-            <video src="uploads/profile-walkthrough-web.mp4" poster="uploads/profile-walkthrough-poster.jpg" muted autoplay loop playsinline preload="auto" style="width: 100%; max-height: 52vh; object-fit: cover; border-radius: var(--tl-radius-md); display: block; min-height: 200px; background: var(--tl-surface-100);"></video>
+          <div data-zoom style="position: relative; max-width: 940px; margin: 0 auto; background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-lg); padding: 14px; box-shadow: var(--tl-shadow-card); will-change: transform;">
+            <video src="uploads/profile-walkthrough-web.mp4" poster="uploads/profile-walkthrough-poster.jpg" muted loop playsinline preload="auto" style="width: 100%; max-height: 52vh; object-fit: cover; border-radius: var(--tl-radius-md); display: block; min-height: 200px; background: var(--tl-surface-100);"></video>
+            <div class="vid-ctrls"><button type="button" class="vid-btn" data-vid-play aria-label="Pause video" title="Pause"><svg class="i-a" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="3.6" height="14" rx="1"/><rect x="13.9" y="5" width="3.6" height="14" rx="1"/></svg><svg class="i-b" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></button><button type="button" class="vid-btn" data-vid-mute aria-label="Turn sound on" aria-pressed="false" title="Sound on"><svg class="i-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="ln" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><svg class="i-b" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="ln" d="M15.5 9a4.2 4.2 0 0 1 0 6M18.2 6.5a8 8 0 0 1 0 11"/></svg></button></div>
           </div>
           <p class="dash-next"><span>Coming next</span>This cognitive profile joins every other data source about the child, from academics to attendance.</p>
         </div>
@@ -1040,7 +1037,7 @@
 <div class="scene" data-scene data-wash="--tl-wash-pink" data-label="Collect" style="height: 150vh;"></div>
 
 <!-- ═══ 5 · 3 VIEWS — the circle divides into three ═══════════ -->
-<div class="scene" data-scene data-wash="--tl-wash-cyan" data-label="3 views" data-pin="views" style="height: 170vh;">
+<div class="scene" data-scene data-wash="--tl-white" data-label="3 views" data-pin="views" style="height: 170vh;">
   <div class="stage">
     <div class="step">
       <div class="step-in">
@@ -1173,27 +1170,38 @@
      (MEM_RING in js/main.js) that frames this screen; its tail runs the
      hand-over into On track (ring fades, content slides left, kids walk in).
      Keep it directly BEFORE On track. ═══ -->
-<div class="scene" data-scene data-wash="--tl-white" data-label="Memory layer" data-pin="memory" id="memory-layer" style="height: 210vh;">
+<div class="scene" data-scene data-wash="--tl-white" data-label="Memory layer" data-pin="memory" id="memory-layer" style="height: 440vh;">
   <div class="stage">
     <div class="step">
       <div class="step-in">
         <div class="mem-wrap">
-          <div class="mem-head">
-            <div class="eyebrow rv">THE MEMORY LAYER</div>
-            <h2 class="rv" style="font-size: min(var(--tl-fs-xl), 4.6vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); margin: 8px auto 6px;">One memory for <span style="color: var(--tl-cyan-700);">every child</span>, K–12.</h2>
-            <p class="rv" style="font-size: min(var(--tl-fs-lg), 2.3vh); line-height: 1.5; max-width: 640px; margin: 0 auto; text-wrap: balance;">Next, we combine each child's cognitive profile with every other data source about them: academics, attendance and more.</p>
-          </div>
-          <div class="mem-grid">
-            <div class="mem-stack">
-              <div class="mem-layer mem-base" style="--mc: var(--tl-green-500);"><div class="mem-k"><small>Since 2023</small><b>Measured by Tilli</b></div><div class="mem-chips"><span>6 Cognitive skills</span><span>6 Social-emotional skills</span><span>Teacher · parent · child</span><span>3× a year</span></div></div>
-              <div class="mem-layer" style="--mc: var(--tl-cyan-500);"><div class="mem-k"><small>Coming next</small><b>Pulled from the school</b></div><div class="mem-chips"><span>Attendance</span><span>Maths &amp; literacy scores</span><span>Weekly assessments</span><span>Behaviour notes</span><span>Portfolio</span></div></div>
-              <div class="mem-layer" style="--mc: var(--tl-yellow-500);"><div class="mem-k"><small>Coming next</small><b>Added by Tilli</b></div><div class="mem-chips"><span>Photo-graded work</span><span>Interventions tried</span><span>AskTilli over the whole record</span></div></div>
+          <!-- one screen, stacked: beat 1's headline ABOVE the passport window,
+               beat 2's tier + tour caption BELOW it (the camera tours the window —
+               TOUR_STOPS in js/main.js). runPin slides the block up between beats
+               so whichever beat is showing sits centred. -->
+          <div class="mem-one">
+            <div class="mem-left">
+              <!-- beat 1 · the headline, above the whole passport -->
+              <div class="mem-copy">
+                <div class="eyebrow rv">THE MEMORY LAYER · COMING NEXT</div>
+                <h2 class="rv" style="font-size: min(var(--tl-fs-xl), 4.6vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); margin: 8px auto 6px;">One learning passport for <span style="color: var(--tl-cyan-700);">every child</span>.</h2>
+                <p class="rv" style="font-size: min(var(--tl-fs-lg), 2.3vh); line-height: 1.5; max-width: 640px; margin: 0 auto; text-wrap: balance;">Tilli’s skills data, joined with everything your school already records.</p>
+              </div>
+              <!-- beat 2 · the school data, one line right above the window -->
+              <p class="mem-src" aria-label="Data pulled from the school"><span>Attendance</span><span>Maths &amp; literacy scores</span><span>Weekly assessments</span><span>Behaviour notes</span><span>Portfolio</span></p>
             </div>
-            <div class="mem-arrow mem-rv" aria-hidden="true"><svg viewBox="0 0 40 16"><line x1="1" y1="8" x2="34" y2="8"/><polyline points="28 2 36 8 28 14"/></svg></div>
-            <div class="mem-pass mem-rv"><div class="mem-pass-k">One learning passport</div><p class="mem-pass-h">Per child. Owned by the family. Follows them to the next grade and the next school.</p><p class="mem-pass-d">Readable by teachers, parents and any AI tool or LMS the school chooses.</p></div>
+            <div class="tour-win mem-rv">
+              <div class="obs-bar" aria-hidden="true"><i></i><i></i><i></i><em>measures.tillikids.com/passport/kia</em></div>
+              <div class="tour-view"><img src="assets/measure/kia-passport.webp" alt="Kia’s learning passport in the Tilli parent portal: this week’s working-memory plan, the 12 foundational skills with the evidence behind each level, and school subjects with math scores linked to her skills profile" width="1694" height="1400" decoding="async"></div>
+            </div>
+            <!-- beat 2 · the tour caption, BELOW the window as the camera tours it -->
+            <div class="mem-copy mem-copy-b">
+              <div class="mem-cap-col">
+                <div class="tour-caps"><div class="tour-cap" data-tour-cap><b>01</b><h3>Kia’s learning passport</h3><p>Per child. Owned by the family. Follows them to the next grade and the next school.</p></div><div class="tour-cap" data-tour-cap><b>02</b><h3>Marks, explained</h3><p>45% on word problems isn’t a math gap. She loses track after 3 steps, which is working memory.</p></div><div class="tour-cap" data-tour-cap><b>03</b><h3>Every skill, with its evidence</h3><p>Each level shows where it came from: her game, her teacher, and home.</p></div><div class="tour-cap" data-tour-cap><b>04</b><h3>Tonight’s plan, built from her data</h3><p>A 14-day plan targets the one skill holding her back, with a 10-minute activity tonight.</p></div></div>
+                <div class="tour-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+              </div>
+            </div>
           </div>
-          <div class="mem-tl mem-rv"><div class="mem-tl-lbl">The learning passport</div><ol><li style="--c: var(--tl-green-500);">K</li><li style="--c: var(--tl-green-500);">Grade 2</li><li style="--c: var(--tl-cyan-500);">Grade 4</li><li style="--c: var(--tl-cyan-500);">Grade 6</li><li style="--c: var(--tl-yellow-500);">Grade 8</li><li style="--c: var(--tl-orange-500);">Grade 10</li><li style="--c: var(--tl-pink-600);" class="end">Grade 12</li></ol></div>
-          <p class="mem-cap mem-rv">579 data points per child per year today · 2,895 by Grade 5 · the passport carries them through Grade 12 and across school moves</p>
         </div>
       </div>
     </div>
@@ -1201,7 +1209,7 @@
 </div>
 
 <!-- ═══ 8 · ON TRACK — the dots become children ═══════════════ -->
-<div class="scene" data-scene data-wash="--tl-wash-green" data-label="On track" data-pin="state" style="height: 170vh;">
+<div class="scene" data-scene data-wash="--tl-white" data-label="On track" data-pin="state" style="height: 170vh;">
   <div class="stage">
     <div class="step">
       <div class="step-in">
@@ -1569,7 +1577,7 @@
 <script src="js/ask-tilli-demo.js?v=2"></script>
 <script src="js/impact-orbits.js?v=7"></script>
 <script src="js/impact-carousel.js?v=7"></script>
-<script type="module" src="js/main.js?v=148"></script>
+<script type="module" src="js/main.js?v=157"></script>
 <script src="js/site-config.js?v=3"></script>
 <script src="js/site-chrome.js?v=9"></script>
 </body>

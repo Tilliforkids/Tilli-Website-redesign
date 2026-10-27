@@ -1235,7 +1235,27 @@ const SKILLS_EXIT = { start: 0.60, slideR: 19, slideL: 22 };
      formEnd    Memory-layer fraction where the ring is fully closed
      fadeOut    Memory-layer fractions over which it fades before the kids walk in */
 const MEM_RING = { r: 1.12, rMinW: 0.68, rPhone: 0.92, tube: 0.085, lobes: 12, rungs: 36, dot: 0.85,
-  spin: 0.35, formEnd: 0.06, fadeOut: [0.6, 0.78] };
+  spin: 0.35, formEnd: 0.06, fadeOut: [0.88, 0.93] };
+/* MEMORY LAYER timeline (scene fraction 0..1). Two beats beside one passport
+   window: beat 1 the headline (window shows the whole passport), beat 2 the
+   school tier + tour captions while the camera TOURS the window; then the
+   hand-over into On track.
+     beat      beat 1 starts handing over to beat 2 here (cross-fade ≈ 0.08)
+     tour      [start, end] of the tour; split evenly between the stops — each
+               stop HOLDS for `hold` of its slice, then glides to the next
+     start     the exit: copy slides left, ring fades (MEM_RING.fadeOut)
+     text      On-track headline starts fading in   kids  the kids start walking */
+const MEM_EXIT = { beat: 0.14, tour: [0.22, 0.86], hold: 0.55, start: 0.88, text: 0.93, kids: 0.94 };
+/* PASSPORT TOUR stops — regions of assets/measure/kia-passport.webp (1694×1400),
+   as fractions of the image [x, y, w, h], in tour order. The camera fits each
+   region into the tour window (contain), then pans/zooms to the next. */
+const TOUR_IMG = { w: 1694, h: 1400 };
+const TOUR_STOPS = [
+  [0, 0, 1, 1],                    // 01 · the whole passport
+  [0.645, 0.3, 0.345, 0.36],       // 02 · the 45% word-problems bar → "Word problems · 5 of 11"
+  [0.292, 0.075, 0.345, 0.315],    // 03 · 12 foundational skills → working memory
+  [0.003, 0.075, 0.282, 0.325],    // 04 · this week's plan + "word problems dipped"
+];
 /* KIDS WALK-IN — after the DNA has left and the On-track text is in, the
    children WALK in from the left with an up/down bob, then settle. Time-based
    (plays on its own once the section lands) so it reads as walking, not as a
@@ -3013,7 +3033,7 @@ const DETENT_AT = {
   '3 views':   [0.40],               // labels are in by 0.32; the orbit exit starts at 0.46
   'Measure':   [0.27, 0.55, 0.82],   // one per strand: teacher · parent · child (rungs)
   '12 skills': [0.42],
-  'Memory layer': [0.42],
+  'Memory layer': [0.07, ...TOUR_STOPS.map((_, k) => MEM_EXIT.tour[0] + (k + MEM_EXIT.hold * 0.5) * (MEM_EXIT.tour[1] - MEM_EXIT.tour[0]) / TOUR_STOPS.length)],
   'On track':  [0.34],
   'Ask-Tilli': [0.36],
   'Ask-live':  [0.30],
@@ -3352,6 +3372,70 @@ function resetTypewrite(el) {
   tw.done.classList.remove('tw-off');
 }
 
+/* ── Dashboard walkthrough video: plays when the section arrives (onScroll),
+   with pause/play + sound buttons. Sound is ON by default (unless the viewer
+   muted it this visit). Browsers refuse unmuted play until the page has been
+   tapped/clicked — then it plays muted instead, and the first tap/click/key
+   anywhere on the page (outside the buttons) turns the sound on. ── */
+const VID_SOUND_KEY = 'tl-dash-sound';
+function dashVideo() {
+  const v = document.querySelector('[data-label="Dashboard"] video');
+  if (!v || v._wired) return v;
+  v._wired = true;
+  const box = v.parentElement;
+  v._bp = box.querySelector('[data-vid-play]');
+  v._bm = box.querySelector('[data-vid-mute]');
+  const sync = () => syncDashVideo(v);
+  ['play', 'pause', 'volumechange'].forEach((ev) => v.addEventListener(ev, sync));
+  if (v._bp) v._bp.addEventListener('click', () => {
+    if (v.paused) { v._userPaused = false; const pr = v.play(); if (pr) pr.catch(() => {}); }
+    else { v._userPaused = true; v.pause(); }
+  });
+  if (v._bm) v._bm.addEventListener('click', () => {
+    v._autoMuted = false;
+    v.muted = !v.muted;
+    if (!v.muted) v.volume = 0.8;
+    try { sessionStorage.setItem(VID_SOUND_KEY, v.muted ? '0' : '1'); } catch (e) { /* private mode */ }
+    if (!v.muted && v.paused && !v._userPaused) { const pr = v.play(); if (pr) pr.catch(() => {}); }
+  });
+  sync();
+  return v;
+}
+function syncDashVideo(v) {
+  if (v._bp) {
+    v._bp.classList.toggle('is-on', v.paused);                 // is-on = show the PLAY icon
+    v._bp.setAttribute('aria-label', v.paused ? 'Play video' : 'Pause video');
+    v._bp.title = v.paused ? 'Play' : 'Pause';
+  }
+  if (v._bm) {
+    v._bm.classList.toggle('is-on', !v.muted);                 // is-on = show the SOUND icon
+    v._bm.setAttribute('aria-pressed', String(!v.muted));
+    v._bm.setAttribute('aria-label', v.muted ? 'Turn sound on' : 'Mute');
+    v._bm.title = v.muted ? 'Sound on' : 'Mute';
+  }
+}
+function startDashVideo(v) {
+  let want = true;
+  try { want = sessionStorage.getItem(VID_SOUND_KEY) !== '0'; } catch (e) { /* private mode */ }
+  v.muted = !want;
+  if (want) v.volume = 0.8;
+  const pr = v.play();
+  if (pr) pr.catch(() => {
+    if (v.muted) return;
+    v.muted = true; v._autoMuted = true;                       // blocked: play silently for now…
+    const p2 = v.play(); if (p2) p2.catch(() => {});
+  });
+}
+/* …and give it its sound on the first real interaction (a tap/click/key is
+   what browsers require). Clicks on the video's own buttons are left to them. */
+['pointerup', 'keydown'].forEach((ev) => window.addEventListener(ev, (e) => {
+  const v = document.querySelector('[data-label="Dashboard"] video');
+  if (!v || !v._autoMuted || (e.target.closest && e.target.closest('.vid-ctrls'))) return;
+  v._autoMuted = false;
+  if (!v.paused) { v.muted = false; v.volume = 0.8; }
+}, { passive: true }));
+dashVideo();   // wire the buttons up front, so they work before the first scroll
+
 function pinTargets(sc) {
   if (sc.t) return sc.t;
   const q = (s) => sc.el.querySelector(s);
@@ -3364,6 +3448,8 @@ function pinTargets(sc) {
     aiRs: qa('[data-ai-r]'), aiFoots: qa('[data-ai-foot]'),
     stH: q('[data-st-h]'), stP: q('[data-st-p]'), pops: qa('[data-pop]'), stWrap: q('.wrap'),
     skillCards: qa('.skill-card'), memLayers: qa('.mem-layer, .mem-rv'),
+    memOne: q('.mem-one'), memCopies: qa('.mem-copy'), memSrc: q('.mem-src'), tourView: q('.tour-view'), tourImg: q('.tour-view img'),
+    tourCaps: qa('[data-tour-cap]'), tourDots: qa('.tour-dots i'),
     vH: q('[data-v-h]'), vLabels: qa('.view-label'),
     stageTitles: qa('.stage-title'), stagePanels: qa('.stage-panel'),
   };
@@ -3554,14 +3640,15 @@ function onScroll(fOverride) {
          right) over the exit half of the scene tail, then the Memory layer fades in.
          MEMORY LAYER: its content leaves the same way, then the On-track text fades
          in (onTrackI branch) before the kids walk in. */
-      const ex = smoother(clamp(((clamp(f - k) - SKILLS_EXIT.start) / (1 - SKILLS_EXIT.start)) / 0.5));
+      const xs = k === memI ? MEM_EXIT.start : SKILLS_EXIT.start;
+      const ex = smoother(clamp(((clamp(f - k) - xs) / (1 - xs)) / 0.5));
       tx = -ex;
       op *= 1 - ex;
     } else if (k === onTrackI) {
       /* the On-track text arrives FIRST — it fades in over the Memory-layer tail
          (f ≈ mem+0.78 → 0.94), as that content finishes leaving and before the
          kids walk in — then holds and cross-fades out normally to Ask-Tilli. */
-      const tIn = smooth(clamp((f - (memI + 0.78)) / 0.16));
+      const tIn = smooth(clamp((f - (memI + MEM_EXIT.text)) / (1 - MEM_EXIT.text)));
       const tOut = smooth(clamp((f - (onTrackI + 1 - FADE_LEN)) / FADE_LEN));
       op = tIn * (1 - tOut);
     } else if (k === dashI) {
@@ -3681,6 +3768,16 @@ function onScroll(fOverride) {
       sc.stage.style.opacity = op.toFixed(3);
       sc.stage.style.visibility = op < 0.004 ? 'hidden' : 'visible';
       sc.op = op;
+    }
+    /* Dashboard walkthrough: plays from the start once the section has arrived,
+       pauses + rewinds once it has gone — so it never runs unseen and every
+       visit starts at the beginning (the <video> has no autoplay attribute) */
+    if (k === dashI && sc.stage) {
+      const v = sc.vid || (sc.vid = dashVideo());
+      if (v) {
+        if (op > 0.5 && !v._on) { v._on = true; if (!v._userPaused) startDashVideo(v); }
+        else if (op < 0.05 && v._on) { v._on = false; v._userPaused = false; v.pause(); v.currentTime = 0; }
+      }
     }
     /* typewriter replays on every visit: types once the scene is mostly in,
        resets once it has faded out (runs before the early return below) */
@@ -3813,8 +3910,44 @@ function runPin(sc, p) {
     return;
   }
   if (sc.pin === 'memory' && T.memLayers.length) {
-    /* tiers → arrow/passport → timeline → caption, one beat each in DOM order */
-    T.memLayers.forEach((el, k) => el.classList.toggle('in', p > 0.08 + k * 0.06));
+    const X = MEM_EXIT;
+    /* school tier → passport window → timeline → caption, one beat each in DOM order */
+    T.memLayers.forEach((el, k) => el.classList.toggle('in', p > 0.02 + k * 0.025));
+    /* beat 1 (headline) → beat 2 (tier + tour captions), same column */
+    const oA = 1 - smooth(clamp((p - X.beat) / 0.05)), oB = smooth(clamp((p - (X.beat + 0.03)) / 0.05));
+    [[T.memCopies[0], oA], [T.memCopies[1], oB], [T.memSrc, oB]].forEach(([el, o]) => {
+      if (el) { el.style.opacity = o.toFixed(3); el.style.visibility = o < 0.01 ? 'hidden' : 'visible'; }
+    });
+    /* beat 1 sits ABOVE the window; beat 2 = the school line right above it +
+       the caption hanging BELOW it. Slide the block up so whichever beat is
+       showing (+ the window) stays centred: lift = (h1 + gap + h2 − line) / 2 */
+    if (T.memOne && T.memCopies[1]) {
+      const gap = parseFloat(getComputedStyle(T.memOne).rowGap) || 0;
+      const h1 = T.memCopies[0].offsetHeight, h2 = T.memCopies[1].offsetHeight + gap, hl = T.memSrc ? T.memSrc.offsetHeight : 0;
+      T.memOne.style.transform = `translateY(${(-oB * Math.max(0, h1 + h2 - hl) / 2).toFixed(1)}px)`;
+    }
+    if (T.tourView && T.tourImg) {
+      /* tour position u: 0..stops-1 — each slice holds, then glides to the next */
+      const n = TOUR_STOPS.length;
+      const t = clamp((p - X.tour[0]) / (X.tour[1] - X.tour[0])) * n;
+      const sg = Math.min(n - 1, Math.floor(t));
+      const u = sg >= n - 1 ? n - 1 : sg + smoother(clamp((t - sg - X.hold) / (1 - X.hold)));
+      const W = T.tourView.clientWidth, H = T.tourView.clientHeight;
+      if (W > 0 && H > 0) {
+        const fit = (r) => {
+          const rw = r[2] * TOUR_IMG.w, rh = r[3] * TOUR_IMG.h;
+          return { s: Math.min(W / rw, H / rh), cx: (r[0] + r[2] / 2) * TOUR_IMG.w, cy: (r[1] + r[3] / 2) * TOUR_IMG.h };
+        };
+        const a = fit(TOUR_STOPS[Math.floor(u)]), b = fit(TOUR_STOPS[Math.min(n - 1, Math.floor(u) + 1)]);
+        const m = u - Math.floor(u);
+        const sc2 = Math.exp(lerp(Math.log(a.s), Math.log(b.s), m));   // zoom eases evenly in log space
+        const cx = lerp(a.cx, b.cx, m), cy = lerp(a.cy, b.cy, m);
+        T.tourImg.style.transform = `translate(${(W / 2 - cx * sc2).toFixed(1)}px, ${(H / 2 - cy * sc2).toFixed(1)}px) scale(${sc2.toFixed(4)})`;
+      }
+      T.tourCaps.forEach((el, k) => { el.style.opacity = smooth(clamp(1 - Math.abs(u - k) * 1.8)).toFixed(3); });
+      const on = Math.round(u);
+      T.tourDots.forEach((d, k) => d.classList.toggle('on', k === on));
+    }
     return;
   }
   if (sc.pin === 'state' && T.stH) {
@@ -4501,7 +4634,7 @@ if (reduced) {
        the field there — overwriting the held DNA so it doesn't reappear. */
     {
       const skI = ST['Memory layer'], onI = ST['On track'];   // walk in over the Memory-layer tail
-      const f0 = skI + 0.8;                              // hb 0.5 — the DNA has fully exited
+      const f0 = skI + MEM_EXIT.kids;                    // the memory ring has faded
       const fEnd = onI + MORPH_AT;                        // where On-track starts morphing to the next scene
       if (f >= f0 && f < fEnd) {
         th.kidWalk = Math.min(1, (th.kidWalk || 0) + dt * WALK.speed);
