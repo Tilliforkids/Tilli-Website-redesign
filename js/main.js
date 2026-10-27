@@ -242,7 +242,8 @@ function measure() {
   measureFootSpacer();
   measureTops();
   fitSteps();
-  fitViewsHead();   // after fitSteps: it reads the step's fit scale
+  fitViewsText();   // after fitSteps: both read the step's fit scale
+  fitViewsHead();
   buildJar();
   buildBurst();
   /* the ring, the dashboard paths and the On-track copy are fitted to the live DOM layout */
@@ -3348,11 +3349,15 @@ function pinTargets(sc) {
 
 /* 3 VIEWS text labels — line each one up horizontally UNDER its orb (world x
    ±9 / 0, matched via the same viewport perspective the orbs use), and let each
-   move vertically (VIEWS_TEXT_DY, px). layoutViewsText() runs on load + resize
-   so the alignment tracks the viewport; the GUI sliders drive the offsets. */
+   sit a fixed gap BELOW the orbs. The row is vertically centred in the stage, so
+   its resting y drifts whenever the copy under it grows (e.g. the student's
+   chips) — a baked px offset can't hold. fitViewsText() measures the row and
+   pins the names VIEWS_TEXT_FIT.gap × vh under the orbs' bottom edge; DY is a
+   per-label px nudge on top. layoutViewsText() runs on load + resize. */
 const viewsRow = document.querySelector('.views-row');
 const viewsLabels = Array.from(document.querySelectorAll('.view-label'));
-const VIEWS_TEXT_DY = [101, 101, 101];   // teacher, student, parents — px vertical offset (baked)
+const VIEWS_TEXT_DY = [0, 0, 0];   // teacher, student, parents — extra px nudge after the fit
+const VIEWS_TEXT_FIT = { gap: 0.06 };   // orb bottoms → label names, × vh
 /* the "Every data point…" heading: nudge it in x/y and scale it. Applied on top
    of the scroll-driven reveal scale in the views-pin handler. Baked from the GUI. */
 const VIEWS_HEAD = { dx: 0, dy: -221, scale: 1.28 };
@@ -3360,9 +3365,9 @@ if (PORTRAIT) VIEWS_HEAD.scale = 1;   // phones: CSS sizes the heading to the wi
 /* VIEWS_HEAD.dy (-221px) was baked on a 1080px-tall screen, where it leaves the
    heading's bottom ~1% of the height above the orbs. A fixed px nudge pushed the
    heading off the top of shorter screens, so layoutViewsText() instead derives
-   dy from the live layout: heading bottom `gap` × vh above the side orbs' top,
+   dy from the live layout: heading bottom `gap` × vh above the side orbs' top (4.5vh of air),
    but never closer than `minTop` px to the top (topbar + header). */
-const VIEWS_HEAD_FIT = { gap: 0.01, minTop: 84 };
+const VIEWS_HEAD_FIT = { gap: 0.045, minTop: 84 };   // gap: heading bottom → orb tops, × vh
 let viewsHeadDy = VIEWS_HEAD.dy;
 function fitViewsHead() {
   const sc = scenes[ST['3 views']];
@@ -3414,8 +3419,25 @@ function layoutViewsText() {
   const orbPx = (Math.abs(VIEWS_CX[0]) / visW) * (window.innerWidth / 2);             // px, screen centre → a side orb
   viewsRow.style.maxWidth = 'none';
   viewsRow.style.width = Math.min(3 * orbPx - 24, window.innerWidth - 48) + 'px';     // side labels land under the side orbs
-  viewsLabels.forEach((el, k) => { el.style.position = 'relative'; el.style.top = (VIEWS_TEXT_DY[k] || 0) + 'px'; });
+  viewsLabels.forEach((el) => { el.style.position = 'relative'; });
+  fitViewsText();
   fitViewsHead();
+}
+function fitViewsText() {
+  if (PORTRAIT || !viewsRow) return;   // phones place each label beside its orb (layoutViewsText)
+  const sc = scenes[ST['3 views']];
+  if (!sc || !viewsRow.offsetHeight) return;
+  /* measure the row at rest: no label offset, no stage cross-fade transform */
+  viewsLabels.forEach((el) => { el.style.top = '0px'; });
+  const prevSt = sc.stage.style.transform;
+  sc.stage.style.transform = 'none';
+  const r = viewsRow.getBoundingClientRect(), top0 = sc.stage.getBoundingClientRect().top;
+  sc.stage.style.transform = prevSt;
+  const vh = viewH();
+  const k = r.height / viewsRow.offsetHeight || 1;      // the step's fit-to-viewport scale
+  const orbBot = (0.5 - (Math.min(...VIEWS_CYS) - VIEWS_R) / (2 * visHalf(VIEWS_Z).h)) * vh;
+  const dy = (orbBot + VIEWS_TEXT_FIT.gap * vh - (r.top - top0)) / k;
+  viewsLabels.forEach((el, i) => { el.style.top = (dy + (VIEWS_TEXT_DY[i] || 0)).toFixed(1) + 'px'; });
 }
 layoutViewsText();
 window.addEventListener(RESIZE_EVT, layoutViewsText);
@@ -4099,8 +4121,12 @@ if (reduced) {
     mx.x = lerp(mx.x, mx.tx, 1 - Math.exp(-dt * 3));
     mx.y = lerp(mx.y, mx.ty, 1 - Math.exp(-dt * 3));
     /* the soft orbit (mouse parallax + slow drift) is OFF on the landing so
-       the orb sits dead still, and eases back in once we leave the hero */
-    const orbit = smooth(clamp((f - 0.9) / 0.5));
+       the orb sits dead still, and eases back in once we leave the hero.
+       It's also OFF across 3 VIEWS: the labels are pinned under the orbs
+       (fitViewsText), so the orbs must hold still on screen there too. */
+    const vwI = ST['3 views'];
+    const vwCalm = smooth(clamp((f - (vwI - 0.15)) / 0.15)) * (1 - smooth(clamp((f - (vwI + 1)) / 0.15)));
+    const orbit = smooth(clamp((f - 0.9) / 0.5)) * (1 - vwCalm);
     th.camera.position.set(mx.x * 1.1 * orbit, (-mx.y * 0.7 + Math.sin(time * 0.3) * 0.15) * orbit, th.camZ);
     th.camera.lookAt(mx.x * 0.4 * orbit, -mx.y * 0.25 * orbit, th.camZ - 30);
     const planeZ = th.camZ - CAM_DIST;

@@ -98,6 +98,9 @@
   .step { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 6vh 20px; opacity: 0; pointer-events: none; transition: padding-bottom .35s cubic-bezier(.4,0,.2,1); }
   /* while the bottom nav is showing, lift centered content clear of it */
   body.tl-chrome-hidden .step { padding-bottom: calc(6vh + 84px); }
+  /* …except 3 views: its labels are pinned under 3D orbs that don't lift with
+     the chrome, so a 42px shift would push the text into them */
+  body.tl-chrome-hidden .scene[data-label="3 views"] .step { padding-bottom: 6vh; }
   .step-in { width: 100%; transform-origin: 50% 50%; }
   .stage-deco { position: absolute; inset: 0; pointer-events: none; }
 
@@ -324,7 +327,7 @@
   .view-label { flex: 1; opacity: 0; transform: scale(0.97); transition: opacity .55s ease, transform .55s ease; }
   .view-label.in { opacity: 1; transform: scale(1); }
   .view-label .n { font-weight: 800; font-size: var(--tl-fs-lg); color: var(--tl-ink-700); }
-  .view-label .d { font-size: var(--tl-fs-sm); margin-top: 6px; }
+  .view-label .d { font-size: var(--tl-fs-sm); line-height: 1.5; margin: 8px auto 0; max-width: 290px; text-wrap: balance; }
 
   /* ── DNA measure ──────────────────────────────────────────── */
   /* --dna-card-shift: the right column is 40px wider than the left and the
@@ -412,22 +415,45 @@
     font-size: var(--tl-fs-sm); line-height: 1.5; color: var(--tl-ink-500); text-wrap: balance; }
   .dash-next span { flex: 0 0 auto; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase;
     color: var(--tl-cyan-700); background: var(--tl-wash-cyan); border-radius: var(--tl-radius-pill); padding: 3px 10px; }
-  .rep-tags, .rep-formula, .view-src { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; }
-  /* Reports: ONE quiet card for the contents (reads as information, not as three
-     buttons), then a plain ✓ line for the qualities — so the pink CTA stays the
-     only thing on the screen that looks clickable */
-  .rep-formula { width: fit-content; max-width: 100%; gap: 6px 10px; margin: min(4px, 0.5vh) auto min(24px, 2.8vh); padding: 10px 20px;
-    background: var(--tl-glass); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-md);
-    font-size: var(--tl-fs-base); font-weight: 800; color: var(--tl-ink-900); }
+  /* the student's data sources: a tidy 2×2 block, not a ragged 1-2-1 stack */
+  .view-src { display: grid; grid-template-columns: repeat(2, auto); justify-content: center; }
+  /* Reports: the three proof points ride ON the report pages as shadowed chips
+     (one claim per page, tilting with the fan); below, the headline is the one
+     heavy line, with a light "in every report" line and a quiet link. */
+  .fan-page img { display: block; object-fit: contain; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-line-200);
+    box-shadow: var(--tl-shadow-raised); background: var(--tl-white); }
+  .fan-chip { position: absolute; left: 50%; bottom: -18px; transform: translateX(-50%); z-index: 3; white-space: nowrap;
+    display: flex; align-items: center; gap: 9px; padding: 7px 16px 7px 7px; background: var(--tl-white); border-radius: var(--tl-radius-pill);
+    box-shadow: 0 10px 28px rgba(20, 20, 20, 0.14), 0 2px 6px rgba(20, 20, 20, 0.08);
+    font-size: var(--tl-fs-sm); font-weight: 600; color: var(--tl-ink-900); }
+  .rep-tick { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; background: var(--tl-green-500); display: flex; align-items: center; justify-content: center;
+    transform: scale(.4); opacity: 0; transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .3s ease; }
+  .rep-tick svg { width: 15px; height: 15px; fill: none; stroke: var(--tl-white); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .rep-tick path { stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset .45s ease; }
+  .in > .rep-tick { transform: scale(1); opacity: 1; }
+  .in > .rep-tick path { stroke-dashoffset: 0; }
+  /* tick order follows the reading order: cover → skills → home */
+  [data-fan="1"] .rep-tick { transition-delay: .5s; }  [data-fan="1"] .rep-tick path { transition-delay: .7s; }
+  [data-fan="2"] .rep-tick { transition-delay: .9s; }  [data-fan="2"] .rep-tick path { transition-delay: 1.1s; }
+  [data-fan="3"] .rep-tick { transition-delay: 1.3s; } [data-fan="3"] .rep-tick path { transition-delay: 1.5s; }
+  .rep-copy { margin-top: min(44px, 5vh); }
+  .rep-h { font-size: min(calc(var(--tl-fs-xl) * 1.2), 6vh); font-weight: 800; line-height: 1.08; letter-spacing: var(--tl-tracking-tight);
+    color: var(--tl-ink-900); max-width: 900px; margin: 0 auto min(16px, 1.8vh); text-wrap: balance; }
+  .rep-formula { margin: 0 auto min(14px, 1.6vh); font-size: min(var(--tl-fs-lg), 2.4vh); font-weight: 500; line-height: 1.5; color: var(--tl-ink-600); }
   .rep-formula em { font-style: normal; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
-    text-transform: uppercase; color: var(--tl-green-600); margin-right: 4px; }
-  .rep-formula i { font-style: normal; color: var(--tl-green-600); }
-  .rep-tags { gap: 6px 20px; margin: 0 auto min(14px, 1.6vh); }
-  .rep-tags span { font-size: var(--tl-fs-sm); font-weight: 600; color: var(--tl-ink-500); }
-  .rep-tags span::before { content: "\2713"; color: var(--tl-green-600); font-weight: 800; margin-right: 6px; }
-  .view-src { gap: 6px; margin-top: 10px; }
-  .view-src span { border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-pill); background: var(--tl-glass);
+    text-transform: uppercase; color: var(--tl-green-600); margin-right: 8px; }
+  .rep-formula i { font-style: normal; font-weight: 700; color: var(--tl-green-600); margin: 0 4px; }
+  .rep-link { font-size: var(--tl-fs-base); font-weight: 600; color: var(--tl-ink-700); text-decoration: none; border-bottom: 1.5px solid var(--tl-green-500); padding-bottom: 2px; }
+  .rep-link:hover { color: var(--tl-green-600); }
+  .view-src { gap: 8px; margin-top: 16px; }
+  .view-src span { white-space: nowrap; border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-pill); background: var(--tl-glass);
     padding: 3px 10px; font-size: var(--tl-fs-xs); font-weight: 600; color: var(--tl-ink-500); }
+  /* short laptops: the chips stay, just tighter, so the 2×2 block clears the
+     bottom of the screen (they are content: never hide them) */
+  @media (max-height: 760px) {
+    .view-src { gap: 5px; margin-top: 10px; }
+    .view-src span { padding: 2px 8px; }
+  }
   .fits-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 960px; margin: 0 auto; text-align: left; }
   .fits-card { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-lg);
     box-shadow: var(--tl-shadow-card); padding: min(22px, 2.6vh) 22px; }
@@ -602,6 +628,7 @@
   html.tl-mobile .fan-row { touch-action: pan-y; overflow-x: clip; overflow-clip-margin: 24px; }
   html.tl-mobile [data-fan] { width: auto !important; height: 100%; max-height: none !important;
     aspect-ratio: 892 / 1262; flex-shrink: 0; }
+  html.tl-mobile .fan-page img { width: 100%; height: 100%; max-height: none !important; }
   html.tl-mobile .fan-row { margin-bottom: 10px !important; }
   html.tl-mobile .fan-dots { display: flex; }
 
@@ -611,7 +638,7 @@
   /* 3 views: a tighter heading over the stacked orbs */
   html.tl-portrait [data-v-h] { font-size: min(26px, 6.6vw) !important; max-width: calc(100vw - 32px) !important; }
   html.tl-portrait .view-label .n { font-size: var(--tl-fs-base); }
-  html.tl-portrait .view-label .d { font-size: var(--tl-fs-xs); margin-top: 2px; }
+  html.tl-portrait .view-label .d { font-size: var(--tl-fs-xs); margin: 4px 0 0; max-width: none; }
 
   /* on track: compact pills */
   html.tl-portrait [data-pop] { padding: 7px 14px !important; font-size: var(--tl-fs-xs) !important; }
@@ -665,10 +692,12 @@
   html.tl-portrait .mem-tl-lbl { text-align: left; }
   html.tl-portrait .mem-tl li:not(:first-child):not(.end) { color: transparent; }
   /* Oct-19 additions: keep the chip rows + counsellor cards compact on phones */
-  html.tl-portrait .view-src { gap: 4px; margin-top: 6px; }
+  html.tl-portrait .view-src { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 5px; margin-top: 8px; }
   html.tl-portrait .view-src span { padding: 2px 8px; }
-  html.tl-portrait .rep-formula { padding: 8px 12px; gap: 4px 8px; }
-  html.tl-portrait .rep-formula em { flex-basis: 100%; margin: 0; }
+  html.tl-portrait .rep-copy { margin-top: 26px; }
+  html.tl-portrait .fan-chip { bottom: -14px; padding: 5px 11px 5px 5px; gap: 6px; font-size: var(--tl-fs-xs); }
+  html.tl-portrait .rep-tick { width: 20px; height: 20px; }
+  html.tl-portrait .rep-tick svg { width: 12px; height: 12px; }
   html.tl-portrait .fits-card { padding: 12px 14px; }
   html.tl-portrait .fits-card > span { margin-bottom: 8px; }
 
@@ -852,7 +881,6 @@
   html.tl-mobile .content .wrap > p.dash-next,
   html.tl-mobile .dash-next span,
   html.tl-mobile .dash-kicker,
-  html.tl-mobile .rep-tags span,
   html.tl-mobile .rep-formula em,
   html.tl-mobile .mem-k small,
   html.tl-mobile .mem-chips span,
@@ -861,6 +889,7 @@
   html.tl-mobile .mem-tl-lbl,
   html.tl-mobile .view-src span { font-size: var(--m-fs-small) !important; }
   html.tl-mobile .rep-formula,
+  html.tl-mobile .rep-link,
   html.tl-mobile .mem-k b,
   html.tl-mobile .mem-pass-h,
   html.tl-mobile .fits-card p { font-size: var(--m-fs-body) !important; }
@@ -966,18 +995,16 @@
       <div class="step-in">
         <div class="wrap" style="text-align: center;">
           <div class="fan-row" style="display: flex; justify-content: center; align-items: center; height: min(500px, 52vh); margin-bottom: min(40px, 4vh);">
-            <img data-fan="1" src="assets/report-page-1.png" alt="Tilli parent report: cover page" style="width: 338px; max-height: min(470px, 50vh); object-fit: contain; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised); position: relative; will-change: transform;">
-            <img data-fan="2" src="assets/report-page-3.png" alt="Tilli parent report: skill levels" style="width: 354px; max-height: min(490px, 52vh); object-fit: contain; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised); position: relative; z-index: 2; will-change: transform;">
-            <img data-fan="3" src="assets/report-page-4.png" alt="Tilli parent report: what to do at home" style="width: 338px; max-height: min(470px, 50vh); object-fit: contain; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-line-200); box-shadow: var(--tl-shadow-raised); position: relative; will-change: transform;">
+            <div data-fan="1" class="fan-page" style="width: 338px; position: relative; will-change: transform;"><img src="assets/report-page-1.png" alt="Tilli parent report: cover page" style="width: 100%; max-height: min(470px, 50vh);"><span class="fan-chip rv"><span class="rep-tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2L18.5 8"/></svg></span>Built on the child's data</span></div>
+            <div data-fan="2" class="fan-page" style="width: 354px; position: relative; z-index: 2; will-change: transform;"><img src="assets/report-page-3.png" alt="Tilli parent report: skill levels" style="width: 100%; max-height: min(490px, 52vh);"><span class="fan-chip rv"><span class="rep-tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2L18.5 8"/></svg></span>Evidence-based</span></div>
+            <div data-fan="3" class="fan-page" style="width: 338px; position: relative; will-change: transform;"><img src="assets/report-page-4.png" alt="Tilli parent report: what to do at home" style="width: 100%; max-height: min(470px, 50vh);"><span class="fan-chip rv"><span class="rep-tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2L18.5 8"/></svg></span>Zero teacher prep</span></div>
           </div>
           <!-- carousel position (phones only — see .fan-dots / FAN_SWIPE) -->
           <div class="fan-dots" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
-          <div class="rep-tags"><span>Evidence-based</span><span>Built on the child's data</span><span>Zero teacher prep</span></div>
-          <h2 style="font-size: min(var(--tl-fs-xl), 5vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); max-width: 700px; margin: 0 auto 12px;">Tilli designs reports <span style="color: var(--tl-green-600);">parents love to receive</span>.</h2>
-          <p style="font-size: min(var(--tl-fs-lg), 2.4vh); line-height: 1.55; max-width: 640px; margin: 0 auto min(18px, 2vh); text-wrap: balance;">Answer the question ‘Why is school spending time on this?’</p>
-          <div class="rep-formula"><em>In every report</em><span>Strengths</span><i>+</i><span>Growth areas</span><i>+</i><span>Home intervention plan</span></div>
-          <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap;">
-            <a href="uploads/Tilli_Parent%20Report_Example.pdf" target="_blank" rel="noopener" style="font-weight: 700; font-size: var(--tl-fs-base); color: var(--tl-ink-700);">See an example parent report →</a>
+          <div class="rep-copy">
+            <h2 class="rep-h">Tilli designs reports <span style="color: var(--tl-green-600);">parents love to receive</span>.</h2>
+            <p class="rep-formula"><em>In every report</em> Strengths <i>+</i> Growth areas <i>+</i> Home intervention plan</p>
+            <a class="rep-link" href="uploads/Tilli_Parent%20Report_Example.pdf" target="_blank" rel="noopener">See a sample report →</a>
           </div>
         </div>
       </div>

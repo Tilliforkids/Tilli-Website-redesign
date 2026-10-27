@@ -88,7 +88,7 @@
     -webkit-mask: radial-gradient(circle, #000 69%, transparent 70%);
     mask: radial-gradient(circle, #000 69%, transparent 70%); }
   .view-label .n { font-family: var(--tl-font-core); font-weight: 800; font-size: var(--tl-fs-lg); line-height: 1.2; }
-  .view-label .d { font-size: var(--tl-fs-sm); color: var(--tl-ink-500); margin-top: 5px; }
+  .view-label .d { font-size: var(--tl-fs-sm); line-height: 1.5; color: var(--tl-ink-500); margin-top: 7px; text-wrap: balance; }
 
   /* ── Measure: strands + sample cards ────────────────── */
   .strand .h { font-size: var(--tl-fs-sm); font-weight: 800; }
@@ -191,18 +191,25 @@
   .dash-next { font-size: var(--tl-fs-sm); line-height: 1.5; color: var(--tl-ink-500); margin: 16px auto 0; text-wrap: balance; }
   .dash-next span { display: inline-block; margin-right: 8px; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
     text-transform: uppercase; color: var(--tl-cyan-700); background: var(--tl-wash-cyan); border-radius: var(--tl-radius-pill); padding: 2px 9px; }
-  .rep-tags, .rep-formula, .view-src { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; }
-  /* Reports: one quiet contents card + a plain ✓ line (mirrors index.html) */
-  .rep-formula { width: fit-content; max-width: 100%; gap: 4px 8px; margin: 12px auto 22px; padding: 10px 14px;
-    background: var(--tl-glass); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-md);
-    font-size: var(--tl-fs-sm); font-weight: 800; color: var(--tl-ink-900); }
-  .rep-formula em { flex-basis: 100%; font-style: normal; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
-    text-transform: uppercase; color: var(--tl-green-600); }
-  .rep-formula i { font-style: normal; color: var(--tl-green-600); }
-  .rep-tags { gap: 4px 14px; margin: 0 auto 14px; }
-  .rep-tags span { font-size: var(--tl-fs-xs); font-weight: 600; color: var(--tl-ink-500); }
-  .rep-tags span::before { content: "\2713"; color: var(--tl-green-600); font-weight: 800; margin-right: 5px; }
-  .view-src { gap: 4px; margin-top: 8px; }
+  .view-src { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; }
+  /* Reports: proof chips sit on each report card (inside, the card clips);
+     ticks draw in once the deck scrolls into view (script below). */
+  .fan-chip { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 2; white-space: nowrap;
+    display: flex; align-items: center; gap: 7px; padding: 5px 13px 5px 5px; background: var(--tl-white); border-radius: var(--tl-radius-pill);
+    box-shadow: 0 8px 22px rgba(20, 20, 20, 0.16), 0 2px 5px rgba(20, 20, 20, 0.08);
+    font-size: var(--tl-fs-xs); font-weight: 600; color: var(--tl-ink-900); }
+  .rep-tick { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; background: var(--tl-green-500); display: flex; align-items: center; justify-content: center;
+    transform: scale(.4); opacity: 0; transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .3s ease; }
+  .rep-tick svg { width: 13px; height: 13px; fill: none; stroke: var(--tl-white); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .rep-tick path { stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset .45s ease .2s; }
+  .in > .rep-tick { transform: scale(1); opacity: 1; }
+  .in > .rep-tick path { stroke-dashoffset: 0; }
+  .rep-formula { margin: 0 auto 16px; font-size: var(--tl-fs-base); font-weight: 500; line-height: 1.55; color: var(--tl-ink-600); }
+  .rep-formula em { display: block; font-style: normal; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
+    text-transform: uppercase; color: var(--tl-green-600); margin-bottom: 2px; }
+  .rep-formula i { font-style: normal; font-weight: 700; color: var(--tl-green-600); margin: 0 3px; }
+  .rep-link { font-size: var(--tl-fs-base); font-weight: 600; color: var(--tl-ink-700); text-decoration: none; border-bottom: 1.5px solid var(--tl-green-500); padding-bottom: 2px; }
+  .view-src { gap: 6px; margin-top: 12px; }
   .view-src span { border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-pill); background: var(--tl-glass);
     padding: 2px 9px; font-size: var(--tl-fs-xs); font-weight: 600; color: var(--tl-ink-500); }
   .fits-cards { display: grid; gap: 10px; margin-top: 22px; text-align: left; }
@@ -413,22 +420,18 @@
   <!-- 3 · REPORTS -->
   <section id="reports" class="wash-green wrap" style="text-align:center">
     <div class="rdeck" id="reportDeck" aria-label="Tilli parent report pages — swipe to browse">
-      <div class="rdeck-card"><img src="../assets/report-page-1.png" alt="Tilli parent report: cover page" loading="lazy"></div>
-      <div class="rdeck-card"><img src="../assets/report-page-3.png" alt="Tilli parent report: skill levels" loading="lazy"></div>
-      <div class="rdeck-card"><img src="../assets/report-page-4.png" alt="Tilli parent report: what to do at home" loading="lazy"></div>
+      <div class="rdeck-card"><img src="../assets/report-page-1.png" alt="Tilli parent report: cover page" loading="lazy"><span class="fan-chip" data-chip="1"><span class="rep-tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2L18.5 8"/></svg></span>Built on the child's data</span></div>
+      <div class="rdeck-card"><img src="../assets/report-page-3.png" alt="Tilli parent report: skill levels" loading="lazy"><span class="fan-chip" data-chip="2"><span class="rep-tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2L18.5 8"/></svg></span>Evidence-based</span></div>
+      <div class="rdeck-card"><img src="../assets/report-page-4.png" alt="Tilli parent report: what to do at home" loading="lazy"><span class="fan-chip" data-chip="3"><span class="rep-tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2L18.5 8"/></svg></span>Zero teacher prep</span></div>
     </div>
     <div class="rdeck-hint" aria-hidden="true">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       Swipe to browse
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-    <div class="rep-tags"><span>Evidence-based</span><span>Built on the child's data</span><span>Zero teacher prep</span></div>
     <h2 class="title">Tilli designs reports <span class="c-green">parents love to receive</span>.</h2>
-    <p class="lede">Answer the question ‘Why is school spending time on this?’</p>
-    <div class="rep-formula"><em>In every report</em><span>Strengths</span><i>+</i><span>Growth areas</span><i>+</i><span>Home intervention plan</span></div>
-    <div class="cta-col" style="align-items:center">
-      <a class="textlink" href="../uploads/Tilli_Parent%20Report_Example.pdf" target="_blank" rel="noopener">See an example parent report →</a>
-    </div>
+    <p class="rep-formula"><em>In every report</em> Strengths <i>+</i> Growth areas <i>+</i> Home intervention plan</p>
+    <a class="rep-link" href="../uploads/Tilli_Parent%20Report_Example.pdf" target="_blank" rel="noopener">See a sample report →</a>
   </section>
 
   <!-- 4 · 3 VIEWS — the three people who know the child best -->
@@ -938,6 +941,19 @@
       setActive(Math.max(0, Math.min(cards.length - 1, i)));
     }, { passive: true });
   }
+})();
+
+/* ── REPORTS — tick each card's proof chip once the deck scrolls into view ── */
+(function () {
+  var deck = document.getElementById('reportDeck');
+  var chips = deck ? Array.prototype.slice.call(deck.querySelectorAll('.fan-chip')) : [];
+  if (!chips.length) return;
+  var go = function () { chips.forEach(function (c, k) { setTimeout(function () { c.classList.add('in'); }, 250 + k * 350); }); };
+  if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) { chips.forEach(function (c) { c.classList.add('in'); }); return; }
+  var io = new IntersectionObserver(function (es) {
+    if (es.some(function (e) { return e.isIntersecting; })) { go(); io.disconnect(); }
+  }, { threshold: 0.4 });
+  io.observe(deck);
 })();
 
 /* ── ON-TRACK — row of children, outline traced by dots (CHG-03). Mirrors the

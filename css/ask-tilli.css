@@ -108,5 +108,5 @@
 .atl-locked { padding: 20px; border-top: 1px solid var(--tl-line-200); text-align: center; background: var(--tl-wash-cyan); }
 .atl-locked-t { font-size: var(--tl-fs-sm); font-weight: 700; color: var(--tl-ink-700); line-height: 1.5; }
 .atl-locked a { display: inline-block; margin-top: 12px; background: var(--tl-cyan-500); color: var(--tl-white); font-weight: 700; font-size: var(--tl-fs-sm); padding: 11px 26px; border-radius: var(--tl-radius-pill); }
-.atl-locked a:hover { background: var(--tl-cyan-700); }
+.atl-locked a:hover { background: var(--tl-cyan-700); color: var(--tl-white); }   /* beats the page-wide a:hover pink */
 .atl-disclaimer { font-size: var(--tl-fs-xs); line-height: 1.5; color: var(--tl-ink-300); max-width: 560px; margin: 14px auto 0; }
