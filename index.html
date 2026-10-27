@@ -232,7 +232,7 @@
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
             mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
   .imp2-track { display: flex; gap: calc(var(--imp2-gap, 22px) * var(--imp2-scale, 1)); width: max-content;
-    animation: imp2-marquee var(--imp2-dur, 46s) linear infinite; }
+    animation: imp2-marquee var(--imp2-dur, 64s) linear infinite; }   /* 64s for 7 photos = the old 46s-for-5 pace */
   .imp2-carousel:hover .imp2-track { animation-play-state: paused; }
   /* --imp2-scale (GUI, press K) multiplies box size + gap so the whole carousel
      scales without touching the track's animated transform */
@@ -339,6 +339,20 @@
   .dna-grid > :last-child { transform: translateX(clamp(0px, calc((100vw - 1140px) / 2 + 24px), var(--dna-card-shift))); }
   .stage-title { opacity: 0.25; transition: opacity 0.4s ease; }
   .stage-panel { position: absolute; inset: 0; display: flex; align-items: center; opacity: 0; transition: opacity 0.45s ease; pointer-events: none; }
+  /* Measure · teacher card: the real product screen (assets/measure/
+     teacher-observation.png) inside a browser-window frame. No <span>s: the
+     phone rule `.stage-panel span` restyles spans as pills. */
+  .obs-win { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-md);
+    box-shadow: var(--tl-shadow-card); overflow: hidden; }
+  .obs-bar { display: flex; align-items: center; gap: 5px; padding: 7px 10px; background: var(--tl-surface-100);
+    border-bottom: 1px solid var(--tl-line-200); }
+  .obs-bar i { flex: 0 0 auto; width: 8px; height: 8px; border-radius: 50%; background: var(--tl-pink-400); }
+  .obs-bar i:nth-child(2) { background: var(--tl-yellow-500); }
+  .obs-bar i:nth-child(3) { background: var(--tl-green-500); }
+  .obs-bar em { flex: 1; margin: 0 14px 0 8px; padding: 2px 10px; background: var(--tl-white); border-radius: var(--tl-radius-pill);
+    font-style: normal; font-size: 10px; font-weight: 600; line-height: 1.5; color: var(--tl-ink-500); text-align: center;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .obs-win img { display: block; width: 100%; height: auto; }
 
   /* ── 12 skills: grid left, DNA right ──────────────────────── */
   .skills-wrap { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: minmax(0, 1.9fr) minmax(170px, 0.85fr); gap: 24px; align-items: center; }
@@ -359,9 +373,10 @@
         card, and a K→12 passport timeline. Tiers keep a slight skew so they read
         as stacked layers (--skew: 0deg flattens them). Reveal: .mem-layer /
         .mem-rv get .in in DOM order (runPin, data-pin="skills"). ─────────── */
+  .mem-wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 24px; }
   .mem-head { text-align: center; padding: 0 8px; }
-  .mem-grid { display: grid; grid-template-columns: minmax(0, 1fr) 44px minmax(190px, 240px); align-items: center; gap: 10px;
-    margin-top: min(22px, 2.6vh); }
+  .mem-grid { display: grid; grid-template-columns: minmax(0, 1fr) 56px minmax(240px, 320px); align-items: center; gap: 14px;
+    margin-top: min(26px, 3vh); }
   .mem-stack { display: flex; flex-direction: column; gap: min(10px, 1.2vh); padding-left: 10px; }
   .mem-layer { --mc: var(--tl-cyan-500); --skew: -6deg; display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: center; gap: 14px;
     padding: min(12px, 1.4vh) 18px; background: var(--tl-glass); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
@@ -405,12 +420,14 @@
   .mem-rv.in { opacity: 1; transform: none; }
 
   /* ── Kavi feedback (Oct 19): small copy furniture ───────────── */
-  /* Dashboard: pill → balanced headline → video → one-line "coming next" note */
-  .dash-kicker { display: inline-block; background: var(--tl-glass); border: 1.5px solid var(--tl-cyan-500); border-radius: var(--tl-radius-pill);
-    padding: 6px 16px; font-size: var(--tl-fs-sm); font-weight: 600; line-height: 1.4; color: var(--tl-ink-700); }
-  .dash-kicker b { color: var(--tl-cyan-700); font-weight: 800; }
-  .dash-h { font-size: min(var(--tl-fs-xl), 4vh); font-weight: 800; line-height: 1.18; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900);
-    max-width: 960px; margin: min(16px, 1.8vh) auto min(28px, 3.2vh); text-wrap: balance; }
+  /* Dashboard: lead-style headline → video → one-line "coming next" note */
+  /* the headline reads like the hero lead (small grey 500) with ONE big bold
+     cyan phrase on its own line. !important: beats the generic h2 size
+     overrides (≤1080px media rule, html.tl-mobile .content h2). */
+  .dash-h { font-size: min(var(--tl-fs-lg), 2.6vh) !important; font-weight: 500; line-height: 1.55; letter-spacing: normal; color: var(--tl-ink-500);
+    max-width: 640px; margin: min(16px, 1.8vh) auto min(28px, 3.2vh); text-wrap: balance; }
+  .dash-hl { display: block; margin: 4px 0 6px; font-size: min(var(--tl-fs-xl), 5vh); font-weight: 800; line-height: 1.12;
+    letter-spacing: var(--tl-tracking-tight); color: var(--tl-cyan-700); }
   .dash-next { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px 10px; max-width: 820px; margin: min(20px, 2.2vh) auto 0;
     font-size: var(--tl-fs-sm); line-height: 1.5; color: var(--tl-ink-500); text-wrap: balance; }
   .dash-next span { flex: 0 0 auto; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase;
@@ -558,6 +575,8 @@
     .skills-grid { grid-template-columns: repeat(2, 1fr); }
     .views-row { flex-direction: column; gap: 10px; }
     .fits-cards { grid-template-columns: 1fr; max-width: 520px; gap: 10px; }
+    .mem-grid { grid-template-columns: 1fr; max-width: 640px; margin-inline: auto; }
+    .mem-arrow { justify-self: center; } .mem-arrow svg { transform: rotate(90deg); }
     .j-card { flex-direction: column; text-align: center; padding: 24px; }
     h2 { font-size: var(--tl-fs-xl) !important; }
     .foot { padding: 14px 20px; }
@@ -667,6 +686,9 @@
   html.tl-portrait .stage-panel span { padding: 6px 11px !important; font-size: var(--tl-fs-xs) !important; }
   html.tl-portrait .stage-panel > div { padding: 16px !important; flex-direction: column; align-items: flex-start !important; }
   html.tl-portrait .stage-panel img { width: 80px !important; }   /* keeps the child-task card short enough to fit */
+  /* …but not the teacher card's product screenshot, which spans the card */
+  html.tl-portrait .obs-win { width: 100%; }
+  html.tl-portrait .stage-panel .obs-win img { width: 100% !important; }
 
   /* 12 skills: one screen on phones (no Thinking/People split) */
   html.tl-portrait .skills-wrap { padding: 0 16px; }
@@ -685,7 +707,8 @@
   html.tl-portrait .mem-stack { padding-left: 4px; gap: 7px; }
   html.tl-portrait .mem-layer { --skew: -3deg; grid-template-columns: 1fr; gap: 6px; padding: 9px 12px; }
   html.tl-portrait .mem-chips span { padding: 2px 8px; }
-  html.tl-portrait .mem-arrow { justify-self: center; transform: rotate(90deg); }
+  html.tl-portrait .mem-arrow { justify-self: center; }
+  html.tl-portrait .mem-arrow svg { transform: rotate(90deg); }
   html.tl-portrait .mem-pass { padding: 10px 14px; }
   html.tl-portrait .mem-pass-d, html.tl-portrait .mem-cap { display: none; }
   html.tl-portrait .mem-tl { grid-template-columns: 1fr; gap: 6px; }
@@ -878,9 +901,10 @@
   html.tl-mobile .j-step-pill { font-size: var(--m-fs-small) !important; }   /* (footer: the phone footer standard above, not this scale) */
   /* Oct-19 feedback furniture on the same scale (the memory-layer line is a
      .wrap > p, so it needs the extra specificity to drop to "small") */
+  html.tl-mobile .content h2.dash-h { font-size: var(--m-fs-sub) !important; }   /* = html.tl-mobile .hero-lead */
+  html.tl-mobile .dash-hl { font-size: var(--m-fs-h) !important; }
   html.tl-mobile .content .wrap > p.dash-next,
   html.tl-mobile .dash-next span,
-  html.tl-mobile .dash-kicker,
   html.tl-mobile .rep-formula em,
   html.tl-mobile .mem-k small,
   html.tl-mobile .mem-chips span,
@@ -971,10 +995,9 @@
     <div class="step">
       <div class="step-in">
         <div class="wrap" style="text-align: center;">
-          <div class="dash-kicker">Tilli measures the <b>12 foundational skills</b> that impact learning and well-being</div>
-          <h2 class="dash-h">We bring together every single data point about a child into a <span style="color: var(--tl-cyan-700);">developmental profile</span> that follows the child from kindergarten through Grade&nbsp;12.</h2>
+          <h2 class="dash-h">We bring together every single data point about a child into a <span class="dash-hl">developmental profile</span> that follows the child from kindergarten through Grade&nbsp;12.</h2>
           <div data-zoom style="max-width: 940px; margin: 0 auto; background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-lg); padding: 14px; box-shadow: var(--tl-shadow-card); will-change: transform;">
-            <video src="uploads/assets_dashboard-1785392844586.mp4" poster="assets/ds/dashboard-poster.png" muted autoplay loop playsinline preload="auto" style="width: 100%; max-height: 52vh; object-fit: cover; border-radius: var(--tl-radius-md); display: block; min-height: 200px; background: var(--tl-surface-100);"></video>
+            <video src="uploads/profile-walkthrough-web.mp4" poster="uploads/profile-walkthrough-poster.jpg" muted autoplay loop playsinline preload="auto" style="width: 100%; max-height: 52vh; object-fit: cover; border-radius: var(--tl-radius-md); display: block; min-height: 200px; background: var(--tl-surface-100);"></video>
           </div>
           <p class="dash-next"><span>Coming next</span>This cognitive profile joins every other data source about the child, from academics to attendance.</p>
         </div>
@@ -1070,13 +1093,11 @@
             <div class="stage-panel">
               <div style="background: var(--tl-white); border: 2px solid var(--tl-green-500); border-radius: var(--tl-radius-lg); padding: 26px; width: 100%;">
                 <div style="font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); color: var(--tl-green-600); margin-bottom: 14px;">TEACHER OBSERVATION</div>
-                <div style="font-size: var(--tl-fs-base); font-weight: 700; color: var(--tl-ink-700); line-height: 1.45;">"Stays focused during group tasks."</div>
-                <div style="display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap;">
-                  <span style="border: 1.5px solid var(--tl-line-200); border-radius: var(--tl-radius-pill); padding: 7px 16px; font-size: var(--tl-fs-sm); font-weight: 600;">Rarely</span>
-                  <span style="border: 1.5px solid var(--tl-line-200); border-radius: var(--tl-radius-pill); padding: 7px 16px; font-size: var(--tl-fs-sm); font-weight: 600;">Sometimes</span>
-                  <span style="background: var(--tl-green-500); border: 1.5px solid var(--tl-green-500); color: var(--tl-white); border-radius: var(--tl-radius-pill); padding: 7px 16px; font-size: var(--tl-fs-sm); font-weight: 700;">Often</span>
+                <div class="obs-win">
+                  <div class="obs-bar" aria-hidden="true"><i></i><i></i><i></i><em>measures.tillikids.com</em></div>
+                  <img src="assets/measure/teacher-observation.png" alt="Tilli teacher observation screen: question 4 of 21, “Copes with small disappointments (losing a game, waiting) without a big outburst”, rated on a four-step scale from Rarely to Almost always, with Sometimes selected" width="1552" height="452" decoding="async">
                 </div>
-                <div style="font-size: var(--tl-fs-sm); color: var(--tl-ink-300); margin-top: 18px;">Teacher time: 5 min per child · 3× a year</div>
+                <div style="font-size: var(--tl-fs-sm); color: var(--tl-ink-300); margin-top: 14px;">Teacher time: 5 min per child · 3× a year</div>
               </div>
             </div>
             <div class="stage-panel">
@@ -1109,7 +1130,7 @@
 </div>
 
 <!-- ═══ 7 · 12 SKILLS — the DNA zooms aside for the grid ══════ -->
-<div class="scene" data-scene data-wash="--tl-wash-cyan" data-label="12 skills" data-pin="skills" id="skills" style="height: 160vh;">
+<div class="scene" data-scene data-wash="--tl-wash-cyan" data-label="12 skills" data-pin="skills" id="skills" style="height: 210vh;">
   <div class="stage">
     <div class="step">
       <div class="step-in">
@@ -1147,36 +1168,32 @@
   </div>
 </div>
 
-<!-- ═══ 7b · MEMORY LAYER — continuation of the 12 skills: the other data
-     sources that join the profile. Holds the same mini helix (a duplicate
-     dna2 formation in buildFormations) and owns the 12-skills → On-track
-     handover (SKILLS_EXIT) — keep it directly BEFORE On track. ═══ -->
-<div class="scene" data-scene data-wash="--tl-wash-cyan" data-label="Memory layer" data-pin="skills" style="height: 210vh;">
+<!-- ═══ 7b · THE MEMORY LAYER — its own section (not part of the 12 skills):
+     over the 12-skills tail the helix bends into the 12-lobe memory ring
+     (MEM_RING in js/main.js) that frames this screen; its tail runs the
+     hand-over into On track (ring fades, content slides left, kids walk in).
+     Keep it directly BEFORE On track. ═══ -->
+<div class="scene" data-scene data-wash="--tl-white" data-label="Memory layer" data-pin="memory" id="memory-layer" style="height: 210vh;">
   <div class="stage">
     <div class="step">
       <div class="step-in">
-        <div style="display: flex; flex-direction: column;">
-          <div class="skills-wrap">
-            <div class="skills-main">
-              <div class="mem-head">
-                <div class="eyebrow rv">THE MEMORY LAYER</div>
-                <h2 class="rv" style="font-size: min(var(--tl-fs-xl), 4.6vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); margin: 8px auto 6px;">One memory for <span style="color: var(--tl-cyan-700);">every child</span>, K–12.</h2>
-                <p class="rv" style="font-size: min(var(--tl-fs-lg), 2.3vh); line-height: 1.5; max-width: 640px; margin: 0 auto; text-wrap: balance;">Next, we combine each child's cognitive profile with every other data source about them: academics, attendance and more.</p>
-              </div>
-              <div class="mem-grid">
-                <div class="mem-stack">
-                  <div class="mem-layer mem-base" style="--mc: var(--tl-green-500);"><div class="mem-k"><small>Since 2023</small><b>Measured by Tilli</b></div><div class="mem-chips"><span>6 Cognitive skills</span><span>6 Social-emotional skills</span><span>Teacher · parent · child</span><span>3× a year</span></div></div>
-                  <div class="mem-layer" style="--mc: var(--tl-cyan-500);"><div class="mem-k"><small>Coming next</small><b>Pulled from the school</b></div><div class="mem-chips"><span>Attendance</span><span>Maths &amp; literacy scores</span><span>Weekly assessments</span><span>Behaviour notes</span><span>Portfolio</span></div></div>
-                  <div class="mem-layer" style="--mc: var(--tl-yellow-500);"><div class="mem-k"><small>Coming next</small><b>Added by Tilli</b></div><div class="mem-chips"><span>Photo-graded work</span><span>Interventions tried</span><span>AskTilli over the whole record</span></div></div>
-                </div>
-                <div class="mem-arrow mem-rv" aria-hidden="true"><svg viewBox="0 0 40 16"><line x1="1" y1="8" x2="34" y2="8"/><polyline points="28 2 36 8 28 14"/></svg></div>
-                <div class="mem-pass mem-rv"><div class="mem-pass-k">One learning passport</div><p class="mem-pass-h">Per child. Owned by the family. Follows them to the next grade and the next school.</p><p class="mem-pass-d">Readable by teachers, parents and any AI tool or LMS the school chooses.</p></div>
-              </div>
-              <div class="mem-tl mem-rv"><div class="mem-tl-lbl">The learning passport</div><ol><li style="--c: var(--tl-green-500);">K</li><li style="--c: var(--tl-green-500);">Grade 2</li><li style="--c: var(--tl-cyan-500);">Grade 4</li><li style="--c: var(--tl-cyan-500);">Grade 6</li><li style="--c: var(--tl-yellow-500);">Grade 8</li><li style="--c: var(--tl-orange-500);">Grade 10</li><li style="--c: var(--tl-pink-600);" class="end">Grade 12</li></ol></div>
-              <p class="mem-cap mem-rv">579 data points per child per year today · 2,895 by Grade 5 · the passport carries them through Grade 12 and across school moves</p>
-            </div>
-            <div class="helix-side"><!-- the same mini helix holds here --></div>
+        <div class="mem-wrap">
+          <div class="mem-head">
+            <div class="eyebrow rv">THE MEMORY LAYER</div>
+            <h2 class="rv" style="font-size: min(var(--tl-fs-xl), 4.6vh); font-weight: 800; letter-spacing: var(--tl-tracking-tight); color: var(--tl-ink-900); margin: 8px auto 6px;">One memory for <span style="color: var(--tl-cyan-700);">every child</span>, K–12.</h2>
+            <p class="rv" style="font-size: min(var(--tl-fs-lg), 2.3vh); line-height: 1.5; max-width: 640px; margin: 0 auto; text-wrap: balance;">Next, we combine each child's cognitive profile with every other data source about them: academics, attendance and more.</p>
           </div>
+          <div class="mem-grid">
+            <div class="mem-stack">
+              <div class="mem-layer mem-base" style="--mc: var(--tl-green-500);"><div class="mem-k"><small>Since 2023</small><b>Measured by Tilli</b></div><div class="mem-chips"><span>6 Cognitive skills</span><span>6 Social-emotional skills</span><span>Teacher · parent · child</span><span>3× a year</span></div></div>
+              <div class="mem-layer" style="--mc: var(--tl-cyan-500);"><div class="mem-k"><small>Coming next</small><b>Pulled from the school</b></div><div class="mem-chips"><span>Attendance</span><span>Maths &amp; literacy scores</span><span>Weekly assessments</span><span>Behaviour notes</span><span>Portfolio</span></div></div>
+              <div class="mem-layer" style="--mc: var(--tl-yellow-500);"><div class="mem-k"><small>Coming next</small><b>Added by Tilli</b></div><div class="mem-chips"><span>Photo-graded work</span><span>Interventions tried</span><span>AskTilli over the whole record</span></div></div>
+            </div>
+            <div class="mem-arrow mem-rv" aria-hidden="true"><svg viewBox="0 0 40 16"><line x1="1" y1="8" x2="34" y2="8"/><polyline points="28 2 36 8 28 14"/></svg></div>
+            <div class="mem-pass mem-rv"><div class="mem-pass-k">One learning passport</div><p class="mem-pass-h">Per child. Owned by the family. Follows them to the next grade and the next school.</p><p class="mem-pass-d">Readable by teachers, parents and any AI tool or LMS the school chooses.</p></div>
+          </div>
+          <div class="mem-tl mem-rv"><div class="mem-tl-lbl">The learning passport</div><ol><li style="--c: var(--tl-green-500);">K</li><li style="--c: var(--tl-green-500);">Grade 2</li><li style="--c: var(--tl-cyan-500);">Grade 4</li><li style="--c: var(--tl-cyan-500);">Grade 6</li><li style="--c: var(--tl-yellow-500);">Grade 8</li><li style="--c: var(--tl-orange-500);">Grade 10</li><li style="--c: var(--tl-pink-600);" class="end">Grade 12</li></ol></div>
+          <p class="mem-cap mem-rv">579 data points per child per year today · 2,895 by Grade 5 · the passport carries them through Grade 12 and across school moves</p>
         </div>
       </div>
     </div>
@@ -1361,24 +1378,28 @@
     <div class="step">
       <!-- full-bleed: the dot ring (canvas above) fills the top band, a 100vw
            seamless image marquee sits mid-screen, stats + quote anchor the
-           bottom. Boxes are placeholders — paste a path into any .imp2-box
-           <img src=""> and the label hides itself. The track is DUPLICATED
-           (10 = 5×2) so the -50% loop is seamless; keep both halves identical.
+           bottom. Photos live in assets/carousel/ (web-sized JPGs exported from
+           assets/Images for school success/). The track is DUPLICATED
+           (14 = 7×2) so the -50% loop is seamless; keep both halves identical.
            Each text group's --x/--y/--sc is tuned in the GUI (press K). -->
       <div class="imp2-scene">
         <div class="imp2-carousel rv" style="--imp2-scale:1.35;">
           <div class="imp2-track">
-            <div class="imp2-box"><img src="" alt="Carousel image 1"><span>image 1</span></div>
-            <div class="imp2-box"><img src="" alt="Carousel image 2"><span>image 2</span></div>
-            <div class="imp2-box"><img src="" alt="Carousel image 3"><span>image 3</span></div>
-            <div class="imp2-box"><img src="" alt="Carousel image 4"><span>image 4</span></div>
-            <div class="imp2-box"><img src="" alt="Carousel image 5"><span>image 5</span></div>
-            <!-- duplicate of the five above, for the seamless loop -->
-            <div class="imp2-box"><img src="" alt=""><span>image 1</span></div>
-            <div class="imp2-box"><img src="" alt=""><span>image 2</span></div>
-            <div class="imp2-box"><img src="" alt=""><span>image 3</span></div>
-            <div class="imp2-box"><img src="" alt=""><span>image 4</span></div>
-            <div class="imp2-box"><img src="" alt=""><span>image 5</span></div>
+            <div class="imp2-box"><img src="assets/carousel/classroom.jpg" alt="Children working through Tilli activity books in a classroom" decoding="async"></div>
+            <div class="imp2-box"><img src="assets/carousel/workshop.jpg" alt="Teachers raising their hands at a Tilli training workshop" decoding="async"></div>
+            <div class="imp2-box"><img src="assets/carousel/dashboard.jpg" alt="A teacher reviewing a class skills chart on the Tilli dashboard" decoding="async"></div>
+            <div class="imp2-box"><img src="assets/carousel/paper-glasses.jpg" alt="A student holding up paper glasses he made in a Tilli activity" decoding="async"></div>
+            <div class="imp2-box"><img src="assets/carousel/teachers-group.jpg" alt="Teachers working together in a small group during a Tilli training" decoding="async"></div>
+            <div class="imp2-box"><img src="assets/carousel/leader-meeting.jpg" alt="A Tilli team member taking notes in a meeting with a school leader" decoding="async"></div>
+            <div class="imp2-box"><img src="assets/carousel/partners.jpg" alt="Two members of the Tilli community at a partner visit" decoding="async"></div>
+            <!-- duplicate of the 7 above, for the seamless loop (hidden from screen readers) -->
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/classroom.jpg" alt="" decoding="async"></div>
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/workshop.jpg" alt="" decoding="async"></div>
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/dashboard.jpg" alt="" decoding="async"></div>
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/paper-glasses.jpg" alt="" decoding="async"></div>
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/teachers-group.jpg" alt="" decoding="async"></div>
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/leader-meeting.jpg" alt="" decoding="async"></div>
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/partners.jpg" alt="" decoding="async"></div>
           </div>
         </div>
         <div class="imp2-bottom">

@@ -1216,12 +1216,26 @@ function fitSkillsHelix() {
   DNA2_CFG.x = x;
   return true;
 }
-/* 12-skills → On-track handover choreography (driven in step()).
-   start  the 12-skills scene fraction (0..1) where the handover begins — the
-          screen holds fully readable until here, then the DNA eases out
-   slideR world units the DNA helix eases off to the RIGHT as it exits + whitens
+/* 12-skills exit + Memory-layer → On-track handover timing (driven in step()).
+   start  the scene fraction (0..1) where each handover begins — the screen
+          holds fully readable until here. On 12 skills the helix starts
+          bending into the memory ring; on the Memory layer the copy slides out
+   slideR (unused since the ring: the helix no longer slides off-right)
    slideL world units the kids slide in from the LEFT as they colour up (walk in) */
 const SKILLS_EXIT = { start: 0.60, slideR: 19, slideL: 22 };
+/* MEMORY RING — the 12-skills helix centres, lengthens and BENDS until its ends
+   meet: a ring of `lobes` twists (one per skill) framing the Memory-layer copy.
+     r / rMinW  ring radius: × the visible half-height, but never under rMinW ×
+                the half-width (so it clears the content's sides on wide screens)
+     rPhone     phones: radius × the visible half-width (a faint backdrop)
+     tube       strand-pair radius as a fraction of the ring radius
+     lobes      visible twists (2 per full turn); rungs: dotted bars round the ring
+     dot        dot size × BASE_DOT_SIZE once formed
+     spin       strand turn speed while the ring holds (rad/s)
+     formEnd    Memory-layer fraction where the ring is fully closed
+     fadeOut    Memory-layer fractions over which it fades before the kids walk in */
+const MEM_RING = { r: 1.12, rMinW: 0.68, rPhone: 0.92, tube: 0.085, lobes: 12, rungs: 36, dot: 0.85,
+  spin: 0.35, formEnd: 0.06, fadeOut: [0.6, 0.78] };
 /* KIDS WALK-IN — after the DNA has left and the On-track text is in, the
    children WALK in from the left with an up/down bob, then settle. Time-based
    (plays on its own once the section lands) so it reads as walking, not as a
@@ -2345,10 +2359,19 @@ function buildFormations() {
   const rebuildDNA2 = () => helixDots(dna2, DNA2_CFG.x, DNA2_CFG.y, DNA2_CFG.z, DNA2_CFG.scale, 66);
   rebuildDNA2();
   F.push(dna2);
-  /* 6b · MEMORY LAYER — the 12-skills continuation holds the SAME mini helix
-     (shared buffers, so rebuildDNA2/GUI still drive it). Pushed twice so the
-     scene→formation index mapping stays aligned for every later scene. */
-  F.push(dna2);
+  /* 6b · MEMORY LAYER — its own section. The visible ring is drawn entirely by
+     the procedural MEMORY RING block in step(); this base form is held HIDDEN
+     (scl 0) so nothing static ever shows under it. Positions: neutral spread. */
+  {
+    const mem = make();
+    const r = rng(61);
+    for (let i = 0; i < N; i++) {
+      setP(mem, i, (r() - 0.5) * 24, (r() - 0.5) * 13, -3 - r() * 3);
+      setC(mem, i, '#ffffff', 0);
+      mem.scl[i] = 0;
+    }
+    F.push(mem);
+  }
 
   /* 7 · ON TRACK — the dots fill the Student Outline child silhouette.
      loadStudentSilhouette() patches this buffer once the SVG loads; the
@@ -3179,7 +3202,7 @@ document.getElementById('goNext').addEventListener('click', () => glideTo(adjace
    active pill tracks scroll by finding the last section we've reached. */
 const NAV_ITEMS = [
   ['Start', 'Home'], ['Dashboard', 'Dashboard'], ['Reports', 'Reports'],
-  ['3 views', '3 perspectives'], ['Measure', 'Measure'], ['12 skills', '12 skills'],
+  ['3 views', '3 perspectives'], ['Measure', 'Measure'], ['12 skills', '12 skills'], ['Memory layer', 'Memory layer'],
   ['On track', 'On track'], ['Ask-Tilli', 'AskTilli'], ['Impact', 'Schools'],
   ['Journey', 'A year with Tilli'], ["Let's talk", 'Contact'],
 ];
@@ -3472,9 +3495,7 @@ function onScroll(fOverride) {
      the crossing screen takes over, and the dashboard climbs in from below
      over the Cross tail. The dots carry the continuity across both. */
   const crossI = ST['Cross'], dashI = ST['Dashboard'], onTrackI = ST['On track'];
-  /* the 12-skills → On-track handover now runs off the Memory-layer
-     continuation scene (the one directly before On track) */
-  const skillsI = ST['Memory layer'];
+  const skillsI = ST['12 skills'], memI = ST['Memory layer'];
   const aiI = ST['Ask-Tilli'], askLiveI = ST['Ask-live'], impactI = ST['Impact'], journeyI = ST['Journey'];
   const fitsI = ST['Fits in'], viewsI = ST['3 views'];
   /* The dots now CROSS PATHS IN FRONT of the hero text. The hero stays
@@ -3528,18 +3549,19 @@ function onScroll(fOverride) {
          trailing edge, gone once the orb has left the screen */
       op = f < k + 1 ? smooth(clamp((f - a) / FADE_LEN)) : 0;
       if (f > k) clipL = viewsExit(f - k).wipeFrac;
-    } else if (k === skillsI) {
-      /* 360° cards ease OUT to the LEFT (mirror of the DNA leaving right) over
-         the exit half of the handover, fading as they go; the On-track text
-         then fades in (onTrackI branch) before the kids walk in. */
+    } else if (k === skillsI || k === memI) {
+      /* 12 SKILLS: the 360° cards ease OUT to the LEFT (mirror of the DNA leaving
+         right) over the exit half of the scene tail, then the Memory layer fades in.
+         MEMORY LAYER: its content leaves the same way, then the On-track text fades
+         in (onTrackI branch) before the kids walk in. */
       const ex = smoother(clamp(((clamp(f - k) - SKILLS_EXIT.start) / (1 - SKILLS_EXIT.start)) / 0.5));
       tx = -ex;
       op *= 1 - ex;
     } else if (k === onTrackI) {
-      /* the On-track text arrives FIRST — it fades in over the 12-skills tail
-         (f ≈ skills+0.78 → 0.94), just as the DNA finishes leaving and before
-         the kids walk in — then holds and cross-fades out normally to Ask-Tilli. */
-      const tIn = smooth(clamp((f - (skillsI + 0.78)) / 0.16));
+      /* the On-track text arrives FIRST — it fades in over the Memory-layer tail
+         (f ≈ mem+0.78 → 0.94), as that content finishes leaving and before the
+         kids walk in — then holds and cross-fades out normally to Ask-Tilli. */
+      const tIn = smooth(clamp((f - (memI + 0.78)) / 0.16));
       const tOut = smooth(clamp((f - (onTrackI + 1 - FADE_LEN)) / FADE_LEN));
       op = tIn * (1 - tOut);
     } else if (k === dashI) {
@@ -3786,9 +3808,12 @@ function runPin(sc, p) {
     T.vLabels.forEach((el, k) => el.classList.toggle('in', p > 0.2 + k * 0.06));
     return;
   }
-  if (sc.pin === 'skills' && (T.skillCards.length || T.memLayers.length)) {
+  if (sc.pin === 'skills' && T.skillCards.length) {
     T.skillCards.forEach((card, k) => card.classList.toggle('in', p > 0.06 + k * 0.022));
-    /* memory layer: tiers → arrow/passport → timeline, one beat each in DOM order */
+    return;
+  }
+  if (sc.pin === 'memory' && T.memLayers.length) {
+    /* tiers → arrow/passport → timeline → caption, one beat each in DOM order */
     T.memLayers.forEach((el, k) => el.classList.toggle('in', p > 0.08 + k * 0.06));
     return;
   }
@@ -4148,7 +4173,7 @@ if (reduced) {
     /* 12 SKILLS → ON TRACK: the generic base-morph is switched OFF for this
        scene (tt = 0 holds the mini-helix) — the dedicated handover block below
        owns the whole choreography: DNA eases out right, kids walk in from left. */
-    if (si === ST['12 skills'] || si === ST['Memory layer']) tt = 0;
+    if (si === ST['12 skills'] || si === ST['Memory layer']) tt = 0;   // memory: hold the empty field; the kids walk-in owns its tail
     /* ON TRACK → ASK-TILLI: base-morph off too — the kids don't melt into the
        AI formation, they slide straight off the sides (ONTRACK_EXIT block). */
     if (si === ST['On track']) tt = 0;
@@ -4166,7 +4191,7 @@ if (reduced) {
        the geometry as Measure→12-skills and grow back on the way out. */
     {
       const sizeOf = (idx) =>
-        idx === ST['12 skills'] || idx === ST['Memory layer'] ? DNA2_CFG.dotScale :
+        idx === ST['12 skills'] ? DNA2_CFG.dotScale :
         idx === ST['On track'] ? KID.dot / BASE_DOT_SIZE : 1;
       th.dotMat.size = BASE_DOT_SIZE * lerp(sizeOf(i), sizeOf(i + 1), tt);
     }
@@ -4353,7 +4378,7 @@ if (reduced) {
 
     /* DNA: strands appear in stage order, then the helix rotates */
     {
-      const dnaI = ST['Measure'], skI = ST['Memory layer'];   // the helix holds through 12 skills + Memory layer
+      const dnaI = ST['Measure'], skI = ST['12 skills'];
       /* starts exactly on the Measure screen — before it, the 3-views exit owns
          the field (the orbs must not rotate/whiten into the helix) */
       const wgt = (f >= dnaI ? 1 : 0) * (1 - clamp((f - (skI + 0.9)) / 0.35));
@@ -4402,31 +4427,80 @@ if (reduced) {
       }
     }
 
-    /* 12 SKILLS EXIT: over the first half of the scene tail the DNA (already
-       spun+shaded by the block above) eases off to the RIGHT and whitens away.
-       The kids are NOT drawn here — they walk in via the time-based block below,
-       which takes over once the helix is gone. The 360° cards slide left / the
-       On-track text fades in first — see onScroll. */
-    if (si === ST['Memory layer']) {
-      const hb = clamp((S.p - SKILLS_EXIT.start) / (1 - SKILLS_EXIT.start));   // linear 0→1
-      if (hb > 0 && hb < 0.5) {
-        const outP = smoother(clamp(hb / 0.5));          // DNA exit: eased 0→1 over first half
-        const dx = SKILLS_EXIT.slideR * outP;
+    /* 12 SKILLS → MEMORY LAYER: the helix doesn't leave — it centres, lengthens
+       and BENDS until its two ends meet in the memory ring (MEM_RING). Built
+       procedurally: the helix axis is an arc whose bend angle grows 0 → 2π while
+       its length grows to the ring's circumference, and every dot keeps its own
+       place along the strand — so it reads as the same DNA curling round, not a
+       cross-fade. Matches the spun helix exactly at the start (spin sign as
+       rotate2D), then holds with the strands slowly turning, and fades out over
+       the Memory tail before the kids walk in (block below). */
+    {
+      const skI = ST['12 skills'], memI = ST['Memory layer'];
+      const f0 = skI + SKILLS_EXIT.start, f1 = memI + MEM_RING.formEnd;
+      if (f < f0) th.memSpin = 0;                         // rearm: re-forms from the helix's own phase
+      if (f >= f0 && f < memI + MEM_RING.fadeOut[1]) {
+        const b = smoother(clamp((f - f0) / (f1 - f0)));   // 0 straight helix → 1 closed ring
+        const out = smooth(clamp((f - (memI + MEM_RING.fadeOut[0])) / (MEM_RING.fadeOut[1] - MEM_RING.fadeOut[0])));
+        if (si === memI) th.memSpin = (th.memSpin || 0) + dt * MEM_RING.spin;
+        const s2 = DNA2_CFG.scale, zc = DNA_DEPTH_CENTER + DNA2_CFG.z;
+        const vh2 = visHalf(zc);
+        const Rr = PORTRAIT ? vh2.w * MEM_RING.rPhone : Math.max(vh2.h * MEM_RING.r, vh2.w * MEM_RING.rMinW);
+        const H2 = 21 * s2, R2 = 3.4 * s2, TW2 = 0.62 / s2;   // helixDots' own geometry at DNA2 scale
+        const L = lerp(H2, 2 * Math.PI * Rr, b);
+        const rho = L / Math.max(1e-4, 2 * Math.PI * b);      // arc radius (∞ = straight)
+        const tw = lerp(TW2, (MEM_RING.lobes / 2) / Rr, b);   // twist (rad per world unit); whole turns → seamless
+        const Rt = lerp(R2, Rr * MEM_RING.tube, b);
+        /* the arc's midpoint glides from the helix centre to the ring's right-hand
+           side, so the closed ring lands centred on screen */
+        const mx = lerp(DNA2_CFG.x, Rr, b), my = lerp(DNA2_CFG.y, 0, b);
+        const ccx = mx - rho, ccy = my;
+        const spin = (th.memSpin || 0) - (th.dnaSpin || 0);
+        const span = lerp(0.94, 1, b), wR = smoother(b);
+        const blendIn = smooth(clamp(b / 0.15));             // absorbs the helix's tiny jitter at the start
+        const col = th.F[skI].col;                           // the helix's own strand/rung colours
+        const third = N / 3;
+        const at = (u, ph, sn, cs) => {                      // axis(u) + tube offset
+          const psi = u / rho, nx = Math.cos(psi), ny = Math.sin(psi);
+          return [ccx + rho * nx + nx * sn * Rt, ccy + rho * ny + ny * sn * Rt, zc + cs * Rt];
+        };
+        const rung = (t, count) => {
+          const kk = Math.floor(t * count), rt = (t * count) % 1;
+          const u = (0.5 - (kk + 0.5) / count) * L * span, ph = u * tw + spin;
+          return at(u, ph, lerp(Math.sin(ph), -Math.sin(ph), rt), lerp(Math.cos(ph), -Math.cos(ph), rt));
+        };
         for (let n = 0; n < N; n++) {
-          const k = n * 3;
-          P[k] += dx;                                    // ease the spun helix off-right
-          vanish(n, outP);                               // shrink away (the 12-skills wash is cyan — white would show)
+          const k = n * 3, role = n % 3, t = ((n - role) / 3) / third;
+          let q;
+          if (role < 2) {
+            const u = (0.5 - t) * L, ph = u * tw + (role ? Math.PI : 0) + spin;
+            q = at(u, ph, Math.sin(ph), Math.cos(ph));
+          } else {
+            /* rungs re-space from the helix's 14 bars to the ring's MEM_RING.rungs */
+            const h = rung(t, 14), r2 = rung(t, MEM_RING.rungs);
+            q = [lerp(h[0], r2[0], wR), lerp(h[1], r2[1], wR), lerp(h[2], r2[2], wR)];
+          }
+          P[k] = lerp(P[k], q[0], blendIn); P[k + 1] = lerp(P[k + 1], q[1], blendIn); P[k + 2] = lerp(P[k + 2], q[2], blendIn);
+          /* depth: the far side of the tube washes toward the backdrop; on phones
+             the whole ring is backdrop texture behind the copy */
+          const depth = clamp((q[2] - (zc - Rt)) / (2 * Rt));
+          const wsh = Math.max((1 - depth) * (1 - depth) * DNA_DEPTH_WASH, PORTRAIT ? PORTRAIT_DNA.mini.wash : 0);
+          CL[k] = lerp(CL[k], lerp(col[k], white.r, wsh), blendIn);
+          CL[k + 1] = lerp(CL[k + 1], lerp(col[k + 1], white.g, wsh), blendIn);
+          CL[k + 2] = lerp(CL[k + 2], lerp(col[k + 2], white.b, wsh), blendIn);
+          SC[n] = 1 - out;
         }
+        th.dotMat.size = BASE_DOT_SIZE * lerp(DNA2_CFG.dotScale, MEM_RING.dot, b);
       }
     }
 
-    /* KIDS WALK-IN: once the DNA has cleared (f ≥ f0) and the text is in, the
+    /* KIDS WALK-IN: once the memory ring has faded (f ≥ f0) and the text is in, the
        children WALK in from the LEFT with an up/down bob, then settle. Time-based
        (th.kidWalk advances at WALK.speed, independent of the scroll scrub) so it
        reads as walking. Spans the 12-skills tail into On-track, and fully owns
        the field there — overwriting the held DNA so it doesn't reappear. */
     {
-      const skI = ST['Memory layer'], onI = ST['On track'];
+      const skI = ST['Memory layer'], onI = ST['On track'];   // walk in over the Memory-layer tail
       const f0 = skI + 0.8;                              // hb 0.5 — the DNA has fully exited
       const fEnd = onI + MORPH_AT;                        // where On-track starts morphing to the next scene
       if (f >= f0 && f < fEnd) {

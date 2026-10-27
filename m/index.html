@@ -133,6 +133,20 @@
   .chip.on-g { background: var(--tl-green-500); border-color: var(--tl-green-500); color: var(--tl-white); }
   .chip.on-c { background: var(--tl-cyan-500); border-color: var(--tl-cyan-500); color: var(--tl-white); }
   .sample .meta { font-size: var(--tl-fs-sm); color: var(--tl-ink-300); margin-top: 16px; }
+  /* Measure · teacher card: the real product screen (assets/measure/
+     teacher-observation.png) inside a browser-window frame. No <span>s: the
+     phone rule `.stage-panel span` restyles spans as pills. */
+  .obs-win { background: var(--tl-white); border: 1px solid var(--tl-line-200); border-radius: var(--tl-radius-md);
+    box-shadow: var(--tl-shadow-card); overflow: hidden; }
+  .obs-bar { display: flex; align-items: center; gap: 5px; padding: 7px 10px; background: var(--tl-surface-100);
+    border-bottom: 1px solid var(--tl-line-200); }
+  .obs-bar i { flex: 0 0 auto; width: 8px; height: 8px; border-radius: 50%; background: var(--tl-pink-400); }
+  .obs-bar i:nth-child(2) { background: var(--tl-yellow-500); }
+  .obs-bar i:nth-child(3) { background: var(--tl-green-500); }
+  .obs-bar em { flex: 1; margin: 0 14px 0 8px; padding: 2px 10px; background: var(--tl-white); border-radius: var(--tl-radius-pill);
+    font-style: normal; font-size: 10px; font-weight: 600; line-height: 1.5; color: var(--tl-ink-500); text-align: center;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .obs-win img { display: block; width: 100%; height: auto; }
   .sample.o .row { display: flex; gap: 16px; align-items: center; }
   .sample.o img { width: 110px; border-radius: var(--tl-radius-md); flex: 0 0 110px; }
 
@@ -152,6 +166,8 @@
   .skill-card .n { font-size: var(--tl-fs-sm); font-weight: 800; line-height: 1.2; }
   .skill-card .d { font-size: var(--tl-fs-xs); color: var(--tl-ink-500); margin-top: 5px; line-height: 1.4; }
   /* Memory layer (Kavi's deck): tiers → passport card → K→12 timeline. Static here. */
+  /* the 12-lobe memory ring (static SVG of the desktop 3JS ring) heads the section */
+  .mem-ring-art { display: block; width: 180px; height: auto; margin: 0 auto 14px; }
   .mem-grid { display: grid; gap: 8px; margin-top: 22px; }
   .mem-stack { display: flex; flex-direction: column; gap: 8px; }
   .mem-layer { --mc: var(--tl-cyan-500); text-align: left; padding: 11px 13px; background: var(--tl-glass);
@@ -184,10 +200,9 @@
   .mem-cap { margin: 14px auto 0; font-size: var(--tl-fs-xs); line-height: 1.5; color: var(--tl-ink-500); }
 
   /* ── Oct-19 feedback furniture (mirrors index.html) ──── */
-  .dash-kicker { display: inline-block; background: var(--tl-glass); border: 1.5px solid var(--tl-cyan-500); border-radius: var(--tl-radius-pill);
-    padding: 5px 14px; margin-bottom: 14px; font-size: var(--tl-fs-xs); font-weight: 600; line-height: 1.4; color: var(--tl-ink-700); }
-  .dash-kicker b { color: var(--tl-cyan-700); font-weight: 800; }
-  #dashboard .title { text-wrap: balance; }
+  /* headline styled like the hero sub-line, with one big bold cyan phrase on its own line */
+  #dashboard .title { text-wrap: balance; font-size: var(--tl-fs-lg); font-weight: 600; line-height: 1.5; letter-spacing: normal; color: var(--tl-ink-700); }   /* = .hero-sub */
+  #dashboard .title .c-cyan { display: block; margin: 4px 0 6px; font-size: var(--tl-fs-xl); font-weight: 800; line-height: 1.12; letter-spacing: var(--tl-tracking-tight); }
   .dash-next { font-size: var(--tl-fs-sm); line-height: 1.5; color: var(--tl-ink-500); margin: 16px auto 0; text-wrap: balance; }
   .dash-next span { display: inline-block; margin-right: 8px; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
     text-transform: uppercase; color: var(--tl-cyan-700); background: var(--tl-wash-cyan); border-radius: var(--tl-radius-pill); padding: 2px 9px; }
@@ -344,6 +359,14 @@
     display: flex; align-items: center; justify-content: center; padding: 20px; }
   .school-track .tile img { max-width: 100%; max-height: 100%; width: auto; object-fit: contain; }
   @keyframes logoscroll { to { transform: translateX(-50%); } }
+  /* photo strip: square photos drifting the OTHER way to the logo strip, so
+     the two bands read as separate rows */
+  .photo-strip { margin: 22px -22px 0; overflow: hidden; }
+  .photo-track { display: flex; gap: 10px; width: max-content; animation: photoscroll 56s linear infinite reverse; }
+  .photo-track .photo { flex: 0 0 auto; width: 150px; height: 150px; border-radius: var(--tl-radius-md); overflow: hidden;
+    background: var(--tl-surface-100); box-shadow: var(--tl-shadow-card); }
+  .photo-track .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @keyframes photoscroll { to { transform: translateX(-50%); } }
 
   /* ── Journey: clickable step pills ──────────────────── */
   .j-pill { cursor: pointer; background: var(--tl-white); transition: background .2s ease, color .2s ease, transform .12s ease; }
@@ -358,6 +381,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     .school-track { animation: none; }
+    /* no drift: let people swipe the photos instead */
+    .photo-track { animation: none; }
+    .photo-strip { overflow-x: auto; scroll-snap-type: x mandatory; }
+    .photo-track .photo { scroll-snap-align: start; }
   }
 
   /* ── Ask-Tilli LIVE demo — shared styles in ../css/ask-tilli.css (the
@@ -409,10 +436,9 @@
   <!-- 2 · DASHBOARD -->
   <span id="how" aria-hidden="true"></span><!-- footer "How it works" anchor (= Dashboard) -->
   <section id="dashboard" class="wash-cyan wrap">
-    <div class="dash-kicker">Tilli measures the <b>12 foundational skills</b> that impact learning and well-being</div>
     <h2 class="title">We bring together every single data point about a child into a <span class="c-cyan">developmental profile</span> that follows the child from kindergarten through Grade&nbsp;12.</h2>
     <div class="shot">
-      <video src="../uploads/assets_dashboard-1785392844586.mp4" poster="../assets/ds/dashboard-poster.png" muted autoplay loop playsinline preload="metadata"></video>
+      <video src="../uploads/profile-walkthrough-web.mp4" poster="../uploads/profile-walkthrough-poster.jpg" muted autoplay loop playsinline preload="metadata"></video>
     </div>
     <p class="dash-next"><span>Coming next</span>This cognitive profile joins every other data source about the child, from academics to attendance.</p>
   </section>
@@ -466,8 +492,10 @@
         <div class="mcard__lead"><div class="h c-green">01 · The teacher's strand</div><div class="b">Structured observation of each child, right in the classroom.</div></div>
         <div class="sample g">
           <div class="lab">TEACHER OBSERVATION</div>
-          <div class="q">"Stays focused during group tasks."</div>
-          <div class="chips"><span class="chip">Rarely</span><span class="chip">Sometimes</span><span class="chip on-g">Often</span></div>
+          <div class="obs-win">
+            <div class="obs-bar" aria-hidden="true"><i></i><i></i><i></i><em>measures.tillikids.com</em></div>
+            <img src="../assets/measure/teacher-observation.png" alt="Tilli teacher observation screen: question 4 of 21, “Copes with small disappointments (losing a game, waiting) without a big outburst”, rated on a four-step scale from Rarely to Almost always, with Sometimes selected" width="1552" height="452" decoding="async">
+          </div>
           <div class="meta">Teacher time: 5 min per child · 3× a year</div>
         </div>
       </div>
@@ -579,7 +607,8 @@
 
   <!-- 6b · MEMORY LAYER — Kavi's deck: tiers (measured today / coming next),
        the learning passport, and the K→12 timeline (mirrors the desktop scene) -->
-  <section id="memory-layer" class="wash-cyan wrap" style="text-align:center">
+  <section id="memory-layer" class="wrap" style="text-align:center">
+    <img class="mem-ring-art" src="../assets/memory-ring.svg" alt="" aria-hidden="true" width="240" height="240">
     <div class="eyebrow cyan">The memory layer</div>
     <h2 class="title">One memory for <span class="c-cyan">every child</span>, K–12.</h2>
     <p class="lede">Next, we combine each child's cognitive profile with every other data source about them: academics, attendance and more.</p>
@@ -701,6 +730,26 @@
         <div class="tile" aria-hidden="true"><img src="../assets/ds/school-arugam-bay.png" alt="" loading="lazy"></div>
         <div class="tile" aria-hidden="true"><img src="../assets/ds/school-vega.png" alt="" loading="lazy"></div>
         <div class="tile" aria-hidden="true"><img src="../assets/ds/school-leeds.png" alt="" loading="lazy"></div>
+      </div>
+    </div>
+    <!-- photo strip (mirrors the desktop Impact carousel): phone-sized copies in
+         assets/carousel/m/. Track is DUPLICATED (7×2) for the seamless -50% loop. -->
+    <div class="photo-strip">
+      <div class="photo-track">
+        <div class="photo"><img src="../assets/carousel/m/classroom.jpg" alt="Children working through Tilli activity books in a classroom" decoding="async"></div>
+        <div class="photo"><img src="../assets/carousel/m/workshop.jpg" alt="Teachers raising their hands at a Tilli training workshop" decoding="async"></div>
+        <div class="photo"><img src="../assets/carousel/m/dashboard.jpg" alt="A teacher reviewing a class skills chart on the Tilli dashboard" decoding="async"></div>
+        <div class="photo"><img src="../assets/carousel/m/paper-glasses.jpg" alt="A student holding up paper glasses he made in a Tilli activity" decoding="async"></div>
+        <div class="photo"><img src="../assets/carousel/m/teachers-group.jpg" alt="Teachers working together in a small group during a Tilli training" decoding="async"></div>
+        <div class="photo"><img src="../assets/carousel/m/leader-meeting.jpg" alt="A Tilli team member taking notes in a meeting with a school leader" decoding="async"></div>
+        <div class="photo"><img src="../assets/carousel/m/partners.jpg" alt="Two members of the Tilli community at a partner visit" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/classroom.jpg" alt="" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/workshop.jpg" alt="" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/dashboard.jpg" alt="" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/paper-glasses.jpg" alt="" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/teachers-group.jpg" alt="" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/leader-meeting.jpg" alt="" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/partners.jpg" alt="" decoding="async"></div>
       </div>
     </div>
     <div class="imp-stats">
