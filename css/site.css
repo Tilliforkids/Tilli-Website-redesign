@@ -185,9 +185,6 @@ body.tl-at-end .tl-header { transform: none; }
 .tl-wa__role { font-size: var(--tl-fs-sm); opacity: .95; margin: 3px 0 0; }
 .tl-wa__foot { padding: 16px; }
 .tl-wa__start { width: 100%; justify-content: center; }
-.tl-wa__form { display: block; width: 100%; margin-top: 10px; background: none; border: 0; padding: 4px;
-  font-family: inherit; font-size: var(--tl-fs-sm); font-weight: 600; color: var(--tl-ink-500);
-  text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
 /* ── Back-to-top arrow (phones only) ─────────────────────────────────────────
    Stacked on the WhatsApp bubble's vertical axis, 12px above it. Shown on

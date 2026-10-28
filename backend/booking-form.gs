@@ -1,5 +1,5 @@
 /* ============================================================================
-   Tilli — "Book a 30-minute call" form backend (Google Apps Script)
+   Tilli -- "Book a 30-minute call" form backend (Google Apps Script)
 
    The site's form (js/booking-form.js) POSTs here. Each submission is appended
    to the "Leads" tab, an alert email goes out instantly to NOTIFY_TO (Reply-To
@@ -10,30 +10,36 @@
    NOT published with the site (backend/ is in .assetsignore). It lives here so
    the source is versioned; the copy that actually runs is in Google.
 
-   ── One-time setup (signed in as info@tillikids.com) ────────────────────────
-   1. sheets.new → name it "Tilli — Website leads".
-   2. Extensions → Apps Script → replace Code.gs with this whole file → Save.
+   -- One-time setup (signed in as info@tillikids.com) ------------------------
+   1. sheets.new -> name it "Tilli -- Website leads".
+   2. Extensions -> Apps Script -> replace Code.gs with this whole file -> Save.
    3. In testNotify below, set the test email to an inbox you can check.
-      Select `testNotify` in the toolbar → Run → approve the permissions.
+      Select `testNotify` in the toolbar -> Run -> approve the permissions.
       A test row, the alert email and the confirmation email should arrive.
       (Delete the test row after.)
-   4. Deploy → New deployment → type "Web app"
+   4. Deploy -> New deployment -> type "Web app"
         Execute as:      Me
         Who has access:  Anyone
-      → Deploy → copy the Web app URL (ends in /exec).
+      -> Deploy -> copy the Web app URL (ends in /exec).
    5. Paste that URL into FORM_ENDPOINT in js/site-config.js.
    6. Share the sheet with kavindya@tillikids.com (Editor) so Kavi can see leads.
       Keep info@ as the OWNER: the web app runs as the account that deployed it,
       so moving ownership can break the live form.
 
-   Editing this script later: Deploy → Manage deployments → ✎ → Version: "New
-   version" → Deploy. That keeps the same /exec URL, so the site needs no change.
-   ─────────────────────────────────────────────────────────────────────────── */
+   Editing this script later: Deploy -> Manage deployments -> (pencil) -> Version: "New
+   version" -> Deploy. That keeps the same /exec URL, so the site needs no change.
+   --------------------------------------------------------------------------- */
 
-/* Keep CALENDLY_URL / WHATSAPP_* in step with js/site-config.js. */
+/* Keep CALENDLY_URL / WHATSAPP_* / KAVI_LINKEDIN in step with js/site-config.js.
+   SITE_URL hosts the logo + Kavi's photo shown in the confirmation email:
+   update it when the site moves to its final domain, or the images break.
+   This file is kept ASCII-only (curly quotes / emoji written as HTML or \u
+   escapes) so copy-pasting it into the Apps Script editor can't garble text. */
 const CONFIG = {
   NOTIFY_TO: 'info@tillikids.com,kavindya@tillikids.com',
   CONFIRM_REPLY_TO: 'kavindya@tillikids.com',
+  SITE_URL: 'https://tillinewwebsite.ishanirai.com',
+  KAVI_LINKEDIN: 'https://www.linkedin.com/in/kavindyathennakoon/',
   CALENDLY_URL: 'https://calendly.com/kavindya-tilli/conversations-kavi',
   WHATSAPP_NUMBER: '94741889706',
   WHATSAPP_PREFILL: "Hi Kavi! I'd love to learn more about bringing Tilli to our school.",
@@ -88,7 +94,7 @@ function testNotify() {
   }});
 }
 
-/* ── helpers ────────────────────────────────────────────────────────────── */
+/* -- helpers -------------------------------------------------------------- */
 
 function sheet_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -142,57 +148,100 @@ function notify_(lead) {
     name: 'Tilli website',
     subject: subject,
     htmlBody:
-      '<p>Someone on tillikids.com couldn’t find a Calendly time that worked and left their ' +
+      '<p>Someone on tillikids.com couldn&rsquo;t find a Calendly time that worked and left their ' +
       'details instead, so please reach out to set up the 30-minute call. Their confirmation ' +
       'email also has your Calendly link, so check Calendly first in case they booked after all.</p>' +
       '<table style="border-collapse:collapse;font-size:14px">' + rows + '</table>' +
       '<p style="margin-top:16px">' +
         '<a href="mailto:' + esc_(lead.email) + '">Email them</a>' +
-        (wa.length >= 7 ? ' &nbsp;·&nbsp; <a href="https://wa.me/' + wa + '">WhatsApp them</a>' : '') +
-        ' &nbsp;·&nbsp; <a href="' + sheetUrl + '">Open the leads sheet</a></p>',
+        (wa.length >= 7 ? ' &nbsp;&middot;&nbsp; <a href="https://wa.me/' + wa + '">WhatsApp them</a>' : '') +
+        ' &nbsp;&middot;&nbsp; <a href="' + sheetUrl + '">Open the leads sheet</a></p>',
     body: COLUMNS.filter(([key]) => key !== 'received_at' && lead[key])
       .map(([key, label]) => label + ': ' + lead[key]).join('\n') + '\n\nLeads sheet: ' + sheetUrl,
   });
 }
 
-/* "We got your request" email to the lead, with Calendly + WhatsApp links. */
+/* "We've got your details" email to the lead, styled like the website's
+   booking pop-up: colour rail, logo, Kavi card, Pick a time + WhatsApp.
+   Table layout + inline styles so Gmail / Outlook / Apple Mail all render it. */
 function confirm_(lead) {
   const first = lead.name.split(/\s+/)[0];
   const cal = CONFIG.CALENDLY_URL +
     '?name=' + encodeURIComponent(lead.name) + '&email=' + encodeURIComponent(lead.email);
   const wa = 'https://wa.me/' + CONFIG.WHATSAPP_NUMBER + '?text=' + encodeURIComponent(CONFIG.WHATSAPP_PREFILL);
-  const about = lead.school ? 'bringing Tilli to ' + lead.school : 'bringing Tilli to your school';
+  const img = CONFIG.SITE_URL + '/assets/ds/';
+  const font = "font-family:Montserrat,'Helvetica Neue',Arial,sans-serif;";
+  const rail = ['#56C02B', '#E866B0', '#26BDE2', '#FCC30B']
+    .map((c) => '<td style="height:6px;background:' + c + ';font-size:0;line-height:0">&nbsp;</td>').join('');
+  const btn = (href, label, primary) =>
+    '<a href="' + esc_(href) + '" style="' + font + 'display:block;text-align:center;text-decoration:none;' +
+    'font-size:15px;font-weight:700;padding:14px 12px;border-radius:999px;' +
+    (primary ? 'background:#E91E8C;color:#ffffff;border:2px solid #E91E8C'
+             : 'background:#ffffff;color:#3D3D3D;border:2px solid #C7CDD8') + '">' + label + '</a>';
+
+  const html =
+    '<div style="background:#F8F9FB;padding:24px 12px">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;' +
+      'background:#ffffff;border-radius:24px;overflow:hidden;border-collapse:separate">' +
+      '<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' + rail + '</tr></table></td></tr>' +
+      '<tr><td style="padding:28px 32px 8px;' + font + '">' +
+        '<img src="' + img + 'tilli-logo.png" width="96" alt="Tilli" style="display:block;border:0;margin:0 0 24px">' +
+        '<div style="width:48px;height:48px;border-radius:50%;background:#56C02B;color:#ffffff;font-size:26px;' +
+          'line-height:48px;text-align:center;font-weight:700;margin:0 0 16px">&#10003;</div>' +
+        '<h1 style="' + font + 'font-size:26px;line-height:1.2;font-weight:800;color:#141414;margin:0 0 10px">' +
+          'Thank you, ' + esc_(first) + '! We&rsquo;ve got your details.</h1>' +
+        '<p style="' + font + 'font-size:16px;line-height:1.6;color:#656565;margin:0">' +
+          'Kavi&rsquo;s team will reach out soon to find a time for your 30-minute call' +
+          (lead.school ? ' about bringing Tilli to ' + esc_(lead.school) : '') + '.</p>' +
+      '</td></tr>' +
+      // Kavi card
+      '<tr><td style="padding:20px 32px 0">' +
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F8F9FB;border-radius:16px">' +
+          '<tr><td width="88" style="padding:14px 0 14px 16px;vertical-align:middle">' +
+            '<img src="' + img + 'kavi.jpg" width="72" height="72" alt="Kavi" style="display:block;border:0;border-radius:50%">' +
+          '</td><td style="padding:14px 16px;vertical-align:middle;' + font + '">' +
+            '<div style="font-size:17px;font-weight:800;color:#3D3D3D">Kavindya Tennakoon</div>' +
+            '<div style="font-size:14px;color:#656565;margin-top:3px">Founder &amp; CEO, Tilli &middot; Stanford researcher</div>' +
+            '<a href="' + esc_(CONFIG.KAVI_LINKEDIN) + '" style="display:inline-block;margin-top:4px;font-size:14px;' +
+              'font-weight:600;color:#0F94B5;text-decoration:none">View LinkedIn</a>' +
+          '</td></tr></table>' +
+      '</td></tr>' +
+      // Buttons
+      '<tr><td style="padding:24px 32px 0;' + font + '">' +
+        '<p style="font-size:16px;font-weight:800;color:#3D3D3D;margin:0 0 12px">Found a time that works after all?</p>' +
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' +
+          '<td width="50%" style="padding-right:5px">' + btn(cal, 'Pick a time', true) + '</td>' +
+          '<td width="50%" style="padding-left:5px">' + btn(wa, 'Chat on WhatsApp', false) + '</td>' +
+        '</tr></table>' +
+      '</td></tr>' +
+      '<tr><td style="padding:28px 32px 28px;' + font + 'font-size:16px;line-height:1.6;color:#3D3D3D">' +
+        'Warmly,<br><strong>Team Tilli</strong></td></tr>' +
+    '</table>' +
+    '<p style="' + font + 'max-width:560px;margin:16px auto 0;font-size:12px;line-height:1.5;color:#8A91A0;text-align:center">' +
+      'You&rsquo;re getting this because you asked for a call on the Tilli website. ' +
+      'Just reply to this email to reach Kavi.</p>' +
+    '</div>';
 
   MailApp.sendEmail({
     to: lead.email,
     replyTo: CONFIG.CONFIRM_REPLY_TO,
     name: 'Team Tilli',
-    subject: 'We got your request. Talk soon! 🌱',
-    htmlBody:
-      '<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#333;max-width:520px">' +
-        '<p>Hi ' + esc_(first) + ',</p>' +
-        '<p>Thanks for reaching out about ' + esc_(about) + '. We’ve received your request, and ' +
-          'Kavi’s team will be in touch at this email soon.</p>' +
-        '<p style="margin:24px 0 8px"><strong>Want to pick a time now?</strong></p>' +
-        '<p style="margin:0 0 24px"><a href="' + esc_(cal) + '" style="display:inline-block;background:#E91E8C;' +
-          'color:#fff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:999px">' +
-          'Book a 30-minute call with Kavi</a></p>' +
-        '<p>Prefer to chat? <a href="' + esc_(wa) + '">Message us on WhatsApp</a></p>' +
-        '<p style="margin-top:24px">Warmly,<br>Team Tilli</p>' +
-      '</div>',
+    subject: 'Thank you, ' + first + '! We\u2019ve got your details',
+    htmlBody: html,
     body:
-      'Hi ' + first + ',\n\n' +
-      'Thanks for reaching out about ' + about + '. We’ve received your request, and ' +
-      'Kavi’s team will be in touch at this email soon.\n\n' +
-      'Want to pick a time now? Book a 30-minute call with Kavi:\n' + cal + '\n\n' +
-      'Prefer to chat? Message us on WhatsApp:\n' + wa + '\n\n' +
+      'Thank you, ' + first + '! We\'ve got your details.\n\n' +
+      'Kavi\'s team will reach out soon to find a time for your 30-minute call' +
+      (lead.school ? ' about bringing Tilli to ' + lead.school : '') + '.\n\n' +
+      'Found a time that works after all?\n' +
+      'Pick a time: ' + cal + '\n' +
+      'Chat on WhatsApp: ' + wa + '\n\n' +
       'Warmly,\nTeam Tilli',
   });
 }
 
 function clean_(v) { return String(v == null ? '' : v).trim().slice(0, 2000); }
 function digits_(v) { return String(v || '').replace(/\D/g, ''); }
-/* Leading = + - @ would be parsed as a formula ("+94 …" phones included). */
+/* Leading = + - @ would be parsed as a formula ("+94 ..." phones included). */
 function cell_(v) { return typeof v === 'string' && /^[=+\-@]/.test(v) ? "'" + v : v; }
 function esc_(s) {
   return String(s).replace(/[&<>"']/g, (c) =>

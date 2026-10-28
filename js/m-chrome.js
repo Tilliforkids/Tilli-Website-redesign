@@ -81,29 +81,11 @@
       ".ft .social a{font-size:var(--tl-fs-sm);font-weight:600;color:var(--tl-ink-500)}" +
       ".ft .mail a{font-size:var(--tl-fs-sm);color:var(--tl-ink-500)}" +
       ".ft .copy{margin-top:16px;font-size:var(--tl-fs-xs);color:var(--tl-ink-300)}" +
-      /* WhatsApp bubble + card */
+      /* WhatsApp bubble — one tap straight into WhatsApp (no card on phones) */
       ".wa{position:fixed;right:16px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:56;transition:opacity .25s ease,transform .25s ease}" +
-      ".wa-bubble{width:52px;height:52px;border-radius:50%;border:0;cursor:pointer;margin-left:auto;" +
+      ".wa-bubble{width:52px;height:52px;border-radius:50%;border:0;cursor:pointer;margin-left:auto;text-decoration:none;" +
         "background:var(--tl-whatsapp);box-shadow:var(--tl-shadow-glow-whatsapp);display:flex;align-items:center;justify-content:center}" +
       ".wa-bubble svg{width:28px;height:28px;fill:var(--tl-white)}" +
-      ".wa-card{position:absolute;right:0;bottom:64px;width:260px;border-radius:var(--tl-radius-lg);overflow:hidden;background:var(--tl-white);" +
-        "box-shadow:var(--tl-shadow-overlay);transform-origin:bottom right;transform:scale(.9) translateY(10px);" +
-        "opacity:0;pointer-events:none;transition:transform .22s ease,opacity .22s ease}" +
-      ".wa.open .wa-card{transform:scale(1) translateY(0);opacity:1;pointer-events:auto}" +
-      ".wa-card__head{background:var(--tl-green-500);padding:26px 22px 22px;text-align:center;position:relative;color:var(--tl-white)}" +
-      ".wa-card__close{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--tl-white);font-size:var(--tl-fs-lg);" +
-        "line-height:1;cursor:pointer;opacity:.9;padding:4px}" +
-      ".wa-card__avwrap{position:relative;width:84px;margin:0 auto 12px}" +
-      ".wa-card__avatar{width:84px;height:84px;border-radius:50%;border:3px solid var(--tl-white);object-fit:cover;display:block;background:var(--tl-white)}" +
-      ".wa-card__dot{position:absolute;right:4px;bottom:4px;width:16px;height:16px;border-radius:50%;" +
-        "background:var(--tl-whatsapp);border:3px solid var(--tl-green-500)}" +
-      ".wa-card__name{font-size:var(--tl-fs-lg);font-weight:800;margin:0}" +
-      ".wa-card__role{font-size:var(--tl-fs-sm);opacity:.95;margin:3px 0 0}" +
-      ".wa-card__foot{padding:16px}" +
-      ".wa-card__start{display:flex;width:100%;justify-content:center;align-items:center;background:var(--tl-green-500);" +
-        "color:var(--tl-white);font-weight:700;font-size:var(--tl-fs-base);padding:13px 22px;border-radius:var(--tl-radius-pill)}" +
-      ".wa-card__form{display:block;width:100%;margin-top:10px;background:none;border:0;padding:4px;font-family:inherit;" +
-        "font-size:var(--tl-fs-sm);font-weight:600;color:var(--tl-ink-500);text-decoration:underline;text-underline-offset:3px;cursor:pointer}" +
       /* Back-to-top arrow — on the WhatsApp bubble's axis, 12px above it */
       ".totop{--totop-size:44px;position:fixed;z-index:55;display:flex;align-items:center;justify-content:center;" +
         "right:calc(16px + (52px - var(--totop-size)) / 2);bottom:calc(74px + 52px + 12px + env(safe-area-inset-bottom));" +
@@ -142,7 +124,7 @@
           '<img src="../' + (T.ASSET_BASE || "assets/ds/") + 'tilli-logo.png" alt="Tilli"></a>' +
         '<button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>' +
         '<nav class="navdrawer" aria-label="Site">' + links +
-          '<a class="navdrawer-cta" href="' + waLink() + '" target="_blank" rel="noopener">' + (T.NAV_CTA_LABEL || "Get in touch") + '</a>' +
+          '<a class="navdrawer-cta" href="' + waLink() + '" target="_blank" rel="noopener" data-tl-open-form>' + (T.NAV_CTA_LABEL || "Get in touch") + '</a>' +
         '</nav>' +
       '</header>'
     );
@@ -196,42 +178,29 @@
     sync();
   }
 
-  /* ── WhatsApp bubble + Kavi card ─────────────────────────────────────────── */
+  /* ── WhatsApp bubble ───────────────────────────────────────────────────── */
+  /* A plain link: one tap opens the WhatsApp chat. The booking pop-up
+     (js/booking-form.js) carries the Calendly + form options instead. */
   function buildWhatsApp() {
-    var initials = "KT";
-    var avatar = T.KAVI_PHOTO
-      ? '<img class="wa-card__avatar" src="../' + T.KAVI_PHOTO + '" alt="Kavi"' +
-          ' onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'wa-card__avatar\',style:\'display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--tl-green-600);font-size:var(--tl-fs-xl)\',textContent:\'' + initials + '\'}))">'
-      : '<div class="wa-card__avatar" style="display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--tl-green-600);font-size:var(--tl-fs-xl)">' + initials + "</div>";
     var wrap = el(
       '<div class="wa">' +
-        '<div class="wa-card" role="dialog" aria-label="Chat with Kavi">' +
-          '<div class="wa-card__head">' +
-            '<button class="wa-card__close" aria-label="Close">&times;</button>' +
-            '<div class="wa-card__avwrap">' + avatar + '<span class="wa-card__dot"></span></div>' +
-            '<p class="wa-card__name">Kavindya</p>' +
-            '<p class="wa-card__role">Stanford Researcher · CEO, Tilli</p>' +
-          "</div>" +
-          '<div class="wa-card__foot">' +
-            '<a class="wa-card__start" href="' + waLink() + '" target="_blank" rel="noopener">Start Chat</a>' +
-            /* WhatsApp first; the form (js/booking-form.js) is the fallback. */
-            '<button class="wa-card__form" type="button">Prefer a form instead?</button>' +
-          "</div>" +
-        "</div>" +
-        '<button class="wa-bubble" aria-label="Chat with us on WhatsApp" aria-expanded="false">' + (T.WA_ICON || "") + "</button>" +
+        '<a class="wa-bubble" href="' + waLink() + '" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">' +
+          (T.WA_ICON || "") + "</a>" +
       "</div>"
     );
     document.body.appendChild(wrap);
-    var bubble = wrap.querySelector(".wa-bubble");
-    function set(open) { wrap.classList.toggle("open", open); bubble.setAttribute("aria-expanded", String(open)); }
-    bubble.addEventListener("click", function (e) { e.stopPropagation(); set(!wrap.classList.contains("open")); });
-    wrap.querySelector(".wa-card__close").addEventListener("click", function () { set(false); });
-    wrap.querySelector(".wa-card__form").addEventListener("click", function () {
-      set(false);
-      if (window.TilliForm) window.TilliForm.open("form");
-      else window.open(waLink(), "_blank", "noopener");
+  }
+
+  /* ── "Book a 30-minute call" → booking pop-up ────────────────────────────── */
+  /* Every [data-tl-open-form] link opens the pop-up. Its href stays a WhatsApp
+     link, used as-is if booking-form.js hasn't loaded. */
+  function bindFormTriggers() {
+    document.addEventListener("click", function (e) {
+      var t = e.target.closest("[data-tl-open-form]");
+      if (!t || !window.TilliForm) return;
+      e.preventDefault();
+      window.TilliForm.open();
     });
-    document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) set(false); });
   }
 
   /* ── Back-to-top arrow ───────────────────────────────────────────────────── */
@@ -266,6 +235,7 @@
     buildWhatsApp();
     buildToTop();
     fadeOverFooter();
+    bindFormTriggers();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();

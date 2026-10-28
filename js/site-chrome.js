@@ -36,8 +36,8 @@
     return "https://wa.me/" + CONFIG.WHATSAPP_NUMBER +
       "?text=" + encodeURIComponent(CONFIG.WHATSAPP_PREFILL);
   }
-  /* Phones/tablets skip the form and go straight to WhatsApp, matching the /m/
-     builds. Same rule as js/device-split.js (tl-mobile = Home in mobile mode;
+  /* Phones/tablets: the WhatsApp bubble opens the chat directly (no Kavi card),
+     matching the /m/ builds. Same rule as js/device-split.js (tl-mobile = Home in mobile mode;
      FAQ/Privacy aren't forked, so they need the UA test). */
   function isMobileDevice() {
     if (document.documentElement.classList.contains("tl-mobile")) return true;
@@ -134,8 +134,6 @@
         '</div>' +
         '<div class="tl-wa__foot">' +
           '<a class="tl-btn tl-btn--green tl-wa__start" href="' + waLink() + '" target="_blank" rel="noopener">Start Chat</a>' +
-          /* Phones never see the form from the CTAs, so offer it here as a fallback. */
-          (isMobileDevice() ? '<button class="tl-wa__form" type="button">Prefer a form instead?</button>' : '') +
         '</div>' +
       '</div>';
     var wrap = el(
@@ -150,13 +148,12 @@
       wrap.classList.toggle("tl-wa--open", open);
       bubble.setAttribute("aria-expanded", String(open));
     }
-    bubble.addEventListener("click", function () { toggle(!wrap.classList.contains("tl-wa--open")); });
-    close.addEventListener("click", function () { toggle(false); });
-    var formLink = wrap.querySelector(".tl-wa__form");
-    if (formLink) formLink.addEventListener("click", function () {
-      toggle(false);
-      if (window.TilliForm) window.TilliForm.open("form");
+    /* Phones: one tap straight into WhatsApp. Desktop: open the Kavi card. */
+    bubble.addEventListener("click", function () {
+      if (isMobileDevice()) { window.open(waLink(), "_blank", "noopener"); return; }
+      toggle(!wrap.classList.contains("tl-wa--open"));
     });
+    close.addEventListener("click", function () { toggle(false); });
   }
 
   /* ── Back-to-top arrow (phones only — CSS decides visibility) ───────────── */
@@ -224,16 +221,16 @@
 
   /* ── Get-in-touch modal + form ──────────────────────────────────────────── */
   /* ── Booking form triggers ──────────────────────────────────────────────── */
-  /* The form itself lives in js/booking-form.js (shared with the /m/ build).
-     Any element with [data-tl-open-form] opens it on desktop; phones go
-     straight to WhatsApp (the WhatsApp card offers the form as a fallback). */
+  /* The pop-up lives in js/booking-form.js (shared with the /m/ build). Any
+     element with [data-tl-open-form] opens it, phones included; WhatsApp is
+     the fallback if that script hasn't loaded. */
   function bindFormTriggers() {
     document.addEventListener("click", function (e) {
       var t = e.target.closest("[data-tl-open-form]");
       if (!t) return;
       e.preventDefault();
-      if (isMobileDevice() || !window.TilliForm) window.open(waLink(), "_blank", "noopener");
-      else window.TilliForm.open();
+      if (window.TilliForm) window.TilliForm.open();
+      else window.open(waLink(), "_blank", "noopener");
     });
   }
 
