@@ -185,6 +185,9 @@ body.tl-at-end .tl-header { transform: none; }
 .tl-wa__role { font-size: var(--tl-fs-sm); opacity: .95; margin: 3px 0 0; }
 .tl-wa__foot { padding: 16px; }
 .tl-wa__start { width: 100%; justify-content: center; }
+.tl-wa__form { display: block; width: 100%; margin-top: 10px; background: none; border: 0; padding: 4px;
+  font-family: inherit; font-size: var(--tl-fs-sm); font-weight: 600; color: var(--tl-ink-500);
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
 /* ── Back-to-top arrow (phones only) ─────────────────────────────────────────
    Stacked on the WhatsApp bubble's vertical axis, 12px above it. Shown on
@@ -207,35 +210,7 @@ html.tl-mobile .tl-totop { display: flex; }
 body.tl-over-footer .tl-wa:not(.tl-wa--open),
 body.tl-over-footer .tl-totop { opacity: 0 !important; pointer-events: none !important; transform: translateY(8px); }
 
-/* ── Get-in-touch modal ──────────────────────────────────────────────────── */
-.tl-modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center;
-  padding: 20px; background: var(--tl-scrim); backdrop-filter: blur(3px); }
-.tl-modal--open { display: flex; }
-.tl-modal__panel { width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; background: var(--tl-white);
-  border-radius: var(--tl-radius-lg); padding: 30px; box-shadow: var(--tl-shadow-overlay); position: relative; }
-.tl-modal__close { position: absolute; top: 16px; right: 18px; background: none; border: 0; font-size: var(--tl-fs-lg);
-  line-height: 1; color: var(--tl-ink-300); cursor: pointer; }
-.tl-modal__close:hover { color: var(--tl-ink-900); }
-.tl-form { display: grid; gap: 15px; margin-top: 18px; }
-.tl-field { display: grid; gap: 6px; }
-.tl-field label { font-size: var(--tl-fs-sm); font-weight: 700; color: var(--tl-ink-700); }
-.tl-field label .tl-req { color: var(--tl-pink-600); }
-.tl-input, .tl-select, .tl-textarea { font-family: inherit; font-size: var(--tl-fs-base); color: var(--tl-ink-700);
-  padding: 12px 14px; border: 1.5px solid var(--tl-line-200); border-radius: var(--tl-radius-md); background: var(--tl-white); width: 100%; }
-.tl-input:focus, .tl-select:focus, .tl-textarea:focus { outline: none; border-color: var(--tl-cyan-500);
-  box-shadow: var(--tl-ring); }
-.tl-textarea { min-height: 92px; resize: vertical; }
-.tl-input--err, .tl-select--err { border-color: var(--tl-pink-600); }
-.tl-field__err { font-size: var(--tl-fs-xs); font-weight: 600; color: var(--tl-pink-600); display: none; }
-.tl-field__err--show { display: block; }
-.tl-form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-@media (max-width: 520px) { .tl-form__row { grid-template-columns: 1fr; } }
-.tl-form__submit { justify-content: center; margin-top: 4px; }
-.tl-form__note { font-size: var(--tl-fs-xs); color: var(--tl-text-muted); text-align: center; }
-.tl-form__ok { display: none; text-align: center; padding: 20px 0; }
-.tl-form__ok h3 { color: var(--tl-green-600); }
-.tl-modal--done .tl-form { display: none; }
-.tl-modal--done .tl-form__ok { display: block; }
+/* Get-in-touch modal → css/booking-form.css (shared with the /m/ build). */
 
 /* Hero helper for interior pages */
 .tl-hero { padding: clamp(96px, 12vw, 150px) 0 clamp(48px, 6vw, 76px); }

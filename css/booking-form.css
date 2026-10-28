@@ -1,0 +1,152 @@
+/* ============================================================================
+   Tilli — "Book a 30-minute call" form (modal). Shared by BOTH builds:
+   desktop/static pages (site.css) and the /m/ pages (m.css). Self-contained:
+   it only depends on the _ds tokens, never on site.css or m.css classes, so
+   it looks the same whichever skin loads it. Markup: js/booking-form.js.
+
+   --bf-title-size  form + thank-you heading size
+   --bf-field-h     height of every single-line field (inputs AND the select)
+   --bf-gap         vertical space between fields
+   --bf-border      field border colour (visible on white, unlike --tl-line-200)
+   --bf-code-w      width of the closed phone country-code picker
+   --bf-avatar      size of Kavi's photo in the booking pop-up
+   ========================================================================== */
+
+.tl-modal { --bf-title-size: 26px; --bf-field-h: 48px; --bf-gap: 14px; --bf-border: var(--tl-line-300); --bf-code-w: 104px; --bf-avatar: 80px;
+  position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center;
+  padding: 20px; background: var(--tl-scrim); backdrop-filter: blur(3px); font-family: var(--tl-font-core); }
+.tl-modal--open { display: flex; }
+.tl-modal__panel { width: 100%; max-width: 560px; max-height: calc(100vh - 40px); overflow-y: auto;
+  overscroll-behavior: contain; scrollbar-width: thin; background: var(--tl-white);
+  border-radius: var(--tl-radius-lg); padding: 32px 32px 26px; box-shadow: var(--tl-shadow-overlay);
+  position: relative; box-sizing: border-box; }
+.tl-modal__close { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; display: flex;
+  align-items: center; justify-content: center; background: none; border: 0; border-radius: 50%;
+  font-size: 26px; line-height: 1; color: var(--tl-ink-500); cursor: pointer; transition: background .15s ease; }
+.tl-modal__close:hover { background: var(--tl-surface-200); color: var(--tl-ink-900); }
+
+/* Heading + intro */
+/* ── States: choices (default) → .tl-modal--form → .tl-modal--done ── */
+.tl-modal:not(.tl-modal--form) .tl-form__head, .tl-modal:not(.tl-modal--form) .tl-form,
+.tl-modal--form .tl-choose,
+.tl-modal--done .tl-form__head, .tl-modal--done .tl-form { display: none; }
+
+/* Choices */
+.tl-choose .tl-form__title { padding-right: 36px; }   /* clear of the close button */
+.tl-kavi { display: flex; align-items: center; gap: 16px; margin-top: 20px; padding: 14px 16px;
+  border-radius: var(--tl-radius-md); background: var(--tl-surface-100); }
+/* Hover = one quiet change: card a shade darker, only "View LinkedIn" underlines */
+.tl-modal a.tl-kavi { color: inherit; font-weight: inherit; text-decoration: none; transition: background .15s ease; }
+.tl-modal a.tl-kavi:hover { background: var(--tl-surface-200); }
+.tl-kavi__avatar { width: var(--bf-avatar); height: var(--bf-avatar); flex: none; border-radius: 50%; object-fit: cover; display: flex;
+  align-items: center; justify-content: center; background: var(--tl-green-500); color: var(--tl-white);
+  font-weight: 800; font-size: var(--tl-fs-lg); }
+.tl-kavi__text { flex: 1; min-width: 0; }
+.tl-kavi__name { font-size: var(--tl-fs-lg); font-weight: 800; color: var(--tl-ink-700); margin: 0; }
+.tl-kavi__role { font-size: var(--tl-fs-sm); color: var(--tl-ink-500); margin: 3px 0 0; }
+.tl-kavi__cta { font-size: var(--tl-fs-sm); font-weight: 600; color: var(--tl-link); margin: 4px 0 0; }
+.tl-modal a.tl-kavi:hover .tl-kavi__cta { text-decoration: underline; }
+.tl-kavi__in { width: 22px; height: 22px; flex: none; color: #0A66C2; }   /* LinkedIn brand blue */
+.tl-choose__btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+.tl-choose__btns .tl-form__btn { padding-left: 16px; padding-right: 16px; }
+@media (max-width: 520px) { .tl-choose__btns { grid-template-columns: 1fr; } }
+.tl-form__btn svg.tl-ext { width: 16px; height: 16px; margin-left: -2px; opacity: .85; }
+.tl-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.tl-form__btn svg { width: 20px; height: 20px; flex: none; }
+.tl-form__btn.tl-form__btn--ghost { background: var(--tl-white); color: var(--tl-ink-700); border-color: var(--bf-border); box-shadow: none; }
+.tl-form__btn.tl-form__btn--ghost:hover { background: var(--tl-white); color: var(--tl-ink-900); border-color: var(--tl-ink-300); }
+.tl-choose__wa svg { color: var(--tl-whatsapp); fill: currentColor; }
+.tl-choose__alt { font-size: var(--tl-fs-sm); line-height: 1.6; color: var(--tl-ink-500); text-align: center; margin: 20px 0 0; }
+.tl-linkbtn { background: none; border: 0; padding: 0; font: inherit; font-weight: 600; color: var(--tl-link); cursor: pointer; }
+.tl-linkbtn:hover { text-decoration: underline; }
+
+/* Form heading */
+.tl-form__head { padding-right: 36px; }   /* clear of the close button */
+.tl-back { display: inline-block; font-size: var(--tl-fs-sm); margin-bottom: 12px; }
+.tl-form__title { font-size: var(--bf-title-size); font-weight: 800; letter-spacing: var(--tl-tracking-tight);
+  line-height: 1.2; color: var(--tl-text-heading); margin: 0 0 6px; }
+.tl-form__intro { font-size: var(--tl-fs-base); line-height: 1.55; color: var(--tl-ink-500); margin: 0; }
+
+.tl-form { display: grid; gap: var(--bf-gap); margin-top: 22px; }
+.tl-field { display: grid; gap: 6px; align-content: start; }
+.tl-field > label { font-size: var(--tl-fs-sm); font-weight: 700; color: var(--tl-ink-700); }
+.tl-opt { font-weight: 500; color: var(--tl-ink-500); }
+
+.tl-input, .tl-select, .tl-textarea { font-family: inherit; font-size: var(--tl-fs-base); color: var(--tl-ink-700);
+  border: 1.5px solid var(--bf-border); border-radius: var(--tl-radius-sm); background-color: var(--tl-white);
+  width: 100%; box-sizing: border-box; margin: 0; transition: border-color .15s ease, box-shadow .15s ease; }
+.tl-input, .tl-select { height: var(--bf-field-h); padding: 0 14px; }
+.tl-textarea { padding: 12px 14px; min-height: 84px; resize: vertical; line-height: 1.5; display: block; }
+.tl-input::placeholder, .tl-textarea::placeholder { color: var(--tl-ink-300); }
+.tl-input:hover, .tl-select:hover, .tl-textarea:hover { border-color: var(--tl-ink-300); }
+.tl-input:focus, .tl-select:focus, .tl-textarea:focus { outline: none; border-color: var(--tl-cyan-500);
+  box-shadow: var(--tl-ring); }
+/* Native select → same box as the inputs, with our own chevron */
+.tl-select { -webkit-appearance: none; appearance: none; padding-right: 40px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23656565' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; background-size: 18px; }
+.tl-input.is-err, .tl-select.is-err, .tl-phone__code.is-err { border-color: var(--tl-pink-600); }
+
+/* Phone: country-code picker + number. The native <select> sits invisibly on
+   top of a compact "🇱🇰 +94" face, so the closed state stays narrow while the
+   open list still shows full country names. */
+.tl-phone { display: flex; gap: 8px; }
+.tl-phone .tl-input { flex: 1; min-width: 0; }
+.tl-phone__code { position: relative; flex: 0 0 var(--bf-code-w); height: var(--bf-field-h); box-sizing: border-box;
+  border: 1.5px solid var(--bf-border); border-radius: var(--tl-radius-sm); background: var(--tl-white);
+  display: flex; align-items: center; padding: 0 28px 0 12px; font-size: var(--tl-fs-base); color: var(--tl-ink-700);
+  transition: border-color .15s ease, box-shadow .15s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23656565' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 8px center; background-size: 16px; }
+.tl-phone__code:hover { border-color: var(--tl-ink-300); }
+.tl-phone__code:focus-within { border-color: var(--tl-cyan-500); box-shadow: var(--tl-ring); }
+.tl-phone__shown { white-space: nowrap; overflow: hidden; }
+.tl-phone__shown.is-empty { color: var(--tl-ink-300); }
+.tl-phone__code select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
+  font-size: var(--tl-fs-base); border: 0; margin: 0; -webkit-appearance: none; appearance: none; }
+
+.tl-field__hint { font-size: var(--tl-fs-xs); color: var(--tl-ink-500); }
+.tl-field__err { font-size: var(--tl-fs-xs); font-weight: 600; color: var(--tl-pink-600); display: none; }
+.tl-field__err--show { display: block; }
+.tl-form__row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--bf-gap) 14px; }
+@media (max-width: 520px) { .tl-form__row { grid-template-columns: 1fr; } }
+
+/* Buttons */
+.tl-form__btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit;
+  font-size: var(--tl-fs-base); font-weight: 700; letter-spacing: var(--tl-tracking-normal); padding: 14px 34px;
+  border-radius: var(--tl-radius-pill); border: 2px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap;
+  background: var(--tl-pink-600); color: var(--tl-white); box-shadow: var(--tl-shadow-glow-pink);
+  transition: transform .2s ease, background .2s ease, box-shadow .2s ease; }
+.tl-form__btn:hover { transform: translateY(-2px); background: var(--tl-pink-700); color: var(--tl-white); text-decoration: none; }
+.tl-form__btn:disabled { opacity: .7; cursor: default; transform: none; }
+.tl-form__submit { margin-top: 6px; }
+.tl-form__note { font-size: var(--tl-fs-xs); color: var(--tl-ink-500); text-align: center; margin: 0; }
+.tl-form__fail { color: var(--tl-pink-600); font-weight: 600; }
+
+/* Links inside the modal: brand link colour, underline on hover only */
+.tl-modal a:not(.tl-form__btn):not(.tl-kavi) { color: var(--tl-link); font-weight: 600; text-decoration: none; }
+.tl-modal a:not(.tl-form__btn):not(.tl-kavi):hover { color: var(--tl-link-hover, var(--tl-link)); text-decoration: underline; }
+
+/* Thank-you state — replaces the heading AND the form */
+.tl-form__ok { display: none; text-align: center; padding: 16px 8px 6px; }
+.tl-form__ok-icon { width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; background: var(--tl-green-500); color: var(--tl-white); }
+.tl-form__ok-icon svg { width: 28px; height: 28px; }
+.tl-form__ok-title { font-size: var(--bf-title-size); font-weight: 800; letter-spacing: var(--tl-tracking-tight);
+  line-height: 1.2; color: var(--tl-text-heading); margin: 0 0 10px; }
+.tl-form__ok-text { font-size: var(--tl-fs-base); line-height: 1.6; color: var(--tl-ink-500); margin: 0 auto; max-width: 400px; }
+.tl-form__ok-alt { font-size: var(--tl-fs-sm); color: var(--tl-ink-500); margin: 16px 0 0; }
+.tl-modal--done .tl-form__ok { display: block; }
+
+/* Phones: full-screen sheet instead of a floating card */
+@media (max-width: 600px) {
+  .tl-modal { --bf-title-size: 24px; padding: 0; align-items: stretch; }
+  .tl-modal__panel { max-width: none; max-height: none; height: 100%; border-radius: 0; box-shadow: none;
+    padding: 56px 22px calc(26px + env(safe-area-inset-bottom)); }
+  .tl-modal__close { top: 10px; right: 10px; }
+  .tl-form__head { padding-right: 0; }
+  .tl-form__btn { width: 100%; }
+  /* choices + thank-you sit mid-screen; the form starts at the top */
+  .tl-modal:not(.tl-modal--form) .tl-modal__panel,
+  .tl-modal--done .tl-modal__panel { display: flex; flex-direction: column; justify-content: center; }
+}

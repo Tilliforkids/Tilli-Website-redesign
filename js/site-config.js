@@ -16,16 +16,12 @@
   window.TILLI = {
     WHATSAPP_NUMBER: "94741889706",
     WHATSAPP_PREFILL: "Hi Kavi! I'd love to learn more about bringing Tilli to our school.",
-    FORM_ENDPOINT: "",         /* Apps Script /exec URL — see backend/booking-form.gs */
+    FORM_ENDPOINT: "https://script.google.com/macros/s/AKfycbx6IZHDaRiy75FQCf1ACLCAOet908JVqlBVjzMBqIoOwzT0h8N-IgBC5D8JDo_fBR-b/exec",         /* Apps Script /exec URL — see backend/booking-form.gs */
     CALENDLY_URL: "https://calendly.com/kavindya-tilli/conversations-kavi",
-    KAVI_PHOTO: "",            /* "assets/ds/kavi.jpg" once added; "" = initials monogram */
+    KAVI_PHOTO: "assets/ds/kavi.jpg",  /* root-relative; "" = initials monogram */
+    KAVI_LINKEDIN: "https://www.linkedin.com/in/kavindyathennakoon/",         /* Kavi's LinkedIn profile URL; "" = card not clickable */
     ASSET_BASE: "assets/ds/",  /* root-relative; m-chrome prefixes "../" */
     EMAIL: "info@tillikids.com",
-
-    SCHOOL_TYPES: [
-      "IB", "Cambridge / IGCSE", "CBSE", "ICSE", "State board",
-      "Public / Government", "NGO / Non-profit", "Other"
-    ],
 
     /* Header nav, in order (GL-01). Logo links Home, so no "Home" item.
        "FAQs" = faq.html (prices, teacher hours, evidence answers). Pricing is

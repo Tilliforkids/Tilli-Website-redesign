@@ -18,7 +18,7 @@
     WHATSAPP_NUMBER: "94741889706",
     WHATSAPP_PREFILL: "Hi Kavi! I'd love to learn more about bringing Tilli to our school.",
     FORM_ENDPOINT: "", CALENDLY_URL: "", KAVI_PHOTO: "", ASSET_BASE: "assets/ds/", EMAIL: "info@tillikids.com",
-    SCHOOL_TYPES: [], NAV_ITEMS: [], FOOTER_LINKS: [], SOCIAL: [], WA_ICON: ""
+    NAV_ITEMS: [], FOOTER_LINKS: [], SOCIAL: [], WA_ICON: ""
   };
 
   var IS_HOME = !!document.getElementById("world") || document.body.hasAttribute("data-tl-home");
@@ -47,16 +47,6 @@
     return /Android|iPhone|iPod|Windows Phone|BlackBerry|Opera Mini|IEMobile/i.test(ua) ||
       /iPad/.test(ua) || (navigator.platform === "MacIntel" && (navigator.maxTouchPoints || 0) > 1) ||
       (narrow && touch);
-  }
-  /* Calendly pre-filled from the form; a1 answers the event's first custom
-     question ("anything that will help prepare"). */
-  function calendlyLink(form) {
-    var note = [form.school.value.trim(), form.school_type.value, form.message.value.trim()]
-      .filter(Boolean).join(" · ");
-    return CONFIG.CALENDLY_URL +
-      "?name=" + encodeURIComponent(form.name.value.trim()) +
-      "&email=" + encodeURIComponent(form.email.value.trim()) +
-      (note ? "&a1=" + encodeURIComponent(note) : "");
   }
 
   /* ── Header ─────────────────────────────────────────────────────────────── */
@@ -144,6 +134,8 @@
         '</div>' +
         '<div class="tl-wa__foot">' +
           '<a class="tl-btn tl-btn--green tl-wa__start" href="' + waLink() + '" target="_blank" rel="noopener">Start Chat</a>' +
+          /* Phones never see the form from the CTAs, so offer it here as a fallback. */
+          (isMobileDevice() ? '<button class="tl-wa__form" type="button">Prefer a form instead?</button>' : '') +
         '</div>' +
       '</div>';
     var wrap = el(
@@ -160,6 +152,11 @@
     }
     bubble.addEventListener("click", function () { toggle(!wrap.classList.contains("tl-wa--open")); });
     close.addEventListener("click", function () { toggle(false); });
+    var formLink = wrap.querySelector(".tl-wa__form");
+    if (formLink) formLink.addEventListener("click", function () {
+      toggle(false);
+      if (window.TilliForm) window.TilliForm.open("form");
+    });
   }
 
   /* ── Back-to-top arrow (phones only — CSS decides visibility) ───────────── */
@@ -226,128 +223,17 @@
   }
 
   /* ── Get-in-touch modal + form ──────────────────────────────────────────── */
-  function buildForm() {
-    var opts = CONFIG.SCHOOL_TYPES.map(function (s) {
-      return '<option value="' + s + '">' + s + "</option>";
-    }).join("");
-    var modal = el(
-      '<div class="tl-modal" role="dialog" aria-modal="true" aria-label="Request to connect">' +
-        '<div class="tl-modal__panel">' +
-          '<button class="tl-modal__close" aria-label="Close">&times;</button>' +
-          '<p class="tl-eyebrow">Request to connect</p>' +
-          '<h2 class="tl-h2" style="margin:0 0 6px">Let’s talk about your school</h2>' +
-          '<p class="tl-body tl-muted">Tell us a little about you and Kavi’s team will reach out.</p>' +
-          '<form class="tl-form" novalidate>' +
-            /* honeypot — hidden from people; bots fill it and the backend drops them */
-            '<input name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">' +
-            '<div class="tl-form__row">' +
-              '<div class="tl-field">' +
-                '<label for="tlf-name">Name <span class="tl-req">*</span></label>' +
-                '<input class="tl-input" id="tlf-name" name="name" type="text" autocomplete="name" required>' +
-                '<span class="tl-field__err">Please enter your name.</span>' +
-              '</div>' +
-              '<div class="tl-field">' +
-                '<label for="tlf-role">Your role</label>' +
-                '<input class="tl-input" id="tlf-role" name="role" type="text" placeholder="Principal, coordinator…">' +
-              '</div>' +
-            '</div>' +
-            '<div class="tl-field">' +
-              '<label for="tlf-school">School / organisation</label>' +
-              '<input class="tl-input" id="tlf-school" name="school" type="text" autocomplete="organization">' +
-            '</div>' +
-            '<div class="tl-form__row">' +
-              '<div class="tl-field">' +
-                '<label for="tlf-email">Email <span class="tl-req">*</span></label>' +
-                '<input class="tl-input" id="tlf-email" name="email" type="email" autocomplete="email" required>' +
-                '<span class="tl-field__err">Please enter a valid email.</span>' +
-              '</div>' +
-              '<div class="tl-field">' +
-                '<label for="tlf-phone">Phone (WhatsApp) <span class="tl-req">*</span></label>' +
-                '<input class="tl-input" id="tlf-phone" name="phone" type="tel" autocomplete="tel" required placeholder="+94 …">' +
-                '<span class="tl-field__err">A phone number is required.</span>' +
-              '</div>' +
-            '</div>' +
-            '<div class="tl-field">' +
-              '<label for="tlf-type">Kind of school</label>' +
-              '<select class="tl-select" id="tlf-type" name="school_type"><option value="">Select…</option>' + opts + '</select>' +
-            '</div>' +
-            '<div class="tl-field">' +
-              '<label for="tlf-msg">Anything you’d like us to know?</label>' +
-              '<textarea class="tl-textarea" id="tlf-msg" name="message"></textarea>' +
-            '</div>' +
-            '<button class="tl-btn tl-btn--primary tl-btn--lg tl-form__submit" type="submit">Send request</button>' +
-            '<p class="tl-form__note tl-form__fail" hidden>Sorry, that didn’t send. Please try again, or <a href="' + waLink() + '" target="_blank" rel="noopener">message us on WhatsApp</a>.</p>' +
-            '<p class="tl-form__note">We’ll only use these details to get in touch about Tilli.</p>' +
-          '</form>' +
-          '<div class="tl-form__ok">' +
-            '<h3 class="tl-h3">Thank you, we’ve got it! 🌱</h3>' +
-            '<p class="tl-body tl-muted">Pick a time for your 30-minute call now, or Kavi’s team will reach out to you.</p>' +
-            '<a class="tl-btn tl-btn--primary tl-btn--lg tl-form__cal" href="' + CONFIG.CALENDLY_URL + '" target="_blank" rel="noopener" style="margin-top:10px">Pick a time now</a>' +
-            '<p class="tl-body tl-muted" style="margin:14px 0 0">Prefer to chat? <a href="' + waLink() + '" target="_blank" rel="noopener">Message us on WhatsApp</a></p>' +
-          '</div>' +
-        '</div>' +
-      '</div>'
-    );
-    document.body.appendChild(modal);
-
-    var panel = modal.querySelector(".tl-modal__panel");
-    var form = modal.querySelector(".tl-form");
-    var closeBtn = modal.querySelector(".tl-modal__close");
-
-    function open() { modal.classList.add("tl-modal--open"); document.body.style.overflow = "hidden";
-      setTimeout(function () { var f = modal.querySelector("#tlf-name"); if (f) f.focus(); }, 60); }
-    function close() { modal.classList.remove("tl-modal--open"); document.body.style.overflow = ""; }
-
-    closeBtn.addEventListener("click", close);
-    modal.addEventListener("click", function (e) { if (e.target === modal) close(); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
-
-    // Any element with [data-tl-open-form] opens the modal.
+  /* ── Booking form triggers ──────────────────────────────────────────────── */
+  /* The form itself lives in js/booking-form.js (shared with the /m/ build).
+     Any element with [data-tl-open-form] opens it on desktop; phones go
+     straight to WhatsApp (the WhatsApp card offers the form as a fallback). */
+  function bindFormTriggers() {
     document.addEventListener("click", function (e) {
       var t = e.target.closest("[data-tl-open-form]");
       if (!t) return;
       e.preventDefault();
-      if (isMobileDevice()) window.open(waLink(), "_blank", "noopener");
-      else open();
-    });
-
-    function showErr(input, on) {
-      input.classList.toggle("tl-input--err", on);
-      input.classList.toggle("tl-select--err", on);
-      var err = input.parentElement.querySelector(".tl-field__err");
-      if (err) err.classList.toggle("tl-field__err--show", on);
-    }
-    function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-    function validPhone(v) { return /^[+()\-\s]*(?:\d[()\-\s]*){7,}$/.test(v); }
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var name = form.name, email = form.email, phone = form.phone;
-      var ok = true;
-      if (!name.value.trim()) { showErr(name, true); ok = false; } else showErr(name, false);
-      if (!validEmail(email.value.trim())) { showErr(email, true); ok = false; } else showErr(email, false);
-      if (!validPhone(phone.value.trim())) { showErr(phone, true); ok = false; } else showErr(phone, false);
-      if (!ok) { var first = form.querySelector(".tl-input--err"); if (first) first.focus(); return; }
-
-      var btn = form.querySelector(".tl-form__submit");
-      var fail = form.querySelector(".tl-form__fail");
-      var done = function () {
-        modal.querySelector(".tl-form__cal").href = calendlyLink(form);
-        panel.parentElement.classList.add("tl-modal--done");
-      };
-      var data = new URLSearchParams(new FormData(form)); // urlencoded so Apps Script fills e.parameter
-      data.append("page", location.pathname);
-
-      if (!CONFIG.FORM_ENDPOINT) { done(); return; } // stub: no backend wired yet
-
-      fail.hidden = true;
-      btn.disabled = true; btn.textContent = "Sending…";
-      // no-cors: Apps Script's redirect gives an opaque response, so a reject
-      // here means the request genuinely never left (offline, blocked).
-      fetch(CONFIG.FORM_ENDPOINT, { method: "POST", mode: "no-cors", body: data })
-        .then(done)
-        .catch(function () { fail.hidden = false; })
-        .finally(function () { btn.disabled = false; btn.textContent = "Send request"; });
+      if (isMobileDevice() || !window.TilliForm) window.open(waLink(), "_blank", "noopener");
+      else window.TilliForm.open();
     });
   }
 
@@ -419,7 +305,7 @@
     buildWhatsApp();
     buildToTop();
     fadeOverFooter();
-    buildForm();
+    bindFormTriggers();
     initHideOnScroll();
     // Dynamic copyright year — fills [data-tl-year] placeholders (interior footer + Home's static .foot).
     var year = String(new Date().getFullYear());

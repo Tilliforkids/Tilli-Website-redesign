@@ -102,6 +102,8 @@
       ".wa-card__foot{padding:16px}" +
       ".wa-card__start{display:flex;width:100%;justify-content:center;align-items:center;background:var(--tl-green-500);" +
         "color:var(--tl-white);font-weight:700;font-size:var(--tl-fs-base);padding:13px 22px;border-radius:var(--tl-radius-pill)}" +
+      ".wa-card__form{display:block;width:100%;margin-top:10px;background:none;border:0;padding:4px;font-family:inherit;" +
+        "font-size:var(--tl-fs-sm);font-weight:600;color:var(--tl-ink-500);text-decoration:underline;text-underline-offset:3px;cursor:pointer}" +
       /* Back-to-top arrow — on the WhatsApp bubble's axis, 12px above it */
       ".totop{--totop-size:44px;position:fixed;z-index:55;display:flex;align-items:center;justify-content:center;" +
         "right:calc(16px + (52px - var(--totop-size)) / 2);bottom:calc(74px + 52px + 12px + env(safe-area-inset-bottom));" +
@@ -212,6 +214,8 @@
           "</div>" +
           '<div class="wa-card__foot">' +
             '<a class="wa-card__start" href="' + waLink() + '" target="_blank" rel="noopener">Start Chat</a>' +
+            /* WhatsApp first; the form (js/booking-form.js) is the fallback. */
+            '<button class="wa-card__form" type="button">Prefer a form instead?</button>' +
           "</div>" +
         "</div>" +
         '<button class="wa-bubble" aria-label="Chat with us on WhatsApp" aria-expanded="false">' + (T.WA_ICON || "") + "</button>" +
@@ -222,6 +226,11 @@
     function set(open) { wrap.classList.toggle("open", open); bubble.setAttribute("aria-expanded", String(open)); }
     bubble.addEventListener("click", function (e) { e.stopPropagation(); set(!wrap.classList.contains("open")); });
     wrap.querySelector(".wa-card__close").addEventListener("click", function () { set(false); });
+    wrap.querySelector(".wa-card__form").addEventListener("click", function () {
+      set(false);
+      if (window.TilliForm) window.TilliForm.open("form");
+      else window.open(waLink(), "_blank", "noopener");
+    });
     document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) set(false); });
   }
 
