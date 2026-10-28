@@ -145,8 +145,7 @@
               '<input class="tl-input" id="tlf-school" name="school" type="text" autocomplete="organization" required>' +
               '<span class="tl-field__err">Please enter your school or organisation.</span>' +
             '</div>' +
-            '<div class="tl-form__row">' +
-              '<div class="tl-field">' +
+            '<div class="tl-field">' +
                 '<label for="tlf-email">Email</label>' +
                 '<input class="tl-input" id="tlf-email" name="email" type="email" autocomplete="email" required>' +
                 '<span class="tl-field__err">Please enter a valid email.</span>' +
@@ -164,12 +163,12 @@
                 '<span class="tl-field__hint">Only used to confirm your call.</span>' +
                 '<span class="tl-field__err">Please choose a country code and enter your number.</span>' +
               '</div>' +
-            '</div>' +
             '<div class="tl-field">' +
               '<label for="tlf-msg">Anything you’d like us to know? <span class="tl-opt">(optional)</span></label>' +
               '<textarea class="tl-textarea" id="tlf-msg" name="message"></textarea>' +
             '</div>' +
-            '<button class="tl-form__btn tl-form__submit" type="submit">Send request</button>' +
+            /* wrapper catches hover/taps while the disabled button ignores them */
+            '<div class="tl-form__send"><button class="tl-form__btn tl-form__submit" type="submit">Send request</button></div>' +
             '<p class="tl-form__note tl-form__fail" hidden>Sorry, that didn’t send. Please try again, or <a href="' + waLink() + '" target="_blank" rel="noopener">message us on WhatsApp</a>.</p>' +
             '<p class="tl-form__note">We’ll only use these details to get in touch about Tilli.</p>' +
           '</form>' +
@@ -211,12 +210,76 @@
       form.querySelectorAll(".is-err").forEach(function (e) { e.classList.remove("is-err"); });
       form.querySelectorAll(".tl-field__err--show").forEach(function (e) { e.classList.remove("tl-field__err--show"); });
     }
+    /* ── Checks ── one rule per required field (message is optional), shared by
+       the Send button state, the on-leave errors and the submit handler. */
+    function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+    function digits(v) { return (v.match(/\d/g) || []).length; }
+    var RULES = {
+      name:   function () { return !!form.name.value.trim(); },
+      role:   function () { return !!form.role.value.trim(); },
+      school: function () { return !!form.school.value.trim(); },
+      email:  function () { return validEmail(form.email.value.trim()); }
+    };
+    /* A number typed with its own "+" doesn't need the picker */
+    function codeOk() { return /^\+/.test(form.phone.value.trim()) || !!code.value; }
+    function numOk() { return digits(form.phone.value) >= 6; }
+    function filled() {
+      return Object.keys(RULES).every(function (k) { return RULES[k](); }) && codeOk() && numOk();
+    }
+    function showField(name) {
+      var ok = RULES[name](); mark(form[name], !ok); say(form[name], !ok); return ok;
+    }
+    function showPhone() {
+      var c = codeOk(), n = numOk();
+      mark(code, !c); mark(form.phone, !n); say(form.phone, !(c && n)); return c && n;
+    }
+    /* Show every error at once and focus the first problem */
+    function showAll() {
+      var ok = Object.keys(RULES).map(showField).concat(showPhone()).every(Boolean);
+      if (!ok) {
+        var first = form.querySelector(".is-err");
+        var target = first && (first.matches("input, select") ? first : first.querySelector("input, select"));
+        if (target) target.focus();
+      }
+      return ok;
+    }
+
+    /* Send stays disabled until every required field passes */
+    var sendBtn = form.querySelector(".tl-form__submit");
+    var sending = false;   // while "Sending…", nothing may re-enable the button
+    function syncSend() { if (!sending) sendBtn.disabled = !filled(); }
+    syncSend();
+
     /* Clear a field's error as soon as the visitor fixes it */
+    var touched = {};
     form.addEventListener("input", function (e) {
+      syncSend();
       if (e.target.name === "website") return;
+      touched[e.target.name] = true;
       mark(e.target, false);
       var f = e.target.closest(".tl-field");
       if (f && !f.querySelector(".is-err")) say(e.target, false);
+    });
+    form.addEventListener("change", syncSend);   // autofill + the country picker
+    /* …and show it when they leave a field they typed in. Moving between the
+       country picker and the number stays quiet until they leave the pair. */
+    form.addEventListener("focusout", function (e) {
+      var t = e.target, name = t.name;
+      if (RULES[name]) { if (touched[name]) showField(name); return; }
+      if ((name === "phone" || name === "phone_code") && touched.phone &&
+          !(e.relatedTarget && t.closest(".tl-phone").contains(e.relatedTarget))) showPhone();
+    });
+    /* Password managers can fill fields without firing input/change, so
+       re-check when the pointer reaches Send. Tapping it while still disabled
+       shows what's missing; if the re-check passes, it sends straight away. */
+    var sendWrap = form.querySelector(".tl-form__send");
+    sendWrap.addEventListener("pointerenter", syncSend);
+    sendWrap.addEventListener("click", function (e) {
+      if (sending || e.target.closest(".tl-form__submit")) return;   // a real (enabled) click
+      syncSend();
+      if (sendBtn.disabled) showAll();
+      else if (form.requestSubmit) form.requestSubmit(sendBtn);
+      else sendBtn.click();
     });
 
     function showForm(on) {
@@ -239,7 +302,7 @@
       modal.classList.remove("tl-modal--open", "tl-modal--form"); document.body.style.overflow = "";
       if (modal.classList.contains("tl-modal--done")) {
         modal.classList.remove("tl-modal--done");
-        form.reset(); syncCode(); clearErrors();
+        form.reset(); syncCode(); clearErrors(); touched = {}; syncSend();
       }
     };
     modal.querySelector(".tl-modal__close").addEventListener("click", close);
@@ -248,30 +311,9 @@
       if (e.key === "Escape" && modal.classList.contains("tl-modal--open")) close();
     });
 
-    function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-    function digits(v) { return (v.match(/\d/g) || []).length; }
-
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      var ok = true;
-      function check(el, valid) { mark(el, !valid); say(el, !valid); if (!valid) ok = false; }
-
-      check(form.name, !!form.name.value.trim());
-      check(form.role, !!form.role.value.trim());
-      check(form.school, !!form.school.value.trim());
-      check(form.email, validEmail(form.email.value.trim()));
-      var num = form.phone.value.trim();
-      var ownCode = /^\+/.test(num);
-      var codeOk = ownCode || !!code.value, numOk = digits(num) >= 6;
-      mark(code, !codeOk); mark(form.phone, !numOk); say(form.phone, !(codeOk && numOk));
-      if (!(codeOk && numOk)) ok = false;
-
-      if (!ok) {
-        var first = form.querySelector(".is-err");
-        var target = first && (first.matches("input, select") ? first : first.querySelector("input, select"));
-        if (target) target.focus();
-        return;
-      }
+      if (!showAll()) return;
 
       var btn = form.querySelector(".tl-form__submit");
       var fail = form.querySelector(".tl-form__fail");
@@ -293,7 +335,7 @@
       if (!CONFIG.FORM_ENDPOINT) { done(); return; } // stub: no backend wired yet
 
       fail.hidden = true;
-      btn.disabled = true; btn.textContent = "Sending…";
+      sending = true; btn.disabled = true; btn.textContent = "Sending…";
       // A urlencoded POST is a CORS "simple request" and Apps Script's final
       // response allows any origin, so the {ok} reply is readable. A rejected
       // fetch (offline, or the deployment no longer public → Google sign-in
@@ -302,7 +344,7 @@
         .then(function (r) { return r.json(); })
         .then(function (res) { if (res && res.ok) done(); else fail.hidden = false; })
         .catch(function () { fail.hidden = false; })
-        .finally(function () { btn.disabled = false; btn.textContent = "Send request"; });
+        .finally(function () { sending = false; btn.textContent = "Send request"; syncSend(); });
     });
   }
 
