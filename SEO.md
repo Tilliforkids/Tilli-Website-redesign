@@ -19,6 +19,7 @@ _Last updated: 2026-10-28_
 | `team.html` | Our team — Tilli | ✅ | ❌ | wordmark | ❌ |
 | `jobs.html` | Jobs @ Tilli — Tilli | ✅ | ❌ | wordmark | ❌ |
 | `opensource.html` | Open Source — Tilli | ✅ | ❌ | wordmark | ❌ |
+| `terms.html` | Terms of Service — Tilli | ✅ | ❌ | wordmark | ❌ |
 | `m/index.html` | (same as desktop) | ✅ | ✅ → `/` | wordmark | ❌ |
 | `m/success.html` | (same as desktop) | ✅ | ❌ | wordmark | ❌ |
 | `m/research.html` | (same as desktop) | ✅ | ❌ | wordmark | ❌ |
@@ -62,6 +63,7 @@ Fill this in from 2.1. Any URL with backlinks or traffic **must** redirect somew
 | `/asktilli-dataset` | `/research.html`? | decide |
 | `/tilli-for-home` | ? | decide (D5) |
 | `/shop` | ? | decide (D5) |
+| `/terms-of-service` | `/terms.html` | needs redirect |
 | `/opensource` | `/opensource.html` | check (same name, so GitHub Pages should serve it without a redirect) |
 | `/webinar` | ? | decide (D5) |
 | `/blog`, `/post/*` | ? | decide (D5) |
@@ -92,8 +94,8 @@ Each title should be under ~60 characters, each description under ~155, and no t
 - [ ] Rewrite each description with the words a school leader would search for (SEL programme, foundational skills assessment, CBSE/IB, India/Sri Lanka). Claims must match `success.html`.
 
 ### 2.6 Sitemap, robots, 404
-- [ ] `sitemap.xml` at the site root: list the desktop pages only, never `/m/` (they're covered by the alternate tags). Leave out the `.dc.html` drafts and `Dataset _ Tilli.html`.
-- [ ] `robots.txt`: allow everything, add `Sitemap: https://www.tillikids.com/sitemap.xml`, and block the drafts and dumps (`/*.dc.html`, `/Dataset _ Tilli.html`, `/_ds/`) or delete them before launch.
+- [ ] `sitemap.xml` at the site root: list the desktop pages only, never `/m/` (they're covered by the alternate tags). Leave out the `.dc.html` drafts.
+- [ ] `robots.txt`: allow everything, add `Sitemap: https://www.tillikids.com/sitemap.xml`, and block the drafts (`/*.dc.html`, `/_ds/`) or delete them before launch.
 - [ ] `404.html` in the site design (GitHub Pages serves it automatically), with links to Home, FAQ and Book a call.
 
 ### 2.7 Structured data (JSON-LD)
@@ -117,7 +119,7 @@ Each title should be under ~60 characters, each description under ~155, and no t
 
 ### 2.10 Speed (Core Web Vitals)
 - [ ] Run PageSpeed Insights on `/`, `/success.html` and `/m/success.html`, on both mobile and desktop.
-- [ ] Big items already known: `assets/opensource/module-1.gif` (1.6 MB, should become a looping MP4), the dashboard video (compression is still an open item), the 3JS bundle size, and carousel images. Use WebP/AVIF, `loading="lazy"` below the fold, and `width`/`height` on images.
+- [ ] Big items already known: the dashboard video (compression is still an open item), the 3JS bundle size, and carousel images. Use WebP/AVIF, `loading="lazy"` below the fold, and `width`/`height` on images.
 - [ ] Fonts: preload the main font file and use `font-display: swap`.
 
 ---
@@ -164,3 +166,4 @@ Each title should be under ~60 characters, each description under ~155, and no t
 | 2026-10-28 | Added `opensource.html` (content from Wix `/opensource`), linked from the Research "Open-source Toolkits" buttons. Its Terms of Service link still points at Wix `/terms-of-service`, which needs a decision (D5). |
 | 2026-10-28 | `team.html` rebuilt as a 1-for-1 copy of the Wix team page (site font kept). |
 | 2026-10-28 | `jobs.html` and `opensource.html` rebuilt as 1-for-1 copies of Wix `/careers` and `/opensource` (site font kept). |
+| 2026-10-28 | Added `terms.html` (content from Wix `/terms-of-service`, styled like the Privacy Policy); Open Source now links to it. Module-1 GIF replaced by a 539 KB MP4. Deleted the old Wix export. |

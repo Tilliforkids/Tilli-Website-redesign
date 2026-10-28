@@ -89,9 +89,8 @@
 ---
 
 ## Follow-ups (deferred cleanup)
-- **Fredoka leftovers (from CHG-10)** — user chose to keep for now; delete when ready:
-  - `_ds/.../assets/fonts/fredoka-normal-latin.woff2` + `-ext.woff2` (orphaned, unreferenced)
-  - `Dataset _ Tilli.html` + `Dataset _ Tilli_files/` (old Wix site export, repo root)
+- ✅ **Fredoka leftovers (from CHG-10)** — deleted 2026-10-28: the orphaned
+  `fredoka-normal-latin(-ext).woff2` files and the old Wix export (`Dataset _ Tilli.html` + `_files/`).
 
 ## Ask Kavi (open data requests)
 - ⏳ **B6 — E4 chart data (CHG-29).** Not yet received. Ask Kavi for the chart numbers. The ask:
@@ -99,6 +98,14 @@
   Option A = reach/growth per year (traction). Option B (recommended) = baseline→endline lift per
   skill (true efficacy). Real data only — every bar must trace to a source and we'll label source
   + n under the chart."* Blocks CHG-29 until answered.
+- ⏳ **Open-source licence (added 2026-10-28).** Research → Resources says the licence is
+  **CC BY 4.0**, but `opensource.html` (copied 1-for-1 from Wix) says **"© 2021 Tilli Kids Inc. All
+  Rights Reserved."** Ask Kavi which is right, then make both pages say the same thing.
+- ⏳ **Terms of Service wording (added 2026-10-28).** `terms.html` copies the Wix terms word for
+  word. Things in the source that look wrong — confirm before launch: (1) "registered in **Sri Lanka**"
+  next to a **Delaware** address (and "Sri Lanka" under the address in Contact Us); (2) §5 "All payments
+  shall be in **_________**" (blank currency); (3) numbering skips **§23**; (4) §1 typo "to be stay, safe and
+  happy"; (5) §14 links to a Privacy Policy on `tillioss.github.io`, not the site's `privacy-policy.html`.
 
 ## Assets needed (B7 — for CHG-30/E5, also unblocks CHG-32/E7 + CHG-22)
 - ⏳ **Per school × 3 (Hippocampus, NMAJS, Musaeus):** (1) photo file — which file → which
@@ -113,7 +120,7 @@
   success builds.
 
 ## Content ideas to place (Success Story page)
-- ⬜ **"Every school that has started with Tilli is still with us."** — a 100% retention /
+- ⏸ **On hold (user, 2026-10-28) — "Every school that has started with Tilli is still with us."** — a 100% retention /
   zero-churn trust line. Decide where on Success Stories it goes: candidate = an E3 (CHG-28)
   "Top results" checklist line (cross-school, no place names, no "+28%" clash — spec-clean);
   alt = a standalone trust line under the hero. Optionally pair with a partner count
