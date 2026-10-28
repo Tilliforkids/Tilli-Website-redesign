@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- HTML cache self-heal — forces a fresh shell when /version.json bumps. See js/cache-guard.js -->
+<script src="js/cache-guard.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our team — Tilli</title>
+<meta name="description" content="Meet the people behind Tilli: part research lab, part imagination studio, and part giggle factory.">
+<meta name="theme-color" content="#26BDE2">
+<link rel="icon" type="image/png" href="assets/ds/tilli-wordmark.png">
+<link rel="apple-touch-icon" href="assets/ds/tilli-wordmark.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tilli">
+<meta property="og:title" content="Our team — Tilli">
+<meta property="og:description" content="Meet the people behind Tilli: part research lab, part imagination studio, and part giggle factory.">
+<meta property="og:url" content="https://tillinewwebsite.ishanirai.com/team.html">
+<meta property="og:image" content="https://tillinewwebsite.ishanirai.com/assets/ds/tilli-wordmark.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tillinewwebsite.ishanirai.com/assets/ds/tilli-wordmark.png">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
+<link rel="stylesheet" href="css/site.css?v=10">
+<link rel="stylesheet" href="css/booking-form.css?v=14">
+<style>
+  /* page-local: 1-for-1 copy of the Wix "Team" page (tillikids.com/team-tilli).
+     Colours, spacing and card geometry are lifted from the live page; the only
+     deliberate change is the font (site Montserrat instead of Wix Fredoka, CHG-10). */
+  .tm {
+    --tm-cyan: #1DB6E8;      /* team sections, clouds, arches */
+    --tm-navy: #183981;      /* hero headline */
+    --tm-slate: #324158;     /* advisors heading */
+    --tm-dusk: #373B4D;      /* "Want to join" heading */
+    --tm-ink: #2A2A2A;       /* names, button label */
+    --tm-body: #414141;      /* body copy */
+    --tm-orange: #FFBF56;    /* advisor card 1 */
+    --tm-lime: #BADA55;      /* advisor card 2 */
+    --tm-teal: #81DECD;      /* advisor card 3 */
+    --tm-yellow: #FFC300;    /* "Drop an email" button */
+    --tm-card-w: 299px;      /* card width */
+    --tm-card-h: 482px;      /* card min height */
+    --tm-card-gap: 41px;     /* gap between cards */
+    --tm-card-split: 186px;  /* where the card's colour panel starts */
+    background: #fff; color: var(--tm-body);
+  }
+  .tm-wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; box-sizing: content-box; }
+
+  /* hero + cloud edge */
+  .tm-hero { text-align: center; padding: 45px 0 150px;
+    background: url("data:image/svg+xml,%3Csvg id='comp-mbyxhsd2-bottom' preserveAspectRatio='xMidYMax slice' data-bbox='0 29.118 1920 270.882' viewBox='0 29.118 1920 270.882' height='100%25' width='100%25' xmlns='http://www.w3.org/2000/svg' data-type='shape'%3E%3Cdefs%3E%3Cstyle%3E%23comp-mbyxhsd2-bottom %7B fill: %231DB6E8; %7D%3C/style%3E%3C/defs%3E%3Cg%3E%3Cpath d='M1920 300V149.767a46.196 46.196 0 0 0-22.039 5.559c-3.507-20.901-19.255-37.64-39.625-42.6a37.338 37.338 0 0 0 2.806-14.23c0-20.684-16.768-37.452-37.452-37.452a37.303 37.303 0 0 0-15.126 3.191c-1.507-11.909-11.667-21.121-23.985-21.121-7.229 0-13.712 3.175-18.144 8.203a72.14 72.14 0 0 0-32.342-7.617c-39.415 0-71.462 31.451-72.469 70.624a73.811 73.811 0 0 0-.479 8.258c0 5.593.646 11.031 1.835 16.268-11.074.021-21.12 4.318-28.656 11.29-10.837-10.438-25.56-16.871-41.797-16.871-16.99 0-32.322 7.036-43.278 18.347-19.886-17.825-46.146-28.672-74.948-28.672-52.004 0-95.739 35.337-108.551 83.303-31.816 1.879-58.862 21.571-71.255 49.274-10.827-10.492-25.576-16.914-41.823-16.914-28.204 0-51.858 19.359-58.431 45.517-10.681-8.075-23.967-12.871-38.405-12.871a63.36 63.36 0 0 0-27.988 6.476c-5.814-8.834-15.805-14.675-27.176-14.675a32.345 32.345 0 0 0-15.601 3.984c-10.175-18.891-30.136-31.724-53.085-31.724-7.031 0-13.766 1.184-20.026 3.418a83.571 83.571 0 0 0-11.326-14.46c-15.149-15.499-36.289-25.113-59.68-25.113-31.148 0-58.329 17.044-72.681 42.346-8.032-3.962-17.066-6.191-26.637-6.191-5.265 0-10.374.679-15.24 1.943-11.036-12.409-27.116-20.231-45.032-20.231-3.273 0-6.481.269-9.609.77-4.016-42.378-39.686-75.529-83.114-75.529-31.062 0-58.141 16.969-72.525 42.131-15.316-17.916-38.066-29.286-63.487-29.286-29.733 0-55.821 15.558-70.614 38.96a59.009 59.009 0 0 0-22.789-4.549c-8.193 0-16 1.669-23.095 4.679-2.568-43.81-38.896-78.549-83.351-78.549-7.451 0-14.67.99-21.545 2.82-2.233-27.293-24.681-48.851-52.354-49.676-1.073-20.113-17.72-36.092-38.1-36.092-17.029 0-31.448 11.158-36.357 26.56-13.147-18.252-34.567-30.147-58.779-30.147-18.747 0-35.824 7.129-48.681 18.819a45.897 45.897 0 0 0-7.07-.548c-25.166 0-45.566 20.401-45.566 45.566 0 7.308 1.73 14.209 4.788 20.331-11.276 10.695-18.32 25.808-18.32 42.576 0 1.979.101 3.934.293 5.863-8.231-7.432-19.131-11.958-31.089-11.958V300h1920z'/%3E%3C/g%3E%3C/svg%3E") 50% 100% / 709px 100px repeat-x; }
+  .tm-hero h1 { font-size: clamp(30px, 4.6vw, 48px); line-height: 1.4; font-weight: 700; color: var(--tm-navy);
+    letter-spacing: -0.01em; margin: 0 0 26px; }
+  .tm-hero p { max-width: 658px; margin: 0 auto; font-size: 16px; line-height: 22.4px; }
+
+  /* section heads */
+  .tm-head { position: relative; text-align: center; }
+  .tm-head h2 { font-size: clamp(30px, 4vw, 40px); line-height: 56px; font-weight: 700; margin: 0 0 14px; }
+  .tm-head p { max-width: 508px; margin: 0 auto; font-size: 16px; line-height: 22.4px; }
+  .tm-hl { background: #fff; padding: 0 3px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  /* Milo's hand sits just past the subtitle's right edge (anchored to the text box, not the page
+     centre, so the wider site font can't run under it). Box is 56x90, rotated bbox ~98x106. */
+  .tm-builders .tm-head p { position: relative; }
+  .tm-milo { position: absolute; left: calc(100% + 29px); top: -15px; width: 56px; height: 90px; transform: rotate(144.8deg);
+    pointer-events: none; }
+
+  .tm-sec--cyan { background: var(--tm-cyan); }
+  .tm-sec--cyan .tm-head h2 { color: #fff; }
+  .tm-leaders { padding: 74px 0 45px; }
+  .tm-leaders .tm-grid { margin-top: 33px; }
+  .tm-builders { padding: 54px 0 65px; }
+  .tm-builders .tm-head p { line-height: 25.2px; }
+  .tm-builders .tm-grid { margin-top: 46px; }
+
+  .tm-advisors { position: relative; padding: 74px 0 46px; }
+  /* Wix renders top dividers rotated 180°, so the layers anchor to the bottom and the box is flipped */
+  .tm-advisors::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 80px; transform: rotate(180deg);
+    pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg id='comp-mc8l52r1-top' preserveAspectRatio='none' data-bbox='-0.755 100 1921.51 200' viewBox='-0.755 100 1921.51 200' height='100%25' width='100%25' xmlns='http://www.w3.org/2000/svg' data-type='shape'%3E%3Cdefs%3E%3Cstyle%3E%23comp-mc8l52r1-top %3E g %7B transform: scaleY(-1) translateY(-400px); %7D %23comp-mc8l52r1-top %7B fill: %231DB6E8; fill-opacity: 1; %7D%3C/style%3E%3C/defs%3E%3Cg%3E%3Cpath fill-rule='evenodd' d='M1920.755 300C1657.396 178.196 1323.641 100 960 100S261.905 178.196-.755 300h1921.51z M-0.755,99 h1921.51 v201 h-1921.51 Z'/%3E%3C/g%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg id='comp-mc8l52r1-top' preserveAspectRatio='none' data-bbox='-0.755 100 1921.51 200' viewBox='-0.755 100 1921.51 200' height='100%25' width='100%25' xmlns='http://www.w3.org/2000/svg' data-type='shape'%3E%3Cdefs%3E%3Cstyle%3E%23comp-mc8l52r1-top %3E g %7B transform: scaleY(-1) translateY(-400px); %7D %23comp-mc8l52r1-top %7B fill: %231DB6E8; fill-opacity: .5; %7D%3C/style%3E%3C/defs%3E%3Cg%3E%3Cpath fill-rule='evenodd' d='M1920.755 300C1657.396 178.196 1323.641 100 960 100S261.905 178.196-.755 300h1921.51z M-0.755,99 h1921.51 v201 h-1921.51 Z'/%3E%3C/g%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg id='comp-mc8l52r1-top' preserveAspectRatio='none' data-bbox='-0.755 100 1921.51 200' viewBox='-0.755 100 1921.51 200' height='100%25' width='100%25' xmlns='http://www.w3.org/2000/svg' data-type='shape'%3E%3Cdefs%3E%3Cstyle%3E%23comp-mc8l52r1-top %3E g %7B transform: scaleY(-1) translateY(-400px); %7D %23comp-mc8l52r1-top %7B fill: %231DB6E8; fill-opacity: .333; %7D%3C/style%3E%3C/defs%3E%3Cg%3E%3Cpath fill-rule='evenodd' d='M1920.755 300C1657.396 178.196 1323.641 100 960 100S261.905 178.196-.755 300h1921.51z M-0.755,99 h1921.51 v201 h-1921.51 Z'/%3E%3C/g%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg id='comp-mc8l52r1-top' preserveAspectRatio='none' data-bbox='-0.755 100 1921.51 200' viewBox='-0.755 100 1921.51 200' height='100%25' width='100%25' xmlns='http://www.w3.org/2000/svg' data-type='shape'%3E%3Cdefs%3E%3Cstyle%3E%23comp-mc8l52r1-top %3E g %7B transform: scaleY(-1) translateY(-400px); %7D %23comp-mc8l52r1-top %7B fill: %231DB6E8; fill-opacity: .25; %7D%3C/style%3E%3C/defs%3E%3Cg%3E%3Cpath fill-rule='evenodd' d='M1920.755 300C1657.396 178.196 1323.641 100 960 100S261.905 178.196-.755 300h1921.51z M-0.755,99 h1921.51 v201 h-1921.51 Z'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 100% 20px, 100% 40px, 100% 60px, 100% 80px; background-position: 50% 100%; background-repeat: no-repeat; }
+  .tm-advisors > .tm-wrap { position: relative; }
+  .tm-advisors .tm-head h2 { color: var(--tm-slate); }
+  .tm-advisors .tm-grid { margin-top: 32px; }
+
+  /* cards */
+  /* flex (not grid) so a lone card on the last row centres instead of sitting in column 1 */
+  .tm-grid { display: flex; flex-wrap: wrap; gap: var(--tm-card-gap); justify-content: center; }
+  .tm-card { --tm-top: var(--tm-cyan); --tm-panel: #fff;
+    position: relative; flex: none; width: min(var(--tm-card-w), 100%); min-height: var(--tm-card-h); box-sizing: border-box; border-radius: 50px; overflow: hidden;
+    background: linear-gradient(var(--tm-top) 0 var(--tm-card-split), var(--tm-panel) var(--tm-card-split));
+    padding: 196px 18px 32px; text-align: left; }
+  .tm-card__photo { position: absolute; top: 9px; left: 50%; transform: translateX(-50%); width: 216px; height: 210px;
+    border-radius: 50%; background: #fff; overflow: hidden; display: block; }
+  .tm-card__photo img { position: absolute; inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); border-radius: 50%;
+    object-fit: cover; display: block; }
+  .tm-card__li { display: block; width: 39px; height: 39px; margin-left: -8px; }
+  .tm-card__li img { width: 100%; height: 100%; display: block; }
+  .tm-card__role { font-size: 16px; line-height: 22.4px; font-style: italic; margin: 13px 0 0; }
+  .tm-card__name { font-size: 30px; line-height: 46px; font-weight: 800; color: var(--tm-ink); margin: 8px 0 0; }
+  .tm-card__bio { font-size: 15px; line-height: 21px; margin: 12px 0 0; padding-left: 3px; }
+
+  .tm-card--adv { --tm-top: #fff; padding-top: 244px; }
+  .tm-card--adv .tm-card__photo img { inset: 0; width: 100%; height: 100%; }
+  .tm-card--adv .tm-card__name { font-size: 22px; line-height: 33px; margin: 0; }
+  .tm-card--adv .tm-card__bio { margin-top: 24px; padding-left: 0; }
+  .tm-card--orange { --tm-panel: var(--tm-orange); }
+  .tm-card--lime { --tm-panel: var(--tm-lime); }
+  .tm-card--teal { --tm-panel: var(--tm-teal); }
+
+  /* join + grass edge */
+  .tm-join { text-align: center; padding: 71px 0 137px;
+    background: url("data:image/svg+xml,%3Csvg id='comp-mc8l0454-bottom' preserveAspectRatio='xMidYMax slice' data-bbox='0.2 156 1920 144' viewBox='0.2 156 1920 144' height='100%25' width='100%25' xmlns='http://www.w3.org/2000/svg' data-type='shape'%3E%3Cdefs%3E%3Cstyle%3E%23comp-mc8l0454-bottom %7B fill: %2378DC09; %7D%3C/style%3E%3C/defs%3E%3Cg%3E%3Cpath d='M1848.4 156v.1c.2 0 .2-.1 0-.1z'/%3E%3Cpath d='M1895.4 262.4c-19.9 1-39.6 5.9-57.9 13.7 23-9.5 42.2-27.8 52.8-50.4.7-1.5 1.2-3 1.4-4.7 1.6-11.1-9.7-15.1-18.9-15.8-36.8-2.6-71.4 17.6-99.7 41.3 15-13.4 25-32.3 27.5-52.2.3-2.7 0-5.4-1.1-7.9-4.4-9.7-16.3-7.3-24.7-3.4-31.1 14.3-57.1 39.4-72.5 69.9 1.6-8.2 2.5-16.9 0-24.9s-8.9-15.2-17.2-16.5c-10.3-1.6-19.8 6-25.8 14.6-9.5 13.6-13.9 30.7-12.1 47.2-1.2-10.5-23.9-23.4-32.7-25.4-15.4-3.4-33.8 1.1-47.4 8.3-8 4.2-15.5 10.2-20.2 17.9v1.9c-4.6-8.3-12.5-14.8-21-19.2-13.6-7.2-32.1-11.7-47.4-8.3-18 4-35 14.1-49.3 26.2-.1-.2-.2-.3-.3-.5 5-5.3 9.5-11 12.6-17.6 4.7-10 5.4-22.6-1.1-31.6-28.1-38.8-115.5 36.7-136.4 57.4 7.9-7.8 15.9-15.7 20.6-25.7 4.7-10 5.4-22.6-1.1-31.6-18.7-25.9-57.3-1.2-73.9 14.6-14.4 13.7-25.8 31.1-34.6 48.6 8.5-20.5 13.8-43 14.3-65.2.2-8.4-1.4-18.1-8.8-22.1-6.3-3.4-15-1.6-21.1 1.4-15.2 7.4-26.1 21.7-32.6 37.2s-9.1 32.4-11.3 49.1c4.2-31.8-4.8-80.5-29.8-103.1-2.9-2.6-6.3-4.9-10.1-5.8-7.4-1.9-15.4 1.6-20.8 7-11.4 11.1-18.4 29.9-23.7 44.6-5.7 15.6-11.4 34.1-11 50.9-.2-9.3-.4-18.7-2.8-27.7s-7.2-17.7-14.8-23c-12-8.3-29-6.4-41.2 1.6-17.4 11.4-24.5 32.1-33.9 49.6 7.9-14.7-10.6-20.9-21.5-20.3-19.9 1.2-39.6 5.9-57.9 13.7 23-9.5 42.2-27.8 52.8-50.4.7-1.5 1.2-3 1.4-4.7 1.6-11.1-9.7-15.1-18.9-15.8-36.8-2.6-71.4 17.6-99.7 41.3 15-13.4 25-32.3 27.5-52.2.3-2.7 0-5.4-1.1-7.9-4.4-9.7-16.3-7.3-24.7-3.4-40.1 18.4-84 65.1-116.2 96.9 7.1-7 14-14.4 18.3-23.4 4.7-10 5.4-22.6-1.1-31.6-18.7-25.9-57.3-1.2-73.9 14.6-14.4 13.7-25.8 31.1-34.6 48.6 8.5-20.5 13.8-43 14.3-65.2.2-8.4-1.4-18.1-8.8-22.1-6.3-3.4-15-1.6-21.1 1.4-15.2 7.4-26.1 21.7-32.6 37.2-6.5 15.5-9.1 32.4-11.3 49.1 4.2-31.8-4.8-80.5-29.8-103.1-2.9-2.6-6.3-4.9-10.1-5.8-7.4-1.9-15.4 1.6-20.8 7-11.4 11.1-18.4 29.9-23.7 44.6-5.7 15.6-11.4 34.1-11 50.9-.2-9.3-.4-18.7-2.8-27.7s-7.2-17.7-14.8-23c-12-8.3-29-6.4-41.2 1.6-17.4 11.4-24.5 32.1-33.9 49.6 7.9-14.7-10.6-20.9-21.5-20.3-19.9 1.2-39.6 5.9-57.9 13.7 23-9.5 42.2-27.8 52.8-50.4.7-1.5 1.2-3 1.4-4.7 1.6-11.1-9.7-15.1-18.9-15.8-36.8-2.6-71.4 17.6-99.7 41.3 15-13.4 25-32.3 27.5-52.2.3-2.7 0-5.4-1.1-7.9-4.4-9.7-16.3-7.3-24.7-3.4-31.1 14.3-57.1 39.4-72.5 69.9 1.6-8.2 2.5-16.9 0-24.9s-8.9-15.2-17.2-16.5c-10.3-1.6-19.8 6-25.8 14.6-9.5 13.6-13.9 30.7-12.1 47.2-1.2-10.5-23.9-23.4-32.7-25.4-15.4-3.4-33.8 1.1-47.4 8.3-8 4.2-15.5 10.2-20.2 17.9V300h1920v-25.6c-.2-4.6-5.6-13-24.8-12z'/%3E%3C/g%3E%3C/svg%3E") 50% 100% / 2000px 150px repeat-x; }
+  .tm-join h2 { font-size: clamp(30px, 4vw, 40px); line-height: 56px; font-weight: 700; color: var(--tm-dusk); margin: 0 0 9px; }
+  .tm-btn { display: inline-flex; align-items: center; justify-content: center; width: 278px; height: 42px; border-radius: 60px;
+    background: var(--tm-yellow); color: var(--tm-ink); font-size: 20px; font-weight: 700; text-decoration: none;
+    transition: transform .2s ease; }
+  .tm-btn:hover { transform: translateY(-2px); color: var(--tm-ink); }
+
+  @media (max-width: 900px) { .tm-milo { display: none; } }
+  /* phones: the Wix page is desktop-only, so tighten its fixed desktop spacing */
+  @media (max-width: 600px) {
+    .tm-hero { padding: 32px 0 116px; }
+    .tm-hero h1 { margin-bottom: 18px; }
+    .tm-head h2, .tm-join h2 { line-height: 1.25; }
+    .tm-leaders, .tm-builders { padding-top: 44px; }
+    .tm-join { padding: 56px 0 96px; background-size: 1000px 75px; }
+  }
+</style>
+</head>
+<body class="tl-page">
+
+<div class="tl-topbar">
+  <div style="background: var(--tl-green-500);"></div>
+  <div style="background: var(--tl-pink-400);"></div>
+  <div style="background: var(--tl-cyan-500);"></div>
+  <div style="background: var(--tl-yellow-500);"></div>
+</div>
+
+<main class="tl-main tm">
+
+  <section class="tm-hero">
+    <div class="tm-wrap">
+      <h1>Our team is part research lab, part imagination studio, and part giggle factory!</h1>
+      <p>We're the friendly grown-ups who turn big ideas about empathy and regulation into playful tools kids actually love using—wherever they are.</p>
+    </div>
+  </section>
+
+  <section class="tm-sec--cyan tm-leaders">
+    <div class="tm-wrap">
+      <div class="tm-head">
+        <h2>The Grown-Ups Who Dream Big</h2>
+        <p><span class="tm-hl">Meet the minds shaping Tilli’s mission.</span><br><span class="tm-hl">Our leaders dream big, think bold, and make it all possible.</span></p>
+      </div>
+      <div class="tm-grid">
+        <article class="tm-card">
+          <div class="tm-card__photo"><img src="assets/team/kavindya.jpg" alt="Kavindya" loading="lazy"></div>
+          <a class="tm-card__li" href="https://www.linkedin.com/in/kavindyathennakoon/" target="_blank" rel="noopener" aria-label="Kavindya on LinkedIn"><img src="assets/team/linkedin.png" alt=""></a>
+          <p class="tm-card__role">Co-Founder, Head of Product</p>
+          <h3 class="tm-card__name">Kavindya</h3>
+          <p class="tm-card__bio">Anthropologist turned Learning Designer, fusing games and design with SEL!</p>
+        </article>
+        <article class="tm-card">
+          <div class="tm-card__photo"><img src="assets/team/aki.jpg" alt="Dr. Aki" loading="lazy"></div>
+          <a class="tm-card__li" href="https://www.linkedin.com/in/akshika/" target="_blank" rel="noopener" aria-label="Dr. Aki on LinkedIn"><img src="assets/team/linkedin.png" alt=""></a>
+          <p class="tm-card__role">Chief Technical Officer</p>
+          <h3 class="tm-card__name">Dr. Aki</h3>
+          <p class="tm-card__bio">PhD in ML, and our resident AI wizard making sure Tilli stays delightfully cutting-edge!</p>
+        </article>
+        <article class="tm-card">
+          <div class="tm-card__photo"><img src="assets/team/piumi.jpg" alt="Piumi" loading="lazy"></div>
+          <a class="tm-card__li" href="https://www.linkedin.com/in/piumi-kulasekara/" target="_blank" rel="noopener" aria-label="Piumi on LinkedIn"><img src="assets/team/linkedin.png" alt=""></a>
+          <p class="tm-card__role">Chief Operating Officer</p>
+          <h3 class="tm-card__name">Piumi</h3>
+          <p class="tm-card__bio">Aerospace expert turned operations wiz! Making sure you get to see all the awesome stuff we build!</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="tm-sec--cyan tm-builders">
+    <div class="tm-wrap">
+      <div class="tm-head">
+        <h2>The Builders of Fun</h2>
+        <p><span class="tm-hl">From code to crayons, this is the talented team turning ideas into joyful learning experiences every day.</span><img class="tm-milo" src="assets/team/milo-hand.png" alt=""></p>
+      </div>
+      <div class="tm-grid">
+        <article class="tm-card">
+          <div class="tm-card__photo"><img src="assets/team/indresh.jpg" alt="Indresh" loading="lazy"></div>
+          <a class="tm-card__li" href="https://www.linkedin.com/in/indreshmurali23/" target="_blank" rel="noopener" aria-label="Indresh on LinkedIn"><img src="assets/team/linkedin.png" alt=""></a>
+          <p class="tm-card__role">Head of School Partnerships</p>
+          <h3 class="tm-card__name">Indresh</h3>
+          <p class="tm-card__bio">Manages School Partnerships</p>
+        </article>
+        <article class="tm-card">
+          <div class="tm-card__photo"><img src="assets/team/ishani.jpg" alt="Ishani" loading="lazy"></div>
+          <a class="tm-card__li" href="https://www.linkedin.com/in/ishani-rai-08987b19b/" target="_blank" rel="noopener" aria-label="Ishani on LinkedIn"><img src="assets/team/linkedin.png" alt=""></a>
+          <p class="tm-card__role">Lead Play Designer</p>
+          <h3 class="tm-card__name">Ishani</h3>
+          <p class="tm-card__bio">Love to bring new ideas to life.</p>
+        </article>
+        <article class="tm-card">
+          <div class="tm-card__photo"><img src="assets/team/masoomi.jpg" alt="Masoomi" loading="lazy"></div>
+          <a class="tm-card__li" href="https://www.linkedin.com/in/masoomi-mehta-32b653128/" target="_blank" rel="noopener" aria-label="Masoomi on LinkedIn"><img src="assets/team/linkedin.png" alt=""></a>
+          <p class="tm-card__role">Learning and Development Research Lead</p>
+          <h3 class="tm-card__name">Masoomi</h3>
+          <p class="tm-card__bio">Helping build strong foundations for young learners.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="tm-advisors">
+    <div class="tm-wrap">
+      <div class="tm-head">
+        <h2>Our External Supporting Hands</h2>
+        <p>Meet the minds shaping Tilli’s mission.<br>Our leaders dream big, think bold, and make it all possible.</p>
+      </div>
+      <div class="tm-grid">
+        <article class="tm-card tm-card--adv tm-card--orange">
+          <a class="tm-card__photo" href="https://ed.stanford.edu/faculty/forssell" target="_blank" rel="noopener" aria-label="Dr. Karin Forssell, Stanford profile"><img src="assets/team/karin.jpg" alt="Dr. Karin Forssell" loading="lazy"></a>
+          <h3 class="tm-card__name">Dr. Karin Forssell</h3>
+          <p class="tm-card__bio">Director of the Learning, Design, and Technology (LDT) program and Lecturer at the Stanford Graduate School of Education.</p>
+        </article>
+        <article class="tm-card tm-card--adv tm-card--lime">
+          <a class="tm-card__photo" href="https://www.educationforum.lk/wp-content/uploads/2019/11/Bio_Tara_2019.pdf" target="_blank" rel="noopener" aria-label="Dr. Tara De Mel, bio"><img src="assets/team/tara.jpg" alt="Dr. Tara De Mel" loading="lazy"></a>
+          <h3 class="tm-card__name">Dr. Tara De Mel</h3>
+          <p class="tm-card__bio">Former Secretary to the Ministry of Education - Sri Lanka</p>
+        </article>
+        <article class="tm-card tm-card--adv tm-card--teal">
+          <a class="tm-card__photo" href="https://www.linkedin.com/in/arithawickramasinghe/" target="_blank" rel="noopener" aria-label="Aritha Wickramasinghe on LinkedIn"><img src="assets/team/aritha.jpg" alt="Aritha Wickramasinghe" loading="lazy"></a>
+          <h3 class="tm-card__name">Aritha Wickramasinghe</h3>
+          <p class="tm-card__bio">Attorney at Law and Award Winning Human Rights Advocate.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="tm-join">
+    <div class="tm-wrap">
+      <h2>Want to join our team?</h2>
+      <a class="tm-btn" href="mailto:info@tillikids.com?subject=I%20would%20love%20to%20work%20with%20you!">Drop an email</a>
+    </div>
+  </section>
+
+</main>
+
+<script src="js/site-config.js?v=9"></script>
+<script src="js/booking-form.js?v=11"></script>
+<script src="js/site-chrome.js?v=13"></script>
+</body>
+</html>

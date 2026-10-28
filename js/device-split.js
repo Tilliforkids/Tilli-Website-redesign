@@ -14,7 +14,7 @@
    EXCEPT Home on capable phones: they stay on index.html in "mobile mode"
    (html.tl-mobile → main.js portrait config). m/index.html is the fallback for
    reduced-motion / no-WebGL / Save-Data / low-memory phones (?view=lite).
-   Pages NOT listed here (faq, privacy-policy) are responsive-only and never
+   Pages NOT listed here (faq, privacy-policy, team, jobs, opensource) are responsive-only and never
    redirected — they serve the same file to every device.
 
    Manual override for testing / a "view other version" link — applies to THIS

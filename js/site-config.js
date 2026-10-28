@@ -36,13 +36,10 @@
     /* Header primary CTA label, both skins. GL-02 will unify the wording site-wide. */
     NAV_CTA_LABEL: "Book a 30-minute call",
 
-    /* Footer links (canonical = Home footer). First three are home-section anchors;
-       mobile keeps them in-build via the hash-aware mHref() + the m/index #how anchor. */
+    /* Footer links (canonical = Home footer). */
     FOOTER_LINKS: [
-      { label: "How Tilli works", href: "index.html#how" },
-      { label: "The 12 skills", href: "index.html#skills" },
-      { label: "Impact", href: "index.html#impact" },
-      { label: "FAQs", href: "faq.html" },
+      { label: "Our team", href: "team.html" },
+      { label: "Jobs @ Tilli", href: "jobs.html" },
       { label: "Privacy Policy", href: "privacy-policy.html" }
     ],
 

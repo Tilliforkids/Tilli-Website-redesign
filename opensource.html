@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- HTML cache self-heal — forces a fresh shell when /version.json bumps. See js/cache-guard.js -->
+<script src="js/cache-guard.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open Source — Tilli</title>
+<meta name="description" content="Tilli's Safety Toolbox, built with the UNICEF Innovation Fund: open-source SEL modules for child online safety, the Tilli IDE, and Tilli x Godot.">
+<meta name="theme-color" content="#26BDE2">
+<link rel="icon" type="image/png" href="assets/ds/tilli-wordmark.png">
+<link rel="apple-touch-icon" href="assets/ds/tilli-wordmark.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tilli">
+<meta property="og:title" content="Open Source — Tilli">
+<meta property="og:description" content="Tilli's Safety Toolbox, built with the UNICEF Innovation Fund: open-source SEL modules for child online safety, the Tilli IDE, and Tilli x Godot.">
+<meta property="og:url" content="https://tillinewwebsite.ishanirai.com/opensource.html">
+<meta property="og:image" content="https://tillinewwebsite.ishanirai.com/assets/ds/tilli-wordmark.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tillinewwebsite.ishanirai.com/assets/ds/tilli-wordmark.png">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
+<link rel="stylesheet" href="css/site.css?v=10">
+<link rel="stylesheet" href="css/booking-form.css?v=14">
+<style>
+  /* page-local: 1-for-1 copy of the Wix "Open Source" page (tillikids.com/opensource).
+     Colours, spacing, media sizes and the green edges are lifted from the live page; the
+     only deliberate change is the font (site Montserrat instead of Wix Poppins, CHG-10). */
+  .os {
+    --os-green: #78DC09;     /* title, swoosh, charter/GitHub band */
+    --os-head: #373B4D;      /* section headings */
+    --os-body: #324158;      /* body copy */
+    --os-pill: #EBEDF5;      /* grey pill buttons */
+    --os-ink: #2A2A2A;       /* button labels */
+    background: #fff; color: var(--os-body);
+  }
+  .os-wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; box-sizing: content-box; }
+  .os p { margin: 0; }
+  .os-gap { height: 22.4px; }
+  .os h2 { font-size: clamp(26px, 3.4vw, 34px); line-height: 51px; font-weight: 700; color: var(--os-head); margin: 0; }
+  .os-pill { display: inline-flex; align-items: center; justify-content: center; height: 35px; padding: 0 24px; border-radius: 60px;
+    background: var(--os-pill); color: var(--os-ink); font-size: 20px; font-weight: 700; text-decoration: none;
+    transition: transform .2s ease; }
+  .os-pill:hover { transform: translateY(-2px); color: var(--os-ink); }
+  .os-pill--white { background: #fff; }
+  .os video, .os img { display: block; max-width: 100%; height: auto; }
+
+  /* hero */
+  .os-hero { padding: 37px 0 51px; }
+  .os-hero__inner { padding-left: 22px; }
+  .os-hero__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+  .os-hero h1 { font-size: clamp(36px, 5.5vw, 56px); line-height: 85px; font-weight: 700; color: var(--os-green); margin: 0;
+    letter-spacing: -0.01em; }
+  .os-hero__logo { width: 263px; margin-top: 7px; flex: none; }
+  .os-hero__copy { max-width: 707px; margin-top: 26px; font-size: 16px; line-height: 28.8px; }
+  .os-hero__copy .os-gap { height: 28.8px; }
+  .os-hero__copy a { color: inherit; text-decoration: underline; }
+
+  /* diagram + why */
+  .os-why { position: relative; padding: 0 0 103px;
+    background: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 125.7 1920 174.3' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%2378DC09' d='M1920 287.7c-480 0-480-162-960-162s-480 162-960 162V300h1920v-12.3z'/%3E%3C/svg%3E") 50% 100% / 100% 20px no-repeat; }
+  .os-why__img { width: 979px; }
+  .os-why__copy { max-width: 942px; margin: 32px 0 0 19px; font-size: 16px; line-height: 22.4px; }
+
+  /* 1. web app */
+  .os-app { position: relative; padding: 71px 0 69px; }
+  .os-app::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 20px; transform: scaleY(-1);
+    background: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 125.7 1920 174.3' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%2378DC09' d='M1920 287.7c-480 0-480-162-960-162s-480 162-960 162V300h1920v-12.3z'/%3E%3C/svg%3E") 50% 100% / 100% 20px no-repeat; }
+  .os-app__grid { display: grid; grid-template-columns: 634px 268px; justify-content: space-between; padding: 0 28px 0 10px; }
+  .os-app__copy { margin-top: 10px; font-size: 16px; line-height: 22.4px; }
+  .os-app ul { margin: 0; padding-left: 22px; list-style: disc; }
+  .os-app ul ul { list-style: circle; }
+  .os-app__gif { width: 268px; }
+
+  /* 2. IDE */
+  .os-ide { padding: 63px 0 28px; }
+  .os-ide__grid { display: grid; grid-template-columns: 491px 454px; gap: 14px; align-items: start; padding-left: 9px; }
+  .os-ide__copy { margin: 11px 0 12px; font-size: 16px; line-height: 22.4px; }
+
+  /* 3. Godot */
+  .os-godot { padding: 71px 0 38px; }
+  .os-godot__grid { display: grid; grid-template-columns: 629px 265px; justify-content: space-between; padding: 0 57px 0 10px; }
+  .os-godot__img { width: 437px; margin-top: 0; }
+  .os-godot__copy { margin-top: 11px; font-size: 16px; line-height: 22.4px; }
+  .os-godot__side { display: flex; flex-direction: column; align-items: center; padding-top: 45px; }
+  .os-godot__side video { width: 265px; }
+  .os-godot__side .os-pill { margin-top: 17px; }
+
+  /* charter + GitHub band */
+  .os-band { position: relative; background: var(--os-green); }
+  .os-band::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 29px; transform: scaleY(-1);
+    background: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 91 1920 209' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform='scale(1,-1) translate(0,-391)'%3E%3Cpath fill='%23FFFFFF' fill-rule='evenodd' d='M1920 291C1656.8 169.2 1323.3 91 960 91S262.5 169.2 0 291v9h1920v-9z M0,90 h1920 v210 h-1920 Z'/%3E%3C/g%3E%3C/svg%3E") 50% 100% / 100% 29px no-repeat; }
+  .os-charter { padding: 87px 0 75px; text-align: center; }
+  .os-charter h2 { font-size: clamp(36px, 5.5vw, 56px); line-height: 78.4px; color: #FAFAFA; }
+  .os-charter__copy { max-width: 929px; margin: 19px auto 36px; font-size: 23px; line-height: 32.2px; color: var(--os-head); }
+  .os-charter__copy .os-gap { height: 32.2px; }
+  .os-charter .os-pill { height: 42px; }
+  .os-gh { padding: 42px 0 36px; }
+  .os-gh h2 { font-size: 25px; line-height: 35px; color: #2F2E2E; }
+  .os-gh p { max-width: 492px; margin: 10px 0 14px; font-size: 19px; line-height: 26.6px; color: #414141; }
+  .os-gh .os-pill { height: 31px; width: 235px; padding: 0; }
+
+  /* below the 980px Wix canvas (+ gutters): stack the two-column rows */
+  @media (max-width: 1020px) {
+    .os-app__grid, .os-ide__grid, .os-godot__grid { grid-template-columns: 1fr; gap: 28px; padding: 0; justify-items: start; }
+    .os-godot__side { padding-top: 0; }
+    .os-hero__inner, .os-why__copy { padding-left: 0; margin-left: 0; }
+    .os-hero h1 { line-height: 1.3; }
+    .os-app__gif, .os-godot__side { justify-self: center; }
+  }
+  @media (max-width: 640px) {
+    .os-hero__top { flex-direction: column-reverse; }
+    .os-hero h1 { line-height: 1.3; }
+    .os-hero__logo { width: 200px; }
+    /* phones: the Wix page is desktop-only, so tighten its fixed desktop sizes */
+    .os-charter { padding: 64px 0 56px; }
+    .os-charter h2 { line-height: 1.25; }
+    .os-charter__copy { font-size: 18px; line-height: 27px; }
+    .os-charter__copy .os-gap { height: 27px; }
+    .os-gh p { font-size: 17px; line-height: 25px; }
+  }
+</style>
+</head>
+<body class="tl-page">
+
+<div class="tl-topbar">
+  <div style="background: var(--tl-green-500);"></div>
+  <div style="background: var(--tl-pink-400);"></div>
+  <div style="background: var(--tl-cyan-500);"></div>
+  <div style="background: var(--tl-yellow-500);"></div>
+</div>
+
+<main class="tl-main os">
+
+  <section class="os-hero">
+    <div class="os-wrap"><div class="os-hero__inner">
+      <div class="os-hero__top">
+        <h1>Tilli's Safety Toolbox!</h1>
+        <img class="os-hero__logo" src="assets/opensource/tilli-x-unicef.png" alt="Tilli × UNICEF Innovation">
+      </div>
+      <div class="os-hero__copy">
+        <p>We’re currently working with the UNICEF Innovation Fund to create Tilli's Safety Toolbox. It is a three module,
+          play-based learning experience on Social-Emotional Learning for Child Online Safety. The focus of this project is
+          to help parents and caregivers have meaningful conversations with their children and teachers, educators and
+          social workers deliver powerful learning to their students!</p>
+        <div class="os-gap"></div>
+        <p>Ownership: The content, frameworks, graphics and trademark is owned by Tilli Kids Inc, as an open source tool,
+          our parameters for fair use is outlined within the project charter.<br>
+          © 2021 Tilli Kids Inc. All Rights Reserved.</p>
+        <div class="os-gap"></div>
+        <p>Term of Service linked here: <a href="https://www.tillikids.com/terms-of-service" target="_blank" rel="noopener">Link</a></p>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="os-why">
+    <div class="os-wrap">
+      <img class="os-why__img" src="assets/opensource/ecosystem.png" loading="lazy"
+        alt="How the pieces fit: Tilli's Safety Toolbox (3 modules) runs on the Tilli web app, the end-user application. Creators build content in the Tilli IDE (content management system); developers use Tilli x Godot (game development tool). Documentation is for all; the front/backend uses react.js, Scala and Redis.">
+      <div class="os-why__copy">
+        <p>This project is open source because we believe in building things together and letting people benefit from and
+          adapt things rather than everybody reinventing their own wheel. Tilli uses games and storytelling to help parents
+          and teachers facilitate fun conversations about life changing topics.</p>
+        <div class="os-gap"></div>
+        <p>In order to build great content for children’s social wellbeing we rely on anybody willing to contribute. In fact
+          Tilli encourages volunteers to drive this project! So whether you want to extend our code for your own use case or
+          just help out - we welcome any contributions to make this project better and safer!</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="os-app">
+    <div class="os-wrap"><div class="os-app__grid">
+      <div>
+        <h2>1. Tilli Web App</h2>
+        <div class="os-app__copy">
+          <p>Tilli Safety Tool Box comprises of 3 modules:</p>
+          <div class="os-gap"></div>
+          <ul><li><strong>Module 1:</strong> Feelings and Emotions (Launched)
+            <ul>
+              <li>Learn to identify, label and express emotions and feelings</li>
+              <li>Develop healthy coping strategies to manage big feelings</li>
+            </ul></li></ul>
+          <div class="os-gap"></div>
+          <ul><li><strong>Module 2:</strong> Trust (Launched)
+            <ul>
+              <li>At the core of staying safe is knowing who and what to trust</li>
+              <li>Understand what trust means, looks, and feels like</li>
+              <li>Practice tools like the trust circle to make safer choices</li>
+            </ul></li></ul>
+          <div class="os-gap"></div>
+          <ul><li><strong>Module 3:</strong> Digital Safety (WIP)
+            <ul>
+              <li>Understanding internet safety and developing positive habits around safe sharing, noticing red flags, being
+                kind and reaching out to a trusted adult</li>
+            </ul></li></ul>
+          <div class="os-gap"></div>
+          <p>Our 3 modules (and even the modules you create) can be accessed with a Web browser over the World Wide Web on
+            any mobile device.</p>
+          <div class="os-gap"></div>
+          <p>Unlike classical game software, browser-based games can be played instantly and do not require a prior
+            installation!</p>
+        </div>
+      </div>
+      <img class="os-app__gif" src="assets/opensource/module-1.gif" alt="Module 1, Feelings and Emotions, being played on a phone" loading="lazy">
+    </div></div>
+  </section>
+
+  <section class="os-ide">
+    <div class="os-wrap"><div class="os-ide__grid">
+      <video src="assets/opensource/ide-demo.mp4" poster="assets/opensource/ide-demo-poster.jpg"
+        autoplay muted loop playsinline preload="none" aria-label="Demo of the Tilli IDE"></video>
+      <div>
+        <h2>2. Tilli IDE</h2>
+        <div class="os-ide__copy">
+          <p>The IDE (Integrated Development Environment) helps users create, manage, and modify content on the Tilli Web
+            App without the need for specialized technical knowledge.</p>
+          <div class="os-gap"></div>
+          <p><strong>In simple terms</strong> this tool helps you build more modules without needing to write all the code
+            from scratch (or even know how to code at all).</p>
+        </div>
+        <a class="os-pill" href="https://github.com/tillioss/tilli-ide" target="_blank" rel="noopener">Explore IDE</a>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="os-godot">
+    <div class="os-wrap"><div class="os-godot__grid">
+      <div>
+        <h2>3. Tilli x Godot</h2>
+        <img class="os-godot__img" src="assets/opensource/godot-editor.jpg" alt="A Tilli module open in the Godot editor" loading="lazy">
+        <div class="os-godot__copy">
+          <p>Tilli uses the open-source Godot Engine to power the interactive modules on our web app. Godot makes it possible
+            to design rich, game-like learning experiences using a visual editor — without needing to write every line of
+            code.</p>
+          <div class="os-gap"></div>
+          <p>With this integration, anyone can build, customize, and manage new Tilli modules quickly and easily. You don’t
+            need to be a programmer — just focus on the experience you want to create, and Godot takes care of the technical
+            heavy lifting behind the scenes.</p>
+        </div>
+      </div>
+      <div class="os-godot__side">
+        <video src="assets/opensource/godot-demo.mp4" poster="assets/opensource/godot-demo-poster.jpg"
+          autoplay muted loop playsinline preload="none" aria-label="A Godot-built Tilli module playing on a phone"></video>
+        <a class="os-pill" href="https://github.com/tillioss/Godot-Strategies-V1" target="_blank" rel="noopener">See Tilli x Godot</a>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="os-band">
+    <div class="os-charter">
+      <div class="os-wrap">
+        <h2>Tilli Project Charter</h2>
+        <div class="os-charter__copy">
+          <p>This documentation website is dedicated to Parents, Teachers, Social Workers, Designers and Developers who want
+            to create their own Social Emotional Learning/ Safety Modules using our software and open to use content.</p>
+          <div class="os-gap"></div>
+          <p>This is maintained by the Tilli Team directly inside the project repository.</p>
+        </div>
+        <a class="os-pill os-pill--white" href="https://tillioss.github.io/docs/project-charter" target="_blank" rel="noopener">Go To Project Charter</a>
+      </div>
+    </div>
+    <div class="os-gh">
+      <div class="os-wrap">
+        <h2>Github Project</h2>
+        <p>This guide is intended for software developers who are familiar with how web applications are built.</p>
+        <a class="os-pill os-pill--white" href="https://github.com/tillioss" target="_blank" rel="noopener">Go to Github</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="js/site-config.js?v=9"></script>
+<script src="js/booking-form.js?v=11"></script>
+<script src="js/site-chrome.js?v=13"></script>
+</body>
+</html>
