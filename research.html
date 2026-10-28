@@ -197,7 +197,9 @@
   .rs-aiw{ padding-top:104px; --pipe-w:120px; --pipe-wall:3px; --pipe-row:65vh; --pipe-edge:16px; --pipe-card-gap:40px; }
   .rs-pipe__svg, .rs-pipe__cp, .rs-pipe__mouth{ display:none; }
   @media (min-width:861px) and (pointer:fine){
-    .rs-aiw{ position:relative; }
+    /* the pipe starts/ends 2×pipe-w past the screen edges on purpose (open ends never show);
+       clip x so that bleed can't ever become horizontal scroll. clip (not hidden) keeps y visible. */
+    .rs-aiw{ position:relative; overflow-x:clip; }
     .rs-pipe{ position:relative; padding:64px 0 56px; }
     /* one band per card: rows are --pipe-row tall, a run along the top of each and one under the last */
     .rs-pipe .rs-ai{ grid-template-columns:repeat(2,minmax(0,1fr)); grid-auto-rows:var(--pipe-row); gap:0 48px; }
