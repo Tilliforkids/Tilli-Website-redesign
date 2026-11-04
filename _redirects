@@ -1,5 +1,5 @@
 # Old Wix URLs -> new pages (301). Undecided Wix pages are not mapped yet; see SEO.md 2.2.
-/privacypolicy       /privacy-policy.html  301
-/team-tilli          /team.html            301
-/careers             /jobs.html            301
-/terms-of-service    /terms.html           301
+/privacypolicy       /privacy-policy       301
+/team-tilli          /team                 301
+/careers             /jobs                 301
+/terms-of-service    /terms                301
