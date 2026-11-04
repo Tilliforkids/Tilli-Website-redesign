@@ -71,9 +71,9 @@ Fill this in from 2.1. Any URL with backlinks or traffic **must** redirect somew
 How to do it: add one line per row to `_redirects` at the repo root (`/old-path  /new-path  301`). Targets use the extensionless address (`/team`, not `/team.html`): Cloudflare Pages redirects `.html` addresses to the extensionless ones, so a `.html` target would add a second hop.
 
 ### 2.3 Switch every URL from staging to the real domain
-- [ ] Replace `https://tillinewwebsite.ishanirai.com` with `https://www.tillikids.com` in every `og:url`, `og:image`, `twitter:image` and `canonical` (root and `/m/`).
-- [ ] Change the `CNAME` file to `www.tillikids.com`.
-- [ ] Bump `version.json`.
+- [x] Replace `https://tillinewwebsite.ishanirai.com` with `https://www.tillikids.com` in every `og:url`, `og:image`, `twitter:image` and `canonical` (root and `/m/`).
+- [x] Change the `CNAME` file to `www.tillikids.com`.
+- [x] Bump `version.json`.
 
 ### 2.4 Canonicals and the device split (important)
 The phone versions of Success and Research are separate pages under `/m/`, so Google needs to be told they're the same content as the desktop pages:
@@ -91,8 +91,8 @@ Each title should be under ~60 characters, each description under ~155, and no t
 - [ ] Rewrite each description with the words a school leader would search for (SEL programme, foundational skills assessment, CBSE/IB, India/Sri Lanka). Claims must match `success.html`.
 
 ### 2.6 Sitemap, robots, 404
-- [ ] `sitemap.xml` at the site root: list the desktop pages only, never `/m/` (they're covered by the alternate tags). Leave out the `.dc.html` drafts.
-- [ ] `robots.txt`: allow everything, add `Sitemap: https://www.tillikids.com/sitemap.xml`, and block the drafts (`/*.dc.html`, `/_ds/`) or delete them before launch.
+- [x] `sitemap.xml` at the site root: list the desktop pages only, never `/m/` (they're covered by the alternate tags). Leave out the `.dc.html` drafts.
+- [x] `robots.txt`: allow everything, add `Sitemap: https://www.tillikids.com/sitemap.xml`, and block the drafts (`/*.dc.html`, `/_ds/`) or delete them before launch.
 - [ ] `404.html` in the site design (GitHub Pages serves it automatically), with links to Home, FAQ and Book a call.
 
 ### 2.7 Structured data (JSON-LD)
@@ -123,15 +123,13 @@ Each title should be under ~60 characters, each description under ~155, and no t
 
 ## 3. Launch day
 
-1. Merge the URL switch (2.3) and redirects (2.2), then push.
-2. In Wix: disconnect the domain from the Wix site and point DNS at GitHub Pages (or Cloudflare). Records:
-   - `www` → CNAME `tilliforkids.github.io`
-   - bare domain → A records `185.199.108.153`, `.109.153`, `.110.153`, `.111.153` (GitHub Pages)
-3. In GitHub repo → Settings → Pages: set the custom domain to `www.tillikids.com` and turn on **Enforce HTTPS** once the certificate is issued.
-4. Spot-check every row of the redirect map, plus `http://`, the bare domain and `www`.
-5. Search Console: verify the **Domain property** `tillikids.com` with a DNS TXT record, submit `sitemap.xml`, and request indexing for Home, Success, Research and FAQ.
-6. Bing Webmaster Tools: import the site from Search Console (this also covers ChatGPT/Copilot search, which use Bing's index).
-7. Turn off or redirect the staging domain `tillinewwebsite.ishanirai.com` so it isn't indexed as a duplicate.
+1. [x] Merge the URL switch (2.3) and redirects (2.2), then push.
+2. [x] In Wix → Domains: changed the `tillikids.com` nameservers to Cloudflare (`julio.ns.cloudflare.com`, `raquel.ns.cloudflare.com`). The domain stays registered at Wix; all DNS (incl. the @tillikids.com email records) now lives in Cloudflare.
+3. [x] In Cloudflare: added `www.tillikids.com` and the apex `tillikids.com` as custom domains on the Pages project `tilli-website-redesign`, and added redirect rules sending the bare domain and `measures.tillikids.com` to `https://www.tillikids.com` (301).
+4. [ ] Spot-check every row of the redirect map, plus `http://`, the bare domain and `www`.
+5. [ ] Search Console: verify the **Domain property** `tillikids.com` with a DNS TXT record, submit `sitemap.xml`, and request indexing for Home, Success, Research and FAQ.
+6. [ ] Bing Webmaster Tools: import the site from Search Console (this also covers ChatGPT/Copilot search, which use Bing's index).
+7. [ ] Turn off or redirect the staging domain `tillinewwebsite.ishanirai.com` so it isn't indexed as a duplicate.
 
 ---
 
