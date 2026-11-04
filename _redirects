@@ -3,3 +3,35 @@
 /team-tilli          /team                 301
 /careers             /jobs                 301
 /terms-of-service    /terms                301
+
+# Old Wix pages (2026-11-04 cutover)
+/tilli-for-school                      /                 301
+/tilliatschool                         /                 301
+/copy-of-tilli-for-school-experiment   /                 301
+/tilli-for-home                        /                 301
+/tilliathome                           /                 301
+/copy-of-tilli-for-home                /                 301
+/tilli-tools-overview                  /                 301
+/tilli-evidence                        /research         301
+/asktilli-dataset                      /research         301
+/2025-impact-report                    /research         301
+/tilli-for-unrwa                       /success          301
+/about-3                               /team             301
+/privacy-policy-arabic                 /privacy-policy   301
+/donate                                /                 301
+/webinar                               /                 301
+/challenges                            /                 301
+/certified-sel-workshop-for-teachers   /                 301
+/join-our-newsletter                   /                 301
+/tilli-teacher-referral                /                 301
+/gift-card                             /                 301
+/payment-request-page                  /                 301
+/shop                                  /                 301
+/shop-1                                /                 301
+/shop-2                                /                 301
+/blog                                  /                 301
+/blog/*                                /                 301
+/post/*                                /                 301
+/product-page/*                        /                 301
+/event-details/*                       /                 301
+/challenge-page/*                      /                 301
