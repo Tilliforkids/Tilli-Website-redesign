@@ -3,7 +3,7 @@
 Living doc. Work through it at the end, before and after `tillikids.com` is pointed at the new site.
 Update the **Status** column and the **Changelog** at the bottom whenever something here changes.
 
-_Last updated: 2026-10-28_
+_Last updated: 2026-11-04_
 
 ---
 
@@ -33,8 +33,8 @@ Every `og:url` / `og:image` / canonical points at the **staging domain** `tillin
 
 | # | Decision | Options | Recommendation |
 |---|---|---|---|
-| D1 | Final host name | `www.tillikids.com` vs bare `tillikids.com` | Use `www`, and redirect the bare domain to it. Wix serves `www` today, so the URLs Google already knows stay the same |
-| D2 | How old Wix URLs redirect | (a) GitHub Pages + HTML redirect pages · (b) put Cloudflare (free) in front for real 301s | **(b)** if we're open to moving DNS to Cloudflare. GitHub Pages can't send real 301s |
+| D1 | Final host name | `www.tillikids.com` vs bare `tillikids.com` | ✅ **Done (2026-11-04):** `www.tillikids.com` is live on Cloudflare Pages (project `tilli-website-redesign`). Bare `tillikids.com` and `measures.tillikids.com` 301 to `www` via Cloudflare redirect rules |
+| D2 | How old Wix URLs redirect | (a) GitHub Pages + HTML redirect pages · (b) put Cloudflare (free) in front for real 301s | ✅ **Done (2026-11-04):** nameservers moved to Cloudflare (domain still registered at Wix). Old Wix URLs get real 301s from `_redirects` on Cloudflare Pages |
 | D3 | Analytics | GA4 · Plausible/Fathom (no cookies) · none | Plausible or GA4. If GA4 or the Meta pixel is used, we need a cookie banner for EU/UK visitors |
 | D4 | Keep the Meta (Facebook) pixel from Wix? | yes / no | Ask whoever runs ads |
 | D5 | What happens to the Wix blog, shop, events and open-source pages | rebuild · redirect to the closest new page · let them 404 | List them (step 2.1), then decide one by one |
@@ -54,24 +54,21 @@ Fill this in from 2.1. Any URL with backlinks or traffic **must** redirect somew
 | Old Wix path | New target | Status |
 |---|---|---|
 | `/` | `/` | same URL |
-| `/faq` | `/faq.html` | check (GitHub Pages usually serves `/faq` → `faq.html` on its own) |
-| `/research` | `/research.html` | check (as above) |
-| `/privacypolicy` | `/privacy-policy.html` | needs redirect |
-| `/team-tilli` | `/team.html` | needs redirect |
-| `/careers` | `/jobs.html` | needs redirect |
-| `/tilli-for-school` | `/` or `/success.html`? | decide |
-| `/asktilli-dataset` | `/research.html`? | decide |
+| `/faq` | `/faq` | same URL (Cloudflare Pages serves `faq.html` at `/faq`) |
+| `/research` | `/research` | same URL (as above) |
+| `/privacypolicy` | `/privacy-policy` | ✅ 301 in `_redirects` |
+| `/team-tilli` | `/team` | ✅ 301 in `_redirects` |
+| `/careers` | `/jobs` | ✅ 301 in `_redirects` |
+| `/tilli-for-school` | `/` or `/success`? | decide |
+| `/asktilli-dataset` | `/research`? | decide |
 | `/tilli-for-home` | ? | decide (D5) |
 | `/shop` | ? | decide (D5) |
-| `/terms-of-service` | `/terms.html` | needs redirect |
-| `/opensource` | `/opensource.html` | check (same name, so GitHub Pages should serve it without a redirect) |
+| `/terms-of-service` | `/terms` | ✅ 301 in `_redirects` |
+| `/opensource` | `/opensource` | same URL (as above) |
 | `/webinar` | ? | decide (D5) |
 | `/blog`, `/post/*` | ? | decide (D5) |
 
-How to do it:
-- **With Cloudflare (D2-b):** Rules → Redirect Rules, one 301 per row.
-- **GitHub Pages only (D2-a):** add a folder per old path, e.g. `team-tilli/index.html`, containing
-  `<meta http-equiv="refresh" content="0; url=/team.html">`, `<link rel="canonical" href="https://www.tillikids.com/team.html">`, and a `location.replace(...)` call. Google treats an instant meta refresh as a permanent redirect.
+How to do it: add one line per row to `_redirects` at the repo root (`/old-path  /new-path  301`). Targets use the extensionless address (`/team`, not `/team.html`): Cloudflare Pages redirects `.html` addresses to the extensionless ones, so a `.html` target would add a second hop.
 
 ### 2.3 Switch every URL from staging to the real domain
 - [ ] Replace `https://tillinewwebsite.ishanirai.com` with `https://www.tillikids.com` in every `og:url`, `og:image`, `twitter:image` and `canonical` (root and `/m/`).
@@ -167,3 +164,4 @@ Each title should be under ~60 characters, each description under ~155, and no t
 | 2026-10-28 | `team.html` rebuilt as a 1-for-1 copy of the Wix team page (site font kept). |
 | 2026-10-28 | `jobs.html` and `opensource.html` rebuilt as 1-for-1 copies of Wix `/careers` and `/opensource` (site font kept). |
 | 2026-10-28 | Added `terms.html` (content from Wix `/terms-of-service`, styled like the Privacy Policy); Open Source now links to it. Module-1 GIF replaced by a 539 KB MP4. Deleted the old Wix export. |
+| 2026-11-04 | **Domain cutover.** `www.tillikids.com` live on Cloudflare Pages, nameservers on Cloudflare, bare domain and `measures.tillikids.com` 301 to `www` (D1, D2 done). Staging URL swapped for `www.tillikids.com` everywhere (2.3); self-canonicals on all desktop pages, `/m/` canonicals point at desktop; added `robots.txt`, `sitemap.xml` and `_redirects` (4 Wix 301s). All page addresses (canonical, `og:url`, sitemap, redirect targets) switched to extensionless URLs. GitHub Pages staging (`tillinewwebsite.ishanirai.com`) being retired. |
