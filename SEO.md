@@ -56,17 +56,24 @@ Fill this in from 2.1. Any URL with backlinks or traffic **must** redirect somew
 | `/` | `/` | same URL |
 | `/faq` | `/faq` | same URL (Cloudflare Pages serves `faq.html` at `/faq`) |
 | `/research` | `/research` | same URL (as above) |
-| `/privacypolicy` | `/privacy-policy` | ✅ 301 in `_redirects` |
-| `/team-tilli` | `/team` | ✅ 301 in `_redirects` |
-| `/careers` | `/jobs` | ✅ 301 in `_redirects` |
-| `/tilli-for-school` | `/` or `/success`? | decide |
-| `/asktilli-dataset` | `/research`? | decide |
-| `/tilli-for-home` | ? | decide (D5) |
-| `/shop` | ? | decide (D5) |
-| `/terms-of-service` | `/terms` | ✅ 301 in `_redirects` |
 | `/opensource` | `/opensource` | same URL (as above) |
-| `/webinar` | ? | decide (D5) |
-| `/blog`, `/post/*` | ? | decide (D5) |
+| `/privacypolicy` | `/privacy-policy` | ✅ 301 in `_redirects` |
+| `/privacy-policy-arabic` | `/privacy-policy` | ✅ 301 in `_redirects` (no Arabic version yet) |
+| `/team-tilli` | `/team` | ✅ 301 in `_redirects` |
+| `/about-3` | `/team` | ✅ 301 in `_redirects` |
+| `/careers` | `/jobs` | ✅ 301 in `_redirects` |
+| `/terms-of-service` | `/terms` | ✅ 301 in `_redirects` |
+| `/tilli-evidence`, `/asktilli-dataset`, `/2025-impact-report` | `/research` | ✅ 301 in `_redirects` |
+| `/tilli-for-unrwa` | `/success` | ⚠️ **Temporary** 301. An unlisted UNRWA page (noindex, not in nav or sitemap) replaces it at this same address around **2026-11-11**. When it ships, delete this line from `_redirects`, or Cloudflare keeps redirecting and the page is never served |
+| `/tilli-for-school`, `/tilliatschool`, `/copy-of-tilli-for-school-experiment` | `/` | ✅ 301 in `_redirects` |
+| `/tilli-for-home`, `/tilliathome`, `/copy-of-tilli-for-home` | `/` | ✅ 301 in `_redirects` |
+| `/tilli-tools-overview` | `/` | ✅ 301 in `_redirects` |
+| `/donate`, `/webinar`, `/challenges`, `/certified-sel-workshop-for-teachers` | `/` | ✅ 301 in `_redirects` |
+| `/join-our-newsletter`, `/tilli-teacher-referral` | `/` | ✅ 301 in `_redirects` |
+| `/gift-card`, `/payment-request-page` | `/` | ✅ 301 in `_redirects` |
+| `/shop`, `/shop-1`, `/shop-2`, `/product-page/*` | `/` | ✅ 301 in `_redirects` |
+| `/blog`, `/blog/*`, `/post/*` | `/` | ✅ 301 in `_redirects` |
+| `/event-details/*`, `/challenge-page/*` | `/` | ✅ 301 in `_redirects` |
 
 How to do it: add one line per row to `_redirects` at the repo root (`/old-path  /new-path  301`). Targets use the extensionless address (`/team`, not `/team.html`): Cloudflare Pages redirects `.html` addresses to the extensionless ones, so a `.html` target would add a second hop.
 
@@ -163,3 +170,4 @@ Each title should be under ~60 characters, each description under ~155, and no t
 | 2026-10-28 | `jobs.html` and `opensource.html` rebuilt as 1-for-1 copies of Wix `/careers` and `/opensource` (site font kept). |
 | 2026-10-28 | Added `terms.html` (content from Wix `/terms-of-service`, styled like the Privacy Policy); Open Source now links to it. Module-1 GIF replaced by a 539 KB MP4. Deleted the old Wix export. |
 | 2026-11-04 | **Domain cutover.** `www.tillikids.com` live on Cloudflare Pages, nameservers on Cloudflare, bare domain and `measures.tillikids.com` 301 to `www` (D1, D2 done). Staging URL swapped for `www.tillikids.com` everywhere (2.3); self-canonicals on all desktop pages, `/m/` canonicals point at desktop; added `robots.txt`, `sitemap.xml` and `_redirects` (4 Wix 301s). All page addresses (canonical, `og:url`, sitemap, redirect targets) switched to extensionless URLs. GitHub Pages staging (`tillinewwebsite.ishanirai.com`) being retired. |
+| 2026-11-04 | Redirect map (2.2) rebuilt to match `_redirects`: 34 rules, every known Wix page now 301s. `/tilli-for-unrwa` → `/success` is temporary until the unlisted UNRWA page ships (~2026-11-11). |
