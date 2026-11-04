@@ -38,7 +38,7 @@
 const CONFIG = {
   NOTIFY_TO: 'info@tillikids.com,kavindya@tillikids.com',
   CONFIRM_REPLY_TO: 'kavindya@tillikids.com',
-  SITE_URL: 'https://tillinewwebsite.ishanirai.com',
+  SITE_URL: 'https://www.tillikids.com',
   KAVI_LINKEDIN: 'https://www.linkedin.com/in/kavindyathennakoon/',
   CALENDLY_URL: 'https://calendly.com/kavindya-tilli/conversations-kavi',
   WHATSAPP_NUMBER: '94741889706',
