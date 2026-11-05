@@ -64,7 +64,7 @@ Fill this in from 2.1. Any URL with backlinks or traffic **must** redirect somew
 | `/careers` | `/jobs` | ✅ 301 in `_redirects` |
 | `/terms-of-service` | `/terms` | ✅ 301 in `_redirects` |
 | `/tilli-evidence`, `/asktilli-dataset`, `/2025-impact-report` | `/research` | ✅ 301 in `_redirects` |
-| `/tilli-for-unrwa` | `/tilli-for-unrwa` | same URL. Standalone page `tilli-for-unrwa.html` (no site nav/footer, not linked from the site, not in the sitemap; indexable, no `noindex`). PDFs in `assets/unrwa/` |
+| `/tilli-for-unrwa` | `/tilli-for-unrwa` | same URL. Standalone page `tilli-for-unrwa.html` (no site nav/footer, not linked from the site; listed in `sitemap.xml`; indexable, no `noindex`). PDFs in `assets/unrwa/` |
 | `/tilli-for-school`, `/tilliatschool`, `/copy-of-tilli-for-school-experiment` | `/` | ✅ 301 in `_redirects` |
 | `/tilli-for-home`, `/tilliathome`, `/copy-of-tilli-for-home` | `/` | ✅ 301 in `_redirects` |
 | `/tilli-tools-overview` | `/` | ✅ 301 in `_redirects` |
@@ -172,3 +172,4 @@ Each title should be under ~60 characters, each description under ~155, and no t
 | 2026-11-04 | **Domain cutover.** `www.tillikids.com` live on Cloudflare Pages, nameservers on Cloudflare, bare domain and `measures.tillikids.com` 301 to `www` (D1, D2 done). Staging URL swapped for `www.tillikids.com` everywhere (2.3); self-canonicals on all desktop pages, `/m/` canonicals point at desktop; added `robots.txt`, `sitemap.xml` and `_redirects` (4 Wix 301s). All page addresses (canonical, `og:url`, sitemap, redirect targets) switched to extensionless URLs. GitHub Pages staging (`tillinewwebsite.ishanirai.com`) being retired. |
 | 2026-11-04 | Redirect map (2.2) rebuilt to match `_redirects`: 34 rules, every known Wix page now 301s. `/tilli-for-unrwa` → `/success` is temporary until the unlisted UNRWA page ships (~2026-11-11). |
 | 2026-11-05 | Added `tilli-for-unrwa.html`, the Tilli × UNRWA bilingual teacher page, as a standalone page at the old Wix URL (no site chrome, unlinked, not in sitemap, indexable). Its 36 activity PDFs moved off Wix into `assets/unrwa/`. Removed the temporary `/tilli-for-unrwa` → `/success` redirect. |
+| 2026-11-05 | Added `/tilli-for-unrwa` to `sitemap.xml` so Google can find the page (still not linked from the site). |
