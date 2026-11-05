@@ -1,37 +1,40 @@
-<!-- ============================================================================
-     TILLI × UNRWA — STANDALONE EMBED  (for ANY non-Wix site)
-     ----------------------------------------------------------------------------
-     One self-contained file. No Wix, no Velo, no CMS — all content is baked in.
-     It renders the whole bilingual page: ع/En toggle → Semester Activities (with
-     PDF downloads) → Ask Tilli (WhatsApp + QR) → Timeline + Certification →
-     Teacher FAQs (with QR) → Important links.
-
-     HOW TO ADD IT TO YOUR SITE  (pick whichever your builder supports):
-       A) Host this file somewhere and point an "Embed URL / iFrame" element at it.
-       B) Paste the whole file into a "Custom HTML / Code Embed" block that renders
-          code in an iframe (Squarespace Code Block, Framer Embed, etc.).
-       ► An iframe is recommended: it isolates the Arabic RTL direction, fonts and
-         colours from your host page so nothing leaks either way.
-
-     EDITING CONTENT later: everything lives in the DATA block near the top of the
-     <script> (ACT / FAQS / LINKS / URLS / STAGES / CERT). Change text there.
-     ============================================================================ -->
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- HTML cache self-heal — forces a fresh shell when /version.json bumps. See js/cache-guard.js -->
+<script src="js/cache-guard.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tilli × UNRWA | تيلي × الأونروا</title>
 <meta name="description" content="Tilli × UNRWA teacher hub: semester activities, Ask Tilli, programme timeline, certification and teacher FAQs.">
+<meta name="theme-color" content="#26BDE2">
+<link rel="icon" type="image/png" href="assets/ds/favicon.png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/ds/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tilli">
+<meta property="og:title" content="Tilli × UNRWA | تيلي × الأونروا">
+<meta property="og:description" content="Tilli × UNRWA teacher hub: semester activities, Ask Tilli, programme timeline, certification and teacher FAQs.">
 <link rel="canonical" href="https://www.tillikids.com/tilli-for-unrwa">
-<link rel="icon" type="image/png" href="/assets/ds/favicon.png" sizes="192x192">
-<link rel="apple-touch-icon" href="/assets/ds/apple-touch-icon.png">
+<meta property="og:url" content="https://www.tillikids.com/tilli-for-unrwa">
+<meta property="og:image" content="https://www.tillikids.com/assets/ds/og-share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.tillikids.com/assets/ds/og-share.jpg">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/colors.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/typography.css">
+<link rel="stylesheet" href="_ds/tilli-new-design-system-4928e3a5-55df-4bf0-a054-def8ad040436/tokens/layout.css">
+<link rel="stylesheet" href="css/site.css?v=10">
+<link rel="stylesheet" href="css/booking-form.css?v=14">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <style>
-  :root{
+  /* Tilli × UNRWA — content styles, all scoped under .unrwa so they never touch the site chrome.
+     Source: Tilli with UNRWA/…/tilli-standalone-embed.html (data block lives in the script below). */
+  .unrwa{
     --sky:#EAF4FB; --card:#FFFFFF; --ink:#123049; --muted:#5B7488;
     --teal:#00B8A9; --pink:#E8446A; --yellow:#F5C518; --line:#CFE4F2;
     --shadow:0 10px 30px rgba(31,110,168,.12); --radius:22px;
@@ -44,105 +47,114 @@
     --font-ar:'Cairo','Poppins',system-ui,-apple-system,sans-serif;
     --gap:clamp(28px,5vw,60px);
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:var(--sky);}
-  body{color:var(--ink);font-family:var(--font-ar);-webkit-font-smoothing:antialiased;
-    padding:clamp(14px,3vw,34px) clamp(14px,3vw,26px);}
-  html[dir="ltr"] body{font-family:var(--font-en);}
-  .wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:var(--gap);}
-  .sec{scroll-margin-top:20px;}
-  .head{text-align:center;margin-bottom:clamp(16px,2.2vw,26px);}
-  .eyebrow{color:var(--teal);font-weight:700;font-size:var(--fs-2);margin-bottom:6px;}
-  .title{font-size:var(--fs-5);font-weight:800;line-height:1.08;margin-bottom:8px;}
-  .title.sm{font-size:var(--fs-4);}
-  .subtitle{font-size:var(--fs-2);color:var(--muted);max-width:640px;margin:0 auto;}
-  .subtitle b{color:var(--ink);font-weight:700;}
-  .card{background:var(--card);border:1px solid rgba(207,228,242,.7);border-radius:var(--radius);box-shadow:var(--shadow);}
+  .unrwa *{box-sizing:border-box;margin:0;padding:0}
+  .unrwa{color:var(--ink);font-family:var(--font-ar);-webkit-font-smoothing:antialiased;background:var(--sky);
+    padding:clamp(28px,5vw,64px) clamp(14px,3vw,26px);}
+  .unrwa[dir="ltr"]{font-family:var(--font-en);}
+  .unrwa .wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:var(--gap);}
+  .unrwa .sec{scroll-margin-top:20px;}
+  .unrwa .head{text-align:center;margin-bottom:clamp(16px,2.2vw,26px);}
+  .unrwa .eyebrow{color:var(--teal);font-weight:700;font-size:var(--fs-2);margin-bottom:6px;}
+  .unrwa .title{font-size:var(--fs-5);font-weight:800;line-height:1.08;margin-bottom:8px;}
+  .unrwa .title.sm{font-size:var(--fs-4);}
+  .unrwa .subtitle{font-size:var(--fs-2);color:var(--muted);max-width:640px;margin:0 auto;}
+  .unrwa .subtitle b{color:var(--ink);font-weight:700;}
+  .unrwa .card{background:var(--card);border:1px solid rgba(207,228,242,.7);border-radius:var(--radius);box-shadow:var(--shadow);}
 
   /* ---- language toggle ---- */
-  .langbar{display:flex;justify-content:center;}
-  .wa-bar{display:flex;justify-content:center;margin-top:clamp(-18px,-1.4vw,-6px);}
-  .btn-wa{display:inline-flex;align-items:center;gap:9px;background:#25D366;color:#fff;font-weight:800;text-decoration:none;padding:11px 22px;border-radius:999px;font-size:var(--fs-2);box-shadow:0 5px 16px rgba(37,211,102,.4);transition:.15s;}
-  .btn-wa:hover{filter:brightness(.97);transform:translateY(-1px);}
-  .btn-wa svg{width:21px;height:21px;flex:0 0 auto;}
-  html[dir="rtl"] .btn-wa{font-family:var(--font-ar);}
-  .lang-toggle{display:inline-flex;background:#FFF5E9;border:1px solid #F3D9B8;border-radius:999px;padding:5px;gap:2px;}
-  .lang-toggle button{font:700 var(--fs-2)/1 var(--font-en);border:0;background:transparent;color:var(--muted);
+  .unrwa .langbar{display:flex;justify-content:center;}
+  .unrwa .wa-bar{display:flex;justify-content:center;margin-top:clamp(-18px,-1.4vw,-6px);}
+  .unrwa .btn-wa{display:inline-flex;align-items:center;gap:9px;background:#25D366;color:#fff;font-weight:800;text-decoration:none;padding:11px 22px;border-radius:999px;font-size:var(--fs-2);box-shadow:0 5px 16px rgba(37,211,102,.4);transition:.15s;}
+  .unrwa .btn-wa:hover{filter:brightness(.97);transform:translateY(-1px);}
+  .unrwa .btn-wa svg{width:21px;height:21px;flex:0 0 auto;}
+  .unrwa[dir="rtl"] .btn-wa{font-family:var(--font-ar);}
+  .unrwa .lang-toggle{display:inline-flex;background:#FFF5E9;border:1px solid #F3D9B8;border-radius:999px;padding:5px;gap:2px;}
+  .unrwa .lang-toggle button{font:700 var(--fs-2)/1 var(--font-en);border:0;background:transparent;color:var(--muted);
     padding:9px 22px;border-radius:999px;cursor:pointer;transition:.18s;}
-  .lang-toggle button.active{background:var(--pink);color:#fff;box-shadow:0 3px 10px rgba(232,68,106,.35);}
+  .unrwa .lang-toggle button.active{background:var(--pink);color:#fff;box-shadow:0 3px 10px rgba(232,68,106,.35);}
 
   /* ---- semester ---- */
-  .sem-btns{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.6vw,20px);margin-bottom:18px;}
-  .sem-btn{cursor:pointer;border:0;text-align:center;padding:clamp(16px,2vw,26px);border-radius:var(--radius);
+  .unrwa .sem-btns{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.6vw,20px);margin-bottom:18px;}
+  .unrwa .sem-btn{cursor:pointer;border:0;text-align:center;padding:clamp(16px,2vw,26px);border-radius:var(--radius);
     background:var(--card);box-shadow:var(--shadow);border:1px solid rgba(207,228,242,.7);transition:.15s;font-family:inherit;}
-  .sem-btn .sb-t{font-size:var(--fs-3);font-weight:800;color:var(--ink);}
-  .sem-btn .sb-s{font-size:var(--fs-1);color:var(--muted);margin-top:4px;}
-  .sem-btn.active{background:var(--teal);border-color:var(--teal);}
-  .sem-btn.active .sb-t{color:#fff;} .sem-btn.active .sb-s{color:rgba(255,255,255,.9);}
-  .counter{font-size:var(--fs-1);font-weight:700;color:var(--muted);margin:2px 2px 12px;}
-  .days{display:flex;flex-direction:column;gap:12px;}
-  .day{display:flex;align-items:center;gap:14px;padding:clamp(12px,1.5vw,16px) clamp(14px,1.8vw,20px);}
-  .day .badge{flex:0 0 auto;width:58px;text-align:center;background:var(--sky);border-radius:14px;padding:8px 4px;line-height:1.05;}
-  .day .badge .d{font-size:var(--fs-1);font-weight:700;color:var(--teal);}
-  .day .badge .n{font-size:var(--fs-3);font-weight:800;color:var(--teal);}
-  .day .nm{flex:1;font-size:var(--fs-2);font-weight:800;color:var(--ink);}
-  .pdf{flex:0 0 auto;display:grid;place-items:center;width:clamp(46px,6vw,56px);height:clamp(46px,6vw,56px);
+  .unrwa .sem-btn .sb-t{font-size:var(--fs-3);font-weight:800;color:var(--ink);}
+  .unrwa .sem-btn .sb-s{font-size:var(--fs-1);color:var(--muted);margin-top:4px;}
+  .unrwa .sem-btn.active{background:var(--teal);border-color:var(--teal);}
+  .unrwa .sem-btn.active .sb-t{color:#fff;} .unrwa .sem-btn.active .sb-s{color:rgba(255,255,255,.9);}
+  .unrwa .counter{font-size:var(--fs-1);font-weight:700;color:var(--muted);margin:2px 2px 12px;}
+  .unrwa .days{display:flex;flex-direction:column;gap:12px;}
+  .unrwa .day{display:flex;align-items:center;gap:14px;padding:clamp(12px,1.5vw,16px) clamp(14px,1.8vw,20px);}
+  .unrwa .day .badge{flex:0 0 auto;width:58px;text-align:center;background:var(--sky);border-radius:14px;padding:8px 4px;line-height:1.05;}
+  .unrwa .day .badge .d{font-size:var(--fs-1);font-weight:700;color:var(--teal);}
+  .unrwa .day .badge .n{font-size:var(--fs-3);font-weight:800;color:var(--teal);}
+  .unrwa .day .nm{flex:1;font-size:var(--fs-2);font-weight:800;color:var(--ink);}
+  .unrwa .pdf{flex:0 0 auto;display:grid;place-items:center;width:clamp(46px,6vw,56px);height:clamp(46px,6vw,56px);
     background:var(--yellow);color:var(--ink);border-radius:50%;text-decoration:none;
     box-shadow:0 6px 14px rgba(245,197,24,.45);transition:.15s;}
-  .pdf svg{width:20px;height:20px;} .pdf:hover{filter:brightness(.97);transform:translateY(-1px);}
-  .pdf.disabled{opacity:.45;pointer-events:none;filter:grayscale(.4);}
+  .unrwa .pdf svg{width:20px;height:20px;} .unrwa .pdf:hover{filter:brightness(.97);transform:translateY(-1px);}
+  .unrwa .pdf.disabled{opacity:.45;pointer-events:none;filter:grayscale(.4);}
 
   /* ---- timeline ---- */
-  .tl-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,3vw,44px);align-items:center;}
-  @media(max-width:760px){ .tl-body{grid-template-columns:1fr;gap:clamp(14px,4vw,22px);} }
-  .timeline{position:relative;padding-inline-start:28px;}
-  .timeline::before{content:"";position:absolute;inset-inline-start:9px;top:5px;bottom:5px;width:2px;background:linear-gradient(var(--teal),var(--line));border-radius:2px;}
-  .stage{position:relative;margin-bottom:clamp(9px,1.3vw,14px);}
-  .stage::before{content:"";position:absolute;inset-inline-start:-25px;top:16px;width:12px;height:12px;border-radius:50%;background:var(--pink);border:3px solid var(--sky);box-shadow:0 0 0 2px var(--pink);}
-  .stg{padding:clamp(11px,1.5vw,16px) clamp(13px,1.7vw,20px);}
-  .stg .when{color:var(--teal);font-weight:700;font-size:var(--fs-1);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;}
-  .stg .what{font-size:var(--fs-3);font-weight:700;line-height:1.25;}
-  .stg .goal{margin-top:6px;font-size:var(--fs-2);color:var(--muted);display:flex;gap:7px;align-items:flex-start;}
-  .stg .goal .flag{color:var(--yellow);flex:0 0 auto;}
-  .cert{background:linear-gradient(135deg,#00B8A9 0%,#0596b0 100%);color:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(16px,2.2vw,26px);}
-  .cert h3{font-size:var(--fs-4);font-weight:800;margin-bottom:5px;display:flex;align-items:center;gap:10px;}
-  .cert .cbadge{background:var(--yellow);color:var(--ink);border-radius:10px;padding:3px 9px;font-size:var(--fs-1);font-weight:800;}
-  .cert p{font-size:var(--fs-2);opacity:.95;margin-bottom:12px;}
-  .cert ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
-  .cert li{display:flex;align-items:flex-start;gap:10px;font-size:var(--fs-2);font-weight:600;background:rgba(255,255,255,.12);border-radius:12px;padding:10px 13px;}
-  .cert li .tick{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--yellow);color:var(--ink);display:grid;place-items:center;font-weight:900;font-size:13px;}
+  .unrwa .u-tlbody{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,3vw,44px);align-items:center;}
+  @media(max-width:760px){ .unrwa .u-tlbody{grid-template-columns:1fr;gap:clamp(14px,4vw,22px);} }
+  .unrwa .timeline{position:relative;padding-inline-start:28px;}
+  .unrwa .timeline::before{content:"";position:absolute;inset-inline-start:9px;top:5px;bottom:5px;width:2px;background:linear-gradient(var(--teal),var(--line));border-radius:2px;}
+  .unrwa .stage{position:relative;margin-bottom:clamp(9px,1.3vw,14px);}
+  .unrwa .stage::before{content:"";position:absolute;inset-inline-start:-25px;top:16px;width:12px;height:12px;border-radius:50%;background:var(--pink);border:3px solid var(--sky);box-shadow:0 0 0 2px var(--pink);}
+  .unrwa .stg{padding:clamp(11px,1.5vw,16px) clamp(13px,1.7vw,20px);}
+  .unrwa .stg .when{color:var(--teal);font-weight:700;font-size:var(--fs-1);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;}
+  .unrwa .stg .what{font-size:var(--fs-3);font-weight:700;line-height:1.25;}
+  .unrwa .stg .goal{margin-top:6px;font-size:var(--fs-2);color:var(--muted);display:flex;gap:7px;align-items:flex-start;}
+  .unrwa .stg .goal .flag{color:var(--yellow);flex:0 0 auto;}
+  .unrwa .cert{background:linear-gradient(135deg,#00B8A9 0%,#0596b0 100%);color:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(16px,2.2vw,26px);}
+  .unrwa .cert h3{font-size:var(--fs-4);font-weight:800;margin-bottom:5px;display:flex;align-items:center;gap:10px;}
+  .unrwa .cert .cbadge{background:var(--yellow);color:var(--ink);border-radius:10px;padding:3px 9px;font-size:var(--fs-1);font-weight:800;}
+  .unrwa .cert p{font-size:var(--fs-2);opacity:.95;margin-bottom:12px;}
+  .unrwa .cert ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+  .unrwa .cert li{display:flex;align-items:flex-start;gap:10px;font-size:var(--fs-2);font-weight:600;background:rgba(255,255,255,.12);border-radius:12px;padding:10px 13px;}
+  .unrwa .cert li .tick{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--yellow);color:var(--ink);display:grid;place-items:center;font-weight:900;font-size:13px;}
 
   /* ---- faq ---- */
-  .faq{display:flex;flex-direction:column;gap:12px;}
-  .item{overflow:hidden;}
-  .q{width:100%;display:flex;align-items:center;gap:14px;text-align:start;cursor:pointer;background:none;border:0;padding:clamp(14px,1.8vw,20px) clamp(16px,2vw,24px);font-family:inherit;color:var(--ink);}
-  .q .num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--sky);color:var(--teal);font-weight:800;display:grid;place-items:center;font-size:var(--fs-1);}
-  .q .txt{flex:1;font-size:var(--fs-3);font-weight:700;line-height:1.3;}
-  .q .chev{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:#fde9ef;color:var(--pink);display:grid;place-items:center;transition:transform .25s;}
-  .q .chev svg{width:14px;height:14px;}
-  .item.open .chev{transform:rotate(180deg);}
-  .a{max-height:0;overflow:hidden;transition:max-height .3s ease;}
-  .a-inner{padding:0 clamp(16px,2vw,24px) clamp(16px,2vw,22px) calc(30px + clamp(16px,2vw,24px) + 14px);font-size:var(--fs-2);color:var(--muted);line-height:1.65;}
-  html[dir="rtl"] .a-inner{padding-inline:calc(30px + clamp(16px,2vw,24px) + 14px) clamp(16px,2vw,24px);}
-  .a-inner p+p{margin-top:10px;}
-  .a-link{color:var(--teal);font-weight:700;text-decoration:none;border-bottom:2px solid rgba(0,184,169,.35);}
-  .ask{margin-top:16px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;background:var(--sky);border-radius:14px;padding:16px;}
-  .ask .qr{background:#fff;border-radius:12px;padding:8px;box-shadow:0 4px 14px rgba(31,110,168,.14);flex:0 0 auto;}
-  .ask .qr svg{display:block;width:118px;height:118px;}
-  .ask .cap{display:flex;flex-direction:column;gap:10px;flex:1;min-width:180px;}
-  .ask .cap .lead{font-weight:700;color:var(--ink);font-size:var(--fs-2);}
-  .btn-y{display:inline-flex;align-items:center;gap:8px;background:var(--yellow);color:var(--ink);font-weight:800;text-decoration:none;padding:11px 20px;border-radius:999px;font-size:var(--fs-1);box-shadow:0 4px 12px rgba(245,197,24,.4);width:max-content;}
+  .unrwa .faq{display:flex;flex-direction:column;gap:12px;}
+  .unrwa .item{overflow:hidden;}
+  .unrwa .q{width:100%;display:flex;align-items:center;gap:14px;text-align:start;cursor:pointer;background:none;border:0;padding:clamp(14px,1.8vw,20px) clamp(16px,2vw,24px);font-family:inherit;color:var(--ink);}
+  .unrwa .q .num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--sky);color:var(--teal);font-weight:800;display:grid;place-items:center;font-size:var(--fs-1);}
+  .unrwa .q .txt{flex:1;font-size:var(--fs-3);font-weight:700;line-height:1.3;}
+  .unrwa .q .chev{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:#fde9ef;color:var(--pink);display:grid;place-items:center;transition:transform .25s;}
+  .unrwa .q .chev svg{width:14px;height:14px;}
+  .unrwa .item.open .chev{transform:rotate(180deg);}
+  .unrwa .a{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .unrwa .a-inner{padding:0 clamp(16px,2vw,24px) clamp(16px,2vw,22px) calc(30px + clamp(16px,2vw,24px) + 14px);font-size:var(--fs-2);color:var(--muted);line-height:1.65;}
+  .unrwa[dir="rtl"] .a-inner{padding-inline:calc(30px + clamp(16px,2vw,24px) + 14px) clamp(16px,2vw,24px);}
+  .unrwa .a-inner p+p{margin-top:10px;}
+  .unrwa .a-link{color:var(--teal);font-weight:700;text-decoration:none;border-bottom:2px solid rgba(0,184,169,.35);}
+  .unrwa .ask{margin-top:16px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;background:var(--sky);border-radius:14px;padding:16px;}
+  .unrwa .ask .qr{background:#fff;border-radius:12px;padding:8px;box-shadow:0 4px 14px rgba(31,110,168,.14);flex:0 0 auto;}
+  .unrwa .ask .qr svg{display:block;width:118px;height:118px;}
+  .unrwa .ask .cap{display:flex;flex-direction:column;gap:10px;flex:1;min-width:180px;}
+  .unrwa .ask .cap .lead{font-weight:700;color:var(--ink);font-size:var(--fs-2);}
+  .unrwa .btn-y{display:inline-flex;align-items:center;gap:8px;background:var(--yellow);color:var(--ink);font-weight:800;text-decoration:none;padding:11px 20px;border-radius:999px;font-size:var(--fs-1);box-shadow:0 4px 12px rgba(245,197,24,.4);width:max-content;}
 
   /* ---- links ---- */
-  .links{display:flex;flex-direction:column;gap:12px;}
-  .lnk{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:clamp(14px,1.8vw,20px) clamp(16px,2vw,22px);}
-  .lnk .lnm{font-size:var(--fs-2);font-weight:800;color:var(--ink);}
-  .btn-t{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;font-weight:800;text-decoration:none;padding:11px 22px;border-radius:999px;font-size:var(--fs-1);box-shadow:0 4px 12px rgba(0,184,169,.35);}
-  .btn-t svg{width:14px;height:14px;}
-  [hidden]{display:none!important;}
+  .unrwa .links{display:flex;flex-direction:column;gap:12px;}
+  .unrwa .lnk{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:clamp(14px,1.8vw,20px) clamp(16px,2vw,22px);}
+  .unrwa .lnk .lnm{font-size:var(--fs-2);font-weight:800;color:var(--ink);}
+  .unrwa .btn-t{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;font-weight:800;text-decoration:none;padding:11px 22px;border-radius:999px;font-size:var(--fs-1);box-shadow:0 4px 12px rgba(0,184,169,.35);}
+  .unrwa .btn-t svg{width:14px;height:14px;}
+  .unrwa [hidden]{display:none!important;}
 </style>
 </head>
-<body>
+<body class="tl-page">
+
+<div class="tl-topbar">
+  <div style="background: var(--tl-green-500);"></div>
+  <div style="background: var(--tl-pink-400);"></div>
+  <div style="background: var(--tl-cyan-500);"></div>
+  <div style="background: var(--tl-yellow-500);"></div>
+</div>
+
+<main class="tl-main">
+<section class="unrwa" id="unrwa" lang="ar" dir="rtl">
 <div class="wrap">
 
   <!-- 1) toggle -->
@@ -193,7 +205,7 @@
       <h2 class="title" data-ar="الجدول الزمني لبرنامج تيلي" data-en="Tilli Timeline"></h2>
       <p class="subtitle" data-ar="خارطة طريق بسيطة من التسجيل حتى الحصول على شهادة تيلي." data-en="A simple roadmap from sign-up to earning your Tilli Certification."></p>
     </div>
-    <div class="tl-body">
+    <div class="u-tlbody">
       <div class="timeline" id="timeline"></div>
       <div class="cert">
         <h3><span class="cbadge" data-ar="شهادة" data-en="Certificate"></span><span data-ar="شهادة تيلي" data-en="Tilli Certification"></span></h3>
@@ -221,9 +233,12 @@
   </section>
 
 </div>
+</section>
+</main>
 
 <script>
 (function(){
+  var ROOT=document.getElementById('unrwa');
   var CHEV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
   var DL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg>';
   var UP='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>';
@@ -325,10 +340,10 @@
 
   /* ---------- render ---------- */
   function applyStatic(){
-    document.documentElement.lang=ar()?'ar':'en';
-    document.documentElement.dir =ar()?'rtl':'ltr';
-    document.querySelectorAll('[data-ar]').forEach(function(el){ el.textContent=ar()?el.getAttribute('data-ar'):el.getAttribute('data-en'); });
-    document.querySelectorAll('.lang-toggle button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-lang')===(ar()?'ar':'en')); });
+    ROOT.lang=ar()?'ar':'en';
+    ROOT.dir =ar()?'rtl':'ltr';
+    ROOT.querySelectorAll('[data-ar]').forEach(function(el){ el.textContent=ar()?el.getAttribute('data-ar'):el.getAttribute('data-en'); });
+    ROOT.querySelectorAll('.lang-toggle button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-lang')===(ar()?'ar':'en')); });
     document.getElementById('semSub').innerHTML = t(TXT.semSub);
     var waTop=document.getElementById('waTop');
     if(waTop){ waTop.href=URLS.ask_tilli_url; waTop.innerHTML=WA+'<span>'+esc(ar()?'اسأل تيلي على واتساب':'Ask Tilli on WhatsApp')+'</span>'; }
@@ -408,53 +423,44 @@
   }
 
   function renderQR(){
-    document.querySelectorAll('[data-qr]').forEach(function(box){
+    ROOT.querySelectorAll('[data-qr]').forEach(function(box){
       try{ var qr=qrcode(0,'M'); qr.addData(URLS.ask_tilli_url); qr.make(); box.innerHTML=qr.createSvgTag({cellSize:4,margin:1,scalable:true}); }
       catch(e){ box.innerHTML='<div style="font:12px sans-serif;color:#5B7488;max-width:118px;word-break:break-all">'+esc(URLS.ask_tilli_url)+'</div>'; }
     });
   }
 
-  function renderAll(){ applyStatic(); renderSem(); renderTimeline(); renderFaq(); renderLinks(); postHeight(); }
+  function renderAll(){ applyStatic(); renderSem(); renderTimeline(); renderFaq(); renderLinks(); }
 
   /* ---------- interactions ---------- */
-  document.querySelector('.lang-toggle').addEventListener('click',function(e){
+  ROOT.querySelector('.lang-toggle').addEventListener('click',function(e){
     var b=e.target.closest('button'); if(!b) return;
     lang=b.getAttribute('data-lang'); try{localStorage.setItem('tilliLang',lang);}catch(err){}
     renderAll();
   });
   document.getElementById('semBtns').addEventListener('click',function(e){
     var b=e.target.closest('.sem-btn'); if(!b) return;
-    semester=Number(b.getAttribute('data-sem')); renderSem(); postHeight();
+    semester=Number(b.getAttribute('data-sem')); renderSem();
   });
   document.getElementById('faq').addEventListener('click',function(e){
     var btn=e.target.closest('.q'); if(!btn) return;
     var item=btn.parentElement, a=item.querySelector('.a');
     if(item.classList.contains('open')){ item.classList.remove('open'); btn.setAttribute('aria-expanded','false'); a.style.maxHeight=null; }
     else{ item.classList.add('open'); btn.setAttribute('aria-expanded','true'); a.style.maxHeight=a.scrollHeight+'px'; }
-    setTimeout(postHeight,320);
   });
-  function fixOpen(){ document.querySelectorAll('.item.open .a').forEach(function(a){a.style.maxHeight=a.scrollHeight+'px';}); }
-  window.addEventListener('resize',function(){ fixOpen(); postHeight(); });
+  function fixOpen(){ ROOT.querySelectorAll('.item.open .a').forEach(function(a){a.style.maxHeight=a.scrollHeight+'px';}); }
+  window.addEventListener('resize',fixOpen);
 
-  /* ---------- height report (so a host page can auto-resize the iframe) ----------
-     On the HOST page, to auto-size the iframe, add:
-       <script>window.addEventListener('message',function(e){
-         if(e.data&&e.data.type==='tilliHeight'){ document.getElementById('tilliFrame').style.height=e.data.height+'px'; }
-       });<\/script>
-     (give your <iframe id="tilliFrame"> ) */
-  function postHeight(){ try{ parent.postMessage({type:'tilliHeight', height:Math.ceil(document.body.scrollHeight)},'*'); }catch(e){} }
 
   /* ---------- language persistence (per browser) ---------- */
   try{ var s=localStorage.getItem('tilliLang'); if(s==='en'||s==='ar') lang=s; }catch(e){}
   window.addEventListener('storage',function(e){ if(e.key==='tilliLang'&&(e.newValue==='en'||e.newValue==='ar')){ lang=e.newValue; renderAll(); } });
-  // Optional: a host page can switch language via postMessage({type:'setLang', lang:'en'|'ar'})
-  window.addEventListener('message',function(e){
-    var d=e.data||{};
-    if(d.type==='setLang'&&(d.lang==='en'||d.lang==='ar')){ lang=d.lang; renderAll(); }
-  });
 
   renderAll();
 })();
 </script>
+
+<script src="js/site-config.js?v=9"></script>
+<script src="js/booking-form.js?v=11"></script>
+<script src="js/site-chrome.js?v=13"></script>
 </body>
 </html>

@@ -64,7 +64,7 @@ Fill this in from 2.1. Any URL with backlinks or traffic **must** redirect somew
 | `/careers` | `/jobs` | ✅ 301 in `_redirects` |
 | `/terms-of-service` | `/terms` | ✅ 301 in `_redirects` |
 | `/tilli-evidence`, `/asktilli-dataset`, `/2025-impact-report` | `/research` | ✅ 301 in `_redirects` |
-| `/tilli-for-unrwa` | `/tilli-for-unrwa` | same URL. Standalone page `tilli-for-unrwa.html` (no site nav/footer, not linked from the site; listed in `sitemap.xml`; indexable, no `noindex`). PDFs in `assets/unrwa/` |
+| `/tilli-for-unrwa` | `/tilli-for-unrwa` | same URL. Page `tilli-for-unrwa.html` with the site header, footer and chat bubble, but not linked from the nav, footer or any page; listed in `sitemap.xml`; indexable, no `noindex`). PDFs in `assets/unrwa/` |
 | `/tilli-for-school`, `/tilliatschool`, `/copy-of-tilli-for-school-experiment` | `/` | ✅ 301 in `_redirects` |
 | `/tilli-for-home`, `/tilliathome`, `/copy-of-tilli-for-home` | `/` | ✅ 301 in `_redirects` |
 | `/tilli-tools-overview` | `/` | ✅ 301 in `_redirects` |
@@ -173,3 +173,4 @@ Each title should be under ~60 characters, each description under ~155, and no t
 | 2026-11-04 | Redirect map (2.2) rebuilt to match `_redirects`: 34 rules, every known Wix page now 301s. `/tilli-for-unrwa` → `/success` is temporary until the unlisted UNRWA page ships (~2026-11-11). |
 | 2026-11-05 | Added `tilli-for-unrwa.html`, the Tilli × UNRWA bilingual teacher page, as a standalone page at the old Wix URL (no site chrome, unlinked, not in sitemap, indexable). Its 36 activity PDFs moved off Wix into `assets/unrwa/`. Removed the temporary `/tilli-for-unrwa` → `/success` redirect. |
 | 2026-11-05 | Added `/tilli-for-unrwa` to `sitemap.xml` so Google can find the page (still not linked from the site). |
+| 2026-11-05 | `tilli-for-unrwa.html` rebuilt inside the site shell (header, footer, chat bubble via `site-chrome.js`). UNRWA content keeps its own look, with styles scoped under `.unrwa`. Still not linked from anywhere on the site. |
