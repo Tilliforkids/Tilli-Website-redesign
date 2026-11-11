@@ -24,8 +24,9 @@
   var IS_HOME = !!document.getElementById("world") || document.body.hasAttribute("data-tl-home");
 
   function currentFile() {
-    var p = location.pathname.split("/").pop();
-    return p === "" ? "index.html" : p;
+    /* Cloudflare serves pages extensionless (/success), nav hrefs keep .html */
+    var p = location.pathname.split("/").pop().replace(/\.html$/, "");
+    return (p === "" ? "index" : p) + ".html";
   }
   function el(html) {
     var t = document.createElement("template");

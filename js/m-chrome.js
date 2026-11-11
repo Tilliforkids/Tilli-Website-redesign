@@ -19,8 +19,9 @@
   var FORKED = { "index.html": 1, "research.html": 1, "success.html": 1 };
 
   function currentFile() {
-    var p = location.pathname.split("/").pop();
-    return p === "" ? "index.html" : p;
+    /* Cloudflare serves pages extensionless (/success), nav hrefs keep .html */
+    var p = location.pathname.split("/").pop().replace(/\.html$/, "");
+    return (p === "" ? "index" : p) + ".html";
   }
   var HERE = currentFile();
 
