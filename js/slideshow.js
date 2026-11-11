@@ -8,6 +8,7 @@
    Pauses on hover / focus / hidden tab; reduced-motion → no autoplay, no slide.
    ─────────────────────────────────────────────────────────────────────────── */
 (() => {
+  const _t = window._t || ((s) => s);   // i18n (see i18n/build.mjs)
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const css = document.createElement('style');
@@ -56,13 +57,13 @@
       box.appendChild(b);
       return b;
     };
-    const prev = mk('ss__btn--prev', 'Previous photo', 'M15 5l-7 7 7 7');
-    const next = mk('ss__btn--next', 'Next photo', 'M9 5l7 7-7 7');
+    const prev = mk('ss__btn--prev', _t('Previous photo'), 'M15 5l-7 7 7 7');
+    const next = mk('ss__btn--next', _t('Next photo'), 'M9 5l7 7-7 7');
     const dotsWrap = document.createElement('div');
     dotsWrap.className = 'ss__dots';
     const dots = imgs.map((_, k) => {
       const d = document.createElement('button');
-      d.type = 'button'; d.className = 'ss__dot'; d.setAttribute('aria-label', 'Photo ' + (k + 1) + ' of ' + n);
+      d.type = 'button'; d.className = 'ss__dot'; d.setAttribute('aria-label', _t('Photo {n} of {total}').replace('{n}', k + 1).replace('{total}', n));
       d.addEventListener('click', () => { go(k); restart(); });
       dotsWrap.appendChild(d);
       return d;

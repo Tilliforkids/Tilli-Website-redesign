@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "include": ["/", "/index", "/index.html", "/faq", "/faq.html", "/jobs", "/jobs.html", "/opensource", "/opensource.html",
+    "/privacy-policy", "/privacy-policy.html", "/research", "/research.html", "/success", "/success.html",
+    "/team", "/team.html", "/terms", "/terms.html", "/m/*", "/i18n/*"],
+  "exclude": []
+}

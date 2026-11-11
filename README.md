@@ -20,3 +20,12 @@ The design medium is **HTML/CSS/JS** — these are prototypes, not production co
 
 - `tilli-website-redesign/README.md` — this file
 - `tilli-website-redesign/project/` — the `Tilli Website Redesign` project files (HTML prototypes, assets, components)
+
+## Translations (Arabic, Sinhala, Tamil, Spanish)
+
+Every page except `/tilli-for-unrwa` is served in 5 languages at the same URL (`?lang=ar|si|ta|es|en` forces one).
+
+- **After changing any English copy:** run `node i18n/build.mjs extract` (lists strings each language is missing), add the translations to `i18n/<lang>.json`, then run `node i18n/build.mjs build`. Commit `i18n/pages/` too: Cloudflare serves those files as they are, with no build step.
+- Text created by JS goes through `_t("…")`. Use the same wrapper for any new UI string.
+- Language choice and the regional price swap happen in `functions/_middleware.js` (Cloudflare Pages Function). The banner and footer picker live in `js/i18n.js`.
+- To try it locally with the Function running: `npx wrangler pages dev .`

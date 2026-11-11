@@ -105,6 +105,10 @@
     document.head.appendChild(style);
   }
 
+  /* i18n: _t() returns the translation on translated pages (set in <head> by
+     i18n/build.mjs), the English text everywhere else. */
+  var _t = window._t || function (s) { return s; };
+
   /* ── Topbar + Header ─────────────────────────────────────────────────────── */
   function buildHeader() {
     var topbar = el(
@@ -117,15 +121,15 @@
     );
     var links = (T.NAV_ITEMS || []).map(function (n) {
       var cur = n.href === HERE ? ' aria-current="page"' : "";
-      return '<a href="' + mHref(n.href) + '"' + cur + ">" + n.label + "</a>";
+      return '<a href="' + mHref(n.href) + '"' + cur + ">" + _t(n.label, "nav") + "</a>";
     }).join("");
     var header = el(
       '<header class="hdr">' +
-        '<a class="brand" href="' + mHref("index.html") + '" aria-label="Tilli home">' +
+        '<a class="brand" href="' + mHref("index.html") + '" aria-label="' + _t("Tilli home") + '">' +
           '<img src="../' + (T.ASSET_BASE || "assets/ds/") + 'tilli-logo.png" alt="Tilli"></a>' +
-        '<button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>' +
-        '<nav class="navdrawer" aria-label="Site">' + links +
-          '<a class="navdrawer-cta" href="' + waLink() + '" target="_blank" rel="noopener" data-tl-open-form>' + (T.NAV_CTA_LABEL || "Get in touch") + '</a>' +
+        '<button class="burger" aria-label="' + _t("Menu") + '" aria-expanded="false"><span></span><span></span><span></span></button>' +
+        '<nav class="navdrawer" aria-label="' + _t("Site", "aria") + '">' + links +
+          '<a class="navdrawer-cta" href="' + waLink() + '" target="_blank" rel="noopener" data-tl-open-form>' + _t(T.NAV_CTA_LABEL || "Get in touch", "nav") + '</a>' +
         '</nav>' +
       '</header>'
     );
@@ -143,7 +147,7 @@
   function buildFooter() {
     var year = new Date().getFullYear();
     var links = (T.FOOTER_LINKS || []).map(function (n) {
-      return '<a href="' + mHref(n.href) + '">' + n.label + "</a>";
+      return '<a href="' + mHref(n.href) + '">' + _t(n.label) + "</a>";
     }).join("");
     var social = (T.SOCIAL || []).map(function (s) {
       return '<a href="' + s.href + '" target="_blank" rel="noopener">' + s.label + "</a>";
@@ -152,11 +156,11 @@
     var footer = el(
       '<footer class="ft">' +
         '<div class="fbrand"><img src="../' + (T.ASSET_BASE || "assets/ds/") + 'tilli-logo.png" alt="Tilli"></div>' +
-        '<div class="tag">Developmentally on track by age 10.</div>' +
-        '<nav aria-label="Footer">' + links + "</nav>" +
-        '<div class="social" aria-label="Social">' + social + "</div>" +
-        '<div class="mail">Reach out: <a href="mailto:' + mail + '">' + mail + "</a></div>" +
-        '<div class="copy">© ' + year + " Tilli Kids Inc. · www.tillikids.com</div>" +
+        '<div class="tag">' + _t("Developmentally on track by age 10.") + '</div>' +
+        '<nav aria-label="' + _t("Footer", "aria") + '">' + links + "</nav>" +
+        '<div class="social" aria-label="' + _t("Social", "aria") + '">' + social + "</div>" +
+        '<div class="mail">' + _t("Reach out:") + ' <a href="mailto:' + mail + '">' + mail + "</a></div>" +
+        '<div class="copy">© ' + year + " Tilli Kids Inc. · www.tillikids.com <span data-tl-lang-switch></span></div>" +
       "</footer>"
     );
     var main = document.querySelector("main.content") || document.body;
@@ -185,7 +189,7 @@
   function buildWhatsApp() {
     var wrap = el(
       '<div class="wa">' +
-        '<a class="wa-bubble" href="' + waLink() + '" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">' +
+        '<a class="wa-bubble" href="' + waLink() + '" target="_blank" rel="noopener" aria-label="' + _t("Chat with us on WhatsApp") + '">' +
           (T.WA_ICON || "") + "</a>" +
       "</div>"
     );
@@ -208,7 +212,7 @@
   /* Appended after the WhatsApp wrap so `.wa.open ~ .totop` can hide it. */
   function buildToTop() {
     var btn = el(
-      '<button class="totop" type="button" aria-label="Back to top">' +
+      '<button class="totop" type="button" aria-label="' + _t("Back to top") + '">' +
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
           '<path d="M12 19V5M5 12l7-7 7 7"/></svg>' +
       "</button>"

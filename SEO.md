@@ -155,7 +155,7 @@ Each title should be under ~60 characters, each description under ~155, and no t
 ## 5. Nice-to-have
 
 - `llms.txt` at the root, a short plain-text summary of Tilli for AI assistants.
-- `hreflang` tags if translated pages are ever added.
+- ~~`hreflang` tags if translated pages are ever added.~~ Done 2026-11-11 (see changelog).
 - A blog or resources section, which is the main way to rank for searches like "SEL curriculum for CBSE schools".
 
 ---
@@ -174,3 +174,4 @@ Each title should be under ~60 characters, each description under ~155, and no t
 | 2026-11-05 | Added `tilli-for-unrwa.html`, the Tilli × UNRWA bilingual teacher page, as a standalone page at the old Wix URL (no site chrome, unlinked, not in sitemap, indexable). Its 36 activity PDFs moved off Wix into `assets/unrwa/`. Removed the temporary `/tilli-for-unrwa` → `/success` redirect. |
 | 2026-11-05 | Added `/tilli-for-unrwa` to `sitemap.xml` so Google can find the page (still not linked from the site). |
 | 2026-11-05 | `tilli-for-unrwa.html` rebuilt inside the site shell (header, footer, chat bubble via `site-chrome.js`). UNRWA content keeps its own look, with styles scoped under `.unrwa`. Still not linked from anywhere on the site. |
+| 2026-11-11 | **Translations (ar, si, ta, es).** Every page except `/tilli-for-unrwa` now has Arabic, Sinhala, Tamil and Spanish versions at the same URL plus `?lang=xx` (e.g. `/faq?lang=ar`). `functions/_middleware.js` adds `hreflang` alternates (en, ar, si, ta, es, x-default) to every desktop page. Translated pages get a self-canonical with `?lang=xx` and `lang`/`dir` on `<html>`. Visitors with no `?lang` are matched by cookie, then browser language, then country, so Googlebot (no Accept-Language, US) sees English at the plain URL. Sitemap unchanged: the alternates are in the page heads. |

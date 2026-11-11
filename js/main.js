@@ -10,7 +10,12 @@
      12 skills → the dots become children, developmentally on track →
      (ask · impact · journey) → every data point ends in one heart.
    ═══════════════════════════════════════════════════════════════════ */
+
 import * as THREE from '../lib/three.module.min.js';
+
+/* i18n: _t() returns the translation on translated pages (window._t is set in
+   <head> by i18n/build.mjs), the English text everywhere else. */
+const _t = window._t || ((s) => s);
 
 /* Brand colours are read from the CSS tokens (_ds/.../tokens/colors.css) so the
    3D/canvas scenes and the page share ONE palette. The hex fallback is only
@@ -3220,11 +3225,12 @@ document.getElementById('goNext').addEventListener('click', () => glideTo(adjace
    scene's data-label → the short display name; transition-only screens
    (Cross, Funnel, Collect, Ask-live) are intentionally left out. The
    active pill tracks scroll by finding the last section we've reached. */
+/* display names go through _t() (i18n); the scene keys on the left must stay English */
 const NAV_ITEMS = [
-  ['Start', 'Home'], ['Dashboard', 'Dashboard'], ['Reports', 'Reports'],
-  ['3 views', '3 perspectives'], ['Measure', 'Measure'], ['12 skills', '12 skills'], ['Memory layer', 'Memory layer'],
-  ['On track', 'On track'], ['Ask-Tilli', 'AskTilli'], ['Impact', 'Schools'],
-  ['Journey', 'A year with Tilli'], ["Let's talk", 'Contact'],
+  ['Start', _t('Home', 'nav')], ['Dashboard', _t('Dashboard')], ['Reports', _t('Reports')],
+  ['3 views', _t('3 perspectives')], ['Measure', _t('Measure')], ['12 skills', _t('12 skills')], ['Memory layer', _t('Memory layer')],
+  ['On track', _t('On track')], ['Ask-Tilli', 'AskTilli'], ['Impact', _t('Schools')],
+  ['Journey', _t('A year with Tilli')], ["Let's talk", _t('Contact')],
 ];
 (function buildQuickNav() {
   const nav = document.getElementById('quicknav');
@@ -3404,14 +3410,14 @@ function dashVideo() {
 function syncDashVideo(v) {
   if (v._bp) {
     v._bp.classList.toggle('is-on', v.paused);                 // is-on = show the PLAY icon
-    v._bp.setAttribute('aria-label', v.paused ? 'Play video' : 'Pause video');
+    v._bp.setAttribute('aria-label', v.paused ? _t('Play video') : _t('Pause video'));
     v._bp.title = v.paused ? 'Play' : 'Pause';
   }
   if (v._bm) {
     v._bm.classList.toggle('is-on', !v.muted);                 // is-on = show the SOUND icon
     v._bm.setAttribute('aria-pressed', String(!v.muted));
-    v._bm.setAttribute('aria-label', v.muted ? 'Turn sound on' : 'Mute');
-    v._bm.title = v.muted ? 'Sound on' : 'Mute';
+    v._bm.setAttribute('aria-label', v.muted ? _t('Turn sound on') : _t('Mute'));
+    v._bm.title = v.muted ? _t('Sound on') : _t('Mute');
   }
 }
 function startDashVideo(v) {

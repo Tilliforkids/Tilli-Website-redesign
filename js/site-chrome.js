@@ -21,6 +21,10 @@
     NAV_ITEMS: [], FOOTER_LINKS: [], SOCIAL: [], WA_ICON: ""
   };
 
+  /* i18n: _t() returns the translation on translated pages (set in <head> by
+     i18n/build.mjs), the English text everywhere else. */
+  var _t = window._t || function (s) { return s; };
+
   var IS_HOME = !!document.getElementById("world") || document.body.hasAttribute("data-tl-home");
 
   function currentFile() {
@@ -56,19 +60,19 @@
     var here = currentFile();
     var links = CONFIG.NAV_ITEMS.map(function (n) {
       var cur = n.href === here ? ' aria-current="page"' : "";
-      return '<a href="' + n.href + '"' + cur + '>' + n.label + "</a>";
+      return '<a href="' + n.href + '"' + cur + '>' + _t(n.label, "nav") + "</a>";
     }).join("");
 
     var header = el(
       '<header class="tl-header">' +
         '<div class="tl-container tl-header__inner">' +
-          '<a class="tl-logo" href="index.html" aria-label="Tilli home">' +
+          '<a class="tl-logo" href="index.html" aria-label="' + _t("Tilli home") + '">' +
             '<img src="' + CONFIG.ASSET_BASE + 'tilli-logo.png" alt="Tilli">' +
           '</a>' +
-          '<button class="tl-burger" aria-label="Menu" aria-expanded="false">' +
+          '<button class="tl-burger" aria-label="' + _t("Menu") + '" aria-expanded="false">' +
             '<span></span><span></span><span></span></button>' +
-          '<nav class="tl-nav" aria-label="Site">' + links +
-            '<button class="tl-btn tl-btn--primary tl-nav__cta" data-tl-open-form>' + (CONFIG.NAV_CTA_LABEL || "Get in touch") + '</button>' +
+          '<nav class="tl-nav" aria-label="' + _t("Site", "aria") + '">' + links +
+            '<button class="tl-btn tl-btn--primary tl-nav__cta" data-tl-open-form>' + _t(CONFIG.NAV_CTA_LABEL || "Get in touch", "nav") + '</button>' +
           '</nav>' +
         '</div>' +
       '</header>'
@@ -86,7 +90,7 @@
   function buildFooter() {
     if (IS_HOME) return;
     var navLinks = (CONFIG.FOOTER_LINKS || []).map(function (n) {
-      return '<a href="' + n.href + '">' + n.label + '</a>';
+      return '<a href="' + n.href + '">' + _t(n.label) + '</a>';
     }).join("");
     var social = (CONFIG.SOCIAL || []).map(function (s) {
       return '<a href="' + s.href + '" target="_blank" rel="noopener">' + s.label + '</a>';
@@ -96,13 +100,13 @@
         '<div class="tl-container">' +
           '<div class="tl-footer__row">' +
             '<div class="tl-footer__brand"><img src="' + CONFIG.ASSET_BASE + 'tilli-logo.png" alt="Tilli">' +
-              '<span class="tl-footer__tag">Developmentally on track by age 10.</span></div>' +
-            '<nav class="tl-footer__links" aria-label="Footer">' + navLinks + '</nav>' +
+              '<span class="tl-footer__tag">' + _t("Developmentally on track by age 10.") + '</span></div>' +
+            '<nav class="tl-footer__links" aria-label="' + _t("Footer", "aria") + '">' + navLinks + '</nav>' +
           '</div>' +
           '<div class="tl-footer__row tl-footer__row--meta">' +
-            '<div class="tl-footer__reach">Reach out: <a href="mailto:' + CONFIG.EMAIL + '">' + CONFIG.EMAIL + '</a></div>' +
-            '<nav class="tl-footer__links tl-footer__social" aria-label="Social">' + social + '</nav>' +
-            '<div class="tl-footer__legal">© <span data-tl-year>2026</span> Tilli Kids Inc. · www.tillikids.com</div>' +
+            '<div class="tl-footer__reach">' + _t("Reach out:") + ' <a href="mailto:' + CONFIG.EMAIL + '">' + CONFIG.EMAIL + '</a></div>' +
+            '<nav class="tl-footer__links tl-footer__social" aria-label="' + _t("Social", "aria") + '">' + social + '</nav>' +
+            '<div class="tl-footer__legal">© <span data-tl-year>2026</span> Tilli Kids Inc. · www.tillikids.com <span data-tl-lang-switch></span></div>' +
           '</div>' +
         '</div>' +
       '</footer>'
@@ -123,23 +127,23 @@
           ' onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'tl-wa__avatar\',style:\'display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--tl-green-600);font-size:var(--tl-fs-xl)\',textContent:\'' + initials + '\'}))">'
       : monogram;
     var card =
-      '<div class="tl-wa__card" role="dialog" aria-label="Chat with Kavi">' +
+      '<div class="tl-wa__card" role="dialog" aria-label="' + _t("Chat with Kavi") + '">' +
         '<div class="tl-wa__head">' +
-          '<button class="tl-wa__close" aria-label="Close">&times;</button>' +
+          '<button class="tl-wa__close" aria-label="' + _t("Close") + '">&times;</button>' +
           '<div class="tl-wa__avwrap">' +
             avatarMarkup +
             '<span class="tl-wa__dot"></span>' +
           '</div>' +
           '<p class="tl-wa__name">Kavindya</p>' +
-          '<p class="tl-wa__role">Stanford Researcher · CEO, Tilli</p>' +
+          '<p class="tl-wa__role">' + _t("Stanford Researcher · CEO, Tilli") + '</p>' +
         '</div>' +
         '<div class="tl-wa__foot">' +
-          '<a class="tl-btn tl-btn--green tl-wa__start" href="' + waLink() + '" target="_blank" rel="noopener">Start Chat</a>' +
+          '<a class="tl-btn tl-btn--green tl-wa__start" href="' + waLink() + '" target="_blank" rel="noopener">' + _t("Start Chat") + '</a>' +
         '</div>' +
       '</div>';
     var wrap = el(
       '<div class="tl-wa">' + card +
-        '<button class="tl-wa__bubble" aria-label="Chat with us on WhatsApp" aria-expanded="false">' + waIcon + '</button>' +
+        '<button class="tl-wa__bubble" aria-label="' + _t("Chat with us on WhatsApp") + '" aria-expanded="false">' + waIcon + '</button>' +
       '</div>'
     );
     document.body.appendChild(wrap);
@@ -163,7 +167,7 @@
      scrollTo is safe there too. */
   function buildToTop() {
     var btn = el(
-      '<button class="tl-totop" type="button" aria-label="Back to top">' +
+      '<button class="tl-totop" type="button" aria-label="' + _t("Back to top") + '">' +
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
           '<path d="M12 19V5M5 12l7-7 7 7"/></svg>' +
       '</button>'

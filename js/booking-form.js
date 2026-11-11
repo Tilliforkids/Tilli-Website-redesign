@@ -24,6 +24,8 @@
 (function () {
   "use strict";
   var CONFIG = window.TILLI || {};
+  /* i18n: translation on translated pages, English elsewhere (i18n/build.mjs) */
+  var _t = window._t || function (s) { return s; };
   var modal, form, open, close;
 
   /* ── Country codes ────────────────────────────────────────────────────────
@@ -60,9 +62,9 @@
       return '<option value="' + iso + '">' + flag(iso) + " " + NAME[iso] + " (+" + DIAL[iso] + ")</option>";
     }
     var all = COUNTRIES.split(";").map(function (r) { return r.split("|")[0]; });
-    return '<option value="" disabled selected>Country code</option>' +
-      '<optgroup label="Common">' + PINNED.map(o).join("") + "</optgroup>" +
-      '<optgroup label="All countries">' + all.map(o).join("") + "</optgroup>";
+    return '<option value="" disabled selected>' + _t("Country code") + '</option>' +
+      '<optgroup label="' + _t("Common") + '">' + PINNED.map(o).join("") + "</optgroup>" +
+      '<optgroup label="' + _t("All countries") + '" data-all>' + all.map(o).join("") + "</optgroup>";
   }
 
   /* Kavi's photo when KAVI_PHOTO is set (root-relative; /m/ pages sit one
@@ -76,11 +78,11 @@
   function kaviCard() {
     var inner = kaviAvatar() +
       '<div class="tl-kavi__text"><p class="tl-kavi__name">Kavindya Tennakoon</p>' +
-      '<p class="tl-kavi__role">Founder &amp; CEO, Tilli · Stanford researcher</p></div>';
+      '<p class="tl-kavi__role">' + _t("Founder &amp; CEO, Tilli · Stanford researcher") + '</p></div>';
     if (!CONFIG.KAVI_LINKEDIN) return '<div class="tl-kavi">' + inner + '</div>';
-    inner = inner.replace('</div>', '<p class="tl-kavi__cta">View LinkedIn</p></div>');
+    inner = inner.replace('</div>', '<p class="tl-kavi__cta">' + _t("View LinkedIn") + '</p></div>');
     return '<a class="tl-kavi tl-kavi--link" href="' + CONFIG.KAVI_LINKEDIN + '" target="_blank" rel="noopener"' +
-      ' aria-label="Kavindya Tennakoon on LinkedIn (opens in a new tab)">' + inner +
+      ' aria-label="' + _t("Kavindya Tennakoon on LinkedIn (opens in a new tab)") + '">' + inner +
       '<svg class="tl-kavi__in" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.12 1.43-2.12 2.9V21H9z"/></svg>' +
       '</a>';
   }
@@ -101,82 +103,82 @@
     wrap.innerHTML =
       '<div class="tl-modal" role="dialog" aria-modal="true" aria-labelledby="tlf-title">' +
         '<div class="tl-modal__panel">' +
-          '<button class="tl-modal__close" type="button" aria-label="Close">&times;</button>' +
+          '<button class="tl-modal__close" type="button" aria-label="' + _t("Close") + '">&times;</button>' +
           /* ── State 1: choices ── */
           '<div class="tl-choose">' +
-            '<h2 class="tl-form__title" id="tlf-title">Book a 30-minute call with Kavi</h2>' +
+            '<h2 class="tl-form__title" id="tlf-title">' + _t("Book a 30-minute call with Kavi") + '</h2>' +
             kaviCard() +
             '<div class="tl-choose__btns">' +
               '<a class="tl-form__btn tl-choose__cal" href="' + CONFIG.CALENDLY_URL + '" target="_blank" rel="noopener">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>' +
-                'Pick a time' +
+                '' + _t("Pick a time") + '' +
                 /* ↗ = opens Calendly in a new tab */
                 '<svg class="tl-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 16L16 8M9 8h7v7"/></svg>' +
-                '<span class="tl-sr">(opens in a new tab)</span></a>' +
+                '<span class="tl-sr">' + _t("(opens in a new tab)") + '</span></a>' +
               '<a class="tl-form__btn tl-form__btn--ghost tl-choose__wa" href="' + waLink() + '" target="_blank" rel="noopener">' +
-                (CONFIG.WA_ICON || '') + 'Chat on WhatsApp</a>' +
+                (CONFIG.WA_ICON || '') + '' + _t("Chat on WhatsApp") + '</a>' +
             '</div>' +
-            '<p class="tl-choose__alt">Can’t find a time that works? ' +
-              '<button class="tl-linkbtn tl-choose__form" type="button">Leave your details</button> and we’ll reach out.</p>' +
+            '<p class="tl-choose__alt">' + _t("Can’t find a time that works?") + ' ' +
+              '<button class="tl-linkbtn tl-choose__form" type="button">' + _t("Leave your details") + '</button> ' + _t("and we’ll reach out.") + '</p>' +
           '</div>' +
           /* ── State 2: fallback form ── */
           '<div class="tl-form__head">' +
-            '<button class="tl-linkbtn tl-back" type="button">← Back</button>' +
-            '<h2 class="tl-form__title">Leave your details</h2>' +
-            '<p class="tl-form__intro">Kavi’s team will reach out to find a time that works for you.</p>' +
+            '<button class="tl-linkbtn tl-back" type="button">' + _t("← Back") + '</button>' +
+            '<h2 class="tl-form__title">' + _t("Leave your details") + '</h2>' +
+            '<p class="tl-form__intro">' + _t("Kavi’s team will reach out to find a time that works for you.") + '</p>' +
           '</div>' +
           '<form class="tl-form" novalidate>' +
             /* honeypot — hidden from people; bots fill it and the backend drops them */
             '<input name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">' +
             '<div class="tl-form__row">' +
               '<div class="tl-field">' +
-                '<label for="tlf-name">Name</label>' +
+                '<label for="tlf-name">' + _t("Name") + '</label>' +
                 '<input class="tl-input" id="tlf-name" name="name" type="text" autocomplete="name" required>' +
-                '<span class="tl-field__err">Please enter your name.</span>' +
+                '<span class="tl-field__err">' + _t("Please enter your name.") + '</span>' +
               '</div>' +
               '<div class="tl-field">' +
-                '<label for="tlf-role">Your role</label>' +
-                '<input class="tl-input" id="tlf-role" name="role" type="text" placeholder="Principal, coordinator…" required>' +
-                '<span class="tl-field__err">Please enter your role.</span>' +
+                '<label for="tlf-role">' + _t("Your role") + '</label>' +
+                '<input class="tl-input" id="tlf-role" name="role" type="text" placeholder="' + _t("Principal, coordinator…") + '" required>' +
+                '<span class="tl-field__err">' + _t("Please enter your role.") + '</span>' +
               '</div>' +
             '</div>' +
             '<div class="tl-field">' +
-              '<label for="tlf-school">School / organisation</label>' +
+              '<label for="tlf-school">' + _t("School / organisation") + '</label>' +
               '<input class="tl-input" id="tlf-school" name="school" type="text" autocomplete="organization" required>' +
-              '<span class="tl-field__err">Please enter your school or organisation.</span>' +
+              '<span class="tl-field__err">' + _t("Please enter your school or organisation.") + '</span>' +
             '</div>' +
             '<div class="tl-field">' +
-                '<label for="tlf-email">Email</label>' +
+                '<label for="tlf-email">' + _t("Email") + '</label>' +
                 '<input class="tl-input" id="tlf-email" name="email" type="email" autocomplete="email" required>' +
-                '<span class="tl-field__err">Please enter a valid email.</span>' +
+                '<span class="tl-field__err">' + _t("Please enter a valid email.") + '</span>' +
               '</div>' +
               '<div class="tl-field">' +
-                '<label for="tlf-phone">Phone (school or WhatsApp)</label>' +
+                '<label for="tlf-phone">' + _t("Phone (school or WhatsApp)") + '</label>' +
                 '<div class="tl-phone">' +
                   /* native picker (opacity 0) under a compact "🇱🇰 +94" face */
                   '<div class="tl-phone__code">' +
-                    '<span class="tl-phone__shown" aria-hidden="true">Code</span>' +
-                    '<select id="tlf-code" name="phone_code" aria-label="Country code" required>' + codeOptions() + '</select>' +
+                    '<span class="tl-phone__shown" aria-hidden="true">' + _t("Code") + '</span>' +
+                    '<select id="tlf-code" name="phone_code" aria-label="' + _t("Country code") + '" required>' + codeOptions() + '</select>' +
                   '</div>' +
-                  '<input class="tl-input" id="tlf-phone" name="phone" type="tel" autocomplete="tel-national" placeholder="Number" required>' +
+                  '<input class="tl-input" id="tlf-phone" name="phone" type="tel" autocomplete="tel-national" placeholder="' + _t("Number") + '" required>' +
                 '</div>' +
-                '<span class="tl-field__hint">Only used to confirm your call.</span>' +
-                '<span class="tl-field__err">Please choose a country code and enter your number.</span>' +
+                '<span class="tl-field__hint">' + _t("Only used to confirm your call.") + '</span>' +
+                '<span class="tl-field__err">' + _t("Please choose a country code and enter your number.") + '</span>' +
               '</div>' +
             '<div class="tl-field">' +
-              '<label for="tlf-msg">Anything you’d like us to know? <span class="tl-opt">(optional)</span></label>' +
+              '<label for="tlf-msg">' + _t("Anything you’d like us to know?") + ' <span class="tl-opt">' + _t("(optional)") + '</span></label>' +
               '<textarea class="tl-textarea" id="tlf-msg" name="message"></textarea>' +
             '</div>' +
             /* wrapper catches hover/taps while the disabled button ignores them */
-            '<div class="tl-form__send"><button class="tl-form__btn tl-form__submit" type="submit">Send request</button></div>' +
-            '<p class="tl-form__note tl-form__fail" hidden>Sorry, that didn’t send. Please try again, or <a href="' + waLink() + '" target="_blank" rel="noopener">message us on WhatsApp</a>.</p>' +
-            '<p class="tl-form__note">We’ll only use these details to get in touch about Tilli.</p>' +
+            '<div class="tl-form__send"><button class="tl-form__btn tl-form__submit" type="submit">' + _t("Send request") + '</button></div>' +
+            '<p class="tl-form__note tl-form__fail" hidden>' + _t("Sorry, that didn’t send. Please try again, or") + ' <a href="' + waLink() + '" target="_blank" rel="noopener">' + _t("message us on WhatsApp") + '</a>.</p>' +
+            '<p class="tl-form__note">' + _t("We’ll only use these details to get in touch about Tilli.") + '</p>' +
           '</form>' +
           '<div class="tl-form__ok" role="status">' +
             '<div class="tl-form__ok-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>' +
-            '<h3 class="tl-form__ok-title">Thank you, we’ve got it!</h3>' +
-            '<p class="tl-form__ok-text">We’ve emailed you a confirmation, and Kavi’s team will be in touch soon.</p>' +
-            '<p class="tl-form__ok-alt">Prefer to chat? <a href="' + waLink() + '" target="_blank" rel="noopener">Message us on WhatsApp</a></p>' +
+            '<h3 class="tl-form__ok-title">' + _t("Thank you, we’ve got it!") + '</h3>' +
+            '<p class="tl-form__ok-text">' + _t("We’ve emailed you a confirmation, and Kavi’s team will be in touch soon.") + '</p>' +
+            '<p class="tl-form__ok-alt">' + _t("Prefer to chat?") + ' <a href="' + waLink() + '" target="_blank" rel="noopener">' + _t("Message us on WhatsApp") + '</a></p>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -188,12 +190,12 @@
     var shown = modal.querySelector(".tl-phone__shown");
     function syncCode() {
       var iso = code.value;
-      shown.textContent = iso ? flag(iso) + " +" + DIAL[iso] : "Code";
+      shown.textContent = iso ? flag(iso) + " +" + DIAL[iso] : _t("Code");
       shown.classList.toggle("is-empty", !iso);
     }
     /* defaultSelected so form.reset() returns to the detected country, not blank */
     var guess = detectCountry();
-    var guessOpt = guess && code.querySelector('optgroup[label="All countries"] option[value="' + guess + '"]');
+    var guessOpt = guess && code.querySelector('optgroup[data-all] option[value="' + guess + '"]');
     if (guessOpt) { guessOpt.defaultSelected = true; guessOpt.selected = true; }
     syncCode();
     code.addEventListener("change", syncCode);
@@ -335,7 +337,7 @@
       if (!CONFIG.FORM_ENDPOINT) { done(); return; } // stub: no backend wired yet
 
       fail.hidden = true;
-      sending = true; btn.disabled = true; btn.textContent = "Sending…";
+      sending = true; btn.disabled = true; btn.textContent = _t("Sending…");
       // A urlencoded POST is a CORS "simple request" and Apps Script's final
       // response allows any origin, so the {ok} reply is readable. A rejected
       // fetch (offline, or the deployment no longer public → Google sign-in
@@ -344,7 +346,7 @@
         .then(function (r) { return r.json(); })
         .then(function (res) { if (res && res.ok) done(); else fail.hidden = false; })
         .catch(function () { fail.hidden = false; })
-        .finally(function () { sending = false; btn.textContent = "Send request"; syncSend(); });
+        .finally(function () { sending = false; btn.textContent = _t("Send request"); syncSend(); });
     });
   }
 
