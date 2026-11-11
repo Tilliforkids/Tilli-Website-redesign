@@ -367,7 +367,7 @@
   /* photo strip: square photos drifting the OTHER way to the logo strip, so
      the two bands read as separate rows */
   .photo-strip { margin: 22px -22px 0; overflow: hidden; }
-  .photo-track { display: flex; gap: 10px; width: max-content; animation: photoscroll 56s linear infinite reverse; }
+  .photo-track { display: flex; gap: 10px; width: max-content; animation: photoscroll 104s linear infinite reverse; }   /* 104s for 13 photos = the old 56s-for-7 pace */
   .photo-track .photo { flex: 0 0 auto; width: 150px; height: 150px; border-radius: var(--tl-radius-md); overflow: hidden;
     background: var(--tl-surface-100); box-shadow: var(--tl-shadow-card); }
   .photo-track .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -739,22 +739,34 @@
       </div>
     </div>
     <!-- photo strip (mirrors the desktop Impact carousel): phone-sized copies in
-         assets/carousel/m/. Track is DUPLICATED (7×2) for the seamless -50% loop. -->
+         assets/carousel/m/. Track is DUPLICATED (13×2) for the seamless -50% loop. -->
     <div class="photo-strip">
       <div class="photo-track">
         <div class="photo"><img src="../assets/carousel/m/classroom.jpg" alt="Children working through Tilli activity books in a classroom" decoding="async"></div>
+        <div class="photo"><img src="../assets/carousel/m/musaeus-classroom.jpg" alt="Students holding up their Tilli activity books in class" style="object-position:50% 60%" decoding="async"></div>
         <div class="photo"><img src="../assets/carousel/m/workshop.jpg" alt="Teachers raising their hands at a Tilli training workshop" decoding="async"></div>
+        <div class="photo"><img src="../assets/carousel/m/musaeus-training.jpg" alt="A Tilli facilitator leading a training session for teachers" style="object-position:50% 30%" decoding="async"></div>
         <div class="photo"><img src="../assets/carousel/m/dashboard.jpg" alt="A teacher reviewing a class skills chart on the Tilli dashboard" decoding="async"></div>
+        <div class="photo"><img src="../assets/carousel/m/musaeus-mirror.jpg" alt="A student looking into a hand mirror during a Tilli feelings activity" style="object-position:50% 40%" decoding="async"></div>
         <div class="photo"><img src="../assets/carousel/m/paper-glasses.jpg" alt="A student holding up paper glasses he made in a Tilli activity" decoding="async"></div>
+        <div class="photo"><img src="../assets/carousel/m/musaeus-dashboard.jpg" alt="A teacher pointing at a class skills chart on the Tilli dashboard" style="object-position:50% 45%" decoding="async"></div>
         <div class="photo"><img src="../assets/carousel/m/teachers-group.jpg" alt="Teachers working together in a small group during a Tilli training" decoding="async"></div>
+        <div class="photo"><img src="../assets/carousel/m/musaeus-mood-meter.jpg" alt="A child's coloured-in Tilli Feels and Mood Meter pages" style="object-position:50% 35%" decoding="async"></div>
         <div class="photo"><img src="../assets/carousel/m/leader-meeting.jpg" alt="A Tilli team member taking notes in a meeting with a school leader" decoding="async"></div>
+        <div class="photo"><img src="../assets/carousel/m/musaeus-proud.jpg" alt="A student drawing on the I Am Proud page of a Tilli activity book" style="object-position:50% 55%" decoding="async"></div>
         <div class="photo"><img src="../assets/carousel/m/partners.jpg" alt="Two members of the Tilli community at a partner visit" decoding="async"></div>
         <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/classroom.jpg" alt="" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/musaeus-classroom.jpg" alt="" style="object-position:50% 60%" decoding="async"></div>
         <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/workshop.jpg" alt="" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/musaeus-training.jpg" alt="" style="object-position:50% 30%" decoding="async"></div>
         <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/dashboard.jpg" alt="" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/musaeus-mirror.jpg" alt="" style="object-position:50% 40%" decoding="async"></div>
         <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/paper-glasses.jpg" alt="" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/musaeus-dashboard.jpg" alt="" style="object-position:50% 45%" decoding="async"></div>
         <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/teachers-group.jpg" alt="" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/musaeus-mood-meter.jpg" alt="" style="object-position:50% 35%" decoding="async"></div>
         <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/leader-meeting.jpg" alt="" decoding="async"></div>
+        <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/musaeus-proud.jpg" alt="" style="object-position:50% 55%" decoding="async"></div>
         <div class="photo" aria-hidden="true"><img src="../assets/carousel/m/partners.jpg" alt="" decoding="async"></div>
       </div>
     </div>

@@ -235,7 +235,7 @@
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
             mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
   .imp2-track { display: flex; gap: calc(var(--imp2-gap, 22px) * var(--imp2-scale, 1)); width: max-content;
-    animation: imp2-marquee var(--imp2-dur, 64s) linear infinite; }   /* 64s for 7 photos = the old 46s-for-5 pace */
+    animation: imp2-marquee var(--imp2-dur, 119s) linear infinite; }   /* 119s for 13 photos = the old 64s-for-7 pace */
   .imp2-carousel:hover .imp2-track { animation-play-state: paused; }
   /* --imp2-scale (GUI, press K) multiplies box size + gap so the whole carousel
      scales without touching the track's animated transform */
@@ -1391,25 +1391,37 @@
            seamless image marquee sits mid-screen, stats + quote anchor the
            bottom. Photos live in assets/carousel/ (web-sized JPGs exported from
            assets/Images for school success/). The track is DUPLICATED
-           (14 = 7×2) so the -50% loop is seamless; keep both halves identical.
+           (26 = 13×2) so the -50% loop is seamless; keep both halves identical.
            Each text group's --x/--y/--sc is tuned in the GUI (press K). -->
       <div class="imp2-scene">
         <div class="imp2-carousel rv" style="--imp2-scale:1.35;">
           <div class="imp2-track">
             <div class="imp2-box"><img src="assets/carousel/classroom.jpg" alt="Children working through Tilli activity books in a classroom" decoding="async"></div>
+            <div class="imp2-box"><img src="assets/carousel/musaeus-classroom.jpg" alt="Students holding up their Tilli activity books in class" style="object-position:50% 60%" decoding="async"></div>
             <div class="imp2-box"><img src="assets/carousel/workshop.jpg" alt="Teachers raising their hands at a Tilli training workshop" decoding="async"></div>
+            <div class="imp2-box"><img src="assets/carousel/musaeus-training.jpg" alt="A Tilli facilitator leading a training session for teachers" style="object-position:50% 30%" decoding="async"></div>
             <div class="imp2-box"><img src="assets/carousel/dashboard.jpg" alt="A teacher reviewing a class skills chart on the Tilli dashboard" decoding="async"></div>
+            <div class="imp2-box"><img src="assets/carousel/musaeus-mirror.jpg" alt="A student looking into a hand mirror during a Tilli feelings activity" style="object-position:50% 40%" decoding="async"></div>
             <div class="imp2-box"><img src="assets/carousel/paper-glasses.jpg" alt="A student holding up paper glasses he made in a Tilli activity" decoding="async"></div>
+            <div class="imp2-box"><img src="assets/carousel/musaeus-dashboard.jpg" alt="A teacher pointing at a class skills chart on the Tilli dashboard" style="object-position:50% 45%" decoding="async"></div>
             <div class="imp2-box"><img src="assets/carousel/teachers-group.jpg" alt="Teachers working together in a small group during a Tilli training" decoding="async"></div>
+            <div class="imp2-box"><img src="assets/carousel/musaeus-mood-meter.jpg" alt="A child's coloured-in Tilli Feels and Mood Meter pages" style="object-position:50% 35%" decoding="async"></div>
             <div class="imp2-box"><img src="assets/carousel/leader-meeting.jpg" alt="A Tilli team member taking notes in a meeting with a school leader" decoding="async"></div>
+            <div class="imp2-box"><img src="assets/carousel/musaeus-proud.jpg" alt="A student drawing on the I Am Proud page of a Tilli activity book" style="object-position:50% 55%" decoding="async"></div>
             <div class="imp2-box"><img src="assets/carousel/partners.jpg" alt="Two members of the Tilli community at a partner visit" decoding="async"></div>
-            <!-- duplicate of the 7 above, for the seamless loop (hidden from screen readers) -->
+            <!-- duplicate of the 13 above, for the seamless loop (hidden from screen readers) -->
             <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/classroom.jpg" alt="" decoding="async"></div>
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/musaeus-classroom.jpg" alt="" style="object-position:50% 60%" decoding="async"></div>
             <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/workshop.jpg" alt="" decoding="async"></div>
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/musaeus-training.jpg" alt="" style="object-position:50% 30%" decoding="async"></div>
             <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/dashboard.jpg" alt="" decoding="async"></div>
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/musaeus-mirror.jpg" alt="" style="object-position:50% 40%" decoding="async"></div>
             <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/paper-glasses.jpg" alt="" decoding="async"></div>
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/musaeus-dashboard.jpg" alt="" style="object-position:50% 45%" decoding="async"></div>
             <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/teachers-group.jpg" alt="" decoding="async"></div>
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/musaeus-mood-meter.jpg" alt="" style="object-position:50% 35%" decoding="async"></div>
             <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/leader-meeting.jpg" alt="" decoding="async"></div>
+            <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/musaeus-proud.jpg" alt="" style="object-position:50% 55%" decoding="async"></div>
             <div class="imp2-box" aria-hidden="true"><img src="assets/carousel/partners.jpg" alt="" decoding="async"></div>
           </div>
         </div>
