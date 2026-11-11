@@ -7,6 +7,8 @@
         tl-lang cookie       → the visitor's earlier choice
         browser language     → Accept-Language (non-English supported language)
         country              → COUNTRY_LANG below (Cloudflare's request.cf.country)
+        time zone            → tl-auto cookie, set by js/i18n.js from the
+                               browser's time zone (Cloudflare can't see it)
         English
    2. Serves the pre-built translated copy (i18n/pages/<lang>/…) at the SAME
       URL, so every relative asset path keeps working.
@@ -59,6 +61,11 @@ function cookieLang(header) {
   return m && LANGS[m[1]] ? m[1] : null;
 }
 
+function autoLang(header) {
+  const m = (header || '').match(/(?:^|;\s*)tl-auto=([a-z]{2})/);
+  return m && LANGS[m[1]] && m[1] !== 'en' ? m[1] : null;
+}
+
 function decide(request, url) {
   const q = (url.searchParams.get('lang') || '').toLowerCase();
   if (LANGS[q]) return { lang: q, how: 'url' };
@@ -69,6 +76,8 @@ function decide(request, url) {
   const country = request.cf && request.cf.country;
   const cl = COUNTRY_LANG[country];
   if (cl && (!b || COUNTRY_BEATS_ENGLISH_BROWSER)) return { lang: cl, how: 'country' };
+  const tz = autoLang(request.headers.get('Cookie'));
+  if (tz) return { lang: tz, how: 'timezone' };
   return { lang: 'en', how: 'default' };
 }
 
@@ -107,7 +116,7 @@ export async function onRequest(ctx) {
     .on('head', {
       element(el) {
         el.prepend('<script>window.TILLI_LOCALE=' + JSON.stringify(locale).replace(/</g, '\\u003c') + ';</script>', { html: true });
-        el.append('<script src="/js/i18n.js?v=2" defer></script>', { html: true });
+        el.append('<script src="/js/i18n.js?v=3" defer></script>', { html: true });
       }
     });
   if (!isMobileCopy) {

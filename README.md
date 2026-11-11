@@ -27,5 +27,5 @@ Every page except `/tilli-for-unrwa` is served in 5 languages at the same URL (`
 
 - **After changing any English copy:** run `node i18n/build.mjs extract` (lists strings each language is missing), add the translations to `i18n/<lang>.json`, then run `node i18n/build.mjs build`. Commit `i18n/pages/` too: Cloudflare serves those files as they are, with no build step.
 - Text created by JS goes through `_t("…")`. Use the same wrapper for any new UI string.
-- Language choice and the regional price swap happen in `functions/_middleware.js` (Cloudflare Pages Function). The banner and footer picker live in `js/i18n.js`.
+- Language choice and the regional price swap happen in `functions/_middleware.js` (Cloudflare Pages Function). Order: `?lang`, saved choice, browser language, country, then time zone. Cloudflare can't see the time zone, so `js/i18n.js` maps it (`TZ_LANG`), stores it in the `tl-auto` cookie and reloads once. The banner and footer picker also live in `js/i18n.js`.
 - To try it locally with the Function running: `npx wrangler pages dev .`

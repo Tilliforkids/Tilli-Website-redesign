@@ -4,8 +4,14 @@
    so pages don't load it themselves.
 
    window.TILLI_LOCALE = { lang, how, country, langs:{code:nativeName} }
-     how = "browser" | "country"  → we switched automatically: show the banner
+     how = "browser" | "country" | "timezone" → switched automatically: banner
            "url" | "cookie" | "default" → the visitor chose (or nothing to say)
+
+   Time-zone fallback: Cloudflare can't see the device's time zone, so when
+   nothing stronger picked a language (how = "default") this script maps the
+   time zone (TZ_LANG), stores it in the tl-auto cookie and reloads ONCE; the
+   middleware then serves that language on every page. If the time zone later
+   changes, the cookie follows it.
 
    Picking a language just reloads with ?lang=xx; the middleware remembers it
    in the tl-lang cookie, so it sticks on every page after that.
@@ -19,6 +25,38 @@
   /* How long the banner waits before sliding in (ms), and the cookie life. */
   var BANNER_DELAY = 900;
   var COOKIE_DAYS = 365;
+  /* Time zone → language, used only when nothing stronger applies.
+     tl-auto cookie life in days (it is re-checked against the clock on every page). */
+  var TZ_LANG = { "Asia/Colombo": "si", "Asia/Amman": "ar", "Europe/Madrid": "es",
+                  "Atlantic/Canary": "es", "Africa/Ceuta": "es" };
+  var TZ_COOKIE_DAYS = 30;
+  var SECURE = location.protocol === "https:" ? "; Secure" : "";
+
+  /* ── Time-zone fallback (runs before anything renders) ───────────────────── */
+  function tzLang() {
+    try { return TZ_LANG[Intl.DateTimeFormat().resolvedOptions().timeZone] || null; }
+    catch (e) { return null; }
+  }
+  function hasCookie(re) { return re.test(document.cookie); }
+  function timezoneFallback() {
+    if (L.how !== "default" && L.how !== "timezone") return false;   // something stronger decided
+    var want = tzLang();
+    var have = L.how === "timezone" ? L.lang : null;
+    if (want === have) return false;                                  // already right
+    if (want) document.cookie = "tl-auto=" + want + "; Max-Age=" + TZ_COOKIE_DAYS * 86400 + "; Path=/; SameSite=Lax" + SECURE;
+    else document.cookie = "tl-auto=; Max-Age=0; Path=/; SameSite=Lax" + SECURE;
+    /* Guard 1: cookies blocked → the reload would change nothing (and loop). */
+    var stored = want ? hasCookie(new RegExp("(?:^|;\\s*)tl-auto=" + want + "(?:;|$)"))
+                      : !hasCookie(/(?:^|;\s*)tl-auto=/);
+    if (!stored) return false;
+    /* Guard 2: at most one time-zone reload per page + target per session. */
+    var key = "tl-tz:" + location.pathname + ":" + (want || "none");
+    try { if (sessionStorage.getItem(key)) return false; sessionStorage.setItem(key, "1"); }
+    catch (e) { return false; }
+    location.replace(location.href);
+    return true;
+  }
+  if (timezoneFallback()) return;   // page is reloading in the right language
 
   function hrefFor(code) {
     var u = new URL(location.href);
@@ -76,7 +114,7 @@
 
   /* ── Banner: only when we switched language automatically ───────────────── */
   function banner() {
-    if (L.how !== "browser" && L.how !== "country") return;
+    if (L.how !== "browser" && L.how !== "country" && L.how !== "timezone") return;
     var here = L.langs[L.lang];
     var why = L.how === "browser" ? _t("We’re showing this page in {lang} to match your browser’s language.")
                                   : _t("We’re showing this page in {lang} based on where you are.");
