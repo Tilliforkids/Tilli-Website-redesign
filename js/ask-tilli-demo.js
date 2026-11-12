@@ -11,6 +11,8 @@
         own backend/LLM endpoint (must return a Promise<string>; HTML is
         allowed, e.g. <b>…</b>). Nothing else needs to change — the UI just
         awaits whatever this resolves to.
+     3. ask-tilli-questions.json — 100 hand-written answers + match rules,
+        tried first; the keyword answers below are the fallback.
 
    Config knobs (window.AskTilli):
      maxPrompts  how many questions a visitor gets           (default 2)
@@ -96,6 +98,8 @@
     // how many students / total
     if (has('how many', 'number of', 'total', 'cuánto', 'cuantos', 'combien', 'wie viele', 'कितने') &&
         has('student', 'kid', 'child', 'children', 'niñ', 'élève', 'eleve', 'schüler', 'बच्च', 'छात्र')) {
+      const oneGrade = school.grades.find((g) => q.includes(g.toLowerCase()));
+      if (oneGrade) return `<b>${oneGrade}</b> has <b>${school.studentsPerClass} children</b> in one class.`;
       return pick({
         en: `<b>${school.name}</b> has <b>${school.totalStudents} students</b>: ${school.grades.length} grades (Pre-K to Grade 5), with ${school.studentsPerClass} children in each class.`,
         es: `<b>${school.name}</b> tiene <b>${school.totalStudents} estudiantes</b>: ${school.grades.length} grados (Pre-K a Grado 5), con ${school.studentsPerClass} niños por clase.`,
@@ -190,6 +194,69 @@
 
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
+  /* ── Answer bank (ask-tilli-questions.json) ─────────────────────────────
+     100 hand-written Q&As with match rules (see "matching" in that file's
+     meta). Checked before the keyword logic above; no match → that logic. */
+  let bankPromise = null;
+  function loadBank() {
+    if (!bankPromise) {
+      bankPromise = fetch(window.AskTilli.bankUrl)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => (d && Array.isArray(d.questions) ? d.questions.map(prepEntry) : []))
+        .catch(() => []);
+    }
+    return bankPromise;
+  }
+
+  /* lower-case, strip punctuation/apostrophes, normalise grade names so
+     "gr2", "Class 2" and "grade two" all read "grade 2", Pre-K → "prek" */
+  const NUM = { one: 1, two: 2, three: 3, four: 4, five: 5, fve: 5, first: 1, second: 2, third: 3, fourth: 4, fifth: 5 };
+  function norm(s) {
+    return String(s).normalize('NFKC').toLowerCase()
+      .replace(/[’'`]/g, '')
+      .replace(/[^\p{L}\p{N}\p{M}]+/gu, ' ')
+      .replace(/\b(?:grade|gr|g|class|std|standard)\s*(\d{1,2})\b/g, 'grade $1')
+      .replace(/\b(?:grade|class) (one|two|three|four|five|fve)\b/g, (m, w) => 'grade ' + NUM[w])
+      .replace(/\b(first|second|third|fourth|fifth|1st|2nd|3rd|4th|5th) grade\b/g, (m, w) => 'grade ' + (NUM[w] || parseInt(w, 10)))
+      .replace(/\b(?:pre ?k(?:g)?|pre ?kindergarten|kindergarten|nursery)\b/g, 'prek')
+      .replace(/\s+/g, ' ').trim();
+  }
+  // alt "word*" = prefix of a word; otherwise a whole word / phrase
+  const prepAlt = (a) => (a.endsWith('*') ? { s: ' ' + norm(a.slice(0, -1)), pre: true } : { s: ' ' + norm(a) + ' ', pre: false });
+  const altLen = (padded, a) => (padded.includes(a.s) ? a.s.trim().length : 0);
+  function prepEntry(e) {
+    return {
+      answer: e.answer,
+      w: e.w || 0,
+      exact: (e.exact || []).map(norm),
+      not: (e.not || []).map(prepAlt),
+      match: (e.match || []).map((set) => set.map((group) => group.map(prepAlt)))
+    };
+  }
+  function bankAnswer(bank, raw) {
+    const q = norm(raw), padded = ' ' + q + ' ';
+    let best = null, bestScore = 0;
+    for (const e of bank) {
+      let score = 0;
+      if (e.exact.includes(q)) score = 1e6;
+      else if (!e.not.some((a) => altLen(padded, a))) {
+        for (const set of e.match) {
+          let s = 0;
+          for (const group of set) {
+            const len = Math.max(0, ...group.map((a) => altLen(padded, a)));
+            if (!len) { s = 0; break; }
+            s += 1000 + len;
+          }
+          if (s) score = Math.max(score, s + e.w);
+        }
+      }
+      if (score > bestScore) { best = e; bestScore = score; }
+    }
+    return best ? formatBank(best.answer) : null;
+  }
+  // bank text → HTML: escape, then **bold** and line breaks
+  const formatBank = (t) => escapeHtml(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+
   /* ── Public config + the swappable respond() seam ───────────────────── */
   window.AskTilli = {
     school,
@@ -197,6 +264,7 @@
     maxChars: 220,
     minThink: 700,
     maxThink: 1300,
+    bankUrl: '/ask-tilli-questions.json?v=1',   // bump v when the JSON changes
 
     /* DEVELOPER SEAM ----------------------------------------------------
        Replace the body below with a call to your own endpoint, e.g.:
@@ -212,8 +280,14 @@
 
        ctx = { lang } — best-guess language of the question. Return a
        Promise that resolves to the answer (plain text or simple HTML). */
-    respond: function (prompt, ctx) {
-      return new Promise((resolve) => resolve(scriptedAnswer(prompt, ctx.lang)));
+    respond: async function (prompt, ctx) {
+      // the bank only has en/hi/kn/ta answers — other detected languages
+      // go straight to the translated keyword logic
+      if (!['es', 'fr', 'de', 'ar'].includes(ctx.lang)) {
+        const hit = bankAnswer(await loadBank(), prompt);
+        if (hit) return hit;
+      }
+      return scriptedAnswer(prompt, ctx.lang);
     }
   };
 
@@ -236,6 +310,8 @@
 
     let used = 0;
     let busy = false;
+    // fetch the answer bank on first interaction, not on page load
+    ['pointerenter', 'focusin', 'touchstart'].forEach((ev) => root.addEventListener(ev, loadBank, { once: true, passive: true }));
     input.setAttribute('maxlength', String(A.maxChars));
     charsEl.textContent = `0 / ${A.maxChars}`;
 
