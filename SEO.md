@@ -65,6 +65,7 @@ Fill this in from 2.1. Any URL with backlinks or traffic **must** redirect somew
 | `/terms-of-service` | `/terms` | ✅ 301 in `_redirects` |
 | `/tilli-evidence`, `/asktilli-dataset`, `/2025-impact-report` | `/research` | ✅ 301 in `_redirects` |
 | `/tilli-for-unrwa` | `/tilli-for-unrwa` | same URL. Page `tilli-for-unrwa.html` with the site header, footer and chat bubble, but not linked from the nav, footer or any page; listed in `sitemap.xml`; indexable, no `noindex`). PDFs in `assets/unrwa/` |
+| — | `/demo-dashboard` | new, no Wix equivalent. Teacher-dashboard demo (`demo-dashboard/`, language versions `/es/` `/en/` `/hi/`). `noindex`, not in sitemap; linked only from the Home Dashboard button. Never redirect it. |
 | `/tilli-for-school`, `/tilliatschool`, `/copy-of-tilli-for-school-experiment` | `/` | ✅ 301 in `_redirects` |
 | `/tilli-for-home`, `/tilliathome`, `/copy-of-tilli-for-home` | `/` | ✅ 301 in `_redirects` |
 | `/tilli-tools-overview` | `/` | ✅ 301 in `_redirects` |
@@ -175,3 +176,4 @@ Each title should be under ~60 characters, each description under ~155, and no t
 | 2026-11-05 | Added `/tilli-for-unrwa` to `sitemap.xml` so Google can find the page (still not linked from the site). |
 | 2026-11-05 | `tilli-for-unrwa.html` rebuilt inside the site shell (header, footer, chat bubble via `site-chrome.js`). UNRWA content keeps its own look, with styles scoped under `.unrwa`. Still not linked from anywhere on the site. |
 | 2026-11-11 | **Translations (ar, si, ta, es).** Every page except `/tilli-for-unrwa` now has Arabic, Sinhala, Tamil and Spanish versions at the same URL plus `?lang=xx` (e.g. `/faq?lang=ar`). `functions/_middleware.js` adds `hreflang` alternates (en, ar, si, ta, es, x-default) to every desktop page. Translated pages get a self-canonical with `?lang=xx` and `lang`/`dir` on `<html>`. Visitors with no `?lang` are matched by cookie, then browser language, then country, so Googlebot (no Accept-Language, US) sees English at the plain URL. Sitemap unchanged: the alternates are in the page heads. |
+| 2026-11-12 | Added `/demo-dashboard` (`demo-dashboard/`): a clickable teacher-dashboard demo for teacher sessions. Language versions at `/demo-dashboard/es/`, `/en/`, `/hi/` (the bare URL picks one). **Not indexed**: `noindex, nofollow` on every page, not in `sitemap.xml`, outside the language middleware (`_routes.json` unchanged). Linked only from the Home Dashboard section button ("Experience the dashboard yourself as a teacher"), which opens in a new tab. |

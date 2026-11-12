@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!-- Demo teacher dashboard. es/, en/ and hi/ hold the SAME file — the language
+     comes from the URL (assets/demo-config.js). Edit one, copy to the other two. -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<base href="/demo-dashboard/">
+<meta name="robots" content="noindex, nofollow">
+<title>Tilli · Teacher dashboard demo</title>
+<link rel="icon" type="image/png" href="/assets/ds/favicon.png">
+<link rel="stylesheet" href="_ds/tilli/tokens/fonts.css?v=23">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Quicksand:wght@500;600;700&family=Noto+Sans+Devanagari:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tilli.css?v=23">
+<link rel="stylesheet" href="assets/app.css?v=23">
+<link rel="stylesheet" href="assets/demo.css?v=84">
+</head>
+<body>
+
+<div class="brand-rail" aria-hidden="true"><span></span><span class="seg pink"></span><span class="seg cyan"></span><span class="seg yellow"></span></div>
+
+<div class="onb" id="onb">
+  <div class="sun onb-sun" aria-hidden="true"></div>
+  <div class="onb-band flower-band" id="flower-band" aria-hidden="true"></div>
+  <div class="onb-stage" id="onb-root"></div>
+</div>
+
+<div id="dash-root" style="display:none"></div>
+
+<script src="assets/demo-config.js?v=23"></script>
+<script src="assets/demo-i18n.js?v=33"></script>
+<script src="assets/demo-i18n-es.js?v=51"></script>
+<script src="assets/demo-i18n-hi.js?v=51"></script>
+<script src="assets/school-data.js?v=23"></script>
+<script src="assets/tilli-api.js?v=25"></script>
+<script src="assets/loading.js?v=23"></script>
+<script src="assets/i18n.js?v=23"></script>
+<script src="assets/tilli-history.js?v=23"></script>
+<script src="assets/float-help.js?v=23"></script>
+<script>TilliFloat.mount({ role: 'Teacher' });</script>
+<script src="assets/dashboard-data.js?v=26"></script>
+<script src="assets/flower-band.js?v=23"></script>
+<script src="assets/demo-content.js?v=75"></script>
+<script src="assets/teacher-dashboard.js?v=69"></script>
+<script src="assets/teacher.js?v=23"></script>
+<script src="assets/demo.js?v=30"></script>
+</body>
+</html>

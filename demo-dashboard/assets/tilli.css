@@ -1,0 +1,1665 @@
+/* ============================================================
+   Tilli Measures — shared design system
+   Bright brand identity (per image 1): Montserrat + Quicksand,
+   green / pink / cyan / yellow rail, flower band.
+   ============================================================ */
+
+:root {
+  /* Brand core */
+  --green-500: #56C02B;
+  --green-600: #49A524;
+  --green-700: #348C11;
+  --lime-400: #9BDE1D;
+  --pink-400: #E866B0;
+  --pink-600: #E91E8C;
+  --cyan-500: #26BDE2;
+  --cyan-700: #1B7F99;
+  --yellow-500: #FCC30B;
+  --orange-500: #F99B1C;
+  --violet-500: #8B5CF6;
+
+  /* Ink */
+  --ink-900: #141414;
+  --ink-700: #474747;
+  --ink-600: #545454;
+  --ink-450: #5B6170;
+  --ink-300: #9AA3AF;
+
+  /* Surfaces & lines */
+  --white: #FFFFFF;
+  --line-200: #ECEEF2;
+  --surface-100: #F8F9FB;
+
+  /* Washes */
+  --wash-yellow: #FFF6A8;
+  --wash-cyan: #D9F5FF;
+  --wash-green: #F1FFEC;
+  --wash-pink: #FFF6FB;
+  /* Borders that sit on a wash (tinted cards / notes) */
+  --green-line: #BFE6AE;
+  --cyan-line: #B7E6F1;
+  --yellow-line: #F1DA7A;
+
+  /* Text roles — use these instead of picking an ink step per rule */
+  --text-meta: var(--ink-450);    /* secondary text: sub-lines, notes, counts, eyebrows (AA on white) */
+  --text-faint: var(--ink-300);   /* decorative only: chevrons, separators, placeholders, disabled/locked */
+
+  /* Scrims behind modals / drawers */
+  --scrim: rgba(20, 20, 20, .42);
+  --scrim-soft: color-mix(in srgb, var(--ink-900) 28%, transparent);
+
+  /* Semantic: danger / warning / info */
+  --danger-500: #E1543E;      /* destructive button fill */
+  --danger-600: #C23A25;      /* destructive button hover */
+  --danger-700: #B22447;      /* every error / danger text */
+  --danger-wash: #FCE6E1;     /* error banner + danger pill fill */
+  --danger-line: #F6C9D3;     /* error banner / danger-outline border */
+  --warn-500: #F0A84A;        /* warning dot / accent */
+  --warn-700: #A96518;        /* warning text */
+  --warn-wash: #FFF1DC;       /* warning pill / banner fill */
+  --warn-line: #F6D9A8;       /* warning note border */
+  --info-wash: #EAF4FF;       /* info note fill */
+  --info-line: #C9DEF6;       /* info note border */
+  --info-ink: #33465E;        /* info note text */
+  --focus: var(--cyan-500);   /* the one focus colour (inputs, focus rings) */
+
+  /* Accent — ONE set on every surface (selected / hover / link states).
+     Not cyan: cyan is band 1 (Beginner). */
+  --accent: var(--green-500);
+  --accent-ink: var(--green-700);
+  --accent-wash: var(--wash-green);
+  --sel-border-w: 1.5px;            /* border width of every selectable card (.ui-pick), selected or not */
+
+  /* Profile avatar — one component, colour per surface (teacher.html sets pink) */
+  --avatar-bg: var(--wash-green);
+  --avatar-fg: var(--green-700);
+
+  /* Skill levels — ONE scale everywhere.
+     1 Beginner / Beginner / Emerging · 2 Learner / Learner / Developing · 3 Advanced / Expert / Secure / Proficient · 4 Advanced */
+  --lvl-1: #26BDE2;  --lvl-1-soft: #7FD6EE;  --lvl-1-wash: #D9F5FF;  --lvl-1-ink: var(--cyan-700);
+  --lvl-2: #E3A40E;  --lvl-2-soft: #F2CF6B;  --lvl-2-wash: #FCF0C8;  --lvl-2-ink: #8A6400;
+  --lvl-3: #56C02B;  --lvl-3-soft: #7FCB95;  --lvl-3-wash: #DDF3E3;  --lvl-3-ink: var(--green-700);
+  --lvl-4: #348C11;  --lvl-4-soft: #56C02B;  --lvl-4-wash: #CDE9C0;  --lvl-4-ink: #1E5A0A;
+  --lvl-2-line: #F3E2A6;   /* border on a --lvl-2-wash fill (sample-data note) */
+
+  /* Band bar (.ui-bandbar) + dots (.ui-dot) */
+  --bandbar-h: 14px;        /* stacked band bar in rows / cards */
+  --bandbar-h-hero: 22px;   /* the one hero band bar per screen (.ui-bandbar.hero) */
+  --dot-sm: 7px;            /* dot inside chips / badges */
+  --dot-md: 9px;            /* legend / list / filter-chip dot */
+  --dot-lg: 12px;           /* timeline dot */
+
+  /* Hover tooltip (.ui-tooltip) + ⓘ affordance (.ui-info) */
+  --tip-max-w: 260px;       /* tooltip bubble max width */
+  --info-size: 15px;        /* inline ⓘ circle */
+  --info-size-lg: 24px;     /* ⓘ as a standalone tap target (touch / tap-to-open) */
+  --icon-tile: 34px;        /* round icon tile (.ui-icontile) — Ask Tilli head, hero cards */
+
+  /* Assessment perspectives — one set everywhere */
+  --persp-teacher: #4A90D9;
+  --persp-parent: #56C02B;
+  --persp-student: #F0A84A;
+
+  /* Completion status (done / in progress / pending) */
+  --status-done-bg: var(--wash-green);   --status-done-fg: var(--green-700);  --status-done-dot: var(--green-700);
+  --status-prog-bg: var(--wash-yellow);  --status-prog-fg: var(--lvl-2-ink);  --status-prog-dot: var(--lvl-2-soft);
+  --status-pend-bg: var(--surface-100);  --status-pend-fg: var(--ink-300);    --status-pend-dot: var(--ink-300);
+
+  /* Type scale — 6 steps. xs/sm/md never shrink (readability floor);
+     lg/xl/2xl step down at the tablet + mobile breakpoints below. */
+  --fs-xs: 11px;    /* chips, eyebrows, table heads, tiny meta */
+  --fs-sm: 13px;    /* secondary text, labels, buttons-sm, table cells */
+  --fs-md: 15px;    /* body, inputs, primary buttons */
+  --fs-lg: 18px;    /* card / section titles */
+  --fs-xl: 24px;    /* screen titles, dialog headings, big stats */
+  --fs-2xl: 32px;   /* page heroes, largest numerals */
+  --fs-display: clamp(34px, 5vw, 64px); /* landing hero ONLY (scaled by the index GUI multipliers) */
+
+  --font-body: 'Montserrat', system-ui, sans-serif;
+  --font-heading: 'Quicksand', 'Montserrat', sans-serif;
+  --font-mono: ui-monospace, Menlo, monospace;
+
+  /* Spacing */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-7: 32px; --space-8: 48px;
+  --page-gap: clamp(16px, 2vw, 24px);
+  --page-pad-y: 28px;       /* main content top padding (teacher + school admin) */
+  --page-pad-x: 40px;       /* main content side padding */
+  --content-max: 1180px;    /* max width of a dashboard screen */
+  --content-narrow: 860px;  /* landing screens (teacher My Garden, admin Overview) */
+
+  --side-w: 232px;          /* dashboard sidebar width — same on teacher / school admin / Tilli platform */
+  --header-h: 66px;         /* sticky dashboard header height */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-card: 24px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --shadow-card: 0 2px 10px rgba(20, 20, 20, .06);   /* resting raised cards, dropdown lists */
+  --shadow-hover: 0 8px 22px rgba(20, 20, 20, .08);  /* card hover lift */
+  --shadow-pop: 0 12px 30px rgba(20, 20, 20, .14);   /* menus, popovers, tooltips, toasts */
+  --shadow-modal: 0 24px 60px rgba(20, 20, 20, .24); /* modals, sheets, side panels */
+
+  --ease: cubic-bezier(.2, .7, .3, 1);
+}
+@media (max-width: 1023px) {
+  :root { --page-pad-y: 22px; --page-pad-x: 26px; }
+}
+@media (max-width: 900px) {
+  :root { --fs-xl: 22px; --fs-2xl: 28px; }
+}
+@media (max-width: 640px) {
+  :root { --fs-lg: 17px; --fs-xl: 21px; --fs-2xl: 26px; --page-gap: 16px; --page-pad-y: 16px; --page-pad-x: 16px; }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--white);
+  font-family: var(--font-body);
+  color: var(--ink-900);
+}
+/* Form controls don't inherit the page font by default — without this, buttons
+   styled only inline render in the system font. */
+button, input, select, textarea { font-family: inherit; }
+
+a { color: var(--cyan-500); }
+/* :where() keeps this at class-level specificity so .btn-* hover colours win on <a class="btn…"> */
+:where(a):hover { color: var(--cyan-700); }
+
+/* Headings use Quicksand; body + supporting text use Montserrat (set on body above) */
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); }
+
+/* No ExtraBold anywhere (design rule): the browser default for <b>/<strong> is
+   "bolder", which turns 600 text into 900. Pin emphasis to 700 instead. */
+b, strong { font-weight: 700; }
+
+/* ---- Brand vertical rail (left edge) ---- */
+.brand-rail {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: clamp(8px, 1vw, 19px);
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
+}
+.brand-rail span:first-child { flex: 1; background: var(--green-500); }
+.brand-rail .seg { height: 64px; }
+.brand-rail .seg.pink { background: var(--pink-400); }
+.brand-rail .seg.cyan { background: var(--cyan-500); }
+.brand-rail .seg.yellow { background: var(--yellow-500); }
+
+/* ---- Wordmark lockup ---- */
+.lockup { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.lockup img { height: clamp(22px, 2.4vw, 30px); width: auto; display: block; }
+.lockup .divider { width: 1px; height: 20px; background: var(--line-200); }
+.lockup .measures {
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--cyan-500);
+}
+
+/* ---- Buttons ---- */
+.btn {
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  transition: transform .2s var(--ease), background .2s, border-color .2s, color .2s;
+}
+.btn:active { transform: scale(.98); }
+.btn-primary {
+  color: var(--white);
+  background: var(--green-500);
+  font-size: var(--fs-lg);
+  padding: 16px 44px;
+}
+.btn-primary:hover { background: var(--green-600); }
+.btn-primary.block { width: 100%; padding: 15px; font-size: var(--fs-md); }
+.btn-primary.md { padding: 12px 22px; font-size: var(--fs-md); }   /* in-card primary action */
+.btn-primary.sm { padding: 9px 16px; font-size: var(--fs-sm); }    /* compact primary action */
+.btn-primary:disabled { background: var(--line-200); color: var(--ink-300); cursor: not-allowed; }
+/* Every other button looks switched off too (an outline button used to look clickable). */
+.btn:disabled, .btn-outline:disabled, .btn-cyan:disabled, .btn-ghost:disabled, .btn-line:disabled { background: var(--surface-100); border-color: var(--line-200); color: var(--ink-300); cursor: not-allowed; box-shadow: none; }
+.btn:disabled:hover, .btn-outline:disabled:hover, .btn-cyan:disabled:hover, .btn-ghost:disabled:hover, .btn-line:disabled:hover { background: var(--surface-100); border-color: var(--line-200); color: var(--ink-300); }
+.btn-primary:disabled, .btn-primary:disabled:hover { background: var(--line-200); border-color: transparent; }   /* primary keeps its own grey */
+
+.btn-ghost {
+  /* Same look as .btn.btn-outline (the one pill secondary button) — kept as a
+     standalone class because it is used without .btn on many screens. */
+  background: var(--white);
+  border: 1px solid var(--line-200);
+  color: var(--ink-700);
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent-ink); }
+.btn-ghost.md { padding: 12px 20px; font-size: var(--fs-md); }
+
+/* ---- Focus ring ---- */
+.focus:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* ---- Form fields ---- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  color: var(--ink-700);
+}
+.input, .select {
+  border: 1px solid var(--line-200);
+  background: var(--white);
+  outline: none;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--fs-md);
+  color: var(--ink-900);
+  padding: 13px 15px;
+  border-radius: var(--radius-sm);
+  width: 100%;
+}
+.input:focus, .select:focus { border-color: var(--focus); }
+.input.err { border-color: var(--danger-700); }
+.input.sm, .select.sm { font-size: var(--fs-sm); padding: 9px 12px; }  /* compact field (filters, inline editors) */
+.select.sm { padding-right: 32px; }
+.input.mono { font-family: var(--font-mono); }
+.ff-heading { font-family: var(--font-heading); }
+.break-all { word-break: break-all; }
+.err-text { font-weight: 600; font-size: var(--fs-sm); color: var(--danger-700); margin: 0; }
+.select { padding-right: 36px; appearance: none; cursor: pointer; }
+.select-wrap { position: relative; display: block; }
+.select-wrap::after {
+  content: '\25BE';
+  position: absolute; right: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-300); font-size: var(--fs-sm); pointer-events: none;
+}
+
+/* ---- School / grade pill ---- */
+.pill-info {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--wash-cyan);
+  border-radius: var(--radius-pill);
+  padding: 7px 14px;
+  font-family: var(--font-body);
+  font-weight: 700; font-size: var(--fs-sm);
+  color: var(--cyan-700);
+}
+
+/* ---- Animations ---- */
+@keyframes swayA { from { transform: rotate(-2.2deg); } to { transform: rotate(2.6deg); } }
+@keyframes swayB { from { transform: rotate(2.4deg); } to { transform: rotate(-2deg); } }
+@keyframes swayC { from { transform: rotate(-1.4deg); } to { transform: rotate(1.6deg); } }
+@keyframes tmRise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes tmSpin { to { transform: rotate(360deg); } }
+@keyframes tmShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-7px); } 40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); } 80% { transform: translateX(3px); }
+}
+/* .tm-rise entrance fade is intentionally a no-op — fade-in animations were
+   removed site-wide (they replayed on re-render). The class + @keyframes
+   tmRise are kept so a fade can be opted back in per-screen when asked. */
+.tm-rise { animation: none; }
+.tm-shake { animation: tmShake .4s ease; }
+.tm-sway { transform-box: fill-box; transform-origin: 50% 100%; }
+@media (prefers-reduced-motion: reduce) {
+  .tm-sway, .tm-rise { animation: none !important; }
+}
+
+/* ---- Screen transitions (View Transitions API) ----
+   Both dashboards swap a screen by rewriting innerHTML; startViewTransition()
+   (in teacher-dashboard.js render() and parent.html render()) cross-fades the
+   old screen into the new one. Persistent chrome — the side rail, header chips,
+   bottom nav, and the parent top bar — carry their own view-transition-name so
+   they hold still while only the main content fades + gently zooms. */
+.dash-side      { view-transition-name: dash-side; }
+.dash-header    { view-transition-name: dash-header; }
+.dash-bottomnav { view-transition-name: dash-bottomnav; }
+
+@keyframes tmVtIn  { from { opacity: 0; transform: scale(.985); } to { opacity: 1; transform: scale(1); } }
+@keyframes tmVtOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(1.012); } }
+
+/* The main content lives in the default "root" group (always viewport-sized,
+   so it never distorts). Old fades out quickly, new fades + zooms up into place. */
+::view-transition-old(root) { animation: tmVtOut .18s var(--ease) both; }
+::view-transition-new(root) { animation: tmVtIn  .34s var(--ease) both; }
+
+/* Pinned chrome: hold in place (or gently morph if it changed) — never fade. */
+::view-transition-group(dash-side),
+::view-transition-group(dash-header),
+::view-transition-group(dash-bottomnav),
+::view-transition-group(parent-top) { animation-duration: .28s; }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+}
+
+/* ---- Ask Tilli "thinking" bubble ---- */
+.ask-typing { display: inline-flex; align-items: center; gap: 5px; }
+.ask-typing span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green-500);
+  opacity: .35; animation: tmTypingDot 1s var(--ease) infinite;
+}
+.ask-typing span:nth-child(2) { animation-delay: .16s; }
+.ask-typing span:nth-child(3) { animation-delay: .32s; }
+@keyframes tmTypingDot {
+  0%, 60%, 100% { opacity: .3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+/* ---- Skeleton shimmer (reusable) ---- */
+.skeleton {
+  position: relative; overflow: hidden;
+  background: var(--surface-100); border-radius: var(--radius-sm);
+}
+.skeleton::after {
+  content: ''; position: absolute; inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent);
+  animation: tmShimmer 1.2s infinite;
+}
+@keyframes tmShimmer { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .ask-typing span, .skeleton::after { animation: none !important; }
+}
+
+/* ---- Spinner ---- */
+.spinner {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 4px solid var(--line-200); border-top-color: var(--cyan-500);
+  animation: tmSpin .8s linear infinite;
+}
+
+/* ---- Loading states (assets/loading.js) ---- */
+:root {
+  --sk-line-h: 12px;      /* height of a skeleton text line */
+  --sk-gap: 10px;         /* space between skeleton lines */
+  --sk-chart-h: 180px;    /* height of a skeleton chart block */
+  --sk-circle: 56px;      /* skeleton avatar / face circle */
+  --ld-spin-size: 14px;   /* spinner inside a busy button */
+  --sk-fill: #E6E9EE;     /* skeleton bar colour — visible on white cards and grey pages */
+}
+.sk-wrap .skeleton, .skeleton.sk-line, .skeleton.sk-field, .skeleton.sk-circle { background: var(--sk-fill); }
+.sk-wrap { display: flex; flex-direction: column; gap: var(--page-gap); }
+.sk-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sk-line { height: var(--sk-line-h); border-radius: var(--radius-pill); }
+.sk-card .sk-line + .sk-line { margin-top: var(--sk-gap); }
+.sk-head { display: flex; flex-direction: column; gap: 10px; }
+.sk-title { height: 26px; }
+.sk-crumb { height: 10px; }
+.sk-num { height: 26px; }
+.sk-cardtitle { height: 16px; margin-bottom: 6px; }
+.sk-bar { display: flex; gap: 10px; flex-wrap: wrap; }
+.sk-field { height: 38px; border-radius: var(--radius-md); min-width: 120px; }
+.sk-tabs { display: flex; gap: 8px; }
+.sk-tab { width: 92px; height: 34px; border-radius: var(--radius-pill); }
+.sk-grid { display: grid; gap: var(--page-gap); }
+.sk-grid.tiles { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.sk-grid.cards { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.sk-row { display: grid; grid-template-columns: 2fr 1.4fr 1fr .8fr; gap: 16px; padding: 12px 0; border-top: 1px solid var(--line-200); }
+.sk-row:first-of-type { margin-top: 8px; }
+.sk-row .sk-line { width: 100% !important; margin: 0 !important; }
+.sk-chart { height: var(--sk-chart-h); border-radius: var(--radius-md); margin-top: 8px; }
+.sk-hero { display: flex; align-items: center; gap: 16px; }
+.sk-hero-t { flex: 1; display: flex; flex-direction: column; gap: var(--sk-gap); }
+.sk-circle { width: var(--sk-circle); height: var(--sk-circle); border-radius: 50%; flex: none; }
+.sk-circle.lg { width: 220px; height: 220px; max-width: 70vw; max-height: 70vw; }
+.sk-center { display: grid; place-items: center; min-height: 280px; }
+@media (max-width: 640px) { .sk-row { grid-template-columns: 2fr 1fr; } .sk-row .sk-line:nth-child(n+3) { display: none; } }
+/* Busy button: spinner + label, can't be pressed twice */
+.ld-spin {
+  display: inline-block; width: var(--ld-spin-size); height: var(--ld-spin-size); margin-right: 8px; vertical-align: -2px;
+  border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: tmSpin .7s linear infinite;
+}
+[aria-busy="true"].btn, button[aria-busy="true"] { cursor: progress; opacity: .85; }
+@media (prefers-reduced-motion: reduce) { .ld-spin { animation-duration: 2s; } }
+/* Error states (assets/loading.js): a load that failed, a save that failed */
+.ld-error { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 40px 20px;
+  background: var(--white); border: 1px solid var(--line-200); border-radius: var(--radius-card); color: var(--ink-600); font-size: var(--fs-sm); line-height: 1.5; }
+.ld-error b { font-family: var(--font-heading); font-size: var(--fs-md); color: var(--ink-900); }
+.ld-error span { max-width: 380px; }
+.ld-error .btn { margin-top: 6px; }
+.ld-error-ic { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 20px;
+  color: var(--danger-700); background: var(--wash-pink, #FDEFF5); margin-bottom: 4px; }
+.ld-saveerr { margin: 6px 0 0; font-size: var(--fs-xs); font-weight: 600; color: var(--danger-700); line-height: 1.4; }
+/* "Simulating errors" badge (only with ?errors=1) */
+.ld-simbadge { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 90; display: flex; align-items: center; gap: 10px;
+  background: var(--ink-900); color: var(--white); border-radius: var(--radius-pill); padding: 6px 6px 6px 14px; font-size: var(--fs-xs); font-weight: 700; white-space: nowrap; }
+.ld-simbadge button { border: none; border-radius: var(--radius-pill); padding: 5px 10px; font: inherit; cursor: pointer; background: var(--white); color: var(--ink-900); }
+.ld-new { font-style: normal; color: var(--yellow-500); margin-left: 2px; }
+@media (max-width: 860px) { .ld-simbadge { bottom: 84px; } }   /* above the phone bottom bar */
+/* Calendar upload: "Reading your calendar…" */
+.cal-reading { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 36px 16px; text-align: center; color: var(--ink-600); font-size: var(--fs-sm); }
+.cal-reading .spinner { width: 36px; height: 36px; margin-bottom: 6px; }
+.cal-reading b { font-family: var(--font-heading); font-size: var(--fs-md); color: var(--ink-900); }
+
+/* ---- Overlay / dialog ---- */
+.overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: var(--scrim);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.dialog {
+  position: relative;
+  width: 100%; max-width: 440px;
+  max-height: calc(100svh - 40px); overflow-y: auto;
+  background: var(--white);
+  border: 2px solid var(--cyan-500);
+  border-radius: var(--radius-card);
+  padding: 32px 30px;
+}
+/* Dialog step transitions — the backdrop stays put while cards slide.
+   Forward: old exits left, new enters from the right. Back: reversed. */
+@keyframes tmSlideInRight  { from { transform: translateX(120%);  } to { transform: translateX(0); } }
+@keyframes tmSlideOutLeft  { from { transform: translateX(0);     } to { transform: translateX(-120%); } }
+@keyframes tmSlideInLeft   { from { transform: translateX(-120%); } to { transform: translateX(0); } }
+@keyframes tmSlideOutRight { from { transform: translateX(0);     } to { transform: translateX(120%); } }
+.dlg-in-right  { animation: tmSlideInRight  .30s var(--ease) both; }
+.dlg-out-left  { animation: tmSlideOutLeft  .30s var(--ease) both; }
+.dlg-in-left   { animation: tmSlideInLeft   .30s var(--ease) both; }
+.dlg-out-right { animation: tmSlideOutRight  .30s var(--ease) both; }
+@media (prefers-reduced-motion: reduce) {
+  .dlg-in-right, .dlg-out-left, .dlg-in-left, .dlg-out-right { animation-duration: .01ms; }
+}
+.sheet {
+  position: fixed; inset: 0; z-index: 50;
+  background: var(--white); overflow-y: auto;
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(24px, 5vh, 48px) clamp(24px, 5vw, 48px);
+}
+.dialog-close {
+  position: absolute; top: 12px; right: 16px;
+  background: none; border: none; color: var(--ink-300);
+  font-size: var(--fs-xl); line-height: 1; cursor: pointer;
+}
+
+/* ---- Add-child "getting the notepad" loading screen ----
+   All positions/sizes are driven by CSS custom properties set inline on
+   .pencil-load-wrap (defaults below are the fallbacks). Tune them live via
+   the on-screen panel. */
+.pencil-load-wrap {
+  --pencil-size: 165px;
+  --pencil-gap: 47px;
+  --pencil-x: 0px;
+  --pencil-y: 200px;
+  --bob-altitude: 31px;
+  --bob-speed: .66s;
+  --msg-size: 20px;
+  --msg-gap: 36px;
+  --msg-x: 0px;
+  --msg-y: 200px;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+}
+.pencil-loader {
+  display: flex; align-items: flex-end;
+  gap: var(--pencil-gap);
+  height: calc(var(--pencil-size) + var(--bob-altitude));
+  transform: translate(var(--pencil-x), var(--pencil-y));
+}
+.pencil-loader .pencil {
+  height: var(--pencil-size); width: auto; display: block;
+  user-select: none; -webkit-user-drag: none;
+  will-change: transform;
+  animation: pencilBob var(--bob-speed) infinite both;
+}
+/* Staggered starts make a lively travelling bob rather than one flat sine. */
+.pencil-loader .pencil-1 { animation-delay: calc(var(--bob-speed) * -0.00); }
+.pencil-loader .pencil-2 { animation-delay: calc(var(--bob-speed) * -0.16); }
+.pencil-loader .pencil-3 { animation-delay: calc(var(--bob-speed) * -0.32); }
+/* Ease-out up, ease-in down = a gravity-like hop, not a smooth sinusoid. */
+@keyframes pencilBob {
+  0%   { transform: translateY(0);                                 animation-timing-function: cubic-bezier(.3,.7,.2,1); }
+  42%  { transform: translateY(calc(-1 * var(--bob-altitude)));    animation-timing-function: cubic-bezier(.7,0,.7,.3); }
+  84%  { transform: translateY(0); }
+  100% { transform: translateY(0); }
+}
+.pencil-load-msg {
+  font-family: var(--font-body); font-weight: 600;
+  font-size: var(--msg-size); color: var(--ink-600);
+  margin: var(--msg-gap) 0 0; max-width: 30ch; line-height: 1.5;
+  transform: translate(var(--msg-x), var(--msg-y));
+}
+@media (prefers-reduced-motion: reduce) {
+  .pencil-loader .pencil { animation: none; }
+}
+.dialog-back {
+  position: absolute; top: 16px; left: 16px;
+}
+
+.hidden { display: none !important; }
+
+/* ============================================================
+   Mobile-first refinements — portrait phones (≤ 640px)
+   Base styles above are fluid and already scale down; these
+   tighten spacing, enlarge tap targets, and slim overlays so
+   the phone view feels designed, not just shrunk. Desktop is
+   untouched.
+   ============================================================ */
+@media (max-width: 640px) {
+  .btn-primary { padding: 14px 30px; font-size: var(--fs-md); }
+
+  .overlay { padding: 14px; }
+  .dialog { padding: 26px 20px; border-radius: var(--radius-xl); }
+  .sheet { padding: 28px 20px; align-items: flex-start; }
+
+  .lockup { gap: 10px; }
+  .lockup .divider { height: 18px; }
+  .lockup .measures { font-size: var(--fs-xs); }
+
+  /* Hide the decorative brand rail on mobile across all screens */
+  .brand-rail { display: none; }
+}
+
+/* ============================================================
+   SHARED COMPONENTS (ui-*)
+   One definition per component, used by every page. Page <style>
+   blocks only hold what is genuinely unique to that page. Colours
+   that differ per page (admin = cyan, everything else = green) come
+   from --accent / --accent-ink / --accent-wash.
+   ============================================================ */
+
+/* ---- Buttons (extensions of .btn) ---- */
+.btn-sm { padding: 8px 16px; font-size: var(--fs-sm); }
+.btn.block { width: 100%; }
+.btn-cyan { background: var(--cyan-500); color: var(--white); }
+.btn-cyan:hover { background: var(--cyan-700); }
+.btn-outline { background: var(--white); border: 1px solid var(--line-200); color: var(--ink-700); }   /* = .btn-ghost */
+.btn-outline:hover { border-color: var(--accent); color: var(--accent-ink); }
+.btn-outline.md { padding: 12px 20px; font-size: var(--fs-md); }
+.btn-danger { background: var(--danger-500); color: var(--white); }
+.btn-danger:hover { background: var(--danger-600); }
+.btn-danger-outline { background: var(--white); border: 1.5px solid var(--danger-line); color: var(--danger-700); }
+.btn-danger-outline:hover { background: var(--danger-wash); }
+/* Bordered secondary action in cards (rows of actions, choices) */
+.btn-line {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: var(--white); border: 1px solid var(--line-200); border-radius: var(--radius-md);
+  padding: 9px 14px; font-family: var(--font-body); font-weight: 700; font-size: var(--fs-sm);
+  color: var(--ink-700); cursor: pointer; transition: border-color .15s, color .15s, background .15s;
+}
+.btn-line:hover { border-color: var(--accent); color: var(--accent-ink); }
+.btn-line.primary { background: var(--green-500); border-color: var(--green-500); color: var(--white); }
+.btn-line.primary:hover { background: var(--green-600); color: var(--white); }
+/* Soft-fill secondary (Back / Previous) */
+.btn-soft {
+  display: inline-flex; align-items: center; gap: 6px; background: var(--surface-100); border: none;
+  border-radius: var(--radius-md); padding: 9px 15px; font-family: var(--font-body); font-weight: 700;
+  font-size: var(--fs-sm); color: var(--ink-450); cursor: pointer;
+}
+.btn-soft:hover { color: var(--ink-900); }
+.btn-soft.green { background: var(--wash-green); color: var(--green-700); }
+.btn-soft.green:hover { background: color-mix(in srgb, var(--green-500) 18%, var(--white)); }
+/* Text link button */
+.btn-link {
+  background: none; border: none; padding: 0; cursor: pointer; font-family: var(--font-body);
+  font-weight: 700; font-size: var(--fs-sm); color: var(--accent-ink);
+}
+.btn-link:hover { text-decoration: underline; }
+.btn-link.danger { color: var(--danger-700); }
+.btn-link.muted { color: var(--ink-450); text-decoration: underline; }
+/* Round icon/close button */
+.btn-icon {
+  width: 34px; height: 34px; flex: none; display: grid; place-items: center; border: none; cursor: pointer;
+  background: var(--surface-100); color: var(--ink-450); border-radius: 50%; font-size: var(--fs-md); line-height: 1;
+}
+.btn-icon:hover { color: var(--ink-900); }
+.btn-icon.bare { background: none; color: var(--ink-300); }
+/* Dashed "+ add" button / drop zone */
+.btn-dashed {
+  display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+  background: var(--white); border: 1.5px dashed var(--line-200); border-radius: var(--radius-md);
+  padding: 10px 12px; font-family: var(--font-body); font-weight: 700; font-size: var(--fs-sm);
+  color: var(--green-700); cursor: pointer; transition: border-color .15s, background .15s;
+}
+.btn-dashed:hover { border-color: var(--green-500); background: var(--wash-green); }
+.btn-dashed.lg { padding: 16px; border-radius: var(--radius-lg); font-size: var(--fs-md); }
+
+/* ---- App chrome: sidebar ---- */
+.ui-side {
+  position: sticky; top: 0; align-self: start; height: 100dvh;
+  background: var(--white); border-right: 1px solid var(--line-200);
+  display: flex; flex-direction: column; padding: 20px 16px; gap: 8px;
+}
+.ui-nav { display: flex; flex-direction: column; gap: 4px; }
+.ui-nav-item {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  border: none; background: none; cursor: pointer; text-align: left;
+  font-family: var(--font-body); font-weight: 700; font-size: var(--fs-md);
+  color: var(--ink-600); padding: 11px 13px; border-radius: var(--radius-md);
+  transition: background .15s, color .15s;
+}
+.ui-nav-item:hover { background: var(--surface-100); color: var(--ink-900); }
+.ui-nav-item.on { background: var(--wash-green); color: var(--green-700); }
+.ui-nav-item .ic { width: 20px; height: 20px; flex: none; display: grid; place-items: center; }
+.ui-nav-item svg { width: 19px; height: 19px; }
+.ui-side-foot { margin-top: auto; font-family: var(--font-heading); font-size: var(--fs-xs); color: var(--ink-300); font-weight: 600; padding: 0 10px; line-height: 1.5; }
+.ui-side .lockup { padding: 4px 8px 14px; }
+/* Long navs (Tilli platform) scroll inside the sidebar so the profile stays pinned. */
+.ui-side .ui-nav { min-height: 0; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
+.ui-side .ui-nav::-webkit-scrollbar { display: none; }
+
+/* Bottom-left stack, identical on every dashboard: [dev preview panel] then [profile]. */
+.ui-side-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-top: 10px; width: 100%; }
+.ui-side-profile {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  background: none; border: none; border-top: 1px solid var(--line-200); border-radius: 0 0 var(--radius-md) var(--radius-md);
+  padding: 12px 8px 4px; cursor: pointer; font-family: var(--font-body); color: var(--ink-900);
+}
+.ui-side-profile:hover { background: var(--surface-100); }
+.ui-side-profile .meta { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+.ui-side-profile .meta b { font-size: var(--fs-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ui-side-profile .meta span { font-size: var(--fs-xs); font-weight: 700; color: var(--text-meta); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ui-side-profile .chev { flex: none; color: var(--ink-300); font-size: var(--fs-sm); }
+/* Account dropdown opened from the profile (opens upward) or the phone header avatar (opens downward). JS sets top/bottom/left/right. */
+.ui-acct-menu { position: fixed; z-index: 70; min-width: 220px; }
+
+/* ---- Dev-only preview panel (demo scaffold, not shown to real users) ----
+   Docked in .ui-side-bottom on desktop; .float when the sidebar is hidden. */
+.ui-devpanel { background: var(--white); border: 1px solid var(--line-200); border-radius: 14px; overflow: hidden; font-family: var(--font-body); width: 100%; }
+.ui-devpanel-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;
+  padding: 8px 12px; background: var(--surface-100); border: none; cursor: pointer; font-family: inherit; text-align: left;
+}
+.ui-devpanel-title { font-size: 12px; font-weight: 700; color: var(--ink-700); letter-spacing: .02em; }
+.ui-devpanel-chev { font-size: 11px; color: var(--ink-450); }
+.ui-devpanel-body { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; border-top: 1px solid var(--line-200); }
+.ui-devpanel.collapsed .ui-devpanel-body { display: none; }
+.ui-devpanel-btn {
+  flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 7px;   /* short labels pair up; long ones take their own row */
+  padding: 7px 9px; border: 1px solid var(--line-200); border-radius: 9px; background: var(--white);
+  cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 700; color: var(--ink-600);
+  white-space: nowrap; transition: border-color .12s, background .12s;
+}
+.ui-devpanel-btn:hover { border-color: var(--cyan-500); }
+.ui-devpanel-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line-200); flex: none; }
+.ui-devpanel-btn.on { background: var(--wash-cyan); border-color: var(--cyan-500); color: var(--cyan-700); }
+.ui-devpanel-btn.on .ui-devpanel-dot { background: var(--cyan-500); }
+.ui-devpanel.float { position: fixed; z-index: 60; width: 220px; box-shadow: var(--shadow-pop); }
+
+/* ---- App chrome: header ---- */
+.ui-header {
+  position: sticky; top: 0; z-index: 30; height: var(--header-h);
+  background: var(--white); border-bottom: 1px solid var(--line-200);
+  display: flex; align-items: center; gap: 16px; padding: 0 clamp(16px, 3vw, 32px);
+}
+.ui-h-title { font-family: var(--font-heading); font-weight: 700; font-size: var(--fs-lg); color: var(--ink-900); }
+.ui-h-sub { font-weight: 600; font-size: var(--fs-sm); color: var(--text-meta); }
+.ui-rolebadge {
+  display: inline-flex; align-items: center; gap: 7px; background: var(--accent-wash);
+  color: var(--accent-ink); border-radius: var(--radius-pill); padding: 6px 13px;
+  font-weight: 700; font-size: var(--fs-xs); letter-spacing: .04em; text-transform: uppercase;
+}
+.ui-avatar {
+  width: 38px; height: 38px; flex: none; border-radius: 50%; border: 1px solid var(--line-200);
+  background: var(--avatar-bg); color: var(--avatar-fg); font-family: var(--font-heading);
+  font-weight: 700; font-size: var(--fs-md); display: grid; place-items: center; cursor: pointer;
+}
+.ui-avatar.sm { width: 32px; height: 32px; font-size: var(--fs-sm); border: none; }
+.ui-avatar.lg { width: 48px; height: 48px; font-size: var(--fs-lg); border: none; }
+.ui-avatar img { width: 55%; }
+.ui-menu {
+  background: var(--white); border: 1px solid var(--line-200); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-pop); padding: 6px; min-width: 200px;
+}
+.ui-menu .who { padding: 8px 10px 10px; border-bottom: 1px solid var(--line-200); margin-bottom: 6px; }
+.ui-menu .who b { display: block; font-size: var(--fs-sm); color: var(--ink-900); }
+.ui-menu .who span { font-size: var(--fs-xs); color: var(--text-meta); font-weight: 600; }
+.ui-menu-item {
+  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: none; border: none; cursor: pointer;
+  font-family: var(--font-body); font-weight: 700; font-size: var(--fs-sm); color: var(--ink-600);
+  padding: 10px; border-radius: var(--radius-sm);
+}
+.ui-menu-item:hover, .ui-menu-item.on { background: var(--surface-100); color: var(--ink-900); }
+.ui-menu-item.danger, .ui-menu-item.danger:hover { color: var(--pink-600); }
+.ui-crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 14px; font-weight: 700; font-size: var(--fs-sm); }
+.ui-crumbs button { background: none; border: none; cursor: pointer; color: var(--accent-ink); font: inherit; padding: 2px 4px; border-radius: var(--radius-xs); }
+.ui-crumbs button:hover { text-decoration: underline; }
+.ui-crumbs .sep { color: var(--ink-300); }
+.ui-crumbs .cur { color: var(--ink-900); }
+
+/* ---- Bottom nav (mobile; pages decide at which width it shows) ---- */
+.ui-bottomnav {
+  display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; background: var(--white);
+  border-top: 1px solid var(--line-200); height: 64px; padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+.ui-bottomnav button {
+  flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  background: none; border: none; cursor: pointer; color: var(--ink-300); font-family: var(--font-body); font-weight: 700; font-size: var(--fs-xs);
+}
+.ui-bottomnav button span { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ui-bottomnav button.on { color: var(--green-700); }
+.ui-bottomnav svg { width: 21px; height: 21px; flex: none; }
+
+/* ---- Headings ---- */
+/* Page title — ONE per screen, every surface. Ink; only the landing greeting is green.
+   .ui-screen-sub carries the gap below the head block; add .flush when the
+   parent layout already spaces it (teacher title bars). */
+.ui-screen-title { font-family: var(--font-heading); font-weight: 700; font-size: var(--fs-2xl); line-height: 1.2; color: var(--ink-900); margin: 0; }
+.ui-screen-title.greet { color: var(--green-700); }
+.ui-screen-sub { font-weight: 600; font-size: var(--fs-md); color: var(--text-meta); margin: 6px 0 var(--page-gap); }
+.ui-screen-sub.flush { margin-bottom: 0; }
+.ui-screen-sub b { color: var(--ink-900); }
+/* Card / section titles: .ui-title (= .ui-mod-title) 18 · .md 15 · .xl 24 */
+.ui-title, .ui-mod-title { font-family: var(--font-heading); font-weight: 700; font-size: var(--fs-lg); color: var(--ink-900); margin: 0; }
+.ui-title.md, .ui-mod-title.md { font-size: var(--fs-md); }
+.ui-title.xl, .ui-mod-title.xl { font-size: var(--fs-xl); }
+.ui-mod-h { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.ui-mod-note { font-weight: 600; font-size: var(--fs-sm); color: var(--text-meta); margin: 3px 0 0; }
+/* Secondary / meta line (sub-lines under names, counts, dates) */
+.ui-meta { font-weight: 600; font-size: var(--fs-sm); color: var(--text-meta); }
+.ui-meta.xs { font-size: var(--fs-xs); }
+.ui-eyebrow {
+  display: block; font-family: var(--font-body); font-weight: 700; font-size: var(--fs-xs);
+  letter-spacing: .05em; text-transform: uppercase; color: var(--text-meta);
+}
+.ui-eyebrow.dark { color: var(--ink-450); }
+/* Pill-shaped eyebrow ("THIS WEEK'S IDEA") */
+.ui-eyebrow.pill {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: var(--radius-pill);
+  background: var(--wash-green); color: var(--green-700);
+}
+
+/* ---- Cards ---- */
+.ui-card {
+  background: var(--white); border: 1px solid var(--line-200); border-radius: var(--radius-card);
+  padding: clamp(16px, 2vw, 22px);
+}
+.ui-card.pad0 { padding: 0; overflow: hidden; }
+.ui-card.span2 { grid-column: 1 / -1; }
+/* Two card radii only: 24 (.ui-card — page-level modules) and 16 (.ui-card.sm — compact / list cards). */
+.ui-card.tight { padding: 16px 18px; }
+.ui-card.sm { border-radius: var(--radius-lg); padding: 14px 16px; }
+.ui-card.md { padding: 18px 20px; }
+.ui-card.subtle { background: var(--surface-100); }
+.ui-card.outline { border-width: 2px; }
+.ui-card.tint-green  { background: var(--wash-green);  border-color: var(--green-line); }
+.ui-card.tint-cyan   { background: var(--wash-cyan);   border-color: var(--cyan-line); }
+.ui-card.tint-yellow { background: var(--wash-yellow); border-color: var(--yellow-line); }
+/* Pieces that would vanish on a tint (their own fill = the wash) get a lighter fill instead. */
+.ui-card.tint-green .ui-eyebrow.pill { background: color-mix(in srgb, var(--white) 70%, transparent); }
+.ui-card.tint-cyan .ui-eyebrow.pill { background: var(--white); color: var(--cyan-700); }
+.ui-card.tint-green .ui-meter { background: color-mix(in srgb, var(--green-700) 14%, transparent); }
+.ui-card.tint-pink   { background: var(--wash-pink);   border-color: var(--danger-line); }
+.ui-card.link { cursor: pointer; transition: border-color .15s, box-shadow .15s, transform .15s; }
+.ui-card.link:hover { border-color: var(--accent); box-shadow: var(--shadow-hover); }
+.ui-card.lift { cursor: pointer; transition: transform .2s var(--ease), box-shadow .2s, border-color .2s; }
+.ui-card.lift:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+
+/* ---- KPI / stat tile ---- */
+.ui-kpi .num { font-family: var(--font-heading); font-weight: 700; font-size: var(--fs-2xl); line-height: 1; color: var(--ink-900); }
+.ui-kpi .lbl { font-weight: 700; font-size: var(--fs-sm); color: var(--ink-450); margin-top: 8px; line-height: 1.4; }
+
+/* ---- Chips (status, with optional dot) ---- */
+.ui-chip {
+  display: inline-flex; align-items: center; gap: 6px; border-radius: var(--radius-pill); padding: 4px 11px;
+  font-weight: 700; font-size: var(--fs-xs); letter-spacing: .02em; white-space: nowrap;
+  background: var(--surface-100); color: var(--ink-600);
+}
+.ui-chip .dot { width: var(--dot-sm); height: var(--dot-sm); border-radius: 50%; background: currentColor; }
+.ui-chip.ok, .ui-chip.active, .ui-chip.done      { background: var(--status-done-bg); color: var(--status-done-fg); }
+.ui-chip.warn, .ui-chip.slowing, .ui-chip.routed { background: var(--warn-wash); color: var(--warn-700); }
+.ui-chip.warn .dot, .ui-chip.slowing .dot        { background: var(--warn-500); }
+.ui-chip.danger { background: var(--danger-wash); color: var(--danger-700); }
+.ui-chip.info, .ui-chip.sched, .ui-chip.new      { background: var(--wash-cyan); color: var(--cyan-700); }
+.ui-chip.muted, .ui-chip.quiet, .ui-chip.closed  { background: var(--surface-100); color: var(--ink-450); }
+.ui-chip.muted .dot, .ui-chip.quiet .dot         { background: var(--ink-300); }
+.ui-chip.prog  { background: var(--status-prog-bg); color: var(--status-prog-fg); }
+.ui-chip.pend  { background: var(--status-pend-bg); color: var(--status-pend-fg); }
+.ui-chip.lg { padding: 6px 13px; font-size: var(--fs-sm); font-weight: 700; letter-spacing: 0; }
+/* Tiny uppercase tag ("SOON", "BETA", "SAMPLE") */
+.ui-tag {
+  display: inline-flex; align-items: center; gap: 4px; border-radius: var(--radius-pill); padding: 2px 8px;
+  font-weight: 700; font-size: var(--fs-xs); letter-spacing: .04em; text-transform: uppercase;
+  background: var(--surface-100); color: var(--ink-450);
+}
+.ui-tag.cyan { background: var(--wash-cyan); color: var(--cyan-700); }
+.ui-tag.green { background: var(--wash-green); color: var(--green-700); }
+.ui-tag.pink { background: var(--wash-pink); color: var(--pink-600); }
+.ui-tag.warn { background: var(--warn-wash); color: var(--warn-700); }
+.ui-tag.danger { background: var(--danger-wash); color: var(--danger-700); }
+.ui-tag.lvl { background: var(--lvl-2-wash); color: var(--lvl-2-ink); }
+.ui-tag.violet { background: color-mix(in srgb, var(--violet-500) 14%, var(--white)); color: var(--violet-500); }
+.ui-tag.plain { text-transform: none; letter-spacing: 0; }   /* sentence-case tag ("0 re-linked", "optional") */
+/* Audience / perspective tags — tinted from the --persp-* tokens */
+.ui-tag.persp-teacher { background: color-mix(in srgb, var(--persp-teacher) 14%, var(--white)); color: color-mix(in srgb, var(--persp-teacher) 70%, var(--ink-900)); }
+.ui-tag.persp-parent  { background: color-mix(in srgb, var(--persp-parent) 14%, var(--white));  color: color-mix(in srgb, var(--persp-parent) 70%, var(--ink-900)); }
+.ui-tag.persp-student { background: color-mix(in srgb, var(--persp-student) 14%, var(--white)); color: color-mix(in srgb, var(--persp-student) 70%, var(--ink-900)); }
+/* Rounded-rect status badge (level / completion) — colours set by modifier or inline vars */
+.ui-badge {
+  display: inline-flex; align-items: center; gap: 6px; border-radius: var(--radius-sm); padding: 4px 10px;
+  font-weight: 700; font-size: var(--fs-xs); white-space: nowrap;
+  background: var(--badge-bg, var(--surface-100)); color: var(--badge-fg, var(--ink-600));
+}
+.ui-badge .d { width: var(--dot-sm); height: var(--dot-sm); border-radius: 50%; background: var(--badge-dot, currentColor); }
+.ui-badge.lvl-1 { --badge-bg: var(--lvl-1-wash); --badge-fg: var(--lvl-1-ink); --badge-dot: var(--lvl-1); }
+.ui-badge.lvl-2 { --badge-bg: var(--lvl-2-wash); --badge-fg: var(--lvl-2-ink); --badge-dot: var(--lvl-2); }
+.ui-badge.lvl-3 { --badge-bg: var(--lvl-3-wash); --badge-fg: var(--lvl-3-ink); --badge-dot: var(--lvl-3); }
+.ui-badge.lvl-4 { --badge-bg: var(--lvl-4-wash); --badge-fg: var(--lvl-4-ink); --badge-dot: var(--lvl-4); }
+.ui-badge.done { --badge-bg: var(--status-done-bg); --badge-fg: var(--status-done-fg); --badge-dot: var(--status-done-dot); }
+.ui-badge.prog { --badge-bg: var(--status-prog-bg); --badge-fg: var(--status-prog-fg); --badge-dot: var(--status-prog-dot); }
+.ui-badge.pend { --badge-bg: var(--status-pend-bg); --badge-fg: var(--status-pend-fg); --badge-dot: var(--status-pend-dot); }
+/* Neutral info pill ("Grade 2 · 24 students") */
+.ui-metachip {
+  display: inline-flex; align-items: center; gap: 8px; background: var(--white); border: 1px solid var(--line-200);
+  border-radius: var(--radius-pill); padding: 8px 14px; font-weight: 600; font-size: var(--fs-sm); color: var(--ink-450);
+}
+.ui-metachip b { font-family: var(--font-heading); font-weight: 700; font-size: var(--fs-md); color: var(--ink-900); }
+.ui-metachip.dashed { border-style: dashed; background: var(--surface-100); color: var(--ink-300); padding: 4px 11px; font-size: var(--fs-xs); font-weight: 700; }
+
+/* ---- Selectable filter chips / pill tabs ---- */
+.ui-filterchip {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer; background: var(--white);
+  border: 1px solid var(--line-200); color: var(--ink-450); border-radius: var(--radius-pill);
+  padding: 7px 14px; font-family: var(--font-body); font-weight: 700; font-size: var(--fs-sm); white-space: nowrap;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.ui-filterchip:hover { border-color: var(--accent); color: var(--accent-ink); }
+.ui-filterchip.on, .ui-filterchip[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent-ink); }
+.ui-filterchip.solid.on { background: var(--green-500); border-color: var(--green-500); color: var(--white); }
+.ui-filterchip.dark:hover { border-color: var(--ink-300); color: var(--ink-900); }
+.ui-filterchip.dark.on { background: var(--ink-900); border-color: var(--ink-900); color: var(--white); }
+.ui-filterchip.sm { padding: 4px 11px; font-weight: 600; color: var(--ink-700); }   /* small pill (child names in a list) */
+.ui-filterchip b { font-weight: 700; color: var(--ink-900); }                    /* count inside a chip */
+.ui-filterchip.on b { color: inherit; }
+.ui-filterchip:disabled { opacity: .45; cursor: default; pointer-events: none; }
+.ui-filterchip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ---- Segmented control / underline tabs / switch ---- */
+.ui-seg { display: flex; gap: 4px; background: var(--surface-100); border-radius: var(--radius-pill); padding: 4px; width: max-content; }
+.ui-seg button { border: none; background: none; cursor: pointer; font-family: var(--font-body); font-weight: 700; font-size: var(--fs-sm); color: var(--ink-450); padding: 7px 16px; border-radius: var(--radius-pill); }
+.ui-seg button.on { background: var(--white); color: var(--green-700); box-shadow: var(--shadow-card); }
+.ui-tabs { display: flex; align-items: center; gap: 4px; border-bottom: 1px solid var(--line-200); margin-bottom: 16px; }
+.ui-tab { background: none; border: none; cursor: pointer; font-family: var(--font-body); font-weight: 700; font-size: var(--fs-sm); color: var(--ink-450); padding: 10px 14px; border-bottom: 2.5px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+.ui-tab:hover { color: var(--ink-900); }
+.ui-tab.on { color: var(--green-700); border-bottom-color: var(--green-500); }
+.ui-switch { position: relative; display: inline-flex; align-items: center; flex: none; width: 40px; height: 22px; cursor: pointer; }
+.ui-switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.ui-switch .track { width: 40px; height: 22px; border-radius: 22px; background: var(--line-200); transition: background .15s; }
+.ui-switch .thumb { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--white); box-shadow: var(--shadow-card); transition: transform .15s; }
+.ui-switch input:checked ~ .track { background: var(--green-500); }
+.ui-switch input:checked ~ .thumb { transform: translateX(18px); }
+.ui-switch input:focus-visible ~ .track { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ---- Tables ---- */
+.ui-tablewrap { overflow-x: auto; }
+table.ui-table { width: 100%; border-collapse: collapse; }
+.ui-table th, .ui-table td { text-align: left; padding: 13px 16px; border-bottom: 1px solid var(--line-200); font-size: var(--fs-sm); }
+.ui-table th {
+  font-family: var(--font-body); font-weight: 700; font-size: var(--fs-xs); letter-spacing: .04em;
+  text-transform: uppercase; color: var(--ink-450); background: var(--surface-100); white-space: nowrap;
+}
+.ui-table td.name { font-weight: 700; color: var(--ink-900); }
+.ui-table td.name small, .ui-table th small { display: block; font-weight: 600; font-size: var(--fs-xs); color: var(--text-meta); margin-top: 2px; text-transform: none; letter-spacing: 0; }
+.ui-table tr:last-child td { border-bottom: none; }
+.ui-table tr.clickable { cursor: pointer; }
+.ui-table tr.clickable:hover td { background: var(--wash-green); }
+.ui-table .r { text-align: right; }
+.ui-table.compact th, .ui-table.compact td { padding: 8px 10px; }
+.ui-table.compact th { background: none; }
+.ui-table.mw-360 { min-width: 360px; } .ui-table.mw-520 { min-width: 520px; } .ui-table.mw-560 { min-width: 560px; }
+.ui-table.mw-640 { min-width: 640px; } .ui-table.mw-720 { min-width: 720px; } .ui-table.mw-760 { min-width: 760px; }
+.ui-table.mw-820 { min-width: 820px; }
+
+/* ---- Legend ---- */
+.ui-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 6px; }
+.ui-legend > span { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: var(--fs-sm); color: var(--ink-600); }
+.ui-legend i { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+.ui-legend i.round { border-radius: 50%; }
+.ui-dot { display: inline-block; width: var(--dot-md); height: var(--dot-md); border-radius: 50%; flex: none; background: currentColor; }
+.ui-dot.sm { width: var(--dot-sm); height: var(--dot-sm); }
+.ui-dot.lg { width: var(--dot-lg); height: var(--dot-lg); }
+.ui-dot.dot-cyan { background: var(--cyan-500); } .ui-dot.dot-green { background: var(--green-500); } .ui-dot.dot-yellow { background: var(--yellow-500); }
+
+/* ---- Meter / progress bar ---- */
+.ui-meter { height: 8px; border-radius: var(--radius-pill); background: var(--line-200); overflow: hidden; }
+.ui-meter > span, .ui-meter > div { display: block; height: 100%; background: var(--green-500); border-radius: inherit; transition: width .3s var(--ease); }
+.ui-meter.light { background: var(--surface-100); }
+.ui-meter.sm { height: 7px; }
+.ui-meter.lg { height: 14px; border-radius: var(--radius-xs); }
+
+/* ---- Notes / banners ---- */
+.ui-note {
+  display: flex; gap: 9px; align-items: flex-start; border-radius: var(--radius-md); padding: 10px 14px;
+  font-weight: 600; font-size: var(--fs-sm); line-height: 1.5;
+  background: var(--surface-100); color: var(--ink-450);
+}
+.ui-note.ok   { background: var(--wash-green); color: var(--green-700); }
+.ui-note.info { background: var(--info-wash); color: var(--info-ink); border: 1px solid var(--info-line); }
+.ui-note.cyan { background: var(--wash-cyan); color: var(--cyan-700); }
+.ui-note.warn { background: var(--warn-wash); color: var(--warn-700); border: 1px solid var(--warn-line); }
+.ui-note.danger { background: var(--danger-wash); color: var(--danger-700); border: 1px solid var(--danger-line); }
+.ui-note.sample { background: var(--lvl-2-wash); color: var(--lvl-2-ink); border: 1px solid var(--lvl-2-line); }
+
+/* ---- Empty state ---- */
+.ui-empty { text-align: center; padding: 26px 20px; color: var(--ink-450); font-weight: 600; font-size: var(--fs-sm); line-height: 1.6; }
+.ui-empty .big, .ui-empty-t { display: block; font-family: var(--font-heading); font-weight: 700; font-size: var(--fs-lg); color: var(--ink-900); margin: 0 0 6px; }
+.ui-empty-b { font-size: var(--fs-md); color: var(--ink-450); line-height: 1.5; max-width: 440px; margin: 0 auto; }
+.ui-empty.ok .big { color: var(--green-700); }
+.ui-empty .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
+
+/* ---- Modals ---- */
+.ui-scrim { position: fixed; inset: 0; z-index: 60; background: var(--scrim); display: flex; align-items: center; justify-content: center; padding: 24px; }
+.ui-modal-card {
+  position: relative; width: 100%; max-width: 560px; max-height: calc(100dvh - 48px); overflow-y: auto;
+  background: var(--white); border-radius: var(--radius-card); padding: clamp(20px, 3vw, 30px); box-shadow: var(--shadow-modal);
+}
+.ui-modal-card.wide { max-width: 760px; }
+.ui-modal-card.xwide { max-width: 940px; }
+.ui-modal-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.ui-modal-h h3 { font-family: var(--font-heading); font-weight: 700; font-size: var(--fs-xl); margin: 0; }
+.ui-modal-foot { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+
+/* ---- Popover tip card ---- */
+.ui-tip {
+  background: var(--white); border: 1px solid var(--line-200); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-pop); padding: 11px 13px; font-size: var(--fs-sm);
+}
+.ui-tip .nm { font-weight: 700; font-size: var(--fs-sm); color: var(--ink-900); }
+
+/* ---- Toast ---- */
+.ui-toast {
+  position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%) translateY(20px);
+  background: var(--ink-900); color: var(--white); font-weight: 700; font-size: var(--fs-sm);
+  padding: 12px 20px; border-radius: var(--radius-pill); z-index: 80; opacity: 0;
+  transition: opacity .25s, transform .25s; box-shadow: var(--shadow-pop);
+}
+.ui-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---- Content width (one max width per screen type) ---- */
+.ui-content { max-width: var(--content-max); margin: 0 auto; width: 100%; }
+.ui-narrow { max-width: var(--content-narrow); margin-left: auto; margin-right: auto; width: 100%; }
+
+/* ---- Grey inset box (a note / quote / outcome inside a card) ---- */
+.ui-inset { background: var(--surface-100); border-radius: var(--radius-md); padding: 10px 12px; font-weight: 600; font-size: var(--fs-sm); color: var(--ink-600); line-height: 1.55; }
+.ui-inset p { margin: 0; }
+
+/* ---- Selectable card / row (rating options, window cards, choices, stops).
+   Same border width selected or not, so nothing shifts on select. ---- */
+.ui-pick {
+  background: var(--white); border: var(--sel-border-w) solid var(--line-200); cursor: pointer;
+  font-family: var(--font-body); color: var(--ink-900); text-align: left;
+  transition: border-color .15s, background .15s;
+}
+.ui-pick:hover:not(:disabled):not(.locked) { border-color: var(--accent); }
+.ui-pick.on { border-color: var(--accent); background: var(--accent-wash); }
+
+/* ---- Checkbox square (onboarding checklists, roster multi-select) ---- */
+.ui-check {
+  width: 20px; height: 20px; border-radius: var(--radius-xs); flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: var(--fs-sm); font-weight: 700; color: var(--white);
+  background: var(--white); border: 1.5px solid var(--line-200); transition: background .15s, border-color .15s;
+}
+.ui-check.on { background: var(--green-500); border-color: var(--green-600); }
+
+/* ---- Stacked band bar (Beginner · Learner · Advanced, --lvl-* fills set inline) ---- */
+.ui-bandbar { display: flex; height: var(--bandbar-h); border-radius: var(--radius-pill); overflow: hidden; background: var(--surface-100); }
+.ui-bandbar > span { display: block; height: 100%; }
+.ui-bandbar.hero { height: var(--bandbar-h-hero); }
+/* Band word beside a bar ("Beginner") — text only, in the band's readable ink tone */
+.ui-bandword { font-weight: 700; font-size: var(--fs-sm); white-space: nowrap; }
+.ui-bandword.lvl-1 { color: var(--lvl-1-ink); }
+.ui-bandword.lvl-2 { color: var(--lvl-2-ink); }
+.ui-bandword.lvl-3 { color: var(--lvl-3-ink); }
+.ui-bandword.lvl-4 { color: var(--lvl-4-ink); }
+
+/* ---- Round icon tile (Ask Tilli head, hero cards, empty states). Size via --icon-tile. ---- */
+.ui-icontile {
+  width: var(--icon-tile); height: var(--icon-tile); flex: none; border-radius: 50%;
+  background: var(--accent-wash); color: var(--accent-ink); display: inline-flex; align-items: center; justify-content: center;
+}
+.ui-icontile > svg:not([width]) { width: 55%; height: 55%; }   /* bare line icons; sized art keeps its own size */
+.ui-icontile.lg { --icon-tile: 64px; }
+.ui-icontile.xl { --icon-tile: 92px; }
+
+/* ---- Hover / focus tooltip: <el class="ui-tooltip" data-tip="…" tabindex="0">.
+   Shows on hover (desktop) and on focus — a tap focuses it on touch screens.
+   .down opens below (inside scroll-clipped table heads) · .end right-anchors it
+   · .help adds the ? cursor · .hover-only hides it on touch (the tap does something else). ---- */
+.ui-tooltip { position: relative; }
+.ui-tooltip.help { display: inline-flex; align-items: center; cursor: help; }
+.ui-tooltip:hover, .ui-tooltip:focus-within { z-index: 70; }
+.ui-tooltip.help:focus { outline: none; }
+.ui-tooltip.help:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--radius-xs); }
+.ui-tooltip[data-tip]::after {
+  content: attr(data-tip); --tx: -50%;
+  position: absolute; left: 50%; bottom: calc(100% + 9px); z-index: 30;
+  transform: translate(var(--tx), 4px);
+  width: max-content; max-width: var(--tip-max-w); white-space: normal; text-align: left;
+  background: var(--ink-900); color: var(--white);
+  font-family: var(--font-body); font-weight: 600; font-size: var(--fs-xs); line-height: 1.4;
+  letter-spacing: 0; text-transform: none;
+  padding: 6px 10px; border-radius: var(--radius-sm); box-shadow: var(--shadow-pop);
+  opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s;
+}
+.ui-tooltip[data-tip]::before {
+  content: ''; position: absolute; left: 50%; bottom: calc(100% + 3px); z-index: 30;
+  transform: translate(-50%, 4px); border: 6px solid transparent; border-top-color: var(--ink-900);
+  opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s;
+}
+.ui-tooltip.down[data-tip]::after { bottom: auto; top: calc(100% + 9px); transform: translate(var(--tx), -4px); }
+.ui-tooltip.down[data-tip]::before { bottom: auto; top: calc(100% + 3px); transform: translate(-50%, -4px); border-top-color: transparent; border-bottom-color: var(--ink-900); }
+.ui-tooltip.end[data-tip]::after { --tx: 0; left: auto; right: 0; }
+.ui-tooltip.end[data-tip]::before { display: none; }
+.ui-tooltip:hover::after, .ui-tooltip:focus-within::after { opacity: 1; transform: translate(var(--tx), 0); }
+.ui-tooltip:hover::before, .ui-tooltip:focus-within::before { opacity: 1; transform: translate(-50%, 0); }
+@media (hover: none) { .ui-tooltip.hover-only[data-tip]::after, .ui-tooltip.hover-only[data-tip]::before { display: none; } }
+
+/* ---- ⓘ affordance — one look everywhere. Inline (15px) inside a .ui-tooltip label;
+   .lg (24px) when it is its own tap target (a <button> that toggles an explanation). ---- */
+.ui-info {
+  display: inline-grid; place-items: center; flex: none;
+  width: var(--info-size); height: var(--info-size); margin-left: 5px; border-radius: 50%;
+  border: 1.3px solid var(--ink-300); background: transparent; color: var(--ink-450); padding: 0;
+  font-family: var(--font-heading); font-weight: 700; font-size: var(--fs-xs); line-height: 1;
+  text-transform: none; letter-spacing: 0; transition: border-color .15s, color .15s, background .15s;
+}
+.ui-info.lg { width: var(--info-size-lg); height: var(--info-size-lg); margin-left: 4px; vertical-align: middle; cursor: pointer; background: var(--white); }
+.ui-tooltip:hover .ui-info, .ui-tooltip:focus-within .ui-info,
+.ui-info.lg:hover, .ui-info[aria-expanded="true"], .ui-info.on { border-color: var(--accent); color: var(--accent-ink); }
+.ui-info[aria-expanded="true"], .ui-info.on { background: var(--accent-wash); }
+
+/* ---- Ask Tilli — floating chat window (teacher + school admin).
+   The page positions it next to the floating bubble (teacher: positionAskPop
+   sets left/right/top/bottom); these are the no-anchor fallbacks. ---- */
+.ask-panel {
+  --ask-pop-w: 380px;   /* chat window width */
+  --ask-pop-h: 560px;   /* chat window height (capped by the space beside the bubble) */
+  position: fixed; z-index: 61; right: 22px; bottom: 104px; width: var(--ask-pop-w); max-width: calc(100vw - 16px); height: min(var(--ask-pop-h), calc(100dvh - 120px));
+  background: var(--white); display: flex; flex-direction: column; overflow: hidden;
+  border: 1px solid var(--line-200); border-radius: var(--radius-xl); box-shadow: var(--shadow-modal);
+  transition: left .42s cubic-bezier(.22, 1.12, .36, 1), right .42s cubic-bezier(.22, 1.12, .36, 1), top .42s cubic-bezier(.22, 1.12, .36, 1), bottom .42s cubic-bezier(.22, 1.12, .36, 1);
+}
+.ask-panel.following { transition: none; }   /* tracking a drag 1:1 */
+/* Grows out of the bubble: origin is the corner the bubble sits in. */
+.ask-panel[data-from="br"] { transform-origin: bottom right; } .ask-panel[data-from="bl"] { transform-origin: bottom left; }
+.ask-panel[data-from="tr"] { transform-origin: top right; }    .ask-panel[data-from="tl"] { transform-origin: top left; }
+.ask-panel.pop-in { animation: askPopIn .26s cubic-bezier(.22, 1.12, .36, 1) both; }
+@keyframes askPopIn { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .ask-panel { transition: none; } .ask-panel.pop-in { animation: none; } }
+.ask-scrim { display: none; }   /* desktop/tablet: no dimming — it's a chat, not a modal */
+.ask-head { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 16px; border-bottom: 1px solid var(--line-200); }
+.ask-hmeta { flex: 1; min-width: 0; }
+.ask-hmeta .t { display: flex; align-items: center; gap: 7px; font-family: var(--font-heading); font-weight: 700; font-size: var(--fs-lg); color: var(--ink-900); }
+.ask-hmeta .s { font-size: var(--fs-xs); font-weight: 600; color: var(--text-meta); }
+.ask-body { flex: 1; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+.ask-ctx { align-self: flex-start; white-space: normal; --badge-bg: var(--wash-green); --badge-fg: var(--green-700); }   /* .ui-badge */
+.ask-msg { max-width: 85%; padding: 10px 14px; font-size: var(--fs-sm); line-height: 1.45; }
+.ask-msg b { font-weight: 700; }
+.ask-msg.user { align-self: flex-end; background: var(--green-500); color: var(--white); border-radius: 14px 14px 4px 14px; }
+.ask-msg.tilli { align-self: flex-start; background: var(--surface-100); color: var(--ink-700); border-radius: 14px 14px 14px 4px; }
+.ask-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: auto 0; text-align: center; color: var(--text-meta); font-size: var(--fs-sm); max-width: 240px; align-self: center; line-height: 1.5; }
+.ask-foot { padding: 10px 12px 12px; border-top: 1px solid var(--line-200); }
+.ask-compose { display: flex; align-items: flex-end; gap: 8px; }
+.ask-input { flex: 1; min-width: 0; border: 1px solid var(--line-200); border-radius: var(--radius-md); padding: 10px 12px; font-size: var(--fs-sm); color: var(--ink-900); resize: none; outline: none; background: var(--white); line-height: 1.45; font-family: var(--font-body); }
+.ask-input:focus { border-color: var(--focus); }
+.ask-sendbtn { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border: none; border-radius: var(--radius-md); background: var(--green-500); color: var(--white); cursor: pointer; }
+.ask-sendbtn:hover:not(:disabled) { background: var(--green-600); }
+.ask-sendbtn:disabled { opacity: .5; cursor: default; }
+
+/* ---- Sun illustration (onboarding + garden) ---- */
+.sun { position: absolute; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, #FCE39A 0%, #FCD661 40%, #FBCB3E 61%, rgba(252,203,62,0) 70%); }
+
+/* ---- Small utilities (replace repeated inline styles) ---- */
+.text-muted { color: var(--text-meta); }
+.text-soft { color: var(--text-meta); }
+.text-body { color: var(--ink-600); }
+.text-strong { color: var(--ink-900); }
+.text-danger { color: var(--danger-700); }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.mono { font-family: var(--font-mono); }
+.ff-heading { font-family: var(--font-heading); }
+.break-all { word-break: break-all; }
+.mt-1 { margin-top: var(--space-1); } .mt-2 { margin-top: var(--space-2); } .mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); } .mt-5 { margin-top: var(--space-5); } .mt-gap { margin-top: var(--page-gap); }
+.mb-1 { margin-bottom: var(--space-1); } .mb-2 { margin-bottom: var(--space-2); } .mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); } .mb-5 { margin-bottom: var(--space-5); } .mb-gap { margin-bottom: var(--page-gap); }
+.m-0 { margin: 0; }
+.row { display: flex; align-items: center; gap: 10px; }
+.row.wrap { flex-wrap: wrap; }
+.row.end { justify-content: flex-end; }
+.row.top { align-items: flex-start; }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.flex-1 { flex: 1; min-width: 0; }
+.ml-auto { margin-left: auto; }
+.flex-none { flex: none; }
+a.btn, a.btn-ghost, a.btn-dashed, a.btn-line, a.btn-soft { text-decoration: none; }
+
+/* ============================================================
+   Floating bubbles (assets/float-help.js) — Ask Tilli + Need help?
+   Pages with a mobile bottom nav raise the stack via --tf-bottom.
+   ============================================================ */
+:root {
+  --tf-bubble-bg: var(--yellow-500);     /* bubble fill (brand yellow) */
+  --tf-bubble-bg-hover: color-mix(in srgb, var(--yellow-500) 88%, var(--ink-900)); /* bubble fill on hover / pressed */
+  --tf-icon: var(--white);               /* bubble icon colour */
+  --tf-icon-halo: rgba(110, 72, 0, .75); /* dark amber edge around the white icon — what makes white readable on yellow */
+  --tf-icon-stroke: 2.75;                /* bubble icon line weight (SVG stroke width; was 2) */
+  --tf-accent: var(--warn-700);          /* help-card icons + hover border (yellow is unreadable on white) */
+  --tf-ask-size: 60px;             /* Ask Tilli bubble diameter */
+  --tf-help-size: 48px;            /* Need help? bubble diameter */
+  --tf-gap: 12px;                  /* vertical space between the bubbles */
+  --tf-bottom: 22px;               /* distance from viewport bottom */
+  --tf-right: 22px;                /* distance from viewport right */
+}
+.tf-stack {
+  position: fixed; right: var(--tf-right); bottom: calc(var(--tf-bottom) + env(safe-area-inset-bottom));
+  z-index: 55; display: flex; flex-direction: column; align-items: flex-end; gap: var(--tf-gap);
+  font-family: var(--font-body);
+  will-change: transform;   /* keeps the drag + corner glide on the GPU (no jank) */
+}
+.tf-row { position: relative; display: flex; align-items: center; }
+.tf-row[hidden] { display: none; }
+.tf-bubble {
+  flex: none; display: grid; place-items: center; border: none; cursor: pointer;
+  background: var(--tf-bubble-bg); color: var(--tf-icon); border: none; border-radius: 50%;
+  box-shadow: var(--shadow-pop); transition: background .15s, transform .15s;
+}
+.tf-bubble:hover { background: var(--tf-bubble-bg-hover); transform: translateY(-1px); }
+.tf-bubble:active { transform: scale(.95); }
+.tf-bubble:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+/* Speech-bubble silhouette: bottom-right corner tucks in like a tail. */
+.tf-ask { width: var(--tf-ask-size); height: var(--tf-ask-size); border-radius: 50% 50% 22% 50%; }
+.tf-bubble svg {
+  stroke-width: var(--tf-icon-stroke);
+  /* Stacked tight shadows trace a thin dark outline round the white strokes. */
+  filter: drop-shadow(0 0 .6px var(--tf-icon-halo)) drop-shadow(0 0 .6px var(--tf-icon-halo)) drop-shadow(0 1px 1px var(--tf-icon-halo));
+}
+.tf-ask svg { width: 24px; height: 24px; }
+.tf-help { width: var(--tf-help-size); height: var(--tf-help-size); box-shadow: var(--shadow-pop), 0 0 0 4px color-mix(in srgb, var(--tf-bubble-bg) 35%, transparent); }
+.tf-help svg { width: 22px; height: 22px; }
+.tf-stack.pop-open .tf-help { background: var(--tf-bubble-bg-hover); }
+/* Ask bubble icon: chat ↔ × while the page's chat window is open (TilliFloat.setAskOpen). */
+.tf-ic-chat, .tf-ic-close { display: grid; place-items: center; }
+.tf-ic-close { display: none; }
+.tf-stack.ask-open .tf-ic-chat { display: none; }
+.tf-stack.ask-open .tf-ic-close { display: grid; }
+.tf-stack.ask-open .tf-row-ask .tf-label { display: none; }
+/* Drag to move (float-help.js): no touch scrolling from a bubble; while dragging, no hover lift / labels. */
+.tf-bubble { touch-action: none; }
+.tf-stack.dragging .tf-bubble { cursor: grabbing; transform: none; }
+.tf-stack.dragging .tf-label { opacity: 0 !important; }
+/* Moved to the left half → labels sit right of the bubbles; card opens from the left edge.
+   Only the label side flips (labels are absolutely placed), so the bubbles never shift
+   inside the stack — the corner snap stays one clean glide. */
+.tf-stack.tf-left .tf-label { right: auto; left: calc(100% + 10px); transform: translate(-6px, -50%); }
+.tf-stack.tf-left .tf-pop { right: auto; left: 0; }
+/* Moved to the top half → the help card opens below instead of above. */
+.tf-stack.tf-top .tf-pop { bottom: auto; top: calc(100% + 10px); }
+
+/* Label pill beside a bubble — revealed on hover / keyboard focus. */
+.tf-label {
+  position: absolute; top: 50%; right: calc(100% + 10px);   /* floats beside the bubble — takes no layout space */
+  background: var(--white); color: var(--ink-900); border: 1px solid var(--line-200);
+  border-radius: var(--radius-pill); padding: 8px 14px; font-weight: 700; font-size: var(--fs-sm);
+  white-space: nowrap; box-shadow: var(--shadow-pop); pointer-events: none;
+  opacity: 0; transform: translate(6px, -50%); transition: opacity .15s, transform .15s;
+}
+.tf-row:hover .tf-label, .tf-row:focus-within .tf-label { opacity: 1; transform: translate(0, -50%); }
+.tf-stack.pop-open .tf-label { opacity: 0; }
+
+/* Help card — opens above the stack. */
+.tf-pop {
+  position: absolute; right: 0; bottom: calc(100% + 10px); width: min(320px, calc(100vw - 28px));
+  background: var(--white); border: 1px solid var(--line-200); border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-modal); padding: 14px; display: flex; flex-direction: column; gap: 6px;
+}
+.tf-pop[hidden] { display: none; }
+.tf-pop-h { display: flex; align-items: center; justify-content: space-between; }
+.tf-pop-h b { font-family: var(--font-heading); font-size: var(--fs-md); color: var(--ink-900); }
+.tf-pop-x { border: none; background: none; cursor: pointer; font-size: var(--fs-xl); line-height: 1; color: var(--ink-450); padding: 2px 6px; border-radius: var(--radius-xs); }
+.tf-pop-x:hover { background: var(--surface-100); }
+.tf-pop-sub { margin: 0 0 6px; font-size: var(--fs-sm); line-height: 1.45; color: var(--ink-450); font-weight: 600; }
+.tf-pop-item {
+  display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; text-decoration: none;
+  background: var(--surface-100); border: 1px solid var(--line-200); border-radius: var(--radius-md);
+  padding: 10px 12px; cursor: pointer; font: inherit; color: var(--ink-900);
+}
+.tf-pop-item:hover { border-color: var(--tf-accent); background: var(--white); }
+.tf-pop-item svg { width: 20px; height: 20px; flex: none; color: var(--tf-accent); }
+.tf-pop-item b { display: block; font-size: var(--fs-sm); font-weight: 700; }
+.tf-pop-item small { display: block; font-size: var(--fs-xs); color: var(--ink-450); font-weight: 600; }
+
+@media (max-width: 640px) {
+  :root { --tf-ask-size: 54px; --tf-help-size: 44px; --tf-gap: 10px; --tf-right: 14px; --tf-bottom: 16px; }
+}
+@media (hover: none) { .tf-label { display: none; } }
+@media (prefers-reduced-motion: reduce) { .tf-bubble, .tf-label { transition: none; } .tf-bubble:hover, .tf-bubble:active { transform: none; } }
+@media print { .tf-stack { display: none !important; } }
+
+/* ============================================================
+   CHANGE HISTORY (.hist-*) — shared by teacher, school-admin and
+   platform / group-admin apps. Markup: assets/tilli-history.js.
+   ============================================================ */
+:root {
+  --hist-dot-student: var(--cyan-500);      /* dot colour · student-record changes */
+  --hist-dot-assessment: var(--green-500);  /* dot colour · assessment activity */
+  --hist-rail: var(--line-200);             /* vertical timeline line between rows */
+  --hist-dot-size: 10px;                    /* timeline dot diameter */
+}
+.hist-day { font-size: var(--fs-xs); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-meta); margin: 18px 0 6px; }
+.hist-day:first-child { margin-top: 2px; }
+.hist-list { display: flex; flex-direction: column; }
+.hist-item { position: relative; display: flex; gap: 12px; padding: 10px 0 12px; }
+.hist-item + .hist-item { border-top: 1px solid var(--line-200); }
+.hist-item::before { content: ''; position: absolute; left: calc(var(--hist-dot-size) / 2 - 1px); top: 0; bottom: 0; width: 2px; background: var(--hist-rail); }
+.hist-list .hist-item:first-child::before { top: 16px; }
+.hist-list .hist-item:last-child::before { bottom: calc(100% - 16px); }
+.hist-dot { position: relative; z-index: 1; flex: none; width: var(--hist-dot-size); height: var(--hist-dot-size); margin-top: 5px; border-radius: 50%; background: var(--hist-dot-student); box-shadow: 0 0 0 3px var(--white); }
+.hist-item.k-asm .hist-dot { background: var(--hist-dot-assessment); }
+.hist-body { flex: 1; min-width: 0; }
+.hist-line { font-size: var(--fs-sm); line-height: 1.45; color: var(--ink-700); }
+.hist-line b { color: var(--ink-900); font-weight: 700; }
+.hist-who { font-weight: 700 !important; }
+.hist-changes { list-style: none; margin: 6px 0 0; padding: 7px 10px; background: var(--surface-100); border-radius: var(--radius-sm); display: flex; flex-direction: column; gap: 3px; }
+.hist-changes li { font-size: var(--fs-sm); line-height: 1.4; color: var(--ink-700); overflow-wrap: anywhere; }
+.hist-k { display: inline-block; min-width: 96px; font-size: var(--fs-xs); font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: var(--ink-450); }
+.hist-from { color: var(--ink-300); }
+.hist-to { color: var(--ink-900); font-weight: 700; }
+.hist-arw { color: var(--ink-300); margin: 0 2px; }
+.hist-set { color: var(--ink-450); font-style: italic; }
+.hist-names { margin-top: 5px; font-size: var(--fs-sm); color: var(--ink-450); line-height: 1.45; }
+.hist-more { font-weight: 700; color: var(--ink-600); }
+.hist-meta { margin-top: 4px; font-size: var(--fs-xs); font-weight: 600; color: var(--text-meta); }
+.hist-meta time { cursor: help; }
+.hist-sep { margin: 0 6px; }
+.hist-empty { padding: 18px 4px; font-size: var(--fs-sm); color: var(--ink-450); text-align: center; }
+.hist-last { font-size: var(--fs-sm); color: var(--ink-450); font-weight: 600; }
+.hist-last b { color: var(--ink-700); font-weight: 700; }
+.hist-last.none { color: var(--ink-300); }
+.hist-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
+.hist-tools .hist-q { flex: 1 1 220px; max-width: 320px; }
+.hist-tools .hist-count { margin-left: auto; font-size: var(--fs-xs); font-weight: 700; color: var(--text-meta); }
+.hist-morebtn { display: block; margin: 12px auto 0; }
+@media (max-width: 640px) { .hist-k { min-width: 0; display: block; } .hist-tools .hist-count { margin-left: 0; width: 100%; } }
+
+/* ---- Summary mode (TilliHistory.listHTML {summary:true}) — one-line rows, click to expand ---- */
+:root {
+  --hist-sum-pad-y: 8px;        /* vertical padding of a collapsed summary row */
+  --hist-detail-indent: 0px;    /* left inset of the expanded detail under a row */
+}
+.hist-dayhead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 18px 0 4px; }
+.hist-dayblock:first-child .hist-dayhead { margin-top: 2px; }
+.hist-dayhead .hist-day { margin: 0; }
+.hist-daysum { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: var(--fs-xs); font-weight: 600; color: var(--text-meta); }
+.hist-daysum b { color: var(--ink-600); font-weight: 700; }
+.hist-dk { display: inline-flex; align-items: center; gap: 5px; }
+.hist-dk i { width: 8px; height: 8px; border-radius: 50%; background: var(--hist-dot-student); }
+.hist-dk.k-asm i { background: var(--hist-dot-assessment); }
+.hist-expandall { margin-left: auto; font-size: var(--fs-xs); }
+.hist-item.hist-sum { padding: var(--hist-sum-pad-y) 0; }
+.hist-sum .hist-dot { margin-top: 12px; }
+.hist-sumrow { display: flex; align-items: baseline; gap: 10px; width: 100%; padding: 4px 6px; margin: 0 -6px; border: none; border-radius: var(--radius-sm); background: none; font: inherit; text-align: left; color: inherit; cursor: pointer; }
+.hist-sumrow:hover { background: var(--surface-100); }
+.hist-sumrow:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.hist-sumrow .hist-line { flex: 1; min-width: 0; }
+.hist-inline { margin-left: 8px; color: var(--ink-600); }
+.hist-inline b { color: var(--ink-900); }
+.hist-where { margin-left: 6px; color: var(--text-meta); font-weight: 600; }
+.hist-times { display: inline-block; margin-left: 2px; padding: 0 7px; border-radius: var(--radius-pill); background: var(--surface-100); color: var(--ink-600); font-size: var(--fs-xs); font-weight: 700; line-height: 1.7; vertical-align: 1px; }
+.hist-when { flex: none; font-size: var(--fs-xs); font-weight: 600; color: var(--text-meta); white-space: nowrap; }
+.hist-chev { flex: none; align-self: center; display: grid; place-items: center; color: var(--ink-300); transition: transform .15s; }
+.hist-chev svg { width: 16px; height: 16px; }
+.hist-sum.open .hist-chev { transform: rotate(90deg); }
+.hist-detail { margin: 4px 0 4px var(--hist-detail-indent); }
+.hist-detail .hist-changes { margin-top: 2px; }
+.hist-subs { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.hist-subs li { display: flex; gap: 10px; align-items: flex-start; }
+.hist-subs time { flex: none; min-width: 64px; padding-top: 8px; font-size: var(--fs-xs); font-weight: 700; color: var(--ink-450); }
+.hist-sub-body { flex: 1; min-width: 0; }
+.hist-sub-body .hist-changes { margin-top: 0; }
+@media (max-width: 640px) {
+  .hist-sumrow { flex-wrap: wrap; }
+  .hist-sumrow .hist-line { flex-basis: 100%; }
+  .hist-inline, .hist-where { margin-left: 0; display: block; }
+  .hist-subs li { flex-direction: column; gap: 2px; }
+  .hist-subs time { padding-top: 0; }
+}
+
+/* Small round History icon button (student header). */
+:root {
+  --hist-peek-size: 36px;   /* round History icon button (student header) */
+}
+.hist-peek { width: var(--hist-peek-size); height: var(--hist-peek-size); flex: none; display: grid; place-items: center; padding: 0; border: 1px solid var(--line-200); border-radius: 50%; background: var(--white); color: var(--ink-450); cursor: pointer; transition: color .15s, border-color .15s, background .15s; }
+.hist-peek svg { width: 17px; height: 17px; }
+.hist-peek:hover { color: var(--green-700); border-color: var(--green-500); background: var(--wash-green); }
+/* The History buttons carry their "Last updated" tip as .ui-tooltip.down.end.hover-only
+   (touch: the tap opens History instead). */
+
+/* ============================================================
+   Ask Tilli — full-screen chat (.askx-*), shared by the teacher and
+   school admin dashboards so both look identical.
+   ============================================================ */
+.askx {
+  /* --- tunable visual parameters --- */
+  --askx-hist-w: 300px;     /* width of the chat-history column */
+  --askx-max: 760px;        /* max width of the thread, suggestions and composer */
+  --askx-foot-pr: 84px;     /* composer right padding — keeps Send clear of the Need-help bubble */
+  flex: 1; min-width: 0; min-height: 0; display: flex; position: relative; background: var(--white);
+}
+.askx-hist { width: var(--askx-hist-w); flex: none; display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--line-200); background: var(--surface-100); }
+/* .askx-hist prefix outranks tilli.css's .btn.block { width:100% }, which with the
+   16px margins pushed the button 32px past the column into the chat header. */
+.askx-hist .askx-new { margin: 0; width: auto; flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.askx-hist { position: relative; }
+.askx-hist-top { display: flex; align-items: center; gap: 8px; padding: 16px; }
+.askx-collapse { color: var(--ink-450); }
+/* Drag handle on the column's right edge: an 8px hit area, a 2px green line on hover / drag / focus. */
+.askx-resize { position: absolute; top: 0; bottom: 0; right: -4px; width: 8px; z-index: 3; cursor: col-resize; touch-action: none; }
+.askx-resize::after { content: ''; position: absolute; top: 0; bottom: 0; left: 3px; width: 2px; background: transparent; transition: background .15s; }
+.askx-resize:hover::after, .askx-resize.dragging::after, .askx-resize:focus-visible::after { background: var(--green-500); }
+.askx-resize:focus-visible { outline: none; }
+@media (min-width: 761px) {
+  .askx.collapsed .askx-hist { display: none; }
+  .askx.collapsed .askx-histbtn { display: grid; }
+}
+.askx-list { flex: 1; min-height: 0; overflow-y: auto; padding: 2px 10px 12px; border-top: 1px solid var(--line-200); }
+.askx-gh { font-size: var(--fs-xs); font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-450); padding: 16px 8px 6px; }
+.askx-item { display: flex; align-items: center; border-radius: var(--radius-md); }
+.askx-item:hover { background: var(--white); }
+.askx-item.on { background: var(--white); box-shadow: inset 3px 0 0 var(--green-500); }
+.askx-open { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 11px 8px 11px 10px; background: none; border: none; cursor: pointer; font: inherit; font-size: var(--fs-sm); font-weight: 600; color: var(--ink-900); text-align: left; }
+.askx-open svg { flex: none; color: var(--ink-450); }
+.askx-open span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.askx-del { flex: none; display: grid; place-items: center; padding: 8px; margin-right: 4px; background: none; border: none; cursor: pointer; color: var(--ink-300); border-radius: var(--radius-xs); }
+.askx-del:hover { color: var(--danger-700); background: var(--danger-wash); }
+/* Delete appears on the row you're pointing at (or the open chat) — a column of
+   bins on every row read as noise and invited mis-taps. Always shown on touch. */
+.askx-del { opacity: 0; transition: opacity .12s; }
+.askx-item:hover .askx-del, .askx-item.on .askx-del, .askx-del:focus-visible { opacity: 1; }
+@media (hover: none) { .askx-del { opacity: 1; } }
+.askx-none { padding: 18px 8px; font-size: var(--fs-sm); color: var(--text-meta); }
+.askx-clear { display: flex; align-items: center; gap: 9px; padding: 14px 20px; background: none; border: none; border-top: 1px solid var(--line-200); cursor: pointer; font: inherit; font-size: var(--fs-sm); font-weight: 600; color: var(--ink-450); text-align: left; }
+.askx-clear:hover { color: var(--danger-700); }
+.askx-scrim { display: none; }
+.askx-main { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.askx-tools { margin-left: auto; flex: none; display: flex; gap: 8px; }   /* minimise + export, pushed to the right of the scope row */
+/* Export confirm popover — hangs under the Export button, right-aligned. */
+.askx-export-wrap { position: relative; }
+.askx-pop { position: absolute; top: calc(100% + 8px); right: 0; z-index: 20; width: 270px; max-width: calc(100vw - 32px); background: var(--white); border: 1px solid var(--line-200); border-radius: var(--radius-md); box-shadow: var(--shadow-pop); padding: 14px 14px 12px; }
+.askx-pop p { margin: 0; font-size: var(--fs-sm); line-height: 1.45; color: var(--ink-700); overflow-wrap: anywhere; }
+.askx-pop p b { color: var(--ink-900); font-weight: 700; }
+.askx-pop-act { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+.askx-tool { width: 42px; height: 42px; flex: none; display: grid; place-items: center; background: var(--white); border: 1px solid var(--line-200); border-radius: var(--radius-md); color: var(--ink-700); cursor: pointer; }
+.askx-tool:hover:not(:disabled) { background: var(--surface-100); }
+.askx-tool:disabled { opacity: .4; cursor: default; }
+.askx-histbtn { display: none; }
+/* Scope: one row — label + picker (the old "Currently scoped to" line only repeated the picker). */
+.askx-scope { display: flex; align-items: center; gap: 10px; padding: 10px 24px; border-bottom: 1px solid var(--line-200); }
+.askx-scope-l { flex: none; display: flex; align-items: center; gap: 6px; font-size: var(--fs-xs); font-weight: 700; color: var(--ink-450); }
+.askx-select {
+  flex: 1; min-width: 0; max-width: 340px; appearance: none; -webkit-appearance: none; cursor: pointer;
+  border: 1px solid var(--line-200); border-radius: var(--radius-md); padding: 11px 40px 11px 14px;
+  font: inherit; font-size: var(--fs-sm); font-weight: 600; color: var(--ink-900);
+  background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235B6170' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center / 16px;
+}
+.askx-select:focus { outline: none; border-color: var(--focus); }
+.askx-body { flex: 1; min-height: 0; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; background: var(--surface-100); }
+.askx-thread { width: 100%; max-width: var(--askx-max); margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.askx-thread .ask-msg { font-size: var(--fs-md); line-height: 1.55; }
+.askx-thread .ask-msg.tilli { background: var(--white); border: 1px solid var(--line-200); }
+.askx-empty { margin: auto; width: 100%; max-width: var(--askx-max); display: flex; flex-direction: column; align-items: center; text-align: center; }
+.askx-spark { width: 92px; height: 92px; border-radius: 50%; background: var(--wash-green); color: var(--green-600); display: grid; place-items: center; margin-bottom: 18px; }
+.askx-empty h2 { margin: 0; font-family: var(--font-heading); font-size: var(--fs-xl); color: var(--ink-900); }
+.askx-empty p { margin: 10px 0 0; max-width: 520px; font-size: var(--fs-md); line-height: 1.55; color: var(--ink-450); }
+.askx-try { width: 100%; margin-top: 34px; display: flex; flex-direction: column; gap: 8px; text-align: left; }
+.askx-try-h { font-size: var(--fs-sm); font-weight: 700; color: var(--ink-450); margin-bottom: 2px; }
+.askx-sug { text-align: left; padding: 12px 16px; background: var(--white); border: 1px solid var(--line-200); border-radius: var(--radius-md); cursor: pointer; font: inherit; font-size: var(--fs-sm); font-weight: 600; color: var(--ink-900); }
+.askx-sug:hover { border-color: var(--green-500); background: var(--wash-green); }
+.askx-foot { padding: 14px var(--askx-foot-pr) 10px 24px; border-top: 1px solid var(--line-200); background: var(--white); }
+.askx-compose { max-width: var(--askx-max); margin: 0 auto; display: flex; gap: 10px; }
+.askx-input { flex: 1; min-width: 0; padding: 13px 16px; border: 1.5px solid var(--line-200); border-radius: var(--radius-md); outline: none; background: var(--white); font: inherit; font-size: var(--fs-md); color: var(--ink-900); }
+.askx-input:focus { border-color: var(--green-500); box-shadow: 0 0 0 3px color-mix(in srgb, var(--green-500) 18%, transparent); }
+.askx-send { width: 50px; flex: none; display: grid; place-items: center; border: none; border-radius: var(--radius-md); background: var(--green-500); color: var(--white); cursor: pointer; }
+.askx-send:hover:not(:disabled) { background: var(--green-600); }
+.askx-send:disabled { opacity: .5; cursor: default; }
+.askx-note { max-width: var(--askx-max); margin: 8px auto 0; text-align: center; font-size: var(--fs-xs); line-height: 1.4; color: var(--text-meta); }
+@media (max-width: 1023px) { .askx { --askx-hist-w: 250px; } }
+/* Narrow: history becomes a slide-in drawer behind the header button. */
+@media (max-width: 760px) {
+  .askx-hist { position: absolute; z-index: 5; top: 0; bottom: 0; left: 0; width: min(300px, 86%); transform: translateX(-102%); transition: transform .2s var(--ease); box-shadow: var(--shadow-modal); }
+  .askx.hist-open .askx-hist { transform: none; }
+  .askx.hist-open .askx-scrim { display: block; position: absolute; inset: 0; z-index: 4; border: none; background: var(--scrim-soft); }
+  .askx-histbtn { display: grid; }
+  .askx-resize { display: none; }   /* drawer width is fixed on narrow screens */
+  .askx-scope { padding: 8px 14px; gap: 8px; }
+  .askx-scope-l span { display: none; }   /* phones: just the pin, so picker + tools fit one row */
+  .askx-body { padding: 16px 14px; }
+  .askx-foot { padding: 10px var(--askx-foot-pr) 8px 14px; }
+  .askx-try { margin-top: 22px; }
+}
+
+/* ---- School calendar form (assets/calendar-form.js) — Tilli admin + school admin ---- */
+.cal-upload { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: var(--space-3); }
+.cal-muted { font-size: var(--fs-xs); font-weight: 600; color: var(--ink-450); }
+.cal-pill { padding: 4px 10px; border-radius: var(--radius-pill); background: var(--wash-cyan); color: #0B5F75; font-size: var(--fs-xs); font-weight: 700; }
+.cal-file { max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-xs); font-weight: 600; color: var(--ink-450); }
+.cal-replace { cursor: pointer; font-size: var(--fs-sm); }
+/* Calendar redesign (approved 29 Oct): colour per kind, shared by the year bar, the key and the section squares. */
+.cal-kinds, .cal-yb, .cal-kind { --cal-terms: #BDE8A8; --cal-terms-ink: var(--green-500); --cal-exams: #E0901C; --cal-holidays: var(--cyan-500); --cal-win: #6D5BD0; --cal-name-w: 260px; --cal-date-w: 156px; --cal-board-w: 140px; }
+.cal-kind { margin-bottom: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--line-200); }
+.cal-kind-h { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.cal-kind-h b { font-size: var(--fs-md); }
+.cal-sq { display: inline-block; width: 10px; height: 10px; border-radius: 3px; align-self: center; }
+.cal-sq.k-terms { background: var(--cal-terms-ink); } .cal-sq.k-exams { background: var(--cal-exams); } .cal-sq.k-holidays { background: var(--cal-holidays); }
+.cal-count { font-size: var(--fs-xs); font-weight: 700; color: var(--ink-450); }
+/* name · starts → ends · length · (board) · × — one line. Phones: name on top, then the dates, then length + board. */
+.cal-row { display: grid; grid-template-columns: minmax(120px, var(--cal-name-w)) var(--cal-date-w) 14px var(--cal-date-w) 64px 32px; gap: 8px; align-items: center; margin-bottom: 6px; }
+.cal-row.has-board { grid-template-columns: minmax(120px, var(--cal-name-w)) var(--cal-date-w) 14px var(--cal-date-w) 64px var(--cal-board-w) 32px; }
+.cal-row .input, .cal-row .select { width: 100%; min-width: 0; }
+.cal-head { margin-bottom: 4px; font-size: var(--fs-xs); font-weight: 700; color: var(--ink-450); text-transform: uppercase; letter-spacing: .04em; }
+.cal-len { font-size: var(--fs-sm); font-weight: 600; color: var(--ink-450); white-space: nowrap; }
+.cal-bw .select { border-radius: var(--radius-pill); background-color: var(--surface-100); font-weight: 700; }
+.cal-add { margin-top: 4px; border: 1px dashed #D5DAE1; background: var(--white); border-radius: var(--radius-pill); padding: 7px 14px; font-family: var(--font-body); font-size: var(--fs-sm); font-weight: 700; color: var(--green-700); cursor: pointer; }
+.cal-add:hover { border-color: var(--green-500); }
+.cal-foot { align-items: center; padding-top: var(--space-3); border-top: 1px solid var(--line-200); }
+.cal-foot-status { flex: 1 1 260px; font-size: var(--fs-sm); font-weight: 600; color: var(--ink-450); }
+@media (max-width: 760px) {
+  .cal-head { display: none; }
+  .cal-row, .cal-row.has-board { grid-template-columns: 1fr 14px 1fr 32px; }
+  .cal-n { grid-column: 1 / 4; grid-row: 1; } .cal-x { grid-column: 4; grid-row: 1; }
+  .cal-s { grid-column: 1; grid-row: 2; } .cal-to { grid-column: 2; grid-row: 2; } .cal-e { grid-column: 3; grid-row: 2; }
+  .cal-len { grid-column: 1; grid-row: 3; } .cal-bw { grid-column: 3; grid-row: 3; }
+}
+/* Year at a glance */
+.cal-yb { margin: 0 0 var(--space-4); }
+.cal-yb-track { position: relative; height: 34px; border-radius: var(--radius-sm); background: var(--surface-100); border: 1px solid var(--line-200); overflow: hidden; }
+.cal-yb-track span { position: absolute; border-radius: 4px; }
+.cal-yb-terms { top: 4px; height: 24px; background: var(--cal-terms); }
+.cal-yb-holidays { top: 10px; height: 12px; background: var(--cal-holidays); }
+.cal-yb-exams { top: 10px; height: 12px; background: var(--cal-exams); }
+.cal-yb-lane { position: relative; height: 22px; margin-top: 4px; }
+.cal-yb-win { position: absolute; top: 0; height: 20px; border-radius: 6px; background: color-mix(in srgb, var(--cal-win) 14%, var(--white)); border: 1px solid var(--cal-win); color: var(--cal-win); font-size: 10px; font-weight: 700; line-height: 18px; padding: 0 4px; box-sizing: border-box; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.cal-yb-months { position: relative; height: 16px; margin-top: 4px; font-size: 11px; font-weight: 600; color: var(--ink-450); }
+.cal-yb-months span { position: absolute; top: 0; }
+.cal-yb-key { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 6px; font-size: var(--fs-xs); font-weight: 600; color: var(--ink-450); }
+.cal-yb-key i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.cal-yb-key .k-terms { background: var(--cal-terms); } .cal-yb-key .k-exams { background: var(--cal-exams); } .cal-yb-key .k-holidays { background: var(--cal-holidays); } .cal-yb-key .k-win { background: color-mix(in srgb, var(--cal-win) 14%, var(--white)); border: 1px solid var(--cal-win); }
+.cal-row.bad .input[data-dmy] { border-color: var(--danger-line); }
+.cal-choose-h { margin: 0 0 8px; }
+.cal-opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
+.cal-opt { display: flex; flex-direction: column; gap: 3px; text-align: left; padding: 12px; border: 1px solid var(--line-200); border-radius: var(--radius-md); background: var(--white); cursor: pointer; font-family: var(--font-body); }
+.cal-opt b { font-size: var(--fs-sm); font-weight: 700; color: var(--ink-900); }
+.cal-opt span { font-size: var(--fs-xs); font-weight: 600; color: var(--ink-450); }
+.cal-opt:hover { border-color: var(--green-500); background: var(--wash-green); }
+@media (max-width: 560px) { .cal-opts { grid-template-columns: 1fr; } }
+.cal-to { color: var(--ink-450); font-weight: 700; }
+.cal-x { background: none; border: 0; cursor: pointer; font-size: var(--fs-lg); line-height: 1; color: var(--ink-450); padding: 2px 6px; }
+.cal-x:hover { color: var(--danger-700); }
+.cal-err { grid-column: 1 / -1; font-size: var(--fs-xs); font-weight: 600; color: var(--danger-700); }
+/* Suggested windows (Plan from calendar) */
+.cal-sugg { display: grid; gap: 8px; }
+.cal-sugg-row { display: grid; grid-template-columns: 90px 1fr; gap: 4px 12px; padding: 10px 12px; border: 1px solid var(--line-200); border-radius: var(--radius-sm); }
+.cal-sugg-row b { font-size: var(--fs-sm); }
+.cal-sugg-row .when { font-weight: 700; font-size: var(--fs-sm); color: var(--ink-700); }
+.cal-sugg-row .why { grid-column: 2; font-size: var(--fs-xs); font-weight: 600; color: var(--ink-450); }
+.cal-sugg-row.locked { opacity: .7; }
+
+/* ---- Language switcher (assets/i18n.js) — one small select in every dashboard ---- */
+.lang-switch { display: inline-flex; align-items: center; gap: 6px; position: relative; }
+.lang-switch-ic { font-size: var(--fs-sm); line-height: 1; }
+.lang-switch select {
+  appearance: none; -webkit-appearance: none; border: 1px solid var(--line-200); background: var(--white);
+  border-radius: var(--radius-pill); padding: 6px 28px 6px 12px; font-family: var(--font-body); font-weight: 700;
+  font-size: var(--fs-sm); color: var(--ink-700); cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-300) 50%), linear-gradient(135deg, var(--ink-300) 50%, transparent 50%);
+  background-position: calc(100% - 15px) 52%, calc(100% - 10px) 52%; background-size: 5px 5px; background-repeat: no-repeat;
+}
+.lang-switch select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* Date fields (date-dmy.js): DD/MM/YYYY text + calendar icon; a click opens the .dmy-cal
+   pop-up below. input.input[...] outranks .input.sm's padding. */
+input[data-dmy], input.input[data-dmy] {
+  padding-right: 32px; cursor: pointer; font-variant-numeric: tabular-nums;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235B6170' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center; background-size: 15px;
+}
+input[data-dmy].dmy-bad { border-color: var(--danger-700); }
+.dmy-cal { position: fixed; z-index: 80; width: 260px; padding: 10px; background: var(--white); border: 1px solid var(--line-200); border-radius: var(--radius-md); box-shadow: var(--shadow-pop); font-family: var(--font-body); }
+.dmy-cal[hidden] { display: none; }
+.dmy-cal button { font: inherit; border: 0; background: none; cursor: pointer; border-radius: var(--radius-sm); color: var(--ink-900); }
+.dmy-cal button:disabled { color: var(--ink-300); cursor: default; }
+.dmy-cal-h { display: flex; align-items: center; gap: 2px; margin-bottom: 6px; }
+.dmy-cal-h b { flex: 1; text-align: center; font-size: var(--fs-sm); font-weight: 700; }
+.dmy-cal-h button { width: 28px; height: 28px; font-size: var(--fs-md); font-weight: 700; color: var(--ink-450); }
+.dmy-cal-h button:hover { background: var(--surface-100); color: var(--ink-900); }
+.dmy-cal-g { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.dmy-cal-g i { font-style: normal; text-align: center; font-size: var(--fs-xs); font-weight: 700; color: var(--ink-450); padding: 4px 0; }
+.dmy-cal-g button { height: 32px; font-size: var(--fs-sm); font-weight: 600; font-variant-numeric: tabular-nums; }
+.dmy-cal-g button:not(:disabled):hover { background: var(--wash-cyan); }
+.dmy-cal-g button.other { color: var(--ink-300); font-weight: 500; }
+.dmy-cal-g button:disabled { opacity: .4; }   /* out of range — fainter than the other month's days */
+.dmy-cal-g button.today { box-shadow: inset 0 0 0 1px var(--focus); }
+.dmy-cal-g button.sel { background: var(--focus); color: var(--white); }
+.dmy-cal-f { display: flex; justify-content: space-between; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--line-200); }
+.dmy-cal-f button { padding: 4px 8px; font-size: var(--fs-sm); font-weight: 700; color: var(--green-700); }
+.dmy-cal-f button:hover:not(:disabled) { background: var(--wash-green); }
+
+/* ============================================================
+   Responsive check fixes (29 Oct) — shared by every page
+   ============================================================ */
+:root {
+  --tf-gutter: 76px;       /* space kept clear on the right of a page's content for the floating bubbles (tablet + desktop) */
+  --tap-min: 40px;         /* smallest tap area for icon-only controls on touch screens */
+}
+/* R4 — a pop-up is the only thing in front: the floating bubbles and the dev
+   Preview stage step back while one is open (they used to cover its buttons). */
+body:has(.overlay) .tf-stack, body:has(.ui-scrim) .tf-stack,
+body:has(.overlay) .ui-devpanel, body:has(.ui-scrim) .ui-devpanel { display: none; }
+/* R5 — smaller bubbles on phones, so they hide less of the row underneath. */
+@media (max-width: 767px) {
+  :root { --tf-ask-size: 50px; --tf-help-size: 42px; --tf-gap: 10px; }
+}
+/* R10 — the pop-up × is a 40px target on touch screens (same look). */
+@media (pointer: coarse), (max-width: 1023px) {
+  .dialog-close { min-width: var(--tap-min); min-height: var(--tap-min); display: grid; place-items: center; top: 6px; right: 8px; }
+}
+/* R21 — nothing under 12px on phones (eyebrows, meta lines, table heads). */
+@media (max-width: 767px) {
+  :root { --fs-xs: 12px; }
+}
+/* R10 — the ⓘ buttons keep their size but get a 40px invisible tap area on touch screens. */
+@media (pointer: coarse), (max-width: 1023px) {
+  button.ui-info { position: relative; }
+  button.ui-info::after { content: ''; position: absolute; inset: calc((var(--tap-min) - 100%) / -2); }
+}
+
+/* ============================================================
+   Phone clean-up (30 Oct, F14–F27) — shared by every page
+   ============================================================ */
+/* Tables stay for tablet + desktop; the two-line list replaces them on phones. Both are in
+   the page and CSS shows one, so rotating or resizing just works. */
+@media (min-width: 768px) { .pl-phone { display: none !important; } }
+@media (max-width: 767px) { .pl-desk { display: none !important; } }
+
+/* F14 — one phone list: title + › or ⋯ on top, details underneath. */
+.pl-list { background: var(--white); border: 1px solid var(--line-200); border-radius: 16px; overflow: hidden; margin-bottom: 12px; }
+.pl-row { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 56px; padding: 10px 8px 10px 16px; border: none; border-top: 1px solid var(--line-200); background: var(--white); color: var(--ink-900); font: inherit; text-align: left; }
+.pl-row:first-child { border-top: none; }
+.pl-row.is-link { cursor: pointer; }
+.pl-m { flex: 1; min-width: 0; }
+.pl-n { display: block; font-size: 14px; line-height: 1.3; font-weight: 600; color: var(--ink-900); }
+.pl-n .btn-link { font: inherit; color: inherit; text-align: left; padding: 0; }
+.pl-n .ui-chip { margin-left: 4px; vertical-align: 1px; }
+.pl-d { display: block; font-size: 12px; line-height: 1.4; font-weight: 500; color: var(--text-meta); margin-top: 2px; }
+.pl-d .ui-chip, .pl-d .tl-lg-s { font-weight: 600; }
+.pl-end { flex: none; text-align: right; }
+.pl-end .pl-d { margin-top: 3px; }
+.pl-chev { flex: none; color: var(--ink-300); font-size: 20px; line-height: 1; padding: 0 6px; }
+.pl-more { flex: none; width: 40px; height: 40px; display: inline-grid; place-items: center; border: none; border-radius: 10px; background: none; color: var(--ink-450); font-family: inherit; font-size: 18px; font-weight: 700; letter-spacing: 1px; cursor: pointer; }
+.pl-more:hover { background: var(--surface-100); }
+.pl-acts[hidden] { display: none; }
+.pl-morelink { display: block; width: 100%; padding: 12px 16px; border: none; border-top: 1px solid var(--line-200); background: var(--white); color: var(--green-700); font: inherit; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; }
+.pl-grp { margin: 16px 0 6px; font-size: 13px; font-weight: 600; color: var(--ink-900); }
+.pl-grp span { font-weight: 500; font-size: 12px; color: var(--text-meta); }
+
+/* Already inside a card: no second box (F20). */
+.ui-card .pl-list { border: none; border-radius: 0; margin-bottom: 0; }
+.ui-card .pl-list .pl-row { padding-left: 0; }
+
+/* One list menu: a small card on desktop, a bottom sheet on phones (F13, row ⋯, school ⋯). */
+.pl-sheet { position: relative; width: 100%; max-width: 420px; max-height: 88vh; overflow-y: auto; background: var(--white); border-radius: 20px; padding: 14px 0 12px; box-shadow: var(--shadow-modal); }
+.pl-grab { display: none; width: 40px; height: 4px; border-radius: 2px; background: var(--line-200); margin: 0 auto 10px; }
+.pl-sheet-h { padding: 0 52px 8px 20px; font-size: 17px; font-weight: 700; color: var(--ink-900); }
+.pl-sheet-h small { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; line-height: 1.45; color: var(--text-meta); }
+.pl-sheet-sec { padding: 12px 20px 4px; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-meta); }
+.pl-sheet-item { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 8px 20px; border: none; border-top: 1px solid var(--line-200); background: var(--white); color: var(--ink-900); font: inherit; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; }
+.pl-sheet-item:hover { background: var(--surface-100); }
+.pl-sheet-item .ic { flex: none; width: 20px; display: grid; place-items: center; color: var(--ink-600); }
+.pl-sheet-item .ic svg { width: 20px; height: 20px; }
+.pl-sheet-item small { display: block; font-size: 12px; font-weight: 500; color: var(--text-meta); }
+.pl-sheet-item.danger, .pl-sheet-item.danger .ic { color: var(--danger-700); }
+
+/* F27 — one status chip. Statuses are always a filled chip, never coloured text. */
+.ui-chip .dot { display: none; }
+
+/* F18 — on phones help lives in the top bar; the floating stack keeps only its help card. */
+.ui-tophelp { flex: none; width: 40px; height: 40px; display: inline-grid; place-items: center; border: 1px solid var(--line-200); border-radius: 50%; background: var(--white); color: var(--ink-600); font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+
+@media (max-width: 767px) {
+  .overlay.pl-sheet-ov { align-items: flex-end; padding: 0; }
+  .pl-sheet { max-width: none; border-radius: 20px 20px 0 0; padding: 8px 0 calc(16px + env(safe-area-inset-bottom)); }
+  .pl-grab { display: block; }
+
+  .tf-stack { transform: none !important; right: 0; bottom: 0; width: 0; height: 0; }
+  .tf-stack .tf-row { display: none; }
+  .tf-stack .tf-pop { position: fixed; top: 64px; left: 12px; right: 12px; bottom: auto; width: auto; }
+
+  /* F22 — phone type and fields: body 14, inputs 44 tall, chips a size smaller; 12 stays the floor. */
+  :root { --fs-sm: 14px; }
+  input.input, select.select, .input:not(textarea), .select { min-height: 44px; }
+  .ui-chip { padding: 3px 9px; }
+
+  /* F23 — no extra-bold on phones: 600 everywhere, the page title 700, detail lines 500.
+     Also stops a <b> inside 600 text computing to "bolder". */
+  .tl-app *, .ad-app *, #dash-root *, .overlay * { font-weight: 600 !important; }
+  .tl-app h1, .ad-app h1, #dash-root h1, .ui-screen-title, .ui-title.lg { font-weight: 700 !important; }
+  .tl-app small, .ad-app small, #dash-root small, .overlay small,
+  .ui-meta, .ui-meta *, .ui-mod-note, .ui-mod-note *, .tl-muted, .text-muted, .pl-d, .pl-d *, .ui-screen-sub, .ui-screen-sub * { font-weight: 500 !important; }
+  .pl-d .ui-chip, .pl-d .tl-lg-s, .pl-d .tl-lg-pill { font-weight: 600 !important; }
+}

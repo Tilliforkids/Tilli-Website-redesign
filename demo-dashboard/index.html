@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Tilli · Teacher dashboard demo</title>
+<script>
+  /* /demo-dashboard → the right language version.
+     1. the language picked on the main site (tl-lang cookie): es → Spanish, en → English,
+        any other site language → English
+     2. phone language es / en / hi
+     3. a Spain time zone → Spanish
+     4. anything else → English */
+  (function () {
+    var pick = null;
+    var site = (document.cookie.match(/(?:^|;\s*)tl-lang=([a-z]{2})/) || [])[1];
+    if (site) pick = site === 'es' ? 'es' : 'en';
+    var list = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || ''];
+    for (var i = 0; i < list.length && !pick; i++) {
+      var c = String(list[i] || '').toLowerCase().split('-')[0];
+      if (c === 'es' || c === 'en' || c === 'hi') pick = c;
+    }
+    if (!pick) {
+      var tz = '';
+      try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+      pick = /^(Europe\/Madrid|Atlantic\/Canary|Africa\/Ceuta)$/.test(tz) ? 'es' : 'en';
+    }
+    location.replace('/demo-dashboard/' + pick + '/');
+  })();
+</script>
+</head>
+<body>
+<noscript><p><a href="/demo-dashboard/es/">Español</a> · <a href="/demo-dashboard/en/">English</a> · <a href="/demo-dashboard/hi/">हिन्दी</a></p></noscript>
+</body>
+</html>

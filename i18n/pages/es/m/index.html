@@ -210,6 +210,12 @@
   /* headline styled like the hero sub-line, with one big bold cyan phrase on its own line */
   #dashboard .title { text-wrap: balance; font-size: var(--tl-fs-lg); font-weight: 600; line-height: 1.5; letter-spacing: normal; color: var(--tl-ink-700); }   /* = .hero-sub */
   #dashboard .title .c-cyan { display: block; margin: 4px 0 6px; font-size: var(--tl-fs-xl); font-weight: 800; line-height: 1.12; letter-spacing: var(--tl-tracking-tight); }
+  /* "Experience the dashboard yourself" — opens the unlisted /demo-dashboard in a new tab */
+  .dash-try { margin: min(18px, 2vh) auto 0; }
+  .dash-try-btn { display: inline-flex; align-items: center; gap: 8px; padding: min(12px, 1.4vh) 22px; border-radius: var(--tl-radius-pill);
+    background: var(--tl-green-500); color: var(--tl-white); font-weight: 700; font-size: var(--tl-fs-sm); text-decoration: none;
+    box-shadow: var(--tl-shadow-glow-green); transition: transform .2s ease, background .2s ease; }
+  .dash-try-btn:hover { background: var(--tl-green-600); color: var(--tl-white); transform: translateY(-2px); }
   .dash-next { font-size: var(--tl-fs-sm); line-height: 1.5; color: var(--tl-ink-500); margin: 16px auto 0; text-wrap: balance; }
   .dash-next span { display: inline-block; margin-right: 8px; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker);
     text-transform: uppercase; color: var(--tl-cyan-700); background: var(--tl-wash-cyan); border-radius: var(--tl-radius-pill); padding: 2px 9px; }
@@ -448,6 +454,7 @@
       <video id="dashVideo" src="../uploads/profile-walkthrough-web.mp4" poster="../uploads/profile-walkthrough-poster.jpg" muted loop playsinline preload="metadata"></video>
       <div class="vid-ctrls"><button type="button" class="vid-btn" data-vid-play aria-label="Pausar vídeo" title="Pausa"><svg class="i-a" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="3.6" height="14" rx="1"/><rect x="13.9" y="5" width="3.6" height="14" rx="1"/></svg><svg class="i-b" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></button><button type="button" class="vid-btn" data-vid-mute aria-label="Activar sonido" aria-pressed="false" title="Sonido activado"><svg class="i-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="ln" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><svg class="i-b" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="ln" d="M15.5 9a4.2 4.2 0 0 1 0 6M18.2 6.5a8 8 0 0 1 0 11"/></svg></button></div>
     </div>
+    <p class="dash-try"><a class="dash-try-btn" href="/demo-dashboard/" target="_blank" rel="noopener">Pruebe el panel como docente →</a></p>
     <p class="dash-next"><span>Próximamente</span>Este perfil cognitivo se suma a todas las demás fuentes de datos sobre el niño, desde las notas hasta la asistencia.</p>
   </section>
 

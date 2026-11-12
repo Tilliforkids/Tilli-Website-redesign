@@ -1,0 +1,407 @@
+// Tilli Measures — sample data for the teacher dashboard.
+// Deterministic generation so the prototype is stable across renders.
+// Loaded as a classic <script> (see teacher.html); exposes window.buildAllData.
+// Wrapped in an IIFE so SKILLS/WINDOWS/etc. stay private and never collide
+// with the identically-named locals in school-data.js.
+(function () {
+const SKILLS = [
+  { key: "emotion_awareness", name: "Emotion Awareness", group: "sel" },
+  { key: "emotion_regulation", name: "Emotion Regulation", group: "sel" },
+  { key: "empathy", name: "Empathy", group: "sel" },
+  { key: "relationship_skills", name: "Relationship Skills", group: "sel" },
+  { key: "metacognition", name: "Metacognition", group: "sel" },
+  { key: "critical_thinking", name: "Critical Thinking", group: "sel" },
+  { key: "working_memory", name: "Working Memory", group: "cog" },
+  { key: "planning", name: "Planning & Organization", group: "cog" },
+  { key: "cognitive_flexibility", name: "Cognitive Flexibility", group: "cog" },
+  { key: "inhibition_distraction", name: "Inhibition (Distraction)", group: "cog" },
+  { key: "inhibition_response", name: "Inhibition (Response)", group: "cog" },
+  { key: "attention", name: "Attention", group: "cog" },
+];
+
+const WINDOWS = [
+  { key: "baseline", label: "Baseline", sub: "Start of year", date: "Apr 2" },
+  { key: "mid", label: "Midline", sub: "Mid year", date: "Jun 18" },
+  { key: "post", label: "Endline", sub: "End of year", date: "Sep 24" },
+];
+
+const PERSPECTIVES = [
+  { key: "teacher", label: "Teacher", icon: "👩‍🏫" },
+  { key: "parent", label: "Parent", icon: "🏠" },
+  { key: "student", label: "Student", icon: "🧒" },
+];
+
+// How many separate parts each informant completes per assessment window
+// (e.g. the parent answers 2 questionnaires, the child does 5 direct tasks).
+// Drives the "Completed rate" columns — Teacher 0/1 · Parent 0/2 · Student 3/5.
+const INFORMANT_PARTS = { teacher: 1, parent: 2, student: 5 };
+
+// One informant's completion inside a window. `done` = every part finished.
+function perspEntry(p, doneParts) {
+  const total = INFORMANT_PARTS[p.key] || 1;
+  const d = clamp(Math.round(doneParts || 0), 0, total);
+  return { key: p.key, label: p.label, icon: p.icon, done: d >= total, doneParts: d, totalParts: total };
+}
+// Recompute a window's roll-up after its persp[] changed.
+function finishWindow(w) {
+  w.doneCount = w.persp.filter((p) => p.done).length;
+  // `started` = an informant began but hasn't finished a part (e.g. a teacher
+  // observation interrupted mid-child) — counts as in progress, not pending.
+  w.status = w.doneCount === w.persp.length ? "done" : (w.doneCount === 0 && !w.persp.some((p) => p.doneParts > 0 || p.started)) ? "pending" : "in_progress";
+  return w;
+}
+// Recompute a student's cross-window counters (windowsDone / perspDone).
+function finishLog(st) {
+  st.windowsDone = st.assessLog.filter((w) => w.status === "done").length;
+  st.perspDone = st.assessLog.reduce((a, w) => a + w.doneCount, 0);
+  return st;
+}
+
+const SECTIONS = [
+  { id: "kg_a", name: "Kindergarten A", grade: "Kindergarten", n: 6 },
+  { id: "kg_b", name: "Kindergarten B", grade: "Kindergarten", n: 6 },
+  { id: "g1_a", name: "Grade 1 A", grade: "Grade 1", n: 6 },
+  { id: "g1_b", name: "Grade 1 B", grade: "Grade 1", n: 6 },
+];
+
+const FIRST = [
+  "Aditya", "Ananya", "Arjun", "Diya", "Ishaan", "Kavya", "Rohan", "Saanvi",
+  "Vihaan", "Aarav", "Myra", "Reyansh", "Aadhya", "Krish", "Anika", "Dhruv",
+  "Nethmi", "Sahan", "Dinuki", "Kavindu", "Senuri", "Tharindu", "Amaya", "Ravindu",
+  "Hasini", "Sithara", "Nimna", "Pasindu", "Oshadi", "Yasas", "Rithik", "Meera",
+  "Zara", "Kabir", "Aisha", "Vivaan", "Riya", "Advik", "Prisha", "Neel",
+];
+const LAST = [
+  "Sharma", "Joshi", "Nair", "Reddy", "Patel", "Iyer", "Fernando", "Perera",
+  "Silva", "Bandara", "Jayawardena", "Wickramasinghe", "Menon", "Rao", "Gupta",
+  "Verma", "Das", "Kulasekara", "Rajapaksa", "Wijesinghe", "Kumar", "Pillai",
+];
+
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function hashStr(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+function bandOf(pct) {
+  if (pct < 34) return "Beginner";
+  if (pct < 67) return "Learner";
+  return "Advanced";
+}
+
+// Curated "tend reason" phrasing per skill (warm, teacher-to-teacher).
+const TEND_PHRASE = {
+  emotion_awareness: "Naming feelings could use practice",
+  emotion_regulation: "Emotion regulation could use practice",
+  empathy: "Seeing others' feelings is still growing",
+  relationship_skills: "Making friends could use gentle support",
+  metacognition: "Thinking about thinking is still budding",
+  critical_thinking: "Reasoning through problems is growing",
+  working_memory: "Holding steps in mind could use practice",
+  planning: "Planning & organizing is ready for tending",
+  cognitive_flexibility: "Switching between ideas is still growing",
+  inhibition_distraction: "Staying with a task amid distraction is growing",
+  inhibition_response: "Pausing before reacting could use practice",
+  attention: "Sustained attention is ready for tending",
+};
+
+function buildStudent(section, i, roster) {
+  // When a real roster entry is supplied (dummy school), use its identity and
+  // seed by admission number so the same student always looks the same.
+  const seed = roster ? hashStr(roster.adm) : hashStr(section.id + ":" + i);
+  const rnd = mulberry32(seed);
+  const first = roster ? roster.first : FIRST[Math.floor(rnd() * FIRST.length)];
+  const last = roster ? roster.last : LAST[Math.floor(rnd() * LAST.length)];
+  const name = first + " " + last;
+  const initials = (first[0] + last[0]).toUpperCase();
+
+  // Grade-tuned base ability so older sections score a touch higher.
+  const gradeLift = { "Pre-K": -6, KG: 0, Kindergarten: 0, UKG: 4, "Grade 1": 8, "Grade 2": 11, "Grade 3": 14, "Grade 4": 16 }[section.grade] || 0;
+  const base = clamp(46 + gradeLift + (rnd() - 0.5) * 46, 12, 92);
+
+  // ~1 in 14 students has no data yet (recent joiner).
+  const noData = rnd() < 0.055;
+
+  const skills = SKILLS.map((sk) => {
+    const jitter = (rnd() - 0.5) * 34;
+    const post = clamp(Math.round(base + jitter), 4, 99);
+    const growth = Math.round(rnd() * 22);
+    const mid = clamp(post - Math.round(growth * 0.55), 2, 99);
+    const pre = clamp(mid - Math.round(growth * 0.45), 2, 99);
+    // Perspective scores centred on post with mild spread.
+    const teacher = clamp(post + Math.round((rnd() - 0.5) * 12), 2, 100);
+    const parent = clamp(post + Math.round((rnd() - 0.4) * 22), 2, 100);
+    const student = clamp(post + Math.round((rnd() - 0.55) * 26), 2, 100);
+    const gap = Math.max(teacher, parent, student) - Math.min(teacher, parent, student);
+    return {
+      key: sk.key, name: sk.name, group: sk.group,
+      pct: post, band: bandOf(post), pre, mid, post,
+      teacher, parent, student, gap,
+    };
+  });
+
+  return Object.assign({
+    id: roster ? roster.adm : section.id + "_" + i,
+    adm: roster ? roster.adm : null,
+    first, last, name, initials,
+    parentEmail: roster ? roster.parentEmail : (first + "." + last + "@parent.tilli.co").toLowerCase(),
+    section: section.name, grade: section.grade,
+  }, summarize(skills, noData));
+}
+
+// Score roll-ups for one student from their per-skill scores: overall band,
+// growth since baseline, band chips, plant state, celebrate / tend lines.
+function summarize(skills, noData) {
+  const overallPct = Math.round(skills.reduce((a, s) => a + s.pct, 0) / skills.length);
+  const overallPre = Math.round(skills.reduce((a, s) => a + s.pre, 0) / skills.length);
+  const band = bandOf(overallPct);
+  const growth = overallPct - overallPre;
+  const chips = {
+    beginner: skills.filter((s) => s.band === "Beginner").length,
+    learner: skills.filter((s) => s.band === "Learner").length,
+    expert: skills.filter((s) => s.band === "Advanced").length,
+  };
+  const maxGap = Math.max(...skills.map((s) => s.gap));
+
+  let state;
+  if (noData) state = "waiting";
+  else if (band === "Advanced" || growth >= 16) state = "blossoming";
+  else if (band === "Beginner" || chips.beginner >= 3 || maxGap >= 30) state = "tending";
+  else state = "growing";
+
+  // Celebrate line = biggest grower; tend line = lowest skill.
+  const grew = [...skills].sort((a, b) => (b.post - b.pre) - (a.post - a.pre))[0];
+  const lowest = [...skills].sort((a, b) => a.pct - b.pct)[0];
+  const celebrateLine = growth > 0
+    ? (bandOf(grew.pre) === bandOf(grew.post) ? `${grew.name} grew the most since baseline` : `${grew.name} grew from ${bandOf(grew.pre)} to ${bandOf(grew.post)} since baseline`)
+    : `${[...skills].sort((a, b) => b.pct - a.pct)[0].name} is a strength from baseline`;
+  const tendReason = TEND_PHRASE[lowest.key];
+
+  return {
+    band, overallPct, overallPre, growth, chips, maxGap,
+    state, skills, celebrateLine, tendReason,
+    lowestSkill: lowest, topGrower: grew,
+    grewSincePre: growth,
+  };
+}
+
+// A brand-new student the teacher just added during onboarding: real identity,
+// but NO assessment data yet. `state:"waiting"` and an all-pending assessLog make
+// every downstream view (roster, landing, assess, insights) render it honestly as
+// "awaiting first assessment" rather than inventing scores. See buildFromRoster.
+function buildFreshStudent(section, r) {
+  const first = (r.first || "").trim();
+  const last = (r.last || "").trim();
+  const name = (first + " " + last).trim();
+  const initials = ((first[0] || "") + (last[0] || "")).toUpperCase() || "?";
+  const skills = SKILLS.map((sk) => ({
+    key: sk.key, name: sk.name, group: sk.group,
+    pct: 0, band: "Beginner", pre: 0, mid: 0, post: 0,
+    teacher: 0, parent: 0, student: 0, gap: 0,
+  }));
+  return {
+    id: (r.adm && String(r.adm).trim()) || section.id + "_" + name,
+    adm: (r.adm && String(r.adm).trim()) || null,
+    first, last, name, initials, dispFirst: first,
+    uid: r.uid || null,
+    parentEmail: r.parentEmail || null,   // real school: never invent one (the student page looks up linked parents)
+    section: section.name, grade: section.grade,
+    band: "Beginner", overallPct: 0, overallPre: 0, growth: 0,
+    chips: { beginner: 0, learner: 0, expert: 0 }, maxGap: 0,
+    state: "waiting", skills,
+    celebrateLine: "", tendReason: "",
+    lowestSkill: skills[0], topGrower: skills[0], grewSincePre: 0,
+    assess: "todo",
+    assessLog: WINDOWS.map((w) => ({
+      key: w.key, label: w.label, sub: w.sub, date: w.date,
+      persp: PERSPECTIVES.map((p) => perspEntry(p, 0)),
+      doneCount: 0, status: "pending",
+    })),
+    windowsDone: 0, perspDone: 0,
+  };
+}
+
+// Build the dashboard from the students a teacher entered during onboarding.
+// Groups them into sections by grade + section. Returns { fresh:true } so the
+// dashboard knows this is a first-time class (defaults the landing to Baseline).
+// classes: the teacher's classes as the school has them, so a class with no
+// children yet still shows (and can take students).
+function buildFromRoster(rosterStudents, classes) {
+  const groups = {};
+  (classes || []).forEach((c) => {
+    const grade = (c.grade || "").trim() || "My class", section = (c.section || "").trim();
+    const gk = grade + "||" + section;
+    if (!groups[gk]) groups[gk] = { grade, section, list: [] };
+  });
+  rosterStudents.forEach((s) => {
+    const grade = (s.grade || "").trim() || "My class";
+    const section = (s.section || "").trim();
+    const gk = grade + "||" + section;
+    if (!groups[gk]) groups[gk] = { grade, section, list: [] };
+    groups[gk].list.push(s);
+  });
+  const sections = Object.keys(groups).map((gk, gi) => {
+    const g = groups[gk];
+    const sec = {
+      id: "sec_" + gi,
+      name: g.section ? g.grade + " " + g.section : g.grade,
+      grade: g.grade, section: g.section, n: g.list.length,
+    };
+    const students = g.list.map((rs) => buildFreshStudent(sec, rs));
+    // Disambiguate students who share a first name (add last initial).
+    const firstCounts = {};
+    students.forEach((st) => { firstCounts[st.first] = (firstCounts[st.first] || 0) + 1; });
+    students.forEach((st) => { st.dispFirst = firstCounts[st.first] > 1 ? st.first + " " + (st.last[0] || "") + "." : st.first; });
+    return Object.assign({}, sec, { students });
+  });
+  return { sections, skills: SKILLS, windows: WINDOWS, perspectives: PERSPECTIVES, fresh: true };
+}
+
+function buildAllData(opts) {
+  // A real teacher's own roster (from onboarding) takes priority: show THEIR
+  // students, as a fresh class with no data yet. An empty roster → empty dashboard.
+  if (opts && opts.roster) {
+    const rs = (opts.roster.students || []).filter((s) => s && (s.first || "").trim());
+    return buildFromRoster(rs, opts.sections);
+  }
+  // Fallback (no roster supplied): the demo dataset used by the standalone preview.
+  // Prefer the shared dummy-school roster (school-data.js) when it's loaded,
+  // so the teacher dashboard shows the same students as the parent flow.
+  const TS = typeof window !== "undefined" ? window.TILLI_SCHOOL : null;
+  // The dashboard opens AS one teacher and only ever contains HER own sections —
+  // a teacher never sees another teacher's classes. Everything downstream (section
+  // picker, garden, roster, insights) scopes automatically off this filtered list.
+  const activeTeacherId = TS && TS.activeTeacherId ? TS.activeTeacherId : null;
+  const activeTeacher = TS && TS.teachers && activeTeacherId
+    ? TS.teachers.find((t) => t.id === activeTeacherId) || null : null;
+  const ownedDefs = TS && TS.sections
+    ? (activeTeacherId ? TS.sections.filter((s) => s.teacherId === activeTeacherId) : TS.sections)
+    : null;
+  const sectionDefs = ownedDefs
+    ? ownedDefs.map((s) => ({ id: s.id, name: s.name, grade: s.grade, section: s.section, teacherId: s.teacherId,
+        n: TS.students.filter((st) => st.grade === s.grade && st.section === s.section).length }))
+    : SECTIONS;
+
+  const sections = sectionDefs.map((sec) => {
+    const roster = TS && TS.students
+      ? TS.students.filter((st) => st.grade === sec.grade && st.section === sec.section)
+      : null;
+    const students = Array.from({ length: sec.n }, (_, i) => buildStudent(sec, i, roster ? roster[i] : null));
+    // Disambiguate students who share a first name (add last initial).
+    const firstCounts = {};
+    students.forEach((st) => { firstCounts[st.first] = (firstCounts[st.first] || 0) + 1; });
+    students.forEach((st) => { st.dispFirst = firstCounts[st.first] > 1 ? st.first + " " + st.last[0] + "." : st.first; });
+    // Assessment status for the "baseline" window (deterministic).
+    students.forEach((st, i) => {
+      if (st.state === "waiting") st.assess = "todo";
+      else if (i % 9 === 3) st.assess = "in_progress";
+      else if (i > sec.n - 5) st.assess = "todo";
+      else st.assess = "done";
+    });
+    // Full assessment log: per window × per perspective completion (deterministic).
+    // Earlier windows are more complete; the Post window is mid-cycle right now.
+    const PROBS = {
+      baseline: { teacher: 0.99, parent: 0.9, student: 0.86 },
+      mid: { teacher: 0.94, parent: 0.79, student: 0.71 },
+      post: { teacher: 0.44, parent: 0.17, student: 0.12 },
+    };
+    students.forEach((st) => {
+      const rndA = mulberry32(hashStr(st.id + ":assesslog"));
+      st.assessLog = WINDOWS.map((w) => {
+        const persp = PERSPECTIVES.map((p) => {
+          const done = st.state === "waiting" ? false : rndA() < PROBS[w.key][p.key];
+          const total = INFORMANT_PARTS[p.key] || 1;
+          return perspEntry(p, done ? total : Math.floor(rndA() * total));
+        });
+        return finishWindow({ key: w.key, label: w.label, sub: w.sub, date: w.date, persp });
+      });
+      finishLog(st);
+    });
+    return { ...sec, students };
+  });
+  return { sections, skills: SKILLS, windows: WINDOWS, perspectives: PERSPECTIVES,
+    activeTeacherId, activeTeacher, teachers: (TS && TS.teachers) || [] };
+}
+
+// ---------------- landing-state preview (dev "Landing state" switch) ----------------
+// Lays plausible mock completion + scores over the teacher's REAL students so
+// every page can be previewed in each state. 'baseline' = the real data as-is
+// (fresh class). The other states assume earlier windows are finished:
+//   between → baseline complete, nothing open      (scores = baseline)
+//   midline → baseline complete, mid-year partial   (scores = mid-year)
+//   endline → baseline + mid complete, end partial  (scores = end of year)
+// Seeded by student id, so a state always previews identically.
+const PREVIEW_PLAN = {
+  between: { full: ["baseline"], partial: null, cur: "pre" },
+  midline: { full: ["baseline"], partial: "mid", cur: "mid" },
+  endline: { full: ["baseline", "mid"], partial: "post", cur: "post" },
+};
+// Completion odds per informant for the window that is open right now.
+const PARTIAL_PROBS = { teacher: 0.55, parent: 0.35, student: 0.3 };
+// Odds an informant is still pending in a window that has already closed —
+// real windows end with a few stragglers (a parent form not returned, a missed
+// task), so past windows preview as mostly, not perfectly, complete.
+const PAST_GAP_PROBS = { teacher: 0.08, parent: 0.3, student: 0.22 };
+// DEMO: per-skill score shift applied to every child (Working Memory = the class's weakest skill).
+const DEMO_SKILL_SHIFT = { working_memory: -35 };   // Nov 12: enough for "mostly Beginner" (en 8/14, es 11/14)
+
+function previewStudent(sec, st, plan) {
+  const mock = buildStudent(sec, 0, { adm: String(st.id), first: st.first || "?", last: st.last || "?", parentEmail: st.parentEmail });
+  const rnd = mulberry32(hashStr(st.id + ":preview"));
+  // Freeze the trajectory at the current window: later windows haven't happened.
+  const skills = mock.skills.map((sk) => {
+    const x = Object.assign({}, sk);
+    // DEMO: Working Memory is the class's focus skill, so it sits lowest for every child (Nov 12, user).
+    const sh = DEMO_SKILL_SHIFT[x.key] || 0;
+    if (sh) ["pre", "mid", "post", "teacher", "parent", "student"].forEach((f) => { x[f] = clamp(x[f] + sh, 2, 99); });
+    const oldPost = x.post;
+    if (plan.cur === "pre") { x.mid = x.pre; x.post = x.pre; }
+    else if (plan.cur === "mid") { x.post = x.mid; }
+    // DEMO: the teacher / parent / student views move with the frozen score, so they agree with the skill's band.
+    const d = x.post - oldPost;
+    if (d) ["teacher", "parent", "student"].forEach((f) => { x[f] = clamp(x[f] + d, 2, 100); });
+    x.pct = x.post; x.band = bandOf(x.pct);
+    return x;
+  });
+  const noData = false;   // DEMO: every child has Baseline + Midline results (no random "recent joiner" with nothing recorded; Nov 12, user)
+  const assessLog = WINDOWS.map((w) => {
+    const full = !noData && plan.full.indexOf(w.key) >= 0;
+    const open = !noData && plan.partial === w.key;
+    const persp = PERSPECTIVES.map((p) => {
+      const total = INFORMANT_PARTS[p.key] || 1;
+      if (full) return perspEntry(p, total);   // DEMO: a closed window is complete for every child (matches the journey's "Complete")
+      if (open) return perspEntry(p, rnd() < PARTIAL_PROBS[p.key] ? total : Math.floor(rnd() * total));
+      return perspEntry(p, 0);
+    });
+    return finishWindow({ key: w.key, label: w.label, sub: w.sub, date: (plan.dates && plan.dates[w.key]) || w.date, persp });
+  });
+  const out = Object.assign({}, st, summarize(skills, noData), { assessLog, dispFirst: st.dispFirst });
+  out.assess = assessLog[0].persp[0].done ? "done" : "todo";
+  return finishLog(out);
+}
+
+function previewData(data, windowState) {
+  const base = PREVIEW_PLAN[windowState];
+  if (!data || !base) return data;
+  // DEMO: logs carry the school's real window dates, not the sample Apr 2 / Jun 18 / Sep 24.
+  const dates = {}; (data.windows || []).forEach((w) => { dates[w.key] = w.date; });
+  const plan = Object.assign({}, base, { dates });
+  const sections = data.sections.map((sec) => Object.assign({}, sec, {
+    students: sec.students.map((st) => previewStudent(sec, st, plan)),
+  }));
+  return Object.assign({}, data, { sections, preview: windowState });
+}
+
+window.buildAllData = buildAllData;
+// Helpers the dashboard reuses (add a student in place, preview states,
+// recompute completion after an observation is saved).
+window.TilliDashData = { buildFreshStudent, previewData, perspEntry, finishWindow, finishLog, INFORMANT_PARTS, WINDOWS };
+})();

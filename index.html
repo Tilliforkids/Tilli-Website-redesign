@@ -438,6 +438,12 @@
     max-width: 640px; margin: min(16px, 1.8vh) auto min(28px, 3.2vh); text-wrap: balance; }
   .dash-hl { display: block; margin: 4px 0 6px; font-size: min(var(--tl-fs-xl), 5vh); font-weight: 800; line-height: 1.12;
     letter-spacing: var(--tl-tracking-tight); color: var(--tl-cyan-700); }
+  /* "Experience the dashboard yourself" — opens the unlisted /demo-dashboard in a new tab */
+  .dash-try { margin: min(18px, 2vh) auto 0; }
+  .dash-try-btn { display: inline-flex; align-items: center; gap: 8px; padding: min(12px, 1.4vh) 22px; border-radius: var(--tl-radius-pill);
+    background: var(--tl-green-500); color: var(--tl-white); font-weight: 700; font-size: var(--tl-fs-sm); text-decoration: none;
+    box-shadow: var(--tl-shadow-glow-green); transition: transform .2s ease, background .2s ease; }
+  .dash-try-btn:hover { background: var(--tl-green-600); color: var(--tl-white); transform: translateY(-2px); }
   .dash-next { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px 10px; max-width: 820px; margin: min(20px, 2.2vh) auto 0;
     font-size: var(--tl-fs-sm); line-height: 1.5; color: var(--tl-ink-500); text-wrap: balance; }
   .dash-next span { flex: 0 0 auto; font-size: var(--tl-fs-xs); font-weight: 700; letter-spacing: var(--tl-tracking-kicker); text-transform: uppercase;
@@ -999,6 +1005,7 @@
             <video src="uploads/profile-walkthrough-web.mp4" poster="uploads/profile-walkthrough-poster.jpg" muted loop playsinline preload="auto" style="width: 100%; max-height: 52vh; object-fit: cover; border-radius: var(--tl-radius-md); display: block; min-height: 200px; background: var(--tl-surface-100);"></video>
             <div class="vid-ctrls"><button type="button" class="vid-btn" data-vid-play aria-label="Pause video" title="Pause"><svg class="i-a" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="3.6" height="14" rx="1"/><rect x="13.9" y="5" width="3.6" height="14" rx="1"/></svg><svg class="i-b" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></button><button type="button" class="vid-btn" data-vid-mute aria-label="Turn sound on" aria-pressed="false" title="Sound on"><svg class="i-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="ln" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><svg class="i-b" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="ln" d="M15.5 9a4.2 4.2 0 0 1 0 6M18.2 6.5a8 8 0 0 1 0 11"/></svg></button></div>
           </div>
+          <p class="dash-try"><a class="dash-try-btn" href="/demo-dashboard/" target="_blank" rel="noopener">Experience the dashboard yourself as a teacher →</a></p>
           <p class="dash-next"><span>Coming next</span>This cognitive profile joins every other data source about the child, from academics to attendance.</p>
         </div>
       </div>
