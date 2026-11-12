@@ -313,7 +313,7 @@
     },
     es: {
       todayTitle: 'Tu plan', allDone: 'Todo hecho 🎉',
-      days: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie'], dayToday: 'Hoy', dayTasks: '{k} pendientes', dayLocked: 'Los planes se abren con tres días de antelación',
+      days: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie'], dayToday: 'Hoy', dayTasks: '{k} tareas', dayLocked: 'Los planes se abren con tres días de antelación',
       rTueCheck: 'Empieza con una ronda de emociones. A {n} le ayuda empezar así el día.', sTueCheck: 'ronda de emociones',
       rTueCards: 'Prueba las tarjetas con pasos numerados con {n} en los problemas', sTueCards: 'tarjetas con {n}',
       rTueNote: 'Manda una nota breve a la familia de {n}', sTueNote: 'nota a la familia de {n}',
