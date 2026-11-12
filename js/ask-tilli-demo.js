@@ -195,15 +195,19 @@
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
   /* ── Answer bank (ask-tilli-questions.json) ─────────────────────────────
-     100 hand-written Q&As with match rules (see "matching" in that file's
-     meta). Checked before the keyword logic above; no match → that logic. */
+     Hand-written Q&As with match rules (see "matching" in that file's meta),
+     plus every child's levels for "compare X and Y" questions. Checked
+     before the keyword logic above; no match → that logic. */
   let bankPromise = null;
   function loadBank() {
     if (!bankPromise) {
       bankPromise = fetch(window.AskTilli.bankUrl)
         .then((r) => (r.ok ? r.json() : null))
-        .then((d) => (d && Array.isArray(d.questions) ? d.questions.map(prepEntry) : []))
-        .catch(() => []);
+        .then((d) => ({
+          entries: d && Array.isArray(d.questions) ? d.questions.map(prepEntry) : [],
+          kids: d && Array.isArray(d.children) ? d.children.map(prepKid) : []
+        }))
+        .catch(() => ({ entries: [], kids: [] }));
     }
     return bankPromise;
   }
@@ -233,10 +237,56 @@
       match: (e.match || []).map((set) => set.map((group) => group.map(prepAlt)))
     };
   }
+  function prepKid(c) {
+    return { name: c.name, grade: c.grade, levels: c.levels || {}, movedUp: c.movedUp || [],
+      match: (c.match || []).map(prepAlt), not: (c.not || []).map(prepAlt) };
+  }
+  // children named in the question, in the order they appear
+  function kidsIn(kids, padded) {
+    return kids
+      .filter((k) => !k.not.some((a) => altLen(padded, a)))
+      .map((k) => ({ k, at: Math.min(...k.match.map((a) => { const i = padded.indexOf(a.s); return i < 0 ? Infinity : i; })) }))
+      .filter((x) => x.at !== Infinity)
+      .sort((a, b) => a.at - b.at)
+      .map((x) => x.k)
+      .slice(0, 4);
+  }
+
+  /* Side-by-side answer for 2–4 children: what they share, then what's
+     particular to each. Levels only — never says who is "better". */
+  const andJoin = (a) => (a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]);
+  function compareKids(list) {
+    const sets = list.map((k) => {
+      const ex = [], em = [];
+      Object.entries(k.levels).forEach(([s, l]) => (l === 'Expert' ? ex : em).push(s));
+      return { ex, em, up: k.movedUp };
+    });
+    const shared = {};
+    ['ex', 'em', 'up'].forEach((key) => { shared[key] = sets[0][key].filter((s) => sets.every((x) => x[key].includes(s))); });
+    const parts = (o) => [
+      o.ex.length && '<b>Expert</b> in ' + andJoin(o.ex),
+      o.em.length && '<b>Emerging</b> in ' + andJoin(o.em),
+      o.up.length && 'moved up a level in ' + andJoin(o.up)
+    ].filter(Boolean).join('; ');
+    const sameGrade = list.every((k) => k.grade === list[0].grade);
+    const names = andJoin(list.map((k) => '<b>' + escapeHtml(k.name) + '</b>'));
+    const lines = [names + (sameGrade ? `, ${list.length === 2 ? 'both' : 'all'} ${list[0].grade}:` : ':')];
+    if (parts(shared)) lines.push(`• ${list.length === 2 ? 'Both' : 'All'}: ${parts(shared)}`);
+    list.forEach((k, i) => {
+      const own = {};
+      ['ex', 'em', 'up'].forEach((key) => { own[key] = sets[i][key].filter((s) => !shared[key].includes(s)); });
+      const none = !sets[i].ex.length && !sets[i].em.length && !sets[i].up.length;
+      const txt = parts(own) || (none ? 'at Learner in every skill' : 'nothing beyond what they share');
+      lines.push(`• ${escapeHtml(k.name)}${sameGrade ? '' : ` (${k.grade})`}: ${txt}`);
+    });
+    lines.push('Every other skill is at Learner.' + (sameGrade ? '' : ' Each level is judged against what\'s expected for that child\'s age.'));
+    return lines.join('<br>');
+  }
+
   function bankAnswer(bank, raw) {
     const q = norm(raw), padded = ' ' + q + ' ';
     let best = null, bestScore = 0;
-    for (const e of bank) {
+    for (const e of bank.entries) {
       let score = 0;
       if (e.exact.includes(q)) score = 1e6;
       else if (!e.not.some((a) => altLen(padded, a))) {
@@ -252,6 +302,12 @@
       }
       if (score > bestScore) { best = e; bestScore = score; }
     }
+    // two or more children named → comparison, unless a safety answer
+    // (ranking, diagnosis, sharing reports…) matched
+    if (!best || best.w < 2500) {
+      const kids = kidsIn(bank.kids, padded);
+      if (kids.length >= 2) return compareKids(kids);
+    }
     return best ? formatBank(best.answer) : null;
   }
   // bank text → HTML: escape, then **bold** and line breaks
@@ -264,7 +320,7 @@
     maxChars: 220,
     minThink: 700,
     maxThink: 1300,
-    bankUrl: '/ask-tilli-questions.json?v=1',   // bump v when the JSON changes
+    bankUrl: '/ask-tilli-questions.json?v=2',   // bump v when the JSON changes
 
     /* DEVELOPER SEAM ----------------------------------------------------
        Replace the body below with a call to your own endpoint, e.g.:

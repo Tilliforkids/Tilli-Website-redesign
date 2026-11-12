@@ -31,8 +31,41 @@
       "out-of-scope",
       "safety"
     ],
-    "matching": "Each question has match rules used by js/ask-tilli-demo.js. match = list of rule sets (any set can match); a rule set = list of groups (all must match); a group = list of alternatives (any one). Alternatives are whole words/phrases, or a word prefix when they end in *. exact = whole-question matches. not = if any of these appear, skip this entry. w = priority bonus. Text is lower-cased, punctuation and apostrophes stripped, and grade names normalised first (gr2 / class 2 / grade two → grade 2; Pre-K / kindergarten → prek). Highest score wins: 1000 per group + length of matched words + w."
+    "matching": "Each question has match rules used by js/ask-tilli-demo.js. match = list of rule sets (any set can match); a rule set = list of groups (all must match); a group = list of alternatives (any one). Alternatives are whole words/phrases, or a word prefix when they end in *. exact = whole-question matches. not = if any of these appear, skip this entry. w = priority bonus. Text is lower-cased, punctuation and apostrophes stripped, and grade names normalised first (gr2 / class 2 / grade two → grade 2; Pre-K / kindergarten → prek). Highest score wins: 1000 per group + length of matched words + w.",
+    "children": "children = every Sunrise child, used when a question names two or more of them (e.g. \"Compare Hana and Meera\"): the demo builds a side-by-side answer from these. levels lists only skills NOT at Learner; movedUp = skills up one level since Term 1. Generated from data/sunrise-academy.js — keep in step. Safety answers (w >= 2500, e.g. ranking, diagnosis) still win over a comparison."
   },
+  "children": [
+    {"name":"Aanya","grade":"Pre-K","match":["aanya*"],"levels":{"emotional regulation":"Emerging","empathy":"Expert"},"movedUp":["social awareness"]},
+    {"name":"Zayd","grade":"Pre-K","match":["zayd*"],"levels":{"attention":"Emerging","inhibition":"Emerging","perseverance":"Expert"},"movedUp":[]},
+    {"name":"Lucía","grade":"Pre-K","match":["lucía*","lucia*"],"levels":{"empathy":"Expert","social awareness":"Expert","planning":"Emerging"},"movedUp":["emotional regulation"]},
+    {"name":"Tharindu","grade":"Pre-K","match":["tharindu*"],"levels":{"working memory":"Expert","self-awareness":"Emerging"},"movedUp":["attention"]},
+    {"name":"Priya","grade":"Pre-K","match":["priya*"],"levels":{},"movedUp":["emotional regulation","inhibition"],"not":["nair","dr","doctor","my name","i am","im","this is"]},
+    {"name":"Kabir","grade":"Grade 1","match":["kabir*"],"levels":{"attention":"Emerging","empathy":"Expert"},"movedUp":[]},
+    {"name":"Sara","grade":"Grade 1","match":["sara*"],"levels":{"organisation":"Expert"},"movedUp":["attention"]},
+    {"name":"Omar","grade":"Grade 1","match":["omar*"],"levels":{"attention":"Emerging","perseverance":"Emerging","social awareness":"Expert"},"movedUp":[]},
+    {"name":"Nethmi","grade":"Grade 1","match":["nethmi*"],"levels":{"attention":"Expert","working memory":"Expert"},"movedUp":["planning"]},
+    {"name":"Vihaan","grade":"Grade 1","match":["vihaan*"],"levels":{"inhibition":"Emerging"},"movedUp":["attention"]},
+    {"name":"Meera","grade":"Grade 2","match":["meera*"],"levels":{"attention":"Emerging","working memory":"Expert"},"movedUp":[]},
+    {"name":"Arjun","grade":"Grade 2","match":["arjun*"],"levels":{"cognitive flexibility":"Expert"},"movedUp":["attention"],"not":["mehta","mr"]},
+    {"name":"Hana","grade":"Grade 2","match":["hana*"],"levels":{"attention":"Emerging","empathy":"Expert"},"movedUp":["perseverance"]},
+    {"name":"Diego","grade":"Grade 2","match":["diego*"],"levels":{"emotional regulation":"Emerging"},"movedUp":["attention"]},
+    {"name":"Kavya","grade":"Grade 2","match":["kavya*"],"levels":{"attention":"Expert","working memory":"Expert","self-awareness":"Expert"},"movedUp":["planning"]},
+    {"name":"Rehan","grade":"Grade 3","match":["rehan*"],"levels":{"self-control":"Emerging","inhibition":"Emerging","cognitive flexibility":"Expert"},"movedUp":[]},
+    {"name":"Amaya","grade":"Grade 3","match":["amaya*"],"levels":{"planning":"Expert"},"movedUp":["self-control"]},
+    {"name":"Yusuf","grade":"Grade 3","match":["yusuf*"],"levels":{"self-control":"Emerging","empathy":"Expert"},"movedUp":["inhibition"]},
+    {"name":"Ishaan","grade":"Grade 3","match":["ishaan*"],"levels":{"working memory":"Expert"},"movedUp":["self-control"]},
+    {"name":"Noor","grade":"Grade 3","match":["noor*"],"levels":{"self-control":"Expert","emotional regulation":"Expert"},"movedUp":["social awareness"]},
+    {"name":"Isha","grade":"Grade 4","match":["isha","ishas"],"levels":{"attention":"Expert","planning":"Emerging"},"movedUp":[]},
+    {"name":"Karan","grade":"Grade 4","match":["karan*"],"levels":{"organisation":"Emerging"},"movedUp":["planning"]},
+    {"name":"Mariam","grade":"Grade 4","match":["mariam*"],"levels":{"planning":"Expert","attention":"Expert"},"movedUp":["organisation"]},
+    {"name":"Senuri","grade":"Grade 4","match":["senuri*"],"levels":{"planning":"Emerging","perseverance":"Expert"},"movedUp":[]},
+    {"name":"Adrián","grade":"Grade 4","match":["adrián*","adrian*"],"levels":{"social awareness":"Expert"},"movedUp":["planning","attention"]},
+    {"name":"Dhruv","grade":"Grade 5","match":["dhruv*"],"levels":{"working memory":"Expert"},"movedUp":["working memory"]},
+    {"name":"Riya","grade":"Grade 5","match":["riya*"],"levels":{"working memory":"Emerging","planning":"Expert"},"movedUp":[]},
+    {"name":"Tariq","grade":"Grade 5","match":["tariq*"],"levels":{"perseverance":"Expert"},"movedUp":["working memory"]},
+    {"name":"Dinithi","grade":"Grade 5","match":["dinithi*"],"levels":{"working memory":"Emerging","empathy":"Expert"},"movedUp":["emotional regulation"]},
+    {"name":"Aarav","grade":"Grade 5","match":["aarav*"],"levels":{"attention":"Expert","working memory":"Expert","planning":"Expert","cognitive flexibility":"Expert"},"movedUp":[]}
+  ],
   "questions": [
     {
       "id": 1,
