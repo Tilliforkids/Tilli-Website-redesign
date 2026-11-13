@@ -35,6 +35,8 @@
   var PERSONAS = {
     es: {
       locale: 'es-ES', dir: 'ltr',
+      // Nov 13 (user): the demo-kit worksheet photo is Mateo García's, so the class has a Mateo (was Javier Ruiz; same id + data).
+      renames: { 'LA-1212': ['Mateo', 'García'] }, sheetKid: 'LA-1212',
       teacher: { name: 'María Fernández', email: 'maria.fernandez@losalmendros.es', gender: 'Female' },
       school: { name: 'Colegio Los Almendros', city: 'Madrid', country: 'Spain', board: 'LOMLOE', domain: 'losalmendros.es', prefix: 'LA', code: 'ALMD-2611' },
       first_f: ['Lucía', 'Sofía', 'Martina', 'Paula', 'Valeria', 'Daniela', 'Carla', 'Alba', 'Noa', 'Julia', 'Sara', 'Emma', 'Olivia', 'Irene'],
@@ -44,6 +46,8 @@
     },
     en: {
       locale: 'en-IN', dir: 'ltr',
+      // Nov 13 (user): the demo-kit worksheet photo is Leo M.'s, so the class has a Leo (was Rohan Pillai; same id + data).
+      renames: { 'HO-1209': ['Leo', 'Mathew'] }, sheetKid: 'HO-1209',
       teacher: { name: 'Kiara Mehta', email: 'kiara.mehta@heritageoaks.edu', gender: 'Female' },
       school: { name: 'Heritage Oaks School', city: 'Bengaluru', country: 'India', board: 'CBSE', domain: 'heritageoaks.edu', prefix: 'HO', code: 'HROK-4410' },
       first_f: IN_F, first_m: IN_M, last: IN_L, teachers: IN_T,
@@ -73,6 +77,8 @@
     names: { f: P.first_f, m: P.first_m, last: P.last, teachers: P.teachers },
     // The demo teacher's class (the other classes only exist so the children have past years).
     myClass: ['Grade 3', 'A'],
+    renames: P.renames || {},   // student id → [first, last], applied after the seeded class is built (tilli-api)
+    sheetKid: P.sheetKid || null,   // whose name is on the demo-kit worksheet photo (Files → Add a file picks them)
   };
   document.documentElement.lang = lang;
 })();

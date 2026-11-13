@@ -447,6 +447,11 @@
           }
           r.name = r.first + ' ' + r.last; r.parentName = r.parentName.split(' ')[0] + ' ' + r.last;
         });
+        // DEMO: named children the demo needs (e.g. the name on the demo-kit worksheet photo); same id, scores and history.
+        kids.forEach(function (r) {
+          var n = D.renames && D.renames[r.student_id]; if (!n) return;
+          r.first = n[0]; r.last = n[1]; r.name = n[0] + ' ' + n[1]; r.parentName = r.parentName.split(' ')[0] + ' ' + n[1];
+        });
         // One teacher per school lags behind — a realistic follow-up case.
         return { secId: secId, teacher: teacher, kids: kids, pace: ci === H.classes.length - 1 ? 0.35 : 1 };
       });

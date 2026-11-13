@@ -352,6 +352,15 @@ const PARTIAL_PROBS = { teacher: 0.55, parent: 0.35, student: 0.3 };
 const PAST_GAP_PROBS = { teacher: 0.08, parent: 0.3, student: 0.22 };
 // DEMO: per-skill score shift applied to every child (Working Memory = the class's weakest skill).
 const DEMO_SKILL_SHIFT = { working_memory: -35 };   // Nov 12: enough for "mostly Beginner" (en 8/14, es 11/14)
+// Nov 13: the three viewpoints sit so close that class averages never differ, so Insights → Perspectives
+// would always say "all agree". Nudge four skills the way real schools often look (the teacher sees less
+// than families do) so the "views differ" story shows. Set to {} to switch off.
+const DEMO_PERSP_SHIFT = {
+  emotion_regulation: { teacher: -9, parent: 8 },
+  critical_thinking: { teacher: -8, parent: 6 },
+  inhibition_distraction: { teacher: -8, parent: 6 },
+  metacognition: { teacher: -6, student: 12 },
+};
 
 function previewStudent(sec, st, plan) {
   const mock = buildStudent(sec, 0, { adm: String(st.id), first: st.first || "?", last: st.last || "?", parentEmail: st.parentEmail });
@@ -368,6 +377,9 @@ function previewStudent(sec, st, plan) {
     // DEMO: the teacher / parent / student views move with the frozen score, so they agree with the skill's band.
     const d = x.post - oldPost;
     if (d) ["teacher", "parent", "student"].forEach((f) => { x[f] = clamp(x[f] + d, 2, 100); });
+    const ps = DEMO_PERSP_SHIFT[x.key];
+    if (ps) Object.keys(ps).forEach((f) => { x[f] = clamp(x[f] + ps[f], 2, 100); });
+    x.gap = Math.max(x.teacher, x.parent, x.student) - Math.min(x.teacher, x.parent, x.student);
     x.pct = x.post; x.band = bandOf(x.pct);
     return x;
   });

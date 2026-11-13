@@ -853,9 +853,9 @@
       const preN = (r.groups || []).reduce((a, g) => a + g.rows.filter((x) => x.first || x.adm).length, 0);
       return head(preN ? `${preN} student${preN === 1 ? '' : 's'} on file — pick &ldquo;Type them in&rdquo; to review &amp; edit them.` : '') + `
         <div class="onb-methods">
-          <button class="onb-method focus" data-method="sheet"><span class="ic">🌱</span><span class="lb">Type them in</span></button>
-          <button class="onb-method focus" data-method="csv"><span class="ic">📄</span><span class="lb">Upload a CSV</span></button>
-          <button class="onb-method focus" data-method="pic"><span class="ic">📷</span><span class="lb">Upload a picture</span></button>
+          <button class="onb-method focus" data-method="sheet"><span class="ic">${window.TIcon ? window.TIcon('keyboard') : ''}</span><span class="lb">Type them in</span></button>
+          <button class="onb-method focus" data-method="csv"><span class="ic">${window.TIcon ? window.TIcon('file') : ''}</span><span class="lb">Upload a CSV</span></button>
+          <button class="onb-method focus" data-method="pic"><span class="ic">${window.TIcon ? window.TIcon('camera') : ''}</span><span class="lb">Upload a picture</span></button>
         </div>`;
     }
 
@@ -864,7 +864,7 @@
       return head('') + `
         <label class="onb-drop">
           <input type="file" accept=".csv" data-roster-csv class="hidden">
-          <div class="onb-drop-ic">📄</div>
+          <div class="onb-drop-ic">${window.TIcon ? window.TIcon('file') : ''}</div>
           <div class="onb-drop-t">Upload a CSV</div>
           <div class="onb-drop-s">Columns: first name, last name, grade, section</div>
         </label>
@@ -880,12 +880,12 @@
         <div class="onb-grid2">
           <label class="onb-drop compact">
             <input type="file" accept="image/*" data-roster-pic class="hidden">
-            <div class="onb-drop-ic">🖼️</div>
+            <div class="onb-drop-ic">${window.TIcon ? window.TIcon('image') : ''}</div>
             <div class="onb-drop-t">Upload a picture</div>
           </label>
           <label class="onb-drop compact">
             <input type="file" accept="image/*" capture="environment" data-roster-pic class="hidden">
-            <div class="onb-drop-ic">📷</div>
+            <div class="onb-drop-ic">${window.TIcon ? window.TIcon('camera') : ''}</div>
             <div class="onb-drop-t">Take a picture</div>
           </label>
         </div>

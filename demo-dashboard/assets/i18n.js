@@ -478,7 +478,7 @@
   // admin account menu, student assessment page). Each language in its own script.
   function switcherHTML(cls) {
     var cur = current();
-    return '<label class="lang-switch' + (cls ? ' ' + cls : '') + '"><span class="lang-switch-ic" aria-hidden="true">🌐</span>' +
+    return '<label class="lang-switch' + (cls ? ' ' + cls : '') + '"><span class="lang-switch-ic" aria-hidden="true">' + (window.TIcon ? window.TIcon('globe') : '') + '</span>' +
       '<select data-langswitch aria-label="' + esc(t('lang.label')) + '">' +
       LANGS.map(function (l) { return '<option value="' + l.code + '"' + (l.code === cur ? ' selected' : '') + '>' + l.native + '</option>'; }).join('') +
       '</select></label>';
@@ -584,7 +584,8 @@
     return out;
   }
 
-  document.documentElement.lang = current();
+  // DEMO: demo-config.js already set <html lang> from the URL (/en/ /es/ /hi/); don't override it with the browser language.
+  if (!window.DEMO) document.documentElement.lang = current();
   window.TilliI18n = { LANGS: LANGS, CODES: CODES, catalog: catalog, drafts: DRAFTS, current: current, detect: detect,
     setLang: setLang, deviceOnly: deviceOnly, t: t, html: html, apply: apply, refresh: refresh, autoTranslate: autoTranslate, fmtDate: fmtDate, switcherHTML: switcherHTML, wire: wire };
 })();

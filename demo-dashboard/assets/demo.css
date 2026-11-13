@@ -3,8 +3,15 @@
    Uses the Measures tokens from tilli.css; no new colours.
    ============================================================ */
 :root {
+  --ti-size: 1.1em;            /* line icons that replaced emoji: size, relative to the text beside them */
+  --ti-shift: -0.2em;          /* line icons: nudge down so they sit on the text's baseline */
   --dm-gap: 16px;              /* gap between blocks inside the Monday card / passport */
   --dm-card-pad: 22px;         /* inner padding of the Monday card */
+  --dm-card-pad-phone: 16px;   /* phone: inner padding of the Monday card; Home → Attendance is inset by the same amount so their edges line up */
+  --roster-sort-size: 40px;    /* phone, Students: size of the square Sort (filter icon) and ⋮ buttons */
+  --roster-kebab-gap: 6px;     /* phone, Students: space between the + Add button and the ⋮ button */
+  --roster-sortpop-w: 168px;   /* phone, Students: width of the Sort dropdown, and the narrowest the ⋮ menu gets */
+  --rc-days-w: 34px;           /* phone, Home → Attendance: width of the Mon / Wed / Fri label column (the squares share the rest of the width) */
   --dm-sum-pad: 14px 16px;     /* passport: padding inside each summary tile (Focus · Maths · Strongest) */
   --dm-plan-bg: #FFFBEA;       /* passport: background of the This fortnight card (light amber) */
   --dm-plan-accent: var(--yellow-500);   /* passport: This fortnight left rule + progress bar */
@@ -16,11 +23,12 @@
   --dd-thumb: 112px;           /* minimum width of a file thumbnail on the Data page */
   --dm-mic: 40px;              /* size of the mic button in the note box (≥ 40px for thumbs) */
   --dt-tick: 30px;             /* size of the numbered tick circle on each Today row */
-  --dt-cell-h: 64px;           /* phone: minimum height of a box in the small numbers grid */
+  --dt-tile-h: 104px;          /* phone: minimum height of a box tile (Do first / Plan it / Quick win / Later) */
+  --dt-tile-mix: 24%;          /* phone: strength of the box colour on its tile (share of the box colour mixed into white) */
+  --dt-ring: 14px;             /* phone: size of each task circle on a tile */
+  --dt-qi: 34px;               /* phone: white icon circle on each tile and on an opened box's header */
   --dt-box-h: 140px;           /* desktop: minimum height of a matrix box (keeps an empty "Later" box from collapsing) */
-  --dt-peek: 10px;             /* phone: how far the next card peeks out under the front card */
   --dt-day-w: 92px;            /* desktop: width of each day button in the day strip (phones share the row equally) */
-  --dt-swipe: 60px;
   --dt-axw: 18px;              /* desktop: width of the matrix side label column ("IMPORTANT"); the matrix is pulled left by this + its gap so the boxes line up with the garden */
   --rr-plant-w: 46px;          /* Students list: fixed slot for the flower / sprout icon so every name starts at the same x */
   --rd-svg-max: 620px;         /* Perspectives tab: widest the radar chart grows (its card spans the page) */
@@ -48,6 +56,8 @@
   --rc-tag-no-ink: color-mix(in srgb, var(--warn-700) 80%, var(--ink-900));   /* "Not completed" / "Missing" tag text (on light amber) */
   --rc-low-ink: var(--warn-700);      /* Records: colour of a figure that needs attention (low completion / attendance) */
 }
+/* Line icons that replaced emoji (window.TIcon → <svg class="ti">): sized to the text around them; a slot's own svg rule wins */
+.ti { display: inline-block; width: var(--ti-size); height: var(--ti-size); vertical-align: var(--ti-shift); flex: none; }
 html[lang="hi"] body { font-family: 'Noto Sans Devanagari', var(--font-body); }
 html[lang="hi"] .ui-screen-title, html[lang="hi"] h1, html[lang="hi"] h2, html[lang="hi"] h3 { font-family: 'Noto Sans Devanagari', var(--font-heading); }
 /* Parent report PDF: Devanagari font for the body and the report's serif headings */
@@ -139,40 +149,48 @@ html[lang="hi"] .pr { --font-body: 'Noto Sans Devanagari', sans-serif; --report-
 .dt-big .dt-cell { min-height: var(--dt-box-h); padding: 10px 12px 12px; gap: 8px; }
 .dt-big .dt-cell > b { font-size: var(--fs-sm); }
 .dt-cards { display: grid; gap: 8px; }
-.dt-mini .dt-cell { min-height: var(--dt-cell-h); }
-.dt-nums { display: flex; flex-wrap: wrap; gap: 4px; }
-.dt-num { all: unset; box-sizing: border-box; cursor: pointer; width: 18px; height: 18px; border-radius: 50%; background: var(--white); color: var(--dt-qink); font-size: var(--fs-xs); font-weight: 800; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid var(--dt-q); }
-.dt-num.done { background: var(--dt-q); color: var(--white); }
-.dt-num.on { box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--dt-q); }
-.dt-num:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-/* phone: small matrix + swipe deck */
+/* phone: four box tiles + one "Up next" card; a tapped tile opens only that box's checklist */
 .dt-phone { display: none; }
-/* Only the front card is in the flow, so the deck is exactly its height; the others sit behind it at the
-   same size (taller content is clipped, it only peeks). */
-.dt-deck { position: relative; box-sizing: border-box; margin-top: 14px; padding-bottom: var(--dt-peek); touch-action: pan-y; }
-.dt-deck > .dt-card { position: absolute; top: 0; left: 0; right: 0; bottom: var(--dt-peek); overflow: hidden; visibility: hidden; flex-wrap: wrap; user-select: none; -webkit-user-select: none;
-  transition: transform .26s ease, opacity .26s ease, box-shadow .2s ease; }
-.dt-deck > .dt-card.cur { position: relative; bottom: auto; overflow: visible; visibility: visible; z-index: 2; box-shadow: var(--shadow-card); cursor: grab; }
-.dt-deck > .dt-card.under { visibility: visible; z-index: 1; transform: translateY(var(--dt-peek)) scale(.95); opacity: .75; }
-.dt-deck.dragging > .dt-card { transition: none; }
-.dt-deck.dragging > .dt-card.cur { cursor: grabbing; }
-.dt-deck .dt-act { flex-basis: 100%; }
-.dt-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 10px; }
-.dt-arrow { all: unset; cursor: pointer; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--line-200); background: var(--white); display: inline-flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: var(--ink-700); }
-.dt-arrow:disabled { opacity: .35; cursor: default; }
-.dt-arrow:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-.dt-count { font-size: var(--fs-sm); font-weight: 800; color: var(--text-meta); min-width: 48px; text-align: center; }
+.dt-tile, .dt-open { --dt-qtile: color-mix(in srgb, var(--dt-q) var(--dt-tile-mix), var(--white)); --dt-qtink: color-mix(in srgb, var(--dt-qink) 70%, var(--ink-900)); }
+.dt-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.dt-tile { all: unset; box-sizing: border-box; cursor: pointer; min-width: 0; min-height: var(--dt-tile-h); padding: 12px; border-radius: var(--radius-lg); background: var(--dt-qtile);
+  display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+.dt-tile:focus-visible, .dt-back:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.dt-qi { flex: none; width: var(--dt-qi); height: var(--dt-qi); border-radius: 50%; background: color-mix(in srgb, var(--white) 80%, transparent); color: var(--dt-qtink);
+  display: inline-flex; align-items: center; justify-content: center; }
+.dt-qi svg { width: 18px; height: 18px; }
+.dt-tlbl { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.dt-tlbl b { font-size: var(--fs-sm); font-weight: 800; color: var(--dt-qtink); }
+.dt-tile em, .dt-none { font-size: var(--fs-xs); font-weight: 700; font-style: normal; color: var(--text-meta); }
+.dt-rings { display: flex; flex-wrap: wrap; gap: 5px; }
+.dt-rings i { box-sizing: border-box; width: var(--dt-ring); height: var(--dt-ring); border-radius: 50%; border: 2px solid var(--dt-q); background: color-mix(in srgb, var(--white) 75%, transparent); }
+.dt-rings i.done { background: var(--dt-q); }
+.dt-nexthead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin: 18px 2px 8px; }
+.dt-nexthead b { font-size: var(--fs-sm); font-weight: 800; color: var(--ink-900); }
+.dt-nexthead span { font-size: var(--fs-xs); font-weight: 700; color: var(--text-meta); }
+.dt-next { cursor: pointer; box-shadow: var(--shadow-card); }
+.dt-openhead { display: flex; align-items: center; gap: 12px; padding: 12px; margin-bottom: 10px; border-radius: var(--radius-lg); background: var(--dt-qtile); }
+.dt-back { all: unset; box-sizing: border-box; cursor: pointer; flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--line-200);
+  display: inline-flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; line-height: 1; color: var(--ink-700); }
+.dt-openttl { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.dt-openttl b { font-size: var(--fs-md); font-weight: 800; color: var(--dt-qtink); }
+.dt-openttl > span { font-size: var(--fs-xs); font-weight: 700; color: var(--dt-qtink); }
+.dt-openttl > .dt-bar { display: block; height: 6px; margin-top: 6px; border-radius: var(--radius-pill); background: color-mix(in srgb, var(--white) 70%, transparent); overflow: hidden; }
+.dt-bar i { display: block; height: 100%; border-radius: inherit; background: var(--dt-q); }
+.dt-none { display: block; text-align: center; padding: 24px 0; }
 @media (max-width: 760px) {
   .dt-big { display: none; }
   .dt-phone { display: block; }
-  .dt-matrix { gap: 6px; }
   .dt-strip { gap: 6px; }
   .dt-days { gap: 6px; flex: 1; min-width: 0; }
   .dt-day { flex: 1 1 0; min-width: 0; padding: 7px 2px; }
   .dt-day span { overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-  .dm-monday { padding: 16px; margin: 10px 0 14px; }
+  .dm-monday { padding: var(--dm-card-pad-phone); margin: 10px 0 14px; }
+  /* Home → Attendance: same inset as the plan card above; the squares grow to fill the width */
+  .mg-att { padding-inline: var(--dm-card-pad-phone); container-type: inline-size; }
+  .mg-att .rc-heat { --rc-cell: calc((100cqw - var(--rc-days-w) - var(--rc-cols, 14) * var(--rc-gap) - 1px) / var(--rc-cols, 14)); }
+  .mg-att .rc-hdays { width: var(--rc-days-w); }
 }
-@media (prefers-reduced-motion: reduce) { .dt-deck > .dt-card { transition: none; } }
 
 /* ---------- Child: learning passport ---------- */
 .dm-pp { margin-top: 6px; }
@@ -426,12 +444,13 @@ html[lang="hi"] #dm-landing .dl-title, html[lang="hi"] #dm-landing .dl-sub { fon
   #dm-landing .dl-band { height: clamp(96px, 16vh, 150px); }
 }
 
-/* Phones (Nov 12, user): greeting → the garden section (picture, caption, celebration, Advanced · Learner · Beginner count)
-   → the Today matrix → attendance → anything else */
+/* Phones (Nov 12, user): greeting → the garden section (picture, caption, celebration)
+   → the Today plan → attendance → anything else → Advanced · Learner · Beginner count last (Nov 13, user) */
 @media (max-width: 760px) {
-  .mg-wrap > .mg-scene-wrap, .mg-wrap > .mg-caption, .mg-wrap > .mg-celebrate, .mg-wrap > .mg-bandmix { order: 1; }
+  .mg-wrap > .mg-scene-wrap, .mg-wrap > .mg-caption, .mg-wrap > .mg-celebrate { order: 1; }
   .mg-wrap > .dm-monday, .mg-wrap > .mg-att { order: 2; }
   .mg-wrap > :not(.mg-greet):not(.dm-monday):not(.mg-att):not(.mg-scene-wrap):not(.mg-caption):not(.mg-celebrate):not(.mg-bandmix) { order: 3; }
+  .mg-wrap > .mg-bandmix { order: 4; }
 }
 
 /* ---------- Assess → Records ---------- */
@@ -558,6 +577,11 @@ button.rc-c:hover { outline: 2px solid var(--ink-300); outline-offset: 1px; }
   .rc-newform { grid-template-columns: 1fr; }
   .rc-tabs { display: flex; }
   .rc-tab { flex: 1; text-align: center; padding: 8px 10px; }   /* three tabs must share 343px */
+  /* Academics: By assessment | By child split the full width, like the tabs above; ＋ New assessment is full width (Nov 13, user) */
+  .rc-toptools { align-self: stretch; }
+  .rc-toptools .rc-viewtabs { flex: 1 1 100%; }
+  .rc-viewtabs .ui-tab { flex: 1 1 0; min-width: 0; text-align: center; }
+  .rc-toptools > [data-demo-acadform] { flex: 1 1 100%; justify-content: center; }   /* ＋ New assessment spans the row too */
 }
 
 /* ---------- Data page ---------- */
@@ -733,7 +757,7 @@ button.rc-c:hover { outline: 2px solid var(--ink-300); outline-offset: 1px; }
 .rc-acard.open .rc-ahd { height: auto; }
 .rc-atop { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .rc-aname { font-size: var(--fs-md); color: var(--ink-900); }
-.rc-awhen { font-size: var(--fs-sm); font-weight: 600; color: var(--text-meta); }
+.rc-awhen { font-size: var(--fs-xs); font-weight: 600; color: var(--text-meta); margin-top: -2px; }   /* smaller than the name so the card reads name → % → status */
 .rc-abig { display: flex; align-items: baseline; gap: 8px; margin-top: 6px; }
 .rc-abig b { font-family: var(--font-heading); font-size: var(--fs-2xl); line-height: 1.1; color: var(--ink-900); }
 .rc-abig small { font-size: var(--fs-xs); font-weight: 700; color: var(--text-meta); }
@@ -782,8 +806,6 @@ button.rc-c:hover { outline: 2px solid var(--ink-300); outline-offset: 1px; }
   /* Day strip: locked Thu/Fri take less room so "3 to do" fits on the open days */
   body .dt-day.off { flex: .6 1 0; }
   body .dt-day span { font-size: 10px; }
-  /* Swipe deck: only the card shell peeks from behind, not the next card's buttons */
-  body .dt-deck > .dt-card.under > * { visibility: hidden; }
 }
 
 /* ---------- Alignment + type pass (Nov 12, user approved all 11) ---------- */
@@ -804,11 +826,9 @@ body .dm-barl small { display: block; margin-top: 1px; font-size: var(--fs-xs); 
 }
 /* 7 · Body text that wraps: 1.45 line height like the rest of the app */
 body .ui-screen-sub, body .obs-body { line-height: 1.45; }
-/* 8 · One card-title style everywhere: 18px Quicksand (headings outside cards stay 24px) */
-body .dm-card h3, body .ins-h, body .cso-h, body .cr-title, body .ov-growh, body .sk-table thead th:first-child {
+/* 8 · One card-title style everywhere: 18px Quicksand (headings outside cards stay 24px). .ui-title.ins-h beats .ui-title.md (15px) on Growth / Every skill. */
+body .dm-card h3, body .ins-h, body .ui-title.ins-h, body .cso-h, body .cr-title, body .ov-growh, body .sk-table thead th:first-child {
   font-family: var(--font-heading); font-size: var(--fs-lg); font-weight: 700; color: var(--ink-900); }
-/* 9 · Insights → Every skill, up close: no repeated group tag (the tab already says it) */
-body .sb-top .ui-tag { display: none; }
 /* 11 · This fortnight: a rounded card like the others, yellow kept as the left accent */
 body .dm-plan14 { border: 1px solid var(--line-200); border-left: 4px solid var(--dm-plan-accent); border-radius: var(--radius-card); }
 /* 10 · Phone → Students list: smaller chips so all three fit on one row (no fixed width on phones) */
@@ -825,22 +845,56 @@ body .persp-chart-body .rd-svg { max-width: var(--rd-svg-max); margin: 0 auto; }
 @media (max-width: 560px) { html:root { --rd-lbl: 18px; } }   /* phones: the radar shrinks to ~half size, so skill labels start bigger (≈9px on screen) */
 /* D23 (Nov 12): label in front of a child's absent-day chips */
 body .dd-days .dd-dayslbl { align-self: center; font-size: var(--fs-xs); font-weight: 700; color: var(--text-meta); }
-/* Insights → Perspectives table (Nov 12): icon above each column heading; the Student column stays on phones */
-body .pv-table .pv-th { vertical-align: bottom; }
-body .pv-table .pv-ic { display: block; font-size: var(--fs-lg); line-height: 1.2; margin-bottom: 2px; }
-@media (max-width: 640px) {
-  body .sk-table.pv-table thead th:last-child { display: block; }
-}
 /* Students toolbar (Nov 12): desktop keeps the State · Name · Growth chips; phones get a Sort dropdown on one line with List / Grid */
-.roster-sortsel { display: none; align-items: center; gap: 8px; font-size: var(--fs-sm); font-weight: 600; color: var(--text-meta); }
-.roster-sortsel .select { width: auto; margin: 0; }
+.roster-sortmenu, .roster-kebab { display: none; }
 @media (max-width: 640px) {
   body .roster-tools { align-items: center; }
   body .roster-search { flex: 1 1 100%; }
   body .roster-sort { display: none; }
   body .roster-view { order: 1; }
-  body .roster-sortsel { display: inline-flex; order: 2; margin-left: auto; }
+  /* Sort is a filter icon that opens our own dropdown (not the phone's picker); the chosen option is never shown as text */
+  body .roster-sortmenu { display: block; order: 2; margin-left: auto; position: relative; }
+  body .roster-sortbtn { list-style: none; cursor: pointer; box-sizing: border-box; display: flex; align-items: center; justify-content: center;
+    width: var(--roster-sort-size); height: var(--roster-sort-size); border: 1px solid var(--line-200); border-radius: var(--radius-md); background: var(--white); color: var(--ink-700); }
+  body .roster-sortbtn::-webkit-details-marker { display: none; }
+  body .roster-sortmenu[open] > .roster-sortbtn { border-color: var(--green-500); color: var(--green-700); }
+  body .roster-sortbtn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  body .roster-sortic { width: 18px; height: 18px; }
+  body .roster-sortlb { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  body .roster-sortpop { position: absolute; top: calc(100% + 6px); right: 0; z-index: 20; width: var(--roster-sortpop-w); padding: 6px; box-sizing: border-box;
+    background: var(--white); border: 1px solid var(--line-200); border-radius: var(--radius-md); box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 2px; }
+  body .roster-sortopt { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: var(--radius-sm);
+    font: 700 var(--fs-sm)/1.2 var(--font-body); color: var(--ink-900); }
+  body .roster-sortopt svg { flex: none; width: 15px; height: 15px; visibility: hidden; }
+  body .roster-sortopt:hover { background: var(--surface-100); }
+  body .roster-sortopt.on { background: var(--wash-green); color: var(--green-700); }
+  body .roster-sortopt.on svg { visibility: visible; }
+  body .roster-sortopt:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+  /* History · Parent reports live in a ⋮ menu at the right of the title; + Add students stays visible beside it (Nov 13, user) */
+  /* title on the left; + Add and ⋮ pushed right as one pair (space-between had split them apart) */
+  body .roster-titlebar { flex-wrap: nowrap; justify-content: flex-start; column-gap: var(--roster-kebab-gap); }
+  body .roster-titlebar > div:first-child { min-width: 0; }
+  body .roster-actions { flex: none; flex-wrap: nowrap; padding-top: 0; margin-left: auto; }
+  body .roster-actions > :not([data-add-students]) { display: none; }
+  body .roster-actions > [data-add-students] { box-sizing: border-box; height: var(--roster-sort-size); white-space: nowrap; }
+  body .roster-addfull { display: none; }
+  body .roster-addshort[hidden] { display: inline !important; }   /* phone label: "+ Add" */
+  body .roster-kebab { display: block; position: relative; flex: none; }
+  body .roster-kebabbtn { list-style: none; cursor: pointer; box-sizing: border-box; display: flex; align-items: center; justify-content: center;
+    width: var(--roster-sort-size); height: var(--roster-sort-size); border: 1px solid var(--line-200); border-radius: var(--radius-md); background: var(--white); color: var(--ink-700); }
+  body .roster-kebabbtn::-webkit-details-marker { display: none; }
+  body .roster-kebab[open] > .roster-kebabbtn { border-color: var(--green-500); color: var(--green-700); }
+  body .roster-kebabbtn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  body .roster-kebabbtn svg { width: 20px; height: 20px; }
+  body .roster-kebabpop { position: absolute; top: calc(100% + 6px); right: 0; z-index: 20; min-width: var(--roster-sortpop-w); width: max-content; max-width: calc(100vw - 32px);
+    padding: 6px; box-sizing: border-box; background: var(--white); border: 1px solid var(--line-200); border-radius: var(--radius-md); box-shadow: var(--shadow-card);
+    display: flex; flex-direction: column; gap: 2px; }
+  body .roster-kebabopt { all: unset; box-sizing: border-box; cursor: pointer; padding: 11px 12px; border-radius: var(--radius-sm); font: 700 var(--fs-sm)/1.2 var(--font-body); color: var(--ink-900); }
+  body .roster-kebabopt:hover { background: var(--surface-100); }
+  body .roster-kebabopt:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 }
+/* Assess → journey (phones, Nov 13, user): no "Your class's assessment journey grows…" line */
+@media (max-width: 760px) { body .obs-journey-sub { display: none; } }
 /* Ask Tilli (phones, Nov 12): the closed history drawer sits just off-screen, so its shadow showed as a grey band down the
    left edge. The shadow now appears only while the drawer is open. */
 @media (max-width: 760px) {
@@ -849,7 +903,7 @@ body .pv-table .pv-ic { display: block; font-size: var(--fs-lg); line-height: 1.
 }
 /* Academics card ⋯ menu (Nov 12): Edit (name · total marks · date given) and Delete */
 .rc-acard { position: relative; }
-.rc-acard:not(.editing) .rc-atop { padding-right: 34px; }   /* room for ⋯ beside the chevron */
+.rc-acard .rc-aname { margin-right: 36px; }   /* room for ⋯ beside the chevron (the old padding on the row pushed the chevron under ⋯) */
 .rc-amenu { position: absolute; top: 10px; right: 38px; z-index: 3; }
 .rc-amenu > summary { list-style: none; }
 .rc-amenu > summary::-webkit-details-marker { display: none; }
@@ -858,6 +912,7 @@ body .pv-table .pv-ic { display: block; font-size: var(--fs-lg); line-height: 1.
 .rc-apop { min-width: 160px; }
 .rc-optdel { color: var(--danger-700); }
 .rc-aedit { display: grid; gap: 12px; padding: 16px 18px; }
+.rc-aedit-pop { padding: 0; }   /* inside the Edit pop-up the card already has padding */
 .rc-aedit .rc-in { width: 100%; margin-top: 6px; box-sizing: border-box; }
 .rc-adel { margin: 0; padding: 14px 18px; background: var(--danger-wash); border-bottom: 1px solid var(--danger-line); }
 .rc-adel p { margin: 0 0 10px; font-size: var(--fs-sm); font-weight: 700; color: var(--danger-700); line-height: 1.45; padding-right: 40px; }
@@ -913,12 +968,144 @@ body .cr-key { margin: 0 10px 4px; gap: 6px 14px; flex-wrap: wrap; }
 /* ---------- Insights, lighter (Nov 12, user): descriptions live in the ⓘ; phones filter with one dropdown ---------- */
 .info-pop .info-p { margin: 0; }
 .info-pop .info-p + .info-p { margin-top: 8px; }
-.cso-sel, .gr-allsel { display: none; }
-body .sb-card .sb-ask { display: block; text-align: right; margin-top: 6px; font-size: var(--fs-md); }
-@media (max-width: 640px) {
-  body .cso-chips { display: none; }
-  body .cso-sel { display: block; width: 100%; margin: 12px 0; }
-  body .gr-filters [data-growth], body .gr-filters [data-growth-skill] { display: none; }
-  body .gr-allsel { display: block; flex: 1; min-width: 0; }
-  body .gr-filters { flex-wrap: nowrap; align-items: center; }
+/* ---------- Motion pass (Nov 13, user): pop-ups, menus and folds open smoothly ----------
+   Classes are added by the motion layer in demo.js only to things that just appeared
+   (never on a plain repaint), then removed. Keyframes use translate/scale, not
+   transform, so they never fight an element's own transform. */
+:root {
+  --mo-pop-ms: 280ms;        /* pop-up card (modal) opening */
+  --mo-sheet-ms: 320ms;      /* phone: bottom sheet sliding up */
+  --mo-out-ms: 180ms;        /* any pop-up closing */
+  --mo-fade-ms: 200ms;       /* dark overlay behind a pop-up fading in */
+  --mo-drop-ms: 180ms;       /* dropdown menus (Take attendance ▾, ⋯, Sort, ⋮, Export) */
+  --mo-fold-ms: 240ms;       /* folds, ⓘ boxes, an opened assessment row, the absent-day box */
+  --mo-tab-ms: 300ms;        /* content under a tab that just changed */
+  --mo-tab-step: 35ms;       /* delay between blocks rising in under a tab */
+  --mo-pop-scale: .95;       /* pop-up card starts this size */
+  --mo-lift: 10px;           /* how far a pop-up card / tab content rises in */
+  --mo-ease: cubic-bezier(.22, 1, .36, 1);          /* smooth ease-out */
+  --mo-ease-pop: cubic-bezier(.34, 1.32, .64, 1);   /* ease-out with a small overshoot */
 }
+@keyframes moPop     { from { opacity: 0; translate: 0 var(--mo-lift); scale: var(--mo-pop-scale); } }
+@keyframes moPopSm   { from { opacity: 0; scale: .85; } }
+@keyframes moSheet   { from { translate: 0 100%; } }
+@keyframes moFade    { from { opacity: 0; } }
+@keyframes moDrop    { from { opacity: 0; translate: 0 -6px; scale: .97; } }
+@keyframes moFold    { from { opacity: 0; translate: 0 -4px; } }
+@keyframes moRise    { from { opacity: 0; translate: 0 var(--mo-lift); } }
+@keyframes moFadeOut { to { opacity: 0; } }
+@keyframes moOut     { to { translate: 0 6px; scale: .97; } }
+@keyframes moSheetOut { to { translate: 0 100%; } }
+
+.mo-pop   { animation: moPop var(--mo-pop-ms) var(--mo-ease-pop) backwards; }
+.mo-popsm { animation: moPopSm var(--mo-fold-ms) var(--mo-ease-pop) backwards; }
+.mo-fade  { animation: moFade var(--mo-fade-ms) ease backwards; }
+.mo-drop  { animation: moDrop var(--mo-drop-ms) var(--mo-ease) backwards; transform-origin: top right; }
+.mo-fold:not(details), details.mo-fold > :not(summary) { animation: moFold var(--mo-fold-ms) var(--mo-ease) backwards; }
+.mo-rise  { animation: moRise var(--mo-tab-ms) var(--mo-ease) backwards; animation-delay: calc(var(--mo-i, 0) * var(--mo-tab-step)); }
+
+/* Closing: a click-through copy of the pop-up fades out over whatever is underneath */
+.mo-ghost { pointer-events: none !important; z-index: 9100 !important; }
+.mo-ghost-up { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.mo-out { animation: moFadeOut var(--mo-out-ms) ease forwards; }
+.mo-out .ui-modal-card, .mo-out .dm-upcard { animation: moOut var(--mo-out-ms) ease forwards; }
+
+/* Phones: upload / attendance / files pop-ups are bottom sheets, so they slide */
+@media (max-width: 560px) {
+  #dm-up .dm-upcard.mo-pop, .dm-ov .dm-upcard.mo-pop { animation: moSheet var(--mo-sheet-ms) var(--mo-ease) backwards; }
+  .mo-ghost-up { align-items: flex-end; padding: 0; }
+  .mo-out .dm-upcard { animation: moSheetOut var(--mo-out-ms) ease-in forwards; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mo-pop, .mo-popsm, .mo-fade, .mo-drop, .mo-fold, details.mo-fold > :not(summary), .mo-rise, .mo-out, .mo-out * { animation: none !important; }
+}
+/* ---------- Nov 13 (user): By child table says it scrolls; phone Records drops the "Showing…" line ---------- */
+:root {
+  --rc-mx-shadow: rgba(20, 20, 20, .14);   /* Academics, By child: edge shadow where more columns are hidden (right) / under the pinned names (left) */
+  --rc-mx-shadow-w: 18px;                  /* width of that edge shadow */
+}
+.rc-mxhint { display: none; align-items: center; gap: 6px; margin: 0 0 8px; font-size: var(--fs-sm); font-weight: 600; color: var(--text-meta); }
+.rc-mxhint span { font-size: 1.15em; color: var(--cyan-700); }
+/* Scroll shadows: white covers scroll with the content, shadows stay at the edges, so a shadow shows only where columns are hidden */
+.rc-mxwrap {
+  background:
+    linear-gradient(to left, var(--white) 30%, transparent) right center / calc(var(--rc-mx-shadow-w) * 2) 100% no-repeat local,
+    radial-gradient(farthest-side at 100% 50%, var(--rc-mx-shadow), transparent) right center / var(--rc-mx-shadow-w) 100% no-repeat scroll,
+    var(--white);
+}
+.rc-mx .rc-mxname { box-shadow: 1px 0 0 var(--line-200); }   /* thin line where the pinned names meet the scrolling columns */
+@media (max-width: 640px) {
+  .rc-mxhint { display: flex; }
+  body .cr-showing { display: none; }
+}
+/* Insights → Class Skill Overview, Growth over time, Perspectives' three-viewpoints table: no outer card (all widths, Nov 13 user), the content sits on the page */
+body .ins-card.ov, body .ins-card.ins-growth, body .ins-card.ins-persp { background: none; border: 0; box-shadow: none; border-radius: 0; padding: 0; }
+:root { --ins-section-gap: 56px; }   /* space between the boxless Insights sections */
+@media (max-width: 640px) { :root { --ins-section-gap: 44px; } }
+body .ins-card.ov + .ins-card.ins-growth { margin-top: var(--ins-section-gap); }
+/* ---------- UI dropdowns (Nov 13, user): every <select> is shown as our own button + list (demo.js DemoSelect) ---------- */
+:root {
+  --uis-menu-z: 9600;        /* dropdown lists sit above every pop-up (pop-ups go up to 9000) */
+  --uis-caret: var(--ink-300);   /* colour of the ▾ arrow on a dropdown */
+}
+select.uis-native { display: none !important; }
+.uis-trigger { text-align: left; cursor: pointer; }
+.uis-trigger.select { padding-right: 14px; }
+.uis-trigger.select.sm { padding-right: 12px; }
+.uis-row { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; }
+.uis-val { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.uis-caret { flex: none; color: var(--uis-caret); font-size: var(--fs-sm); transition: rotate .18s var(--ease); }
+.uis-trigger.on .uis-caret { color: inherit; }
+.uis-trigger.uis-bgcaret .uis-caret { display: none; }
+.uis-trigger.uis-open { border-color: var(--focus); }
+.uis-trigger.uis-open .uis-caret { rotate: 180deg; }
+.uis-menu { position: fixed; z-index: var(--uis-menu-z); overflow-y: auto; overscroll-behavior: contain; max-width: calc(100vw - 16px); box-sizing: border-box; }
+.uis-menu.mo-drop { transform-origin: top left; }
+.uis-menu.up.mo-drop { transform-origin: bottom left; }
+.uis-opt { justify-content: space-between; }
+.uis-opt span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.uis-opt.on { color: var(--green-700); }
+.uis-opt[disabled] { opacity: .45; cursor: default; }
+.uis-tick { flex: none; color: var(--green-600); font-weight: 700; }
+.uis-group { padding: 8px 10px 4px; font-size: var(--fs-xs); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-meta); }
+/* ---------- Ask Tilli, typed (Nov 13): thinking steps, "how I got there", follow-up chips, composer ---------- */
+:root {
+  --ask-step-dot: 8px;          /* size of each thinking-step marker */
+  --ask-step-gap: 6px;          /* space between thinking steps */
+  --ask-next-gap: 6px;          /* space between follow-up chips */
+  --note-prime-pad: 6px 10px;  /* padding of the "Tell Tilli something to remember" link (its pressed pill) */
+  --note-prime-on: color-mix(in srgb, var(--green-500) 12%, var(--white));   /* pill fill when pressed / hovered; also the mic's hover */
+  --ask-thought-fg: var(--text-meta);   /* colour of the folded "How I got there" line */
+}
+.ask-thinking { min-width: 220px; }
+.ask-thinking-h { display: flex; align-items: center; gap: 4px; font-size: var(--fs-xs); font-weight: 700; color: var(--text-meta); margin-bottom: 6px; }
+.ask-thinking-h .tdot { width: 5px; height: 5px; }
+.ask-thinking-h .tdot:last-of-type { margin-right: 6px; }
+.ask-thinking ol, .ask-thought ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--ask-step-gap); }
+.ask-thinking li, .ask-thought li { position: relative; padding-left: calc(var(--ask-step-dot) + 8px); font-size: var(--fs-sm); line-height: 1.4; color: var(--ink-700); }
+.ask-thinking li::before, .ask-thought li::before { content: ''; position: absolute; left: 0; top: .45em; width: var(--ask-step-dot); height: var(--ask-step-dot); border-radius: 50%; background: var(--green-500); }
+.ask-thinking li.now { color: var(--ink-900); font-weight: 700; animation: dmpop .3s ease both; }
+.ask-thinking li.now::before { background: transparent; border: 2px solid var(--green-500); box-sizing: border-box; animation: dmbounce 1.1s infinite ease-in-out; }
+.ask-thought { margin: -2px 0 8px; }
+.ask-thought summary { cursor: pointer; list-style: none; font-size: var(--fs-xs); font-weight: 700; color: var(--ask-thought-fg); }
+.ask-thought summary::-webkit-details-marker { display: none; }
+.ask-thought summary::before { content: '▸ '; }
+.ask-thought[open] summary::before { content: '▾ '; }
+.ask-thought ol { margin: 6px 0 4px; padding: 8px 10px; background: var(--surface-100); border-radius: var(--radius-sm); }
+.ask-thought li { color: var(--text-meta); }
+.ask-next { flex-direction: row !important; flex-wrap: wrap; gap: var(--ask-next-gap); margin: 2px 0 12px; }
+.ask-next .dm-chip { padding: 7px 12px; font-size: var(--fs-xs); }
+.dm-askstart { margin: 0 0 2px; font-size: var(--fs-xs); font-weight: 700; color: var(--text-meta); text-transform: uppercase; letter-spacing: .04em; }
+.askx-foot .dm-askstart, .askx-foot .dm-askn { flex-basis: 100%; }   /* full screen: chips wrap in a row; label + note box keep their own lines */
+.ask-foot .ask-compose, .askx-foot .ask-compose { margin-top: 10px; }
+.ask-sendbtn:disabled { opacity: .5; cursor: default; }
+/* "Tell Tilli something to remember" (en/es): a link that primes the chat box; pressed = the next message is a note */
+.dm-noteprime { display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; cursor: pointer; font: inherit; font-size: var(--fs-sm); font-weight: 700; color: var(--green-700); padding: var(--note-prime-pad); border-radius: var(--radius-pill, 999px); }
+@media (hover: hover) { .dm-noteprime:hover { background: var(--note-prime-on); } }   /* touch screens keep :hover after a tap, which would look "still on" */
+.dm-noteprime.on { background: var(--note-prime-on); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--green-500) 45%, transparent); }
+/* Mic inside the chat box, before Send (same 40px square as Send) */
+.ask-compose .ask-mic { position: static; flex: none; width: var(--dm-mic); height: var(--dm-mic); border-radius: var(--radius-md); box-shadow: none;
+  background: var(--white); color: var(--green-700); border: 1px solid var(--line-200); }
+@media (hover: hover) { .ask-compose .ask-mic:hover { background: var(--note-prime-on); } }
+.ask-compose .ask-mic.on { background: var(--pink-600); color: var(--white); border-color: var(--pink-600); }
+.ask-micstat { margin: 6px 0 0; }

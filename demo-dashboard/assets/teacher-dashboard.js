@@ -404,9 +404,9 @@
       todoDoneOpen: false,   // …and its "Done (n)" fold
       redoAsk: null,         // { id, mute } while the Redo confirm is open
       perspListOpen: false,   // Child → Perspectives: "See it as a table" fold
-      insightsView: 'myclass', skillGroup: 'sel', compareGrade: null,
-      ovBand: null, ovSkill: null,
-      growthFilter: 'overview', growthTable: !window.DemoUI && window.innerWidth < 768,   /* DEMO: the chart shows first on phones too */   // Insights → Growth over time line chart   // Insights → Class Skill Overview: box filter + expanded skill
+      insightsView: 'myclass', compareGrade: null, pvMore: false,
+      ovBand: null, ovSkill: null, ovAll: false,
+      growthFilter: 'sel',   // Insights → Growth over time: which skill group the dumbbells show   // Insights → Class Skill Overview: box filter + expanded skill
       add: { active: false, step: 'method', sectionId: null, full: false, rows: [], issues: {}, csvMsg: '', csvErr: '', picMsg: '', results: [] },
       histOpen: false, histKind: '',   // Students → class change-history modal + its kind filter
       vw: window.innerWidth,
@@ -511,10 +511,14 @@
     const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     // No animation in a hidden tab, and an animation cut short by the next screen
     // change (e.g. skeleton → page) is expected — swallow its rejected promises.
+    // DEMO: a screen change (or skeleton → page) is covered by the cross-fade, so the
+    // motion layer (demo.js) snapshots that repaint without popping anything in.
+    const quiet = changed || !!root.querySelector('.skeleton');
+    const paint = () => { if (quiet && window.DemoMotion) window.DemoMotion.quiet(); paintDom(); };
     if (changed && !reduce && !document.hidden && document.startViewTransition) {
-      const t = document.startViewTransition(paintDom);
+      const t = document.startViewTransition(paint);
       [t.ready, t.finished, t.updateCallbackDone].forEach((p) => p && p.catch(() => {}));
-    } else paintDom();
+    } else paint();
   }
 
   // First visit to a tab (garden, students, assess, insights, profile): a skeleton
@@ -658,7 +662,7 @@
       if (l.left) bits.push(`${l.left} left the school`);
       return bits.length ? `<li>Your ${esc(l.label)} children from ${esc(yn.from)}: ${bits.join(', ')}.</li>` : '';
     }).join('');
-    return `<div class="ui-note info mb-3 td-yearcard" role="status"><span aria-hidden="true">🌱</span>
+    return `<div class="ui-note info mb-3 td-yearcard" role="status"><span aria-hidden="true">${TI('sprout')}</span>
       <span><b>${esc(yn.year)} has started.</b> Your class this year:<ul>${now}</ul>${last ? `<ul>${last}</ul>` : ''}
       Not the right class? Ask your school admin to change it in Roster. Each child's earlier years are on their page.</span>
       <button class="dialog-close focus" data-year-dismiss title="Hide this note" aria-label="Dismiss">×</button></div>`;
@@ -880,7 +884,7 @@
 
     // Slot 4 — celebration only when the garden genuinely moved (never fabricated).
     const celebration = (st.celebrate && ld.grown > 0)
-      ? `<div class="mg-celebrate">🌸 ${esc(fill(st.celebrate, { n: ld.grown }))}</div>` : '';
+      ? `<div class="mg-celebrate">${TI('flower')} ${esc(fill(st.celebrate, { n: ld.grown }))}</div>` : '';
 
     // Slot 5 — band mix (hidden at baseline; there's no prior data to mix).
     let bandBlock;
@@ -902,7 +906,7 @@
     // Already placed in the class they asked for → the request has quietly closed.
     const placed = ask && A0 && A0.sectionsForTeacher ? A0.sectionsForTeacher(S.teacher.email, schoolId()).some((x) => low(x.grade) === low(ask.grade) && low(x.section) === low(ask.section)) : false;
     const askLine = ask && ask.status === 'open' && !placed
-      ? `<div class="ui-note mb-3"><span aria-hidden="true">⏳</span><span><b>${esc([ask.grade, ask.section].filter(Boolean).join(' · ') || 'Your other class')}</b> — waiting for your school admin to add it.</span></div>` : '';
+      ? `<div class="ui-note mb-3"><span aria-hidden="true">${TI('hourglass')}</span><span><b>${esc([ask.grade, ask.section].filter(Boolean).join(' · ') || 'Your other class')}</b> — waiting for your school admin to add it.</span></div>` : '';
     return `<div class="dash-wrap mg-wrap">${yearCardHTML()}${askLine}
       <div class="mg-greet">
         <div>
@@ -1054,7 +1058,7 @@
       ${sel.err ? `<span class="sel-err">${esc(sel.err)}</span>` : ''}
       <span class="sel-sp"></span>
       <button class="sel-x focus" data-sel-cancel aria-label="${esc(U.cancel)}" title="${esc(U.cancel)}">×</button>
-      <button class="btn-line focus" data-sel-preview${n && !sel.busy ? '' : ' disabled'} title="${esc(U.previewTitle)}">${esc(U.preview)}</button>
+      <button class="btn-line focus" data-sel-preview${n && !sel.busy ? '' : ' disabled'} title="${esc(U.previewTitle)}">${TI('eye')} ${esc(U.preview)}</button>
       <button class="btn btn-primary sm focus" data-sel-pdf${n && !sel.busy ? '' : ' disabled'}>${esc(sel.busy || ((n === 1 ? U.dl1 : U.dlN) + (n ? ' (' + n + ')' : '')))}</button>
     </div>`;
   }
@@ -1072,10 +1076,13 @@
           <p class="ui-screen-sub flush">${esc(secLabel(sec))} · ${countNoun(sec.students.length, 'student', 'students')}</p>
         </div>
         <div class="roster-actions">
-          ${HU ? `<button class="btn-line ui-tooltip down end hover-only focus" data-class-hist data-tip="${esc(tip)}" aria-label="History · ${esc(tip)}">🕘 History</button>` : ''}
-          ${S.select.on ? '' : `<button class="btn-line focus" data-sel-start translate="no" title="${esc(RPT().ui.selTitle)}">${esc(RPT().ui.selBtn)}</button>`}
-          <button class="btn-line primary focus" data-add-students title="Add students to one of your grades · sections">+ Add students</button>
+          ${HU ? `<button class="btn-line ui-tooltip down end hover-only focus" data-class-hist data-tip="${esc(tip)}" aria-label="History · ${esc(tip)}">${TI('clock')} History</button>` : ''}
+          ${S.select.on ? '' : `<button class="btn-line focus" data-sel-start translate="no" title="${esc(RPT().ui.selTitle)}">${TI('checksq')} ${esc(RPT().ui.selBtn)}</button>`}
+          <button class="btn-line primary focus" data-add-students aria-label="Add students" title="Add students to one of your grades · sections"><span class="roster-addfull">+ Add students</span><span class="roster-addshort" hidden>+ Add</span></button>
         </div>
+        <details class="roster-kebab"><summary class="roster-kebabbtn focus" title="More"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg><span class="roster-sortlb">More</span></summary>
+          <div class="roster-kebabpop" role="menu">${HU ? `<button class="roster-kebabopt" role="menuitem" data-class-hist>${TI('clock')} History</button>` : ''}${S.select.on ? '' : `<button class="roster-kebabopt" role="menuitem" data-sel-start translate="no">${TI('checksq')} ${esc(RPT().ui.selBtn)}</button>`}</div>
+        </details>
       </div>
       ${selectBar()}
       <div class="roster-tools">
@@ -1084,7 +1091,7 @@
           <input id="roster-search" value="${esc(S.rosterSearch)}" placeholder="Search a student…" autocomplete="off">
         </div>
         <div class="roster-sort"><span>Sort</span>${sortTabs}</div>
-        <label class="roster-sortsel"><span>Sort</span><select class="select sm focus" data-sortsel aria-label="Sort">${[['state', 'State'], ['name', 'Name'], ['growth', 'Growth']].map(([k, l]) => `<option value="${k}"${S.rosterSort === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+        <details class="roster-sortmenu"><summary class="roster-sortbtn focus" title="Sort"><svg class="roster-sortic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4 2v-8Z"/></svg><span class="roster-sortlb">Sort</span></summary><div class="roster-sortpop" role="menu">${[['state', 'State'], ['name', 'Name'], ['growth', 'Growth']].map(([k, l]) => `<button class="roster-sortopt${S.rosterSort === k ? ' on' : ''}" role="menuitemradio" aria-checked="${S.rosterSort === k}" data-sort="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>${l}</button>`).join('')}</div></details>
         <div class="roster-view" role="group" aria-label="View">${[['list', 'List', '<path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'], ['grid', 'Grid', '<rect x="4" y="4" width="6.5" height="6.5" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" stroke="currentColor" stroke-width="2"/>']]
           .map(([k, l, ic]) => `<button class="rview focus${S.rosterView === k ? ' on' : ''}" data-rview="${k}" aria-pressed="${S.rosterView === k}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">${ic}</svg>${l}</button>`).join('')}</div>
       </div>
@@ -1256,7 +1263,7 @@
     const waiting = stu.state === 'waiting';
     const uid = uidOf(stu);
     const sec = (n, title, tone) => `<div class="pr-sec pr-sec-${tone}"><span class="pr-num">${n}</span><span class="pr-sect">${title}</span></div>`;
-    const groupHead = (g) => `<div class="pr-gh">${esc(g === 'sel' ? R.sel : R.cog)}</div>`;
+    const groupHead = (g) => `<div class="pr-gh">${TI(g === 'sel' ? 'heart' : 'bulb')} ${esc(g === 'sel' ? R.sel : R.cog)}</div>`;
     const SKILLS = S.data.skills;
     const whyTable = (g) => `${groupHead(g)}<table class="pr-tbl"><thead><tr><th>${esc(R.thSkill)}</th><th>${esc(R.thWhy)}</th></tr></thead><tbody>${
       SKILLS.filter((k) => k.group === g).map((k, i) => `<tr${i % 2 ? ' class="alt"' : ''}><td class="pr-sk">${esc(rSkill(k))}</td><td>${esc(R.why[k.key] || '')}</td></tr>`).join('')}</tbody></table>`;
@@ -1295,7 +1302,7 @@
       ${sec('01', tx(R.s1), 'peach')}
       <p class="pr-p">${tx(R.s1p)}</p>
       <div class="pr-3">
-        ${R.lens.map((l, i) => `<div class="pr-card" style="background:var(${['--report-peach', '--report-mint', '--report-lav'][i]})"><div class="pr-ct">${esc(l[0])}</div>${esc(l[1])}</div>`).join('')}
+        ${R.lens.map((l, i) => `<div class="pr-card" style="background:var(${['--report-peach', '--report-mint', '--report-lav'][i]})"><div class="pr-ct">${TI(['home', 'student', 'teacher'][i])} ${esc(l[0])}</div>${esc(l[1])}</div>`).join('')}
       </div>
       <p class="pr-p">${tx(R.lvP)}</p>
       <div class="pr-3">${lvCard('Beginner', 'pr-lvb')}${lvCard('Learner', 'pr-lvl')}${lvCard('Advanced', 'pr-lve')}</div>
@@ -1365,7 +1372,7 @@
       </div>
       <div class="stu-headbtns">
         ${histBtn}
-        <button class="btn-line stu-editbtn focus" data-stu-editstart title="Edit this student's name and UID">✎ Edit</button>
+        <button class="btn-line stu-editbtn focus" data-stu-editstart title="Edit this student's name and UID">${TI('pencil')} Edit</button>
         ${window.DemoUI ? `<button class="btn-line stu-editbtn focus" data-stu-passport="${esc(stu.id)}"${S.ppBusy ? ' disabled' : ''} translate="no">⬇ ${esc(window.DemoUI.t(S.ppBusy === stu.id ? 'ppBusy' : 'ppDl'))}</button>` /* DEMO: learning passport PDF */ : ''}
         ${window.DemoUI ? window.DemoUI.askBtn(stu) /* DEMO: Ask Tilli about this child, on every tab */ : ''}
         ${window.DemoUI && S.ppErr === stu.id ? `<div class="err-text stu-pperr" translate="no">${esc(window.DemoUI.t('ppErr'))}</div>` : ''}
@@ -1478,12 +1485,12 @@
     return `${demo ? window.DemoUI.sumStrip(stu) /* DEMO: same summary strip as the passport */ : ''}
       <div class="two-col${demo ? ' ov-demo' : ''}">
         ${demo ? '<div class="ov-col">' : ''}<div class="hl-card">
-          <div class="ui-eyebrow mb-2">🌸 Something that grew</div>
+          <div class="ui-eyebrow mb-2">${TI('flower')} Something that grew</div>
           <p class="td-lead">${esc(stu.celebrateLine)}</p>
           <button class="hl-more boxed focus" data-ask-stu="grew">Ask Tilli to keep it growing →</button>
         </div>${demo ? growth + '</div>' : ''}
         ${window.DemoUI ? '<div class="ov-col">' + window.DemoUI.planCard(stu) + window.DemoUI.attCard(stu) + '</div>' /* DEMO: This fortnight plan, attendance under it (Nov 12, user) */ : `<div class="grow-card">
-          <div class="ui-eyebrow mb-2">🪴 Start by focusing on</div>
+          <div class="ui-eyebrow mb-2">${TI('sprout')} Start by focusing on</div>
           <p class="td-lead">${esc(stu.tendReason)}.</p>
           <button class="btn btn-primary sm btn-ask-a inline focus" data-ask-stu="tend">Ask Tilli for an activity →</button>
         </div>`}
@@ -1495,7 +1502,7 @@
   // (tap, not hover, so it works on phones). Wording is provisional — whether to
   // show percentages at all is still to be confirmed (Masoomi / Kavi, T11).
   const SCORE_INFO = 'A 0–100 score for this skill, combining your observation, the parent’s survey and the child’s own tasks. Under 34 = Beginner · 34–66 = Learner · 67+ = Advanced.';
-  const PERSP_INFO = 'Each view’s own 0–100 score for the skill: 👩‍🏫 your observation, 🏠 the parent’s survey, 🧒 the child’s own tasks. The skill’s level combines all three.';
+  const PERSP_INFO = 'Each view’s own 0–100 score for the skill: your observation, the parent’s survey, and the child’s own tasks. The skill’s level combines all three.';
   function infoBtn(id) { return `<button type="button" class="ui-info lg info-tip focus" data-info="${id}" aria-expanded="false" aria-controls="${id}" aria-label="What does this score mean?">i</button>`; }
   function infoPopParas(id, htmlParas) { return `<div class="ui-inset info-pop" id="${id}" hidden>${htmlParas.map((h) => `<p class="info-p">${h}</p>`).join('')}</div>`; }   // DEMO
   function infoPop(id, text) { return `<div class="ui-inset info-pop" id="${id}" hidden>${esc(text)}</div>`; }
@@ -1731,6 +1738,8 @@
     return `<svg viewBox="0 0 ${W} ${H}" width="100%" class="rd-svg" role="img" aria-label="Three perspectives across every skill" xmlns="http://www.w3.org/2000/svg">${grid}${poly('parent', 16)}${poly('student', 16)}${poly('teacher', 18)}${ticks}${labels}${hits}</svg>`;
   }
 
+  // Line icons (shared set in demo-content.js → window.TIcon); used instead of emoji icons (Nov 13, user).
+  const TI = (k) => (window.TIcon ? window.TIcon(k) : '');
   function chatIcon(fill) { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 6.5C4 5 5 4 6.5 4h11C19 4 20 5 20 6.5v7c0 1.5-1 2.5-2.5 2.5H10l-4 3.5V16H6.5C5 16 4 15 4 13.5v-7Z" style="fill:${fill}"/></svg>`; }
   function sunSmall() { return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" fill="${ART.pollen}"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4" stroke="${ART.pollen}" stroke-width="2" stroke-linecap="round"/></svg>`; }
 
@@ -1817,7 +1826,7 @@
     }
     if (window.DemoUI && tab !== 'enter') {
       const pend = S.todoView === 'pending';
-      const vine = `<p class="ui-screen-sub flush" style="max-width:560px">${esc(pend ? 'Who still needs a teacher observation in this window.' : "Your class's assessment journey grows as each window is complete. Tend the glowing window next.")}</p>
+      const vine = `<p class="ui-screen-sub flush${pend ? '' : ' obs-journey-sub'}" style="max-width:560px">${esc(pend ? 'Who still needs a teacher observation in this window.' : "Your class's assessment journey grows as each window is complete. Tend the glowing window next.")}</p>
       <div class="mt-4">${pend ? pendingView() : obsVine()}</div>`;
       return `<div class="dash-wrap" style="max-width:var(--content-max)">
       <h1 class="dm-sr">Assess</h1>${topTabs}
@@ -1961,7 +1970,7 @@
     if (!openWk) {
       const unlocked = unlockedWindows(sec);
       const nextW = (S.data.windows || []).find((w) => !unlocked.has(w.key));
-      calm = `<div class="ui-note mb-4"><span>🌿 Nothing to observe right now.${nextW ? ' ' + esc(nextW.label) + ((nextW.opens || nextW.date) ? ' opens ' + esc(nextW.opens || nextW.date) : ' opens next') + '.' : ' Every window this year is done.'}</span></div>`;
+      calm = `<div class="ui-note mb-4"><span>${TI('leaf')} Nothing to observe right now.${nextW ? ' ' + esc(nextW.label) + ((nextW.opens || nextW.date) ? ' opens ' + esc(nextW.opens || nextW.date) : ' opens next') + '.' : ' Every window this year is done.'}</span></div>`;
     }
     const assessUrl = new URL('assess.html', location.href).href;
     const nodes = journey.map((j, ji) => {
@@ -2135,7 +2144,7 @@
     const celebrate = e.done ? `<div class="obs-celebrate">${flowerArt('growing', 90, 0)}<div class="msg">${esc(stu.first)}'s plant just got a little taller 🌱</div></div>` : '';
     const ini = ((stu.first || '')[0] || '') + ((stu.last || '')[0] || '');
     const closedNote = obsLaneStatus(wk) && obsLaneStatus(wk) !== 'Live'
-      ? `<div class="ui-note warn mb-3"><span aria-hidden="true">⚠️</span><span>${esc(winLabel)} ${obsLaneStatus(wk) === 'Ended' ? 'has closed' : 'isn’t open yet'} — what you save here is kept${obsLaneStatus(wk) === 'Ended' ? ', but won’t count for this window' : ' and counts as soon as the Tilli team opens it'}.</span></div>` : '';
+      ? `<div class="ui-note warn mb-3"><span aria-hidden="true">${TI('alert')}</span><span>${esc(winLabel)} ${obsLaneStatus(wk) === 'Ended' ? 'has closed' : 'isn’t open yet'} — what you save here is kept${obsLaneStatus(wk) === 'Ended' ? ', but won’t count for this window' : ' and counts as soon as the Tilli team opens it'}.</span></div>` : '';
     return `${closedNote}${saved}${redoNote}${resumed}<div class="obs-enter">
       <div class="obs-enter-head"><span class="ui-avatar obs-av" aria-hidden="true">${esc(ini.toUpperCase())}</span>
         <div class="obs-enter-who"><h1 class="obs-name">${esc(stu.dispFirst || stu.first)}</h1><div class="sub">${esc(winLabel)} observation · page ${page + 1} of ${pages}</div></div></div>
@@ -2251,7 +2260,7 @@
   function celebrateMilestone(n) {
     const msg = document.createElement('div');
     msg.className = 'ms-toast'; msg.setAttribute('role', 'status');
-    msg.innerHTML = `<span class="ms-emoji" aria-hidden="true">🎉</span>You have completed <b>${n}</b> ${n === 1 ? 'student&rsquo;s' : 'students&rsquo;'} grading`;
+    msg.innerHTML = `<span class="ms-emoji" aria-hidden="true">${TI('spark')}</span>You have completed <b>${n}</b> ${n === 1 ? 'student&rsquo;s' : 'students&rsquo;'} grading`;
     document.body.appendChild(msg);
     const close = () => { msg.classList.add('out'); setTimeout(() => msg.remove(), 300); };
     msg.addEventListener('click', close); setTimeout(close, CONFETTI.msgMs);
@@ -2326,12 +2335,12 @@
       <span><i class="round" style="background:${STATUS_META.done.dot}"></i>Complete</span>
       <span><i class="round" style="background:${STATUS_META.in_progress.dot}"></i>In progress</span>
       <span><i class="round" style="background:${STATUS_META.pending.dot}"></i>Not started</span>
-      <span style="color:var(--ink-450)">👩‍🏫 Teacher &nbsp; 🏠 Parent &nbsp; 🧒 Student</span></div>`;
+      <span style="color:var(--ink-450)">${TI('teacher')} Teacher &nbsp; ${TI('home')} Parent &nbsp; ${TI('student')} Student</span></div>`;
     // History opens the class change-history modal pre-filtered to assessments;
     // hover shows when this class's assessment activity last changed.
     const HU = window.TilliHistory;
     const tip = HU ? HU.lastUpdatedText(sectionHistory(section(), 'assessment')[0], histOpts()) : '';
-    const histBtn = HU ? `<button class="btn-line ui-tooltip down end hover-only focus" data-assess-hist data-tip="${esc(tip)}" aria-label="Assessment history · ${esc(tip)}">🕘 History</button>` : '';
+    const histBtn = HU ? `<button class="btn-line ui-tooltip down end hover-only focus" data-assess-hist data-tip="${esc(tip)}" aria-label="Assessment history · ${esc(tip)}">${TI('clock')} History</button>` : '';
     const one = S.trackerStu ? trackerStudentView() : '';
     if (one) return legend + one;
     if (window.DemoUI) return logsByClass();   // DEMO: key sits right above the table; History / CSV sit in the heading (doneActions)
@@ -2344,8 +2353,8 @@
   function doneActions() {
     const HU = window.TilliHistory;
     const tip = HU ? HU.lastUpdatedText(sectionHistory(section(), 'assessment')[0], histOpts()) : '';
-    return (HU ? `<button class="btn-line sm ui-tooltip down end hover-only focus rc-icbtn" data-assess-hist data-tip="${esc(tip)}" aria-label="History · ${esc(tip)}"><span aria-hidden="true">🕘</span><span class="lbl">History</span></button>` : '') +
-      `<button class="btn-line sm focus rc-icbtn" data-csv aria-label="Download CSV" title="Download the whole assessment log — one row per student, one column per assessment and window"><span aria-hidden="true">⬇</span><span class="lbl">Download CSV</span></button>`;
+    return (HU ? `<button class="btn-line sm ui-tooltip down end hover-only focus rc-icbtn" data-assess-hist data-tip="${esc(tip)}" aria-label="History · ${esc(tip)}"><span aria-hidden="true">${TI('clock')}</span><span class="lbl">History</span></button>` : '') +
+      `<button class="btn-line sm focus rc-icbtn" data-csv aria-label="Download CSV" title="Download the whole assessment log — one row per student, one column per assessment and window"><span aria-hidden="true">${window.TIcon ? window.TIcon('download') : '⬇'}</span><span class="lbl">Download CSV</span></button>`;
   }
   // ---- Tracker: pick a window (cards) → that window's Completed rate table.
   // A window is unlocked once it's been deployed: by Tilli (TilliAPI), by the
@@ -2377,7 +2386,7 @@
       const done = sec.students.filter((st) => (st.assessLog[wi] || {}).status === 'done').length;
       const locked = !unlocked.has(w.key), on = cur === w.key;
       const all = total > 0 && done === total;
-      const badge = locked ? '<span class="ui-badge wc-lock">🔒 Not deployed yet</span>'
+      const badge = locked ? '<span class="ui-badge wc-lock">' + TI('lock') + ' Not deployed yet</span>'
         : `<span class="ui-badge ${all ? 'done' : 'prog'}">${all ? 'All complete 🌸' : (total - done) + ' still to go'}</span>`;
       const tip = locked ? w.label + ' opens here once Tilli deploys it.' : 'Show each child’s ' + w.label + ' completion';
       return `<button class="ui-card sm ui-pick win-card pick${on ? ' on' : ''}${locked ? ' locked' : ''}" data-logwin="${w.key}" aria-pressed="${on}"${locked ? ' aria-disabled="true"' : ''} title="${esc(tip)}">
@@ -2407,7 +2416,7 @@
     const w = (S.data.windows || []).find((x) => x.key === wk) || { label: wk, sub: '', date: '' };
     const P = S.data.perspectives || [];
     const tick = '<svg class="cr-tick" width="20" height="20" viewBox="0 0 24 24" aria-label="Complete"><circle cx="12" cy="12" r="11" style="fill:var(--green-500)"/><path d="M7 12.5l3.2 3.2L17 9" style="stroke:var(--white)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    const head = P.map((p) => `<div class="cr-h" title="${esc(p.label === 'Parent' ? 'Parent questionnaires (home)' : p.label === 'Student' ? 'Student direct tasks' : 'Teacher observation')}"><span class="ic">${p.icon}</span><span class="ui-eyebrow lb">${esc(p.label === 'Parent' ? 'Parent (Home)' : p.label)}</span></div>`).join('');
+    const head = P.map((p) => `<div class="cr-h" title="${esc(p.label === 'Parent' ? 'Parent questionnaires (home)' : p.label === 'Student' ? 'Student direct tasks' : 'Teacher observation')}"><span class="ic">${TI(p.key === 'parent' ? 'home' : p.key)}</span><span class="ui-eyebrow lb">${esc(p.label === 'Parent' ? 'Parent (Home)' : p.label)}</span></div>`).join('');
     const order = { tending: 0, waiting: 1, growing: 2, blossoming: 3 };
     // DEMO: rows follow each child's status in this window (not started → in progress → complete), matching the colour key.
     const SORDER = { pending: 0, in_progress: 1, done: 2 }, wst = (st) => (logOf(st, wk) || {}).status || 'pending';
@@ -2438,11 +2447,11 @@
     const groupMsg = `Hello parents 🌱 A gentle reminder: the Tilli ${w.label} parent survey for ${secLabel(sec)}${closes}. It helps us see how your child is growing at home. If you've already finished it, thank you! — ${teacherName}`;
     const oneMsg = (st) => `Hello! A gentle reminder that ${st.first}'s Tilli ${w.label} parent survey${closes}. It helps us see how ${st.first} is growing at home. Thank you! — ${teacherName}`;
     const remind = !P.some((p) => p.key === 'parent') ? ''
-      : !parentPending.length ? `<div class="ui-card sm par-remind done">🏠 Every parent has finished for ${esc(w.label)} 🌸</div>`
+      : !parentPending.length ? `<div class="ui-card sm par-remind done">${TI('home')} Every parent has finished for ${esc(w.label)} 🌸</div>`
       : `<div class="ui-card sm par-remind">
           <div class="par-remind-top">
-            <div><b>🏠 ${countNoun(parentPending.length, 'parent', 'parents')} still to finish</b><span> · ${esc(w.label)}${w.date ? ' closes ' + esc(w.date) : ''}</span></div>
-            <button class="btn-line primary focus" data-copy="${esc(groupMsg)}" title="Copies a reminder with no children's names, ready to paste in the class group">📋 Copy reminder for the class group</button>
+            <div><b>${TI('home')} ${countNoun(parentPending.length, 'parent', 'parents')} still to finish</b><span> · ${esc(w.label)}${w.date ? ' closes ' + esc(w.date) : ''}</span></div>
+            <button class="btn-line primary focus" data-copy="${esc(groupMsg)}" title="Copies a reminder with no children's names, ready to paste in the class group">${TI('clip')} Copy reminder for the class group</button>
           </div>
           <details class="par-remind-list"><summary>Who&rsquo;s still to finish (${parentPending.length})</summary>
             ${parentPending.map((st) => { const pe = logOf(st, wk).persp.find((x) => x.key === 'parent'); return `<div class="par-remind-row"><span class="nm">${esc(st.name)}</span><span class="pt">${pe.doneParts} of ${pe.totalParts} parts</span><button class="copy-ic focus" data-copy="${esc(oneMsg(st))}" data-copy-icon title="Copy a reminder for ${esc(st.dispFirst || st.first)}'s parent" aria-label="Copy a reminder for ${esc(st.dispFirst || st.first)}'s parent">${COPY_ICON}</button></div>`; }).join('')}
@@ -2557,12 +2566,12 @@
     const pct = total ? Math.round((st.perspDone / total) * 100) : 0;
     const timeline = st.assessLog.map((w) => {
       const locked = !unlocked.has(w.key), ss = STATUS_META[w.status];
-      const badge = locked ? '<span class="ui-badge wc-lock">🔒 Not open yet</span>'
+      const badge = locked ? '<span class="ui-badge wc-lock">' + TI('lock') + ' Not open yet</span>'
         : `<span class="ui-badge ${ss.cls}">${ss.label}${w.status === 'done' ? '' : ' · ' + w.doneCount + '/' + w.persp.length}</span>`;
       const persp = w.persp.map((p) => {
         const dt = p.done ? doneDate(st, w.key, p.key) : '';
         const txt = locked ? 'Not open yet' : p.done ? 'Done' + (dt ? ' · ' + dt : '') : (p.started || p.doneParts) ? 'In progress' : 'Waiting';
-        return `<div class="tl-persp${p.done ? ' done' : ''}"><span class="ic">${p.icon}</span><div><div class="nm">${esc(p.label)}</div><div class="st${p.done ? ' done' : (!locked && (p.started || p.doneParts)) ? ' prog' : ''}">${esc(txt)}</div></div></div>`;
+        return `<div class="tl-persp${p.done ? ' done' : ''}"><span class="ic">${TI(p.key === 'parent' ? 'home' : p.key)}</span><div><div class="nm">${esc(p.label)}</div><div class="st${p.done ? ' done' : (!locked && (p.started || p.doneParts)) ? ' prog' : ''}">${esc(txt)}</div></div></div>`;
       }).join('');
       // Only the open window offers the teacher's own observation.
       const canGo = !locked && w.key === openWk && !teacherDone(st, w.key);
@@ -2666,19 +2675,20 @@
     const view = ['myclass', 'perspectives', 'compare'].indexOf(S.insightsView) >= 0 ? S.insightsView : 'myclass';
     const tabDefs = [['myclass', 'My class'], ['perspectives', 'Perspectives']];
     if (canCompare()) tabDefs.push(['compare', 'Compare my sections']);
-    const tabs = tabDefs.map(([k, l]) => `<button class="ui-filterchip dark intab${view === k ? ' on' : ''}" data-inview="${k}" role="tab" aria-selected="${view === k}">${l}</button>`).join('');
+    // Nov 13 (user): same pill toggle as Assess (demo.css .rc-tabs / .rc-tab).
+    const tabs = tabDefs.map(([k, l]) => `<button class="rc-tab focus${view === k ? ' on' : ''}" data-inview="${k}" role="tab" aria-selected="${view === k}">${l}</button>`).join('');
 
     const stats = skillStatsFor(scope.students);
     let body = '';
     if (view === 'myclass') body = insMyClass(stats, meas, scope);
-    else if (view === 'perspectives') body = insPerspectives(stats, scope);
+    else if (view === 'perspectives') body = insPerspectives(stats);
     else body = insCompare();
 
     return `<div class="dash-wrap" style="max-width:var(--content-max)">
       <h1 class="ui-screen-title">Insights</h1>
       ${window.DemoUI ? '' /* DEMO: no subtitle — the cards say it */ : `<p class="ui-screen-sub flush">A quiet place to plan — where ${esc(secLabel(scope))} is strong, growing, and ready for focus.</p>`}
-      ${S._insSample ? '<div class="ui-note sample mt-3">🌱 Sample view — your class&rsquo;s real insights replace this once Baseline is complete.</div>' : ''}
-      <div class="log-tabs mt-4" role="tablist">${tabs}</div>
+      ${S._insSample ? '<div class="ui-note sample mt-3">' + TI('sprout') + ' Sample view — your class&rsquo;s real insights replace this once Baseline is complete.</div>' : ''}
+      <div class="mt-4 mb-3"><div class="rc-tabs" role="tablist">${tabs}</div></div>
       ${body}
     </div>`;
   }
@@ -2702,7 +2712,7 @@
     // second point to compare: Midline (or later) deployed or assessed.
     const later = S.windowState === 'midline' || S.windowState === 'endline' || meas.mid || meas.post;
     return `${classOverviewCard(stats, scope)}
-      ${later ? progressCard(stats, meas) + breakdownCard(stats, meas) : ''}`;
+      ${later ? progressCard(stats, meas) : ''}`;
   }
 
   // a) Class Skill Overview — per skill, how the class splits across
@@ -2717,40 +2727,41 @@
     const N = scope.students.length;
     const notAssessed = scope.students.filter((s) => s.state === 'waiting').length;
     const meta = (b) => OV_BANDS.find((x) => x.band === b) || OV_BANDS[1];
-    // One chip row = legend + filter (replaces the three big boxes, the legend
-    // line and the "tap a box" hint). Counts are SKILLS by their largest group.
-    const chip = (band, label, n, lvl) => {
-      const on = (S.ovBand || '') === band;
-      return `<button class="ui-filterchip dark cso-chip${on ? ' on' : ''} focus" data-ov-band="${band}" aria-pressed="${on}"${n || !band ? '' : ' disabled'}
-        title="${band ? `Show only skills where most of the class is ${band}` : 'Show every skill'}">${lvl ? `<i style="background:var(--lvl-${lvl})"></i>` : ''}${label}<b>${n}</b></button>`;
-    };
-    const chips = chip('', 'All skills', stats.length, 0) + OV_BANDS.map((b) =>
-      chip(b.band, 'Mostly ' + b.label, stats.filter((s) => s.plurality === b.band).length, b.n)).join('');
     const csoDesc = `Where most of ${esc(secLabel(scope))}&rsquo;s ${countNoun(N, 'student', 'students')} sit on each skill. Tap a skill to see who&rsquo;s where.${notAssessed ? ` <span class="cso-note">${countNoun(notAssessed, 'student', 'students')} not assessed yet.</span>` : ''}`;
-    // DEMO: phones filter with one dropdown instead of three rows of chips.
-    const csoSel = `<select class="select sm cso-sel focus" data-ov-sel aria-label="Filter skills">${[['', 'All skills', stats.length]].concat(OV_BANDS.map((b) => [b.band, 'Mostly ' + b.label, stats.filter((x) => x.plurality === b.band).length])).map(([v, l, n]) => `<option value="${v}"${(S.ovBand || '') === v ? ' selected' : ''}>${l} (${n})</option>`).join('')}</select>`;
+    // Nov 13 (user): no filter chips. Desktop shows every skill; phones show the
+    // TOP_N with the most Beginner ("need support") children and "Show all"
+    // expands the rest (extras carry .cso-extra, hidden by demo.css on phones).
+    const TOP_N = 3;
     const rank = { Beginner: 0, Learner: 1, Advanced: 2 };
-    const rows = stats
-      .filter((s) => !S.ovBand || s.plurality === S.ovBand)
-      .sort((a, b) => (rank[a.plurality] - rank[b.plurality]) || ((b.counts.Beginner / (b.total || 1)) - (a.counts.Beginner / (a.total || 1))) || ((a.counts.Advanced / (a.total || 1)) - (b.counts.Advanced / (b.total || 1))))
-      .map((s) => {
-        const t = s.total || 1, m = meta(s.plurality), open = S.ovSkill === s.key;
-        const seg = (b, n) => s.counts[b] ? `<span class="cso-seg" style="width:${(s.counts[b] / t) * 100}%;background:var(--lvl-${n})" title="${s.counts[b]} ${b}"></span>` : '';
-        return `<div class="cso-row${open ? ' open' : ''}">
-          <button class="cso-rowbtn focus" data-ov-skill="${esc(s.key)}" aria-expanded="${open}" title="${open ? 'Hide' : 'See'} which children are where">
-            <span class="cso-name">${esc(s.name)}</span>
-            <span class="ui-bandbar">${seg('Beginner', 1)}${seg('Learner', 2)}${seg('Advanced', 3)}</span>
-            <span class="ui-bandword lvl-${m.n} cso-status">${m.label}</span>
+    const sorted = stats.slice()
+      .sort((a, b) => ((b.counts.Beginner || 0) - (a.counts.Beginner || 0)) || (rank[a.plurality] - rank[b.plurality]) || ((a.counts.Advanced / (a.total || 1)) - (b.counts.Advanced / (b.total || 1))));
+    const more = sorted.length > TOP_N
+      ? `<button class="btn-link cso-more focus" data-ov-all aria-expanded="${!!S.ovAll}">${S.ovAll ? `Show top ${TOP_N} only` : `Show all ${sorted.length} skills`}</button>` : '';
+    const rows = sorted
+      // Nov 13 (user): tag-only cards — the card colour IS the tag (Mostly
+      // Beginner/Learner/Advanced); the bar + who's-where open on click.
+      .map((s, i) => {
+        const t = s.total || 1, m = meta(s.plurality), open = S.ovSkill === s.key, nb = s.counts.Beginner || 0;
+        const extra = i >= TOP_N && !S.ovAll && !open ? ' cso-extra' : '';
+        const seg = (b, n) => s.counts[b] ? `<span class="cso-seg" style="width:${(s.counts[b] / t) * 100}%;background:var(--lvl-${n})" title="${s.counts[b]} ${b}">${s.counts[b]}</span>` : '';
+        const hint = nb ? (nb === 1 ? '1 needs support' : `${nb} need support`) : 'No one needs support';
+        return `<div class="cso-card lvl-${m.n}${open ? ' open' : ''}${extra}">
+          <button class="cso-cardbtn focus" data-ov-skill="${esc(s.key)}" aria-expanded="${open}" title="${open ? 'Hide' : 'See'} which children are where">
+            <span class="cso-ic" aria-hidden="true">${window.TIcon ? window.TIcon('sk-' + s.key) : ''}</span>
+            <span class="cso-txt"><span class="cso-name">${esc(s.name)}</span><span class="cso-hint">${hint}</span><span class="cso-sr">Mostly ${m.label}</span></span>
             <span class="cso-chev" aria-hidden="true">›</span>
           </button>
-          ${open ? ovBreakdown(s, scope) : ''}
+          ${open ? `<div class="cso-detail">
+            <div class="cso-dh"><span class="ui-bandword lvl-${m.n}">Mostly ${m.label}</span></div>
+            <span class="ui-bandbar hero cso-dbar">${seg('Beginner', 1)}${seg('Learner', 2)}${seg('Advanced', 3)}</span>
+            ${ovBreakdown(s, scope)}
+          </div>` : ''}
         </div>`;
       }).join('') || '<div class="ui-empty">No skills in this group right now.</div>';
     return `<div class="ui-card ins-card ov mt-4">
       <div class="cso-h">Class Skill Overview ${infoBtn('info-ov')}</div>${window.DemoUI ? infoPopParas('info-ov', [csoDesc, esc(SCORE_INFO)]) : infoPop('info-ov', SCORE_INFO)}
       ${window.DemoUI ? '' : `<p class="cso-desc">${csoDesc}</p>`}
-      <div class="cso-chips" role="group" aria-label="Filter skills">${chips}</div>${window.DemoUI ? csoSel : ''}
-      <div class="cso-list">${rows}</div>
+      <div class="cso-grid">${rows}</div>${more}
     </div>`;
   }
   // Which students sit in each band for one skill (assessed students only).
@@ -2773,241 +2784,130 @@
     </div>`;
   }
 
-  // b) Growth over time — ONE line chart, filtered: Overview (SEL vs EF
-  // averages), a whole group (its 6 skills), or a single skill against the
-  // class average. Windows not measured yet have no point (the line stops).
-  // Colours: validated categorical slots, fixed per entity (never by rank).
-  const GROWTH_COLORS = TP.GROWTH;   // exact-hex chart series (TilliPalette)
-  function growthSeries(stats, meas) {
-    const phases = phaseMeta();
-    const f = S.growthFilter || 'overview';
-    const avg = (list, field) => Math.round(list.reduce((a, x) => a + (x[field] || 0), 0) / (list.length || 1));
-    const vals = (fn) => phases.map((p) => (meas[p.win] ? fn(p.field) : null));
-    const group = (g) => stats.filter((x) => x.group === g);
-    if (f === 'sel' || f === 'cog') {
-      return group(f).map((x, i) => ({ name: x.name, color: GROWTH_COLORS[i % GROWTH_COLORS.length], vals: vals((fl) => x[fl]) }));
-    }
-    const one = stats.find((x) => x.key === f);
-    if (one) {
-      return [
-        { name: one.name, color: GROWTH_COLORS[0], vals: vals((fl) => one[fl]) },
-        { name: 'Class average (all skills)', color: TP.css('--ink-300'), dashed: true, vals: vals((fl) => avg(stats, fl)) },
-      ];
-    }
-    return [
-      { name: 'Social-Emotional', color: GROWTH_COLORS[0], vals: vals((fl) => avg(group('sel'), fl)) },
-      { name: 'Cognitive', color: GROWTH_COLORS[1], vals: vals((fl) => avg(group('cog'), fl)) },
-    ];
-  }
-  const GROWTH_GEO = { W: 680, H: 300, L: 46, R: 150, T: 18, B: 46 };
-  function growthX(i) { const g = GROWTH_GEO; return g.L + 30 + i * ((g.W - g.L - g.R - 60) / 2); }
-  function growthY(v) { const g = GROWTH_GEO; return g.T + (1 - v / 100) * (g.H - g.T - g.B); }
-  function growthSVG(series, phases, meas, partial) {
-    const g = GROWTH_GEO, x = growthX, y = growthY;
-    let grid = '';
-    [0, 33, 67, 100].forEach((v) => {
-      grid += `<line x1="${g.L}" x2="${g.W - g.R + 20}" y1="${y(v)}" y2="${y(v)}" style="stroke:var(--line-200)" stroke-width="1"${v === 33 || v === 67 ? ' stroke-dasharray="4 5"' : ''}/>`;
-      grid += `<text class="svg-t" x="${g.L - 8}" y="${y(v) + 4}" text-anchor="end" font-size="11" style="fill:var(--ink-300)" font-weight="600">${v}%</text>`;
-    });
-    // band names sit in the left gutter of each zone (recessive)
-    [['Beginner', 16], ['Learner', 50], ['Advanced', 84]].forEach(([lb, v]) => {
-      grid += `<text class="svg-t" x="${g.L + 6}" y="${y(v) + 4}" font-size="11" style="fill:var(--ink-300);opacity:.6" font-weight="700" letter-spacing=".04em">${lb.toUpperCase()}</text>`;
-    });
-    const axis = phases.map((p, i) => {
-      const on = meas[p.win];
-      return `${on ? '' : `<line x1="${x(i)}" x2="${x(i)}" y1="${g.T}" y2="${g.H - g.B}" style="stroke:var(--line-200)" stroke-width="1.5" stroke-dasharray="3 5"/>`}
-        <text class="svg-t" x="${x(i)}" y="${g.H - g.B + 20}" text-anchor="middle" font-size="13" font-weight="700" style="fill:${on ? 'var(--ink-600)' : 'var(--ink-300)'}">${esc(p.meta.label)}</text>
-        ${on && !(partial && partial[p.win]) ? '' : `<text class="svg-t" x="${x(i)}" y="${g.H - g.B + 35}" text-anchor="middle" font-size="11" font-weight="600" style="fill:${on ? 'var(--lvl-2-ink)' : 'var(--ink-300)'}">${on ? 'in progress' : (window.DemoUI && (p.meta.opens || p.meta.date) ? 'opens ' + esc(p.meta.opens || p.meta.date) : 'not yet')}</text>`}`;
-    }).join('');
-    const lines = series.map((sr) => {
-      const pts = sr.vals.map((v, i) => (v == null ? null : [x(i), y(v)])).filter(Boolean);
-      const d = pts.map((pt, k) => (k ? 'L' : 'M') + pt[0].toFixed(1) + ' ' + pt[1].toFixed(1)).join(' ');
-      const dots = pts.map((pt) => `<circle cx="${pt[0]}" cy="${pt[1]}" r="5" fill="${sr.color}" style="stroke:var(--white)" stroke-width="2"/>`).join('');
-      return `<g>${pts.length > 1 ? `<path d="${d}" fill="none" stroke="${sr.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${sr.dashed ? ' stroke-dasharray="5 5"' : ''}/>` : ''}${dots}</g>`;
-    }).join('');
-    // Direct labels at each line's last point (≤ 4 series), nudged apart.
-    let labels = '';
-    if (series.length <= 4) {
-      const ends = series.map((sr) => {
-        let li = -1; sr.vals.forEach((v, i) => { if (v != null) li = i; });
-        return li < 0 ? null : { sr, i: li, yy: y(sr.vals[li]) };
-      }).filter(Boolean).sort((a, b) => a.yy - b.yy);
-      for (let k = 1; k < ends.length; k++) if (ends[k].yy - ends[k - 1].yy < 15) ends[k].yy = ends[k - 1].yy + 15;
-      labels = ends.map((e) => `<text class="svg-t" x="${x(e.i) + 12}" y="${e.yy + 4}" font-size="11" font-weight="700" style="fill:var(--ink-700)">${esc(e.sr.name)} · ${e.sr.vals[e.i]}%</text>`).join('');
-    }
-    return `<svg class="gr-svg" viewBox="0 0 ${g.W} ${g.H}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Growth over time line chart">
-      ${grid}${axis}
-      <line class="gr-cross" x1="0" x2="0" y1="${g.T}" y2="${g.H - g.B}" style="stroke:var(--ink-300)" stroke-width="1" visibility="hidden"/>
-      ${lines}${labels}
-      <rect class="gr-hit" x="${g.L}" y="0" width="${g.W - g.L - g.R + 40}" height="${g.H - g.B + 10}" fill="transparent"/>
-    </svg>`;
-  }
+  // b) Growth over time — band dumbbells (Nov 13, user; desktop + phones).
+  // One row per skill in the chosen group: a Beginner | Learner | Advanced
+  // track with a dot per measured window (○ first · ◐ middle · ● latest) and
+  // +N = latest − first. The open window counts once it's live (in progress).
   function progressCard(stats, measured) {
-    const phases = phaseMeta();
-    const f = S.growthFilter || 'overview';
-    // Plot a window once it's measured, or while it's the open window (in progress).
-    const live = activeWindowKey();
-    const meas = {}, partial = {};
-    phases.forEach((p) => { meas[p.win] = !!measured[p.win] || live === p.win; partial[p.win] = !measured[p.win] && live === p.win; });
-    const series = growthSeries(stats, meas);
-    S._growth = { series, phases: phases.map((p) => p.meta.label) };   // read by the hover layer (wire)
-    const pill = (k, l) => `<button class="ui-filterchip dark${f === k ? ' on' : ''}" data-growth="${k}">${l}</button>`;
-    const isSkill = !['overview', 'sel', 'cog'].includes(f);
-    const skillSel = `<select class="ui-filterchip dark gr-select focus" data-growth-skill aria-label="Show one skill">
-        <option value=""${isSkill ? '' : ' selected'}>One skill…</option>
-        ${stats.map((x) => `<option value="${esc(x.key)}"${f === x.key ? ' selected' : ''}>${esc(x.name)}</option>`).join('')}
-      </select>`;
-    // DEMO: phones pick Overview / a group / one skill from a single dropdown.
-    const grAllSel = `<select class="select sm gr-allsel focus" data-growth-all aria-label="Show one skill">${[['overview', 'Overview'], ['sel', 'Social-Emotional'], ['cog', 'Cognitive']].concat(stats.map((x) => [x.key, x.name])).map(([v, l]) => `<option value="${esc(v)}"${f === v ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
-    const legend = series.length >= 2 ? `<div class="ui-legend gr-legend">${series.map((sr) =>
-      `<span><i style="border-top:2px ${sr.dashed ? 'dashed' : 'solid'} ${sr.color}"></i>${esc(sr.name)}</span>`).join('')}</div>` : '';
-    const table = `<table class="ui-table compact gr-table"><thead><tr><th>${isSkill || f === 'overview' ? 'Series' : 'Skill'}</th>${phases.map((p) => `<th>${esc(p.meta.label)}</th>`).join('')}</tr></thead>
-      <tbody>${series.map((sr) => `<tr><td><i style="background:${sr.color}"></i>${esc(sr.name)}</td>${sr.vals.map((v) => `<td>${v == null ? '—' : v + '%'}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
-    const pending = phases.filter((p) => !meas[p.win]);
-    const note = pending.length && !window.DemoUI   /* DEMO: the chart's Endline label says when it opens */
-      ? `<div class="ui-note mt-3">🕒 ${pending.map((p) => `${esc(p.meta.label)}${(p.meta.opens || p.meta.date) ? ' opens ' + esc(p.meta.opens || p.meta.date) : ' hasn\'t opened yet'}`).join(' · ')}</div>` : '';
-    return `<div class="ui-card ins-card mt-4">
-      <div class="ui-title md ins-h">Growth over time ${infoBtn('info-growth')}</div>${window.DemoUI ? infoPopParas('info-growth', ['Class average per skill at Baseline → Midline → Endline. Filter to compare groups or follow one skill.', esc(SCORE_INFO)]) : infoPop('info-growth', SCORE_INFO)}
-      ${window.DemoUI ? '' : '<div class="ui-meta ins-sub">Class average per skill at Baseline → Midline → Endline. Filter to compare groups or follow one skill.</div>'}
-      <div class="gr-filters">
-        ${pill('overview', 'Overview')}${pill('sel', 'Social-Emotional')}${pill('cog', 'Cognitive')}${skillSel}${window.DemoUI ? grAllSel : ''}
-        <button class="gr-view focus" data-growth-table title="Switch between the chart and a table of the same numbers">${S.growthTable ? 'See chart' : 'See table'}</button>
-      </div>
-      ${S.growthTable ? table : `${legend}<div class="gr-wrap" tabindex="0" aria-label="Growth chart — use left and right arrows to read each window">${growthSVG(series, phases, meas, partial)}<div class="ui-tip gr-tip" hidden></div></div>
-        <div class="gr-taps">${phases.map((p, i) => `<button type="button" class="ui-filterchip tip-chip focus" data-gr-i="${i}" aria-pressed="false">ⓘ ${esc(p.meta.label)}</button>`).join('')}</div>`}
-      ${note}
+    const phases = phaseMeta(), live = activeWindowKey();
+    const shown = phases.filter((p) => measured[p.win] || live === p.win);
+    const g = S.growthFilter === 'cog' ? 'cog' : 'sel';
+    const sel = `<select class="select sm gr-group focus" data-growth-all aria-label="Skill group">${['sel', 'cog'].map((k) => `<option value="${k}"${g === k ? ' selected' : ''}>${groupLabel(k)}</option>`).join('')}</select>`;
+    const kind = (i) => (i === shown.length - 1 ? 'now' : i === 0 ? 'first' : 'mid');
+    // Nov 13 (user): dots closer than one dot-width are pushed apart to
+    // exactly --gr-min-gap (CSS max() of px vs %, so it holds at any width).
+    // Two values spread around their midpoint; three keep the middle one put.
+    // Equal values stay stacked. +N always shows the true change.
+    const placeDots = (vals) => {
+      const u = [...new Set(vals)].sort((x, y) => x - y), at = {}, gap = 'var(--gr-min-gap)';
+      if (u.length === 1) at[u[0]] = `${u[0]}%`;
+      else if (u.length === 2) {
+        const c = (u[0] + u[1]) / 2, h = (u[1] - u[0]) / 2;
+        at[u[0]] = `calc(${c}% - max(${gap} / 2, ${h}%))`;
+        at[u[1]] = `calc(${c}% + max(${gap} / 2, ${h}%))`;
+      } else {
+        at[u[1]] = `${u[1]}%`;
+        at[u[0]] = `calc(${u[1]}% - max(${gap}, ${u[1] - u[0]}%))`;
+        at[u[2]] = `calc(${u[1]}% + max(${gap}, ${u[2] - u[1]}%))`;
+      }
+      return { at, lo: at[u[0]], hi: at[u[u.length - 1]] };
+    };
+    const rows = stats.filter((s) => s.group === g).map((s) => {
+      const vals = shown.map((p) => s[p.field] || 0), first = vals[0], last = vals[vals.length - 1], d = last - first;
+      const pos = placeDots(vals);
+      const dots = vals.map((v, i) => `<i class="gr-dot ${kind(i)}" style="left:${pos.at[v]}" title="${esc(shown[i].meta.label)} · ${v}%"></i>`).join('');
+      // Nov 13 (user): each score sits above its dot. The lowest label hangs
+      // left of its dot and the highest hangs right, so two close dots don't
+      // print on top of each other; a middle (or single) value is centred.
+      const uv = [...new Set(vals)].sort((x, y) => x - y);
+      const nums = uv.map((v) => `<span class="gr-val ${uv.length === 1 || (v !== uv[0] && v !== uv[uv.length - 1]) ? 'c' : v === uv[0] ? 'lo' : 'hi'}${v === last ? ' now' : ''}" style="left:${pos.at[v]}">${v}%</span>`).join('');
+      const delta = d > 0 ? `<span class="gr-d up">+${d}</span>` : d < 0 ? `<span class="gr-d down">−${-d}</span>` : '<span class="gr-d">0</span>';
+      // Nov 13 (user): replaces "Every skill, up close" — the row shows the
+      // numbers and tapping it asks Tilli how to build the skill.
+      return `<button type="button" class="gr-row focus" data-ask="build" data-skill="${esc(s.name)}" data-band="${s.plurality}"
+        aria-label="${esc(s.name)}: ${shown.map((p, i) => `${esc(p.meta.label)} ${vals[i]}%`).join(', ')}. Ask Tilli how to build it">
+        <span class="gr-rh"><span class="gr-name">${esc(s.name)}</span>${delta}</span>
+        <span class="gr-track"><span class="gr-seg b1"></span><span class="gr-seg b2"></span><span class="gr-seg b3"></span>
+          ${pos.lo !== pos.hi ? `<span class="gr-link" style="left:${pos.lo};width:calc(${pos.hi} - ${pos.lo})"></span>` : ''}${dots}${nums}</span>
+      </button>`;
+    }).join('');
+    const legend = shown.map((p, i) => `<span><i class="gr-dot ${kind(i)}"></i>${esc(p.meta.label)}</span>`).join('');
+    const info = 'Class average per skill at each window so far. Each dot sits on the Beginner · Learner · Advanced track; the number is the change since the first window. Tap a skill for a Tilli idea to build it.';
+    return `<div class="ui-card ins-card ins-growth mt-4">
+      <div class="gr-head"><div class="ui-title md ins-h">Growth over time ${infoBtn('info-growth')}</div>${sel}</div>
+      ${window.DemoUI ? infoPopParas('info-growth', [info, esc(SCORE_INFO)]) : infoPop('info-growth', SCORE_INFO)}
+      <div class="gr-bands" aria-hidden="true">${['Beginner', 'Learner', 'Advanced'].map((b, i) => `<span><span class="ui-badge lvl-${i + 1}"><span class="d"></span>${b}</span></span>`).join('')}</div>
+      <div class="gr-rows">${rows}</div>
+      <div class="gr-key">${legend}</div>
       <div class="ins-foot"><button class="btn-soft green focus" data-ask-ins="grow">Ask Tilli what to do with this →</button></div>
     </div>`;
   }
-  // Hover / keyboard readout: crosshair snaps to the nearest window, one tooltip
-  // lists every series there (values lead). Built with textContent.
-  function wireGrowth() {
-    const wrap = root.querySelector('.gr-wrap');
-    const G = S._growth;
-    if (!wrap || !G) return;
-    const svg = wrap.querySelector('svg'), cross = svg.querySelector('.gr-cross'), tip = wrap.querySelector('.gr-tip');
-    const show = (i) => {
-      const xs = growthX(i);
-      cross.setAttribute('x1', xs); cross.setAttribute('x2', xs); cross.setAttribute('visibility', 'visible');
-      tip.textContent = '';
-      const h = document.createElement('div'); h.className = 'ui-eyebrow gr-tip-h'; h.textContent = G.phases[i]; tip.appendChild(h);
-      G.series.map((sr) => ({ sr, v: sr.vals[i] })).sort((a, b) => (b.v == null ? -1 : b.v) - (a.v == null ? -1 : a.v)).forEach(({ sr, v }) => {
-        const row = document.createElement('div'); row.className = 'gr-tip-r';
-        const key = document.createElement('i'); key.style.borderTop = '2px ' + (sr.dashed ? 'dashed ' : 'solid ') + sr.color;
-        const val = document.createElement('b'); val.textContent = v == null ? 'not yet' : v + '%';
-        const nm = document.createElement('span'); nm.textContent = sr.name;
-        row.appendChild(key); row.appendChild(val); row.appendChild(nm); tip.appendChild(row);
-      });
-      tip.hidden = false;
-      const box = svg.getBoundingClientRect(), scale = box.width / GROWTH_GEO.W;
-      const right = xs * scale + 14, flipped = xs * scale - tip.offsetWidth - 14;
-      const want = right + tip.offsetWidth > box.width ? flipped : right;
-      // Clamp inside the chart so the readout never opens off-screen on a phone.
-      tip.style.left = Math.max(0, Math.min(box.width - tip.offsetWidth, want)) + 'px';
-      tip.style.top = '8px';
-      wrap.dataset.i = i;
-    };
-    const hide = () => { cross.setAttribute('visibility', 'hidden'); tip.hidden = true; };
-    const nearest = (clientX) => {
-      const box = svg.getBoundingClientRect(), sx = (clientX - box.left) * (GROWTH_GEO.W / box.width);
-      let best = 0; [0, 1, 2].forEach((i) => { if (Math.abs(growthX(i) - sx) < Math.abs(growthX(best) - sx)) best = i; });
-      return best;
-    };
-    svg.querySelector('.gr-hit').addEventListener('pointermove', (e) => show(nearest(e.clientX)));
-    svg.addEventListener('pointerleave', hide);
-    wrap.addEventListener('focus', () => show(+(wrap.dataset.i || 0)));
-    wrap.addEventListener('blur', hide);
-    wrap.addEventListener('keydown', (e) => {
-      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-      e.preventDefault();
-      show(Math.max(0, Math.min(2, +(wrap.dataset.i || 0) + (e.key === 'ArrowRight' ? 1 : -1))));
-    });
-    // Phone (no hover): ⓘ chips under the chart open / close one window's readout.
-    root.querySelectorAll('[data-gr-i]').forEach((b) => b.addEventListener('click', () => {
-      const i = +b.dataset.grI, again = !tip.hidden && wrap.dataset.i === String(i);
-      root.querySelectorAll('[data-gr-i]').forEach((x) => x.setAttribute('aria-pressed', 'false'));
-      if (again) { hide(); return; }
-      show(i); b.setAttribute('aria-pressed', 'true');
-    }));
-  }
-  function shortWin(label) { return label === 'Midline' ? 'Mid' : label === 'Endline' ? 'End' : 'Base'; }
-
-  // c) Detailed skill breakdown — one card per skill, SEL / EF toggle.
-  function breakdownCard(stats, meas) {
-    const g = S.skillGroup === 'cog' ? 'cog' : 'sel';
-    const toggle = `<div class="sb-toggle" role="tablist">
-      <button class="ui-filterchip dark${g === 'sel' ? ' on' : ''}" data-skillgroup="sel" role="tab" aria-selected="${g === 'sel'}">Social-Emotional</button>
-      <button class="ui-filterchip dark${g === 'cog' ? ' on' : ''}" data-skillgroup="cog" role="tab" aria-selected="${g === 'cog'}">Cognitive</button></div>`;
-    const phases = phaseMeta();
-    const cards = stats.filter((s) => s.group === g).map((s) => {
-      const prog = phases.map((p) => meas[p.win]
-        ? `<div class="scph"><span class="scph-l">${esc(shortWin(p.meta.label))}</span><span class="scph-v">${s[p.field]}%</span></div>`
-        : `<div class="scph scph-empty"><span class="scph-l">${esc(shortWin(p.meta.label))}</span><span class="scph-v">—</span></div>`).join('');
-      return `<button class="ui-card sm subtle sb-card focus" data-ask="build" data-skill="${esc(s.name)}" data-band="${s.plurality}" aria-label="Ask Tilli how to build ${esc(s.name)}">
-        <div class="sb-top"><span class="ui-title md sb-name">${esc(s.name)}</span><span class="ui-tag ${g === 'sel' ? 'cyan' : 'sb-tag-cog'}">${groupLabel(g)}</span></div>
-        <div class="scprog">${prog}</div>
-        <span class="sb-ask"${window.DemoUI ? ' aria-hidden="true"' : ''}>${window.DemoUI ? '→' /* DEMO: the whole card asks Tilli */ : 'Ask Tilli how to build this →'}</span>
-      </button>`;
-    }).join('');
-    return `<div class="ui-card ins-card mt-4">
-      <div class="ui-title md ins-h">Every skill, up close${window.DemoUI ? ' ' + infoBtn('info-sb') : ''}</div>${window.DemoUI ? infoPopParas('info-sb', ['Tap a skill for a Tilli idea to build it.']) : ''}
-      ${window.DemoUI ? '' : '<div class="ui-meta ins-sub">Tap a skill for a Tilli idea to build it.</div>'}
-      ${toggle}
-      <div class="sb-grid">${cards}</div>
-    </div>`;
-  }
-
   // --- Sub-tab 2: Perspectives ----------------------------------------------
-  function insPerspectives(stats, scope) {
-    const prompts = worthCloserLook(stats);
-    // DEMO: each view shows its band (Beginner / Learner / Advanced) like the child's Perspectives table; the score is in the tooltip.
-    const pv = (v) => (window.DemoUI ? bandTip(v) : `<b>${v}%</b>`);
-    const cards = stats.map((s) => `<div class="pv-card">
-      <div class="pv-skill">${esc(s.name)}</div>
-      <div class="pv-nums">
-        <span class="pv-num"><i>👩‍🏫</i>${pv(s.teacher)}<em>Teacher</em></span>
-        <span class="pv-num"><i>🏠</i>${pv(s.parent)}<em>Parent</em></span>
-        <span class="pv-num"><i>🧒</i>${pv(s.student)}<em>Student</em></span>
-      </div></div>`).join('');
-    // DEMO: one table (Nov 12, user) — skills down the left, Teacher · Parent · Student columns with the icon above each
-    // heading once, and just the three bands per row.
-    const pvHead = (icon, label) => `<th scope="col" class="pv-th"><span class="pv-ic" aria-hidden="true">${icon}</span>${label}</th>`;
-    const pvTable = `<table class="sk-table pv-table"><thead><tr><th scope="col">Skill</th>${pvHead('👩‍🏫', 'Teacher')}${pvHead('🏠', 'Parent')}${pvHead('🧒', 'Student')}</tr></thead>
-      <tbody>${stats.map((s) => `<tr><th scope="row"><span class="sk-nm">${esc(s.name)}</span></th><td>${pv(s.teacher)}</td><td>${pv(s.parent)}</td><td>${pv(s.student)}</td></tr>`).join('')}</tbody></table>`;
-    return `${window.DemoUI ? '' : `<div class="persp-note">Teachers, parents and children each see a skill from where they stand. A difference isn't right or wrong — it's a clue about where the skill shows up. 🌤️</div>`}
-      ${prompts}
-      <div class="ui-card ins-card mt-4">
-        <div class="ui-title md ins-h">Every skill, three viewpoints ${infoBtn('info-persp')}</div>${window.DemoUI ? infoPopParas('info-persp', ["Teachers, parents and children each see a skill from where they stand. A difference isn't right or wrong — it's a clue about where the skill shows up. 🌤️", esc(PERSP_INFO)]) : infoPop('info-persp', PERSP_INFO)}
-        <div class="ui-meta ins-sub">${window.DemoUI ? 'The same levels from your skill cards, lined up to compare.' : 'The same numbers from your skill cards, lined up to compare.'}</div>
-        ${window.DemoUI ? pvTable : `<div class="pv-grid">${cards}</div>`}
+  // Every skill, three viewpoints (Nov 13, user) — aligned or not, instead of a
+  // table. A skill's views "differ" when the highest and lowest are PV_GAP+
+  // apart; only those two are charted. One pattern line when most gaps lean the
+  // same way (so 12 gaps read as one story), then the 3 biggest gaps charted,
+  // the other gaps compact (folded after 3), aligned skills last. Scores show
+  // on hover / focus / 1st tap; click / 2nd tap asks Tilli why (data-ask=persp).
+  const PV_GAP = 12;        // same bar the old "Worth a closer look" box used
+  const PV_TOP = 3;         // gaps charted in full
+  const PV_FOLD = 3;        // other gaps shown before "Show N more"
+  const PV_PATTERN = 0.6;   // share of gaps that must lean the same way for a pattern line
+  const PV = { teacher: { label: 'Teacher', icon: 'teacher' }, parent: { label: 'Parent', icon: 'home' }, student: { label: 'Student', icon: 'student' } };
+  function insPerspectives(stats) {
+    const rows = stats.map((s) => {
+      const ks = ['teacher', 'parent', 'student'].sort((x, y) => s[x] - s[y]);
+      return { s, lo: ks[0], hi: ks[2], gap: s[ks[2]] - s[ks[0]] };
+    });
+    const differ = rows.filter((r) => r.gap >= PV_GAP).sort((x, y) => y.gap - x.gap);
+    const aligned = rows.filter((r) => r.gap < PV_GAP);
+    const N = rows.length;
+    const dot = (k) => `<span class="pv-dot" style="background:var(--persp-${k})" aria-hidden="true">${TI(PV[k].icon)}</span>`;
+    const num = (k, s) => `<span class="pv-num"><span>${PV[k].label}</span> ${s[k]}%</span>`;
+    const label = (r) => `${esc(r.s.name)}: teacher ${r.s.teacher}%, parent ${r.s.parent}%, student ${r.s.student}%`;
+    const ask = (r) => `data-ask="persp" data-skill="${esc(r.s.name)}" data-hi="${r.hi}" data-lo="${r.lo}"`;
+    const big = (r) => `<button type="button" class="pv-row big focus" ${ask(r)} aria-label="${label(r)}. Ask Tilli why the views differ">
+        <span class="pv-name">${esc(r.s.name)}</span>
+        <span class="pv-sub">${PV[r.hi].label} and ${PV[r.lo].label.toLowerCase()} see it differently</span>
+        <span class="gr-track pv-track"><span class="gr-seg b1"></span><span class="gr-seg b2"></span><span class="gr-seg b3"></span>
+          <span class="pv-link" style="left:${r.s[r.lo]}%;width:${r.gap}%"></span>
+          ${[r.lo, r.hi].map((k) => `<span class="pv-mk" style="left:${r.s[k]}%">${dot(k)}</span><span class="pv-val" style="left:${r.s[k]}%">${r.s[k]}%</span>`).join('')}</span>
+      </button>`;
+    const small = (r, i) => `<button type="button" class="pv-row small focus${i >= PV_FOLD && !S.pvMore ? ' pv-folded' : ''}" ${ask(r)} aria-label="${label(r)}. Ask Tilli why the views differ">
+        <span class="pv-main"><span class="pv-name">${esc(r.s.name)}</span><span class="pv-nums">${num(r.hi, r.s)} · ${num(r.lo, r.s)}</span></span>
+        <span class="pv-pair">${dot(r.hi)}<span class="pv-ne" aria-hidden="true">≠</span>${dot(r.lo)}</span>
+      </button>`;
+    const ok = (r) => `<button type="button" class="pv-row small ok focus" aria-label="${label(r)}. All three agree">
+        <span class="pv-main"><span class="pv-name">${esc(r.s.name)}</span><span class="pv-nums">${num('teacher', r.s)} · ${num('parent', r.s)} · ${num('student', r.s)}</span></span>
+        <span class="pv-agree">✓ <span>All three agree</span></span>
+      </button>`;
+    // Pattern: the viewpoint most often lowest (or highest) across the gaps.
+    const lean = (side) => {
+      const c = {}; differ.forEach((r) => { c[r[side]] = (c[r[side]] || 0) + 1; });
+      const k = Object.keys(c).sort((x, y) => c[y] - c[x])[0];
+      return k ? { side, k, n: c[k] } : null;
+    };
+    const PAT_LINE = {
+      lo: { teacher: 'You rate your class lower than families do', parent: 'Parents rate the class lower than you and the children do', student: 'Children rate themselves lower than you and their parents do' },
+      hi: { teacher: 'You rate your class higher than families do', parent: 'Parents rate the class higher than you and the children do', student: 'Children rate themselves higher than you and their parents do' },
+    };
+    const best = [lean('lo'), lean('hi')].filter((x) => x && differ.length >= 3 && x.n >= Math.ceil(differ.length * PV_PATTERN)).sort((x, y) => y.n - x.n)[0];
+    const lead = best
+      ? `<div class="pv-pattern">${dot(best.k)}<p><b>${PAT_LINE[best.side][best.k]} on ${best.n} of ${N} skills.</b> <span>That's one pattern, not ${best.n} separate problems — a skill can show up differently at home, in play, or in class.</span></p></div>`
+      : `<p class="pv-sum">${!differ.length ? 'Teacher, parent and student agree on every skill.' : `Views line up on ${aligned.length} of ${N} skills. ${differ.length === 1 ? '1 differs.' : differ.length + ' differ.'}`}</p>`;
+    const rest = differ.slice(PV_TOP), hidden = Math.max(0, rest.length - PV_FOLD);
+    const sec = (t) => `<div class="pv-sh">${t}</div>`;
+    const info = 'Each skill shows whether your view, the parent’s and the child’s line up. Where they differ, the two furthest apart are shown on the level track. Hover or tap a skill for the numbers; tap again to ask Tilli why.';
+    return `<div class="ui-card ins-card ins-persp mt-4">
+        <div class="ui-title md ins-h">Every skill, three viewpoints ${infoBtn('info-persp')}</div>${window.DemoUI ? infoPopParas('info-persp', [info, esc(PERSP_INFO)]) : infoPop('info-persp', PERSP_INFO)}
+        ${lead}
+        ${differ.length ? sec(differ.length > PV_TOP ? 'Biggest differences' : 'Views differ') + `<div class="pv-list">${differ.slice(0, PV_TOP).map(big).join('')}</div>` : ''}
+        ${rest.length ? sec('Also differ') + `<div class="pv-list">${rest.map(small).join('')}</div>`
+          + (hidden ? `<button type="button" class="btn-link pv-more focus" data-pv-more aria-expanded="${!!S.pvMore}">${S.pvMore ? 'Show fewer' : `Show ${hidden} more`}</button>` : '') : ''}
+        ${aligned.length ? sec('Aligned') + `<div class="pv-list">${aligned.map(ok).join('')}</div>` : ''}
+        <div class="gr-key pv-key">${Object.keys(PV).map((k) => `<span>${dot(k)}<span>${PV[k].label}</span></span>`).join('')}</div>
       </div>`;
   }
-  // "Worth a closer look" — the few biggest, most meaningful gaps, reframed as
-  // gentle prompts (never "you're wrong"), each ending in an Ask Tilli action.
-  function worthCloserLook(stats) {
-    const PERSP_NOUN = { teacher: 'you', parent: 'parents at home', student: 'the children themselves' };
-    const picked = stats.map((s) => {
-      const ps = [['teacher', s.teacher], ['parent', s.parent], ['student', s.student]];
-      const hi = ps.reduce((a, b) => (b[1] > a[1] ? b : a));
-      const lo = ps.reduce((a, b) => (b[1] < a[1] ? b : a));
-      return Object.assign({}, s, { hiKey: hi[0], loKey: lo[0] });
-    }).sort((a, b) => b.gap - a.gap).filter((s) => s.gap >= 12).slice(0, 3);
-    if (!picked.length) return '';
-    const items = picked.map((s) => {
-      const line = `${cap(PERSP_NOUN[s.hiKey])} rate ${esc(s.name)} noticeably higher than ${PERSP_NOUN[s.loKey]} do. That's worth a closer look — a skill can simply show up differently at home, in play, or in class.`;
-      return `<div class="wcl-item">
-        <div class="ui-title md wcl-skill">${esc(s.name)}${window.DemoUI ? '' /* DEMO: bands only, no point gaps */ : ` <span class="wcl-gap">${s.gap} pts apart</span>`}</div>
-        <p class="wcl-text">${line}</p>
-        <button class="btn-soft green focus" data-ask="persp" data-skill="${esc(s.name)}" data-hi="${esc(s.hiKey)}" data-lo="${esc(s.loKey)}">Ask Tilli why this happens →</button>
-      </div>`;
-    }).join('');
-    return `<div class="ui-card ins-card">
-      <div class="ui-title md ins-h">Worth a closer look</div>
-      <div class="ui-meta ins-sub">The few places your class's views differ most — each a conversation, never a correction.</div>
-      <div class="wcl-list">${items}</div>
-    </div>`;
-  }
-  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
   // --- Sub-tab 3: Compare my sections (own sections, one grade, no benchmark) -
   function insCompare() {
@@ -3293,10 +3193,11 @@
     if (!lines.length) return [];
     const head = cells(lines[0]).map((h) => h.toLowerCase());
     const find = (re) => head.findIndex((h) => re.test(h));
-    const hasHead = head.some((h) => /first|last|surname|name|admission|adm|roll/.test(h));
+    // DEMO: Spanish headers too (Nombre · Apellidos · Nº de matrícula), for the Spanish demo kit.
+    const hasHead = head.some((h) => /first|last|surname|name|admission|adm|roll|nombre|apellido|matr/.test(h));
     let fi = 0, li = 1, ai = 2, ni = -1;
     if (hasHead) {
-      fi = find(/first|given/); li = find(/last|surname|family/); ai = find(/adm|admission|roll|student.?id|number/);
+      fi = find(/first|given|^nombre$/); li = find(/last|surname|family|apellido/); ai = find(/adm|admission|roll|student.?id|number|matr|^n[º°o]/);
       if (fi < 0 && li < 0) ni = find(/name/);
     }
     return lines.slice(hasHead ? 1 : 0).map((line) => {
@@ -3328,15 +3229,15 @@
     if (a.step === 'method') {
       step = `${title('')}${secPick}
         <div class="onb-methods add-methods"${a.sectionId === 'new' ? ' hidden' : ''}>
-          <button class="onb-method focus" data-add-method="sheet"><span class="ic">🌱</span><span class="lb">Type them in</span></button>
-          <button class="onb-method focus" data-add-method="csv"><span class="ic">📄</span><span class="lb">Upload a CSV</span></button>
-          <button class="onb-method focus" data-add-method="pic"><span class="ic">📷</span><span class="lb">Upload a picture</span></button>
+          <button class="onb-method focus" data-add-method="sheet"><span class="ic">${TI('keyboard')}</span><span class="lb">Type them in</span></button>
+          <button class="onb-method focus" data-add-method="csv"><span class="ic">${TI('file')}</span><span class="lb">Upload a CSV</span></button>
+          <button class="onb-method focus" data-add-method="pic"><span class="ic">${TI('camera')}</span><span class="lb">Upload a picture</span></button>
         </div>`;
     } else if (a.step === 'csv') {
       step = `${title(`Students are added to <b class="add-target">${esc(addGradeName())}</b>.`)}${secPick}
         <label class="onb-drop">
           <input type="file" accept=".csv,text/csv" data-add-csv class="hidden">
-          <div class="onb-drop-ic">📄</div>
+          <div class="onb-drop-ic">${TI('file')}</div>
           <div class="onb-drop-t">Upload a CSV</div>
           <div class="onb-drop-s">Columns: first name, last name, admission number</div>
         </label>
@@ -3347,12 +3248,12 @@
         <div class="onb-grid2">
           <label class="onb-drop compact">
             <input type="file" accept="image/*" data-add-pic class="hidden">
-            <div class="onb-drop-ic">🖼️</div>
+            <div class="onb-drop-ic">${TI('image')}</div>
             <div class="onb-drop-t">Upload a picture</div>
           </label>
           <label class="onb-drop compact">
             <input type="file" accept="image/*" capture="environment" data-add-pic class="hidden">
-            <div class="onb-drop-ic">📷</div>
+            <div class="onb-drop-ic">${TI('camera')}</div>
             <div class="onb-drop-t">Take a picture</div>
           </label>
         </div>
@@ -3540,12 +3441,37 @@
   }
 
   // ---------------- Ask Tilli ----------------
+  // DEMO (Nov 13): Tilli shows its steps while it "thinks" (S.ask.steps), keeps
+  // them folded above each answer, and offers follow-up chips under the newest one.
+  const ASK_STEP_MS = 520;   // time each "thinking" step stays current before the next ticks in
+  const askT = (k, v) => (window.DemoUI ? window.DemoUI.t(k, v) : '');
+  function askThreadHTML(a) {
+    const last = a.thread.length - 1;
+    const msgs = a.thread.map((m, i) => {
+      const thought = m.think && m.think.length ? `<details class="ask-thought"><summary>${esc(askT('askThought', { k: m.think.length }))}</summary><ol>${m.think.map((x) => `<li>${fmtMsg(x)}</li>`).join('')}</ol></details>` : '';
+      const next = i === last && m.role === 'tilli' && m.next && m.next.length && !a.thinking
+        ? `<div class="dm-chips ask-next" data-demo>${m.next.map((q) => `<button class="dm-chip focus" data-demo-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>` : '';
+      return `<div class="ask-msg ${m.role}">${thought}${fmtMsg(m.text)}</div>${next}`;
+    }).join('');
+    // While "thinking": the steps tick in one by one (a three-dot bubble when there are none).
+    const steps = a.steps || [];
+    const typing = !a.thinking ? '' : steps.length
+      ? `<div class="ask-msg tilli ask-thinking"><div class="ask-thinking-h"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>${esc(askT('askThinking'))}</div><ol>${steps.slice(0, (a.stepI || 0) + 1).map((x, k) => `<li class="${k < (a.stepI || 0) ? 'done' : 'now'}">${fmtMsg(x)}</li>`).join('')}</ol></div>`
+      : `<div class="ask-msg tilli demo-typing"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span></div>`;
+    return msgs + typing;
+  }
+  // Typed questions (English + Spanish demo; Hindi keeps the tap chips).
+  function askComposer() {
+    if (!(window.DemoUI && window.DemoUI.hasBank && window.DemoUI.hasBank())) return '';
+    // Placeholder changes when "Tell Tilli something to remember" primes the box; the mic types into it.
+    const ph = window.DemoUI.composerPh ? window.DemoUI.composerPh() : askT('askPh');
+    return `<div class="ask-compose"><textarea class="ask-input" rows="1" placeholder="${esc(ph)}" aria-label="${esc(ph)}">${esc(S.ask.prompt || '')}</textarea>
+      ${window.DemoUI.composerMic ? window.DemoUI.composerMic() : ''}<button class="ask-sendbtn focus" data-send-ask aria-label="${esc(askT('askSend'))}" title="${esc(askT('askSend'))}"${S.ask.thinking ? ' disabled' : ''}>${LU.send}</button></div>
+      <p class="dm-micstat ask-micstat" aria-live="polite" hidden></p>`;
+  }
   function askPanel() {
     const a = S.ask;
-    const thread = a.thread.map((m) => `<div class="ask-msg ${m.role}">${fmtMsg(m.text)}</div>`).join('');
-    // While "thinking", a shimmering three-dot bubble stands in for Tilli's reply
-    // so the assistant reads as considering the question, not answering instantly.
-    const typing = a.thinking ? `<div class="ask-msg tilli demo-typing"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span></div>` : '';
+    const thread = askThreadHTML(a), typing = '';
     const empty = a.thread.length === 0 && !a.thinking ? `<div class="ask-empty">${flowerArt('growing', 76, 0)}<div>${esc(window.DemoUI ? window.DemoUI.t('askEmpty') : '')}</div></div>` : '';
     // Chat window that grows out of the floating Ask bubble and stays pinned
     // to it (positionAskPop). Phones keep a bottom sheet over a scrim.
@@ -3561,7 +3487,7 @@
           ${a.context ? `<div class="ui-badge ask-ctx">From: ${esc(a.context)}</div>` : ''}
           ${thread}${typing}${empty}
         </div>
-        <div class="ask-foot">${window.DemoUI ? window.DemoUI.chipsHTML() : ''}</div>
+        <div class="ask-foot">${window.DemoUI ? window.DemoUI.chipsHTML() : ''}${askComposer()}</div>
       </div>`;
   }
   // Pin the chat window to the bubble's corner: above the bubbles in a bottom
@@ -3707,13 +3633,29 @@
     S.ask.prompt = ''; S.ask.thinking = true;
     const chat = storeChat();
     render();
-    setTimeout(() => {
-      chat.thread = chat.thread.concat([{ role: 'tilli', text: (window.DemoUI && window.DemoUI.answer(p)) || askReply(p, chat.scope) }]);
+    // DEMO: the reply is worked out now (it may save a note); its steps then tick in one by one.
+    const r = (window.DemoUI && window.DemoUI.answer(p)) || askReply(p, chat.scope);
+    const reply = typeof r === 'string' ? { text: r } : r;
+    const steps = reply.think || [];
+    S.ask.steps = steps; S.ask.stepI = 0;
+    const land = () => {
+      const msg = { role: 'tilli', text: reply.text };
+      if (steps.length) msg.think = steps;
+      if (reply.next && reply.next.length) msg.next = reply.next;
+      chat.thread = chat.thread.concat([msg]);
       chat.at = new Date().toISOString(); saveChats();
       if (S.ask.chatId !== chat.id) return;   // switched chats mid-think — reply is saved, just not shown
-      S.ask.thinking = false; S.ask.thread = chat.thread.slice();
+      S.ask.thinking = false; S.ask.steps = null; S.ask.thread = chat.thread.slice();
       if (S.ask.open || S.nav === 'ask') render();
-    }, 700 + Math.random() * 600);   // DEMO: same think window as the site's Ask-Tilli demo (700–1300 ms)
+    };
+    if (!steps.length) { setTimeout(land, 700 + Math.random() * 600); return; }   // same think window as the site's Ask-Tilli demo (700–1300 ms)
+    const tick = () => {
+      if (S.ask.chatId !== chat.id || !S.ask.thinking) return land();
+      if (S.ask.stepI >= steps.length - 1) return setTimeout(land, ASK_STEP_MS);
+      S.ask.stepI++; if (S.ask.open || S.nav === 'ask') render();
+      setTimeout(tick, ASK_STEP_MS);
+    };
+    setTimeout(tick, ASK_STEP_MS);
   }
   function exportChat() {
     const a = S.ask; if (!a.thread.length) return;
@@ -3754,7 +3696,7 @@
     const opts = [['all', 'All my classes']].concat(S.data.sections.map((x) => [x.id, secLabel(x)]))
       .map(([v, l]) => `<option value="${esc(v)}"${v === a.scope ? ' selected' : ''}>${esc(l)}</option>`).join('');
     const body = (a.thread.length || a.thinking)
-      ? `<div class="askx-thread">${a.thread.map((m) => `<div class="ask-msg ${m.role}">${fmtMsg(m.text)}</div>`).join('')}${a.thinking ? '<div class="ask-msg tilli demo-typing"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span></div>' : ''}</div>`
+      ? `<div class="askx-thread">${askThreadHTML(a)}</div>`
       : `<div class="askx-empty">
           <span class="askx-spark">${LU.sparkLg}</span>
           <h2>Hi! I'm Tilli 👋</h2>
@@ -3793,7 +3735,7 @@
         </div>
         <div class="askx-body">${body}</div>
         <div class="askx-foot">
-          ${window.DemoUI ? window.DemoUI.chipsHTML() : ''}
+          ${window.DemoUI ? window.DemoUI.chipsHTML() : ''}${askComposer()}
           <p class="askx-note">${window.DemoUI ? 'In this demo, Tilli’s answers are written in advance. Nothing you ask is sent anywhere.' /* DEMO */ : 'Questions and prompts asked from the AI tool will be analysed by our research team for improvement, safeguarding and research purposes.'}</p>
         </div>
       </section>
@@ -3943,7 +3885,7 @@
   function mirrorCard() {
     const R = S.teacher.reflection || { cats: [], questions: [] };
     const snaps = mirrorSnapshots();
-    const head = `<div class="mir-head"><div><div class="ui-title mir-t">🪞 Your Teaching Mirror</div><div class="ui-meta mir-s">How you described yourself in each reflection — switch between them to see how you&rsquo;ve changed.</div></div></div>`;
+    const head = `<div class="mir-head"><div><div class="ui-title mir-t">${TI('mirror')} Your Teaching Mirror</div><div class="ui-meta mir-s">How you described yourself in each reflection — switch between them to see how you&rsquo;ve changed.</div></div></div>`;
     if (!snaps.length) {
       return `<div class="ui-card mir">${head}<p class="mir-empty">Finish your reflection to see your Teaching Mirror.</p></div>`;
     }
@@ -3998,7 +3940,7 @@
       <p class="ui-screen-sub flush">Changes save to your profile right away.</p>
       <div class="ui-card td-rows mt-4">
         ${row('Name', txt('name', 'Your full name'))}
-        <div class="pf-row"><span class="k">Email</span><span class="v">${esc(S.teacher.email || '')} 🔒</span></div>
+        <div class="pf-row"><span class="k">Email</span><span class="v">${esc(S.teacher.email || '')} ${TI('lock')}</span></div>
         ${row('Gender', sel('gender', O.genders))}
         ${row('Age', txt('age', 'Age', true))}
         ${row('Years teaching', txt('years', 'Years', true))}
@@ -4028,7 +3970,7 @@
       <div class="pf-titlebar">
         <div><h1 class="ui-screen-title">Your profile</h1>
         <p class="ui-screen-sub flush">From your one-time setup — keep it up to date.</p></div>
-        <button class="btn-line focus" data-pf-edit title="Edit your name, age, experience, education and location">✎ Edit details</button>
+        <button class="btn-line focus" data-pf-edit title="Edit your name, age, experience, education and location">${TI('pencil')} Edit details</button>
       </div>
       <div class="ui-card td-rows mt-4">${rows}</div>
       ${mirrorCard()}
@@ -4095,14 +4037,11 @@
     if (rs) rs.addEventListener('input', (e) => { S.rosterSearch = e.target.value; refreshRoster(); });
     root.querySelectorAll('[data-sort]').forEach((b) => b.addEventListener('click', () => {
       S.rosterSort = b.dataset.sort;
-      root.querySelectorAll('.rsort').forEach((x) => x.classList.toggle('on', x.dataset.sort === S.rosterSort));
-      root.querySelectorAll('[data-sortsel]').forEach((x) => { x.value = S.rosterSort; });
-      refreshRoster();
-    }));
-    // DEMO: phones sort with a dropdown (Nov 12, user); it mirrors the State · Name · Growth chips.
-    root.querySelectorAll('[data-sortsel]').forEach((sel) => sel.addEventListener('change', () => {
-      S.rosterSort = sel.value;
-      root.querySelectorAll('.rsort').forEach((x) => x.classList.toggle('on', x.dataset.sort === S.rosterSort));
+      // Desktop chips and the phone Sort menu (DEMO, Nov 13: filter icon + our own dropdown) share data-sort.
+      root.querySelectorAll('.rsort, .roster-sortopt').forEach((x) => {
+        const on = x.dataset.sort === S.rosterSort; x.classList.toggle('on', on);
+        if (x.classList.contains('roster-sortopt')) x.setAttribute('aria-checked', on);
+      });
       refreshRoster();
     }));
     root.querySelectorAll('[data-rview]').forEach((b) => b.addEventListener('click', () => {   // DEMO: List | Grid
@@ -4113,8 +4052,8 @@
     // students: + Add students, multi-select → parent report PDFs
     root.querySelectorAll('[data-add-students]').forEach((b) => b.addEventListener('click', () => openAddFlow()));
     root.querySelectorAll('[data-pick-stu]').forEach((b) => b.addEventListener('click', () => togglePick(b.dataset.pickStu)));
-    const selStart = root.querySelector('[data-sel-start]');
-    if (selStart) selStart.addEventListener('click', () => { S.select = { on: true, ids: {}, busy: '', err: '' }; render(); });
+    // Desktop button + the phone kebab menu item (DEMO, Nov 13) both start the multi-select.
+    root.querySelectorAll('[data-sel-start]').forEach((b) => b.addEventListener('click', () => { S.select = { on: true, ids: {}, busy: '', err: '' }; render(); }));
     const selCancel = root.querySelector('[data-sel-cancel]');
     if (selCancel) selCancel.addEventListener('click', () => { if (S.select.busy) return; S.select = { on: false, ids: {}, busy: '', err: '' }; render(); });
     const selAll = root.querySelector('[data-sel-all]');
@@ -4284,20 +4223,28 @@
 
     // insights
     root.querySelectorAll('[data-inview]').forEach((b) => b.addEventListener('click', () => { S.insightsView = b.dataset.inview; render(); }));
-    root.querySelectorAll('[data-growth]').forEach((b) => b.addEventListener('click', () => { S.growthFilter = b.dataset.growth; render(); }));
-    const grSel = root.querySelector('[data-growth-skill]');
-    if (grSel) grSel.addEventListener('change', () => { S.growthFilter = grSel.value || 'overview'; render(); });
-    const grTbl = root.querySelector('[data-growth-table]');
-    if (grTbl) grTbl.addEventListener('click', () => { S.growthTable = !S.growthTable; render(); });
-    wireGrowth();
     root.querySelectorAll('[data-ov-sel]').forEach((x) => x.addEventListener('change', () => { S.ovBand = x.value || null; S.ovSkill = null; render(); }));   // DEMO
-    root.querySelectorAll('[data-growth-all]').forEach((x) => x.addEventListener('change', () => { S.growthFilter = x.value || 'overview'; render(); }));   // DEMO
+    root.querySelectorAll('[data-pv-more]').forEach((b) => b.addEventListener('click', () => { S.pvMore = !S.pvMore; render(); }));
+    root.querySelectorAll('[data-growth-all]').forEach((x) => x.addEventListener('change', () => { S.growthFilter = x.value || 'sel'; render(); }));
+    // Growth + Perspectives rows on touch screens (no hover): 1st tap shows that row's scores,
+    // a 2nd tap on the same row goes on to Ask Tilli (the [data-ask] handler).
+    // Capture + registered before [data-ask], so it runs first and can stop it.
+    if (window.matchMedia && matchMedia('(hover: none)').matches) {
+      root.querySelectorAll('.gr-row, .pv-row').forEach((r) => r.addEventListener('click', (e) => {
+        if (r.classList.contains('show-nums')) return;
+        e.stopImmediatePropagation(); e.preventDefault();
+        root.querySelectorAll('.show-nums').forEach((x) => x.classList.remove('show-nums'));
+        r.classList.add('show-nums');
+      }, true));
+    }
     root.querySelectorAll('[data-ov-band]').forEach((b) => b.addEventListener('click', () => { S.ovBand = S.ovBand === b.dataset.ovBand ? null : b.dataset.ovBand; S.ovSkill = null; render(); }));
+    root.querySelectorAll('[data-ov-all]').forEach((b) => b.addEventListener('click', () => { S.ovAll = !S.ovAll; S.ovSkill = null; render(); }));
     root.querySelectorAll('[data-ov-skill]').forEach((b) => b.addEventListener('click', () => { S.ovSkill = S.ovSkill === b.dataset.ovSkill ? null : b.dataset.ovSkill; render(); }));
-    root.querySelectorAll('[data-skillgroup]').forEach((b) => b.addEventListener('click', () => { S.skillGroup = b.dataset.skillgroup; render(); }));
     root.querySelectorAll('[data-cmpgrade]').forEach((b) => b.addEventListener('click', () => { S.compareGrade = b.dataset.cmpgrade; render(); }));
     root.querySelectorAll('[data-ask-ins]').forEach((b) => b.addEventListener('click', () => {
       const sec = section();
+      const dq = window.DemoUI && window.DemoUI.askFor && window.DemoUI.askFor(b.dataset.askIns);
+      if (dq) { openAsk(dq.context, ''); sendAsk(dq.q); return; }   // DEMO
       if (b.dataset.askIns === 'grow') openAsk(`${secLabel(sec)} · class growth`, `My ${askClass(sec)} class data shows most skills rising since baseline, with a few still at Beginner level. What are 2–3 practical next steps?`);
       else openAsk(`${secLabel(sec)} · perspective gaps`, `My ${askClass(sec)} class shows notable gaps between teacher, parent and student views on some skills. What are 2–3 practical next steps to reconcile these kindly?`);
     }));
@@ -4310,7 +4257,7 @@
     const ai = root.querySelector('.ask-input');
     if (ai) ai.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAsk(S.ask.prompt); } });   // Shift+Enter = new line
     // Composer grows with its text, up to ASK_INPUT_MAX px, then scrolls.
-    const fitAi = () => { if (!ai) return; ai.style.height = 'auto'; ai.style.height = Math.min(ai.scrollHeight, ASK_INPUT_MAX) + 'px'; };
+    const fitAi = () => { if (!ai) return; ai.style.height = 'auto'; ai.style.height = Math.min(ai.scrollHeight + ai.offsetHeight - ai.clientHeight, ASK_INPUT_MAX) + 'px'; };   // + borders, or a scrollbar shows on one line
     if (ai) { fitAi(); ai.addEventListener('input', (e) => { S.ask.prompt = e.target.value; fitAi(); }); }
     const send = root.querySelector('[data-send-ask]');
     if (send) send.addEventListener('click', () => sendAsk(S.ask.prompt));
@@ -4321,6 +4268,8 @@
     wireAskScreen();
     root.querySelectorAll('[data-ask]').forEach((b) => b.addEventListener('click', () => {
       const sec = section();
+      const dq = window.DemoUI && window.DemoUI.askFor && window.DemoUI.askFor(b.dataset.ask, b.dataset.skillKey || b.dataset.skill);
+      if (dq) { openAsk(dq.context, ''); sendAsk(dq.q); return; }   // DEMO
       const skill = b.dataset.skill, band = b.dataset.band;
       const PN = { teacher: 'you (the teacher)', parent: 'parents at home', student: 'the children themselves' };
       if (b.dataset.ask === 'activity') openAsk(`${secLabel(sec)} · ${skill}`, `Suggest a 10-minute classroom activity to build ${skill} for a ${askGrade(sec.grade)} student currently at ${band} level. My class has ~${sec.students.length} students and limited materials.`);
@@ -4417,7 +4366,6 @@
     --rr-card-min: 160px;   /* Students grid: narrowest a card gets before the grid drops a column (2 columns on a phone) */
     --rr-card-gap: 10px;    /* Students grid: space between cards */
     --rr-indent: 60px;      /* phone student list: how far the stage badges sit in from the left (lines them up under the name) */
-    --gr-min-w: 560px;      /* phone Insights growth chart: narrowest it draws before scrolling sideways */
   }
   .dash-col { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; }
   /* Header bar look comes from .ui-header (tilli.css) — same height/border as the admin header. */
@@ -4507,13 +4455,11 @@
   .pg-tip { position: absolute; bottom: calc(100% - 8px); left: 50%; transform: translateX(-50%); z-index: 20; padding: 12px 14px; width: 186px; opacity: 0; visibility: hidden; transition: opacity .12s; pointer-events: none; }
   .pg-cell:hover .pg-tip, .pg-cell.tip-on .pg-tip { opacity: 1; visibility: visible; }
   /* Hover devices read tooltips on hover; touch devices (hover: none) get an ⓘ to tap. */
-  .tip-i, .gr-taps { display: none; }
+  .tip-i { display: none; }
   .tip-i { position: absolute; top: -4px; right: calc(50% - 30px); z-index: 2; margin: 0; }   /* .ui-info.lg — positioning only */
   .tip-host.tip-on .tip-i { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-wash); }
-  .gr-taps { gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }   /* chips = .ui-filterchip[aria-pressed] */
   @media (hover: none) {
     .tip-i { display: inline-grid; }
-    .gr-taps { display: flex; }
     .pg-cell:hover .pg-tip { opacity: 0; visibility: hidden; }   /* a tap shouldn't leave a sticky hover tip */
     .pg-cell.tip-on .pg-tip { opacity: 1; visibility: visible; }
   }
@@ -4553,8 +4499,9 @@
   .dash-main.ask-mode { padding: 0; max-width: none; display: flex; min-height: 0; }
   /* Ask Tilli full screen (.askx-*) — shared with the school admin dashboard; styles live in tilli.css. */
   @media (max-width: 639px) {
-    .dash-main.ask-mode { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
-    .askx { --askx-foot-pr: 66px; }
+    .dash-main.ask-mode { padding-bottom: calc(64px + var(--askx-fab-rise) + env(safe-area-inset-bottom)); }   /* DEMO: + the raised centre Ask button, so it doesn't sit on the footer note */
+    .askx { --askx-foot-pr: 14px; }
+    .dash-main.ask-mode { --askx-fab-rise: 22px; }   /* DEMO (Nov 13): no floating help bubble on phones (help is the header "?"), so the composer uses the full width */
   }
   @media (prefers-reduced-motion: reduce) { .askx-hist { transition: none; } }
 
@@ -4934,28 +4881,8 @@
   /* Level-tone fills for the Compare mini meters (never traffic-light red). */
   .ui-meter > .bs-fill-focus { background: var(--lvl-1-soft); } .ui-meter > .bs-fill-devel { background: var(--lvl-2-soft); } .ui-meter > .bs-fill-strong { background: var(--lvl-3-soft); }
 
-  /* c) Detailed skill breakdown */
-  .sb-toggle { display: flex; gap: 6px; margin: 4px 0 16px; }
-  .sb-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .sb-card { text-align: left; cursor: pointer; font-family: var(--font-body); transition: border-color .2s, transform .2s var(--ease); }   /* .ui-card.sm.subtle */
-  .sb-card:hover { border-color: color-mix(in srgb, var(--green-500) 35%, var(--white)); transform: translateY(-1px); }
-  @media (prefers-reduced-motion: reduce) { .sb-card:hover { transform: none; } }
-  .sb-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
-  .sb-tag-cog { background: color-mix(in srgb, var(--violet-500) 12%, var(--white)); color: color-mix(in srgb, var(--violet-500) 75%, var(--ink-900)); }   /* .ui-tag, violet */
-  .scprog { display: flex; gap: 8px; margin-bottom: 10px; }
-  .scph { flex: 1; background: var(--white); border-radius: var(--radius-sm); padding: 6px 4px; text-align: center; }
-  .scph-l { display: block; font-size: var(--fs-xs); font-weight: 700; color: var(--text-meta); text-transform: uppercase; }
-  .scph-v { display: block; font-size: var(--fs-sm); font-weight: 700; color: var(--ink-700); }
-  .scph-empty .scph-v { color: var(--ink-300); }
-  .sb-ask { display: inline-block; margin-top: 11px; font-size: var(--fs-sm); font-weight: 700; color: var(--green-700); }
 
   /* Perspectives */
-  .pv-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 4px; }
-  .pv-card { background: var(--surface-100); border-radius: var(--radius-md); padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  .pv-skill { font-size: var(--fs-sm); font-weight: 700; color: var(--ink-700); }
-  .pv-nums { display: flex; gap: 12px; }
-  .pv-num { display: flex; flex-direction: column; align-items: center; line-height: 1.25; }
-  .pv-num i { font-style: normal; font-size: var(--fs-sm); } .pv-num b { font-size: var(--fs-sm); font-weight: 700; color: var(--ink-900); } .pv-num em { font-style: normal; font-size: var(--fs-xs); font-weight: 700; color: var(--text-meta); text-transform: uppercase; }
   .wcl-list { display: flex; flex-direction: column; gap: 12px; }
   .wcl-item { background: var(--surface-100); border-radius: var(--radius-md); padding: 14px 16px; }
   .wcl-skill { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }   /* .ui-title.md */
@@ -5167,29 +5094,80 @@
   .cr-cell.done b { color: var(--green-700); }
   .cr-row .mtx-name span:last-child { font-weight: 600; color: var(--ink-700); }
 
-  /* Insights → Growth over time (line chart) */
-  .gr-filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
-  .gr-select:has(option:checked:not([value=""])) { background: var(--ink-900); color: var(--white); border-color: var(--ink-900); }   /* .ui-filterchip.dark on a <select> */
-  .gr-view { margin-left: auto; border: none; background: none; cursor: pointer; font-family: var(--font-body); font-weight: 700; font-size: var(--fs-sm); color: var(--text-meta); padding: 6px 8px; border-radius: var(--radius-sm); }
-  .gr-view:hover { background: var(--surface-100); color: var(--ink-900); }
-  .gr-legend { margin: 0 0 8px; }
-  .gr-legend i { width: 16px; height: 0; border-radius: 0; }
-  .gr-wrap { position: relative; outline: none; border-radius: var(--radius-md); }
-  .gr-wrap:focus-visible { box-shadow: 0 0 0 2px var(--focus); }
-  .gr-svg { display: block; overflow: visible; }
-  /* Phones: the chart keeps a readable size and scrolls sideways in its card (scaled to fit, its text was ~5px). */
-  @media (max-width: 640px) {
-    .gr-wrap { overflow-x: auto; overscroll-behavior-x: contain; }
-    .gr-svg { min-width: var(--gr-min-w); }
-  }
-  .gr-tip { position: absolute; z-index: 3; min-width: 170px; max-width: 260px; padding: 9px 12px; pointer-events: none; }
-  .gr-tip-h { margin-bottom: 5px; }
-  .gr-tip-r { display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); padding: 2px 0; }
-  .gr-tip-r i { flex: none; width: 14px; height: 0; }
-  .gr-tip-r b { font-weight: 700; color: var(--ink-900); min-width: 46px; }
-  .gr-tip-r span { color: var(--text-meta); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .gr-table td { font-weight: 600; color: var(--ink-900); }   /* .ui-table.compact */
-  .gr-table td i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 8px; vertical-align: -1px; }
+  /* Insights → Perspectives: aligned or not (Nov 13). Reuses .gr-track / .gr-seg for the level track. */
+  :root { --pv-dot-size: 22px; --pv-dot-sm: 20px; --pv-row-pad: 8px; --pv-diff-bg: var(--surface-100); --pv-link: var(--ink-300); --pv-ok: var(--green-700); --pv-ok-bg: var(--wash-green); }
+  .pv-pattern { display: flex; gap: 12px; align-items: flex-start; background: var(--pv-diff-bg); border-radius: var(--radius-md); padding: 12px 14px; margin: 12px 0 4px; }
+  .pv-pattern p { margin: 0; font-size: var(--fs-sm); line-height: 1.5; color: var(--text-meta); }
+  .pv-pattern b { color: var(--ink-900); font-weight: 700; }
+  .pv-pattern .pv-dot { flex: none; }
+  .pv-sum { font-size: var(--fs-sm); color: var(--text-meta); margin: 8px 0 0; }
+  .pv-sh { font-size: var(--fs-xs); font-weight: 700; color: var(--text-meta); text-transform: uppercase; letter-spacing: .04em; margin: 20px 0 4px; }
+  .pv-list { display: flex; flex-direction: column; margin: 0 calc(-1 * var(--pv-row-pad)); }
+  .pv-row { all: unset; box-sizing: border-box; display: block; padding: var(--pv-row-pad); border-radius: var(--radius-md); transition: background .15s; }
+  .pv-row[data-ask] { cursor: pointer; }
+  .pv-row:hover { background: var(--surface-100); }
+  .pv-row:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; }
+  .pv-name { display: block; font-weight: 700; font-size: var(--fs-md); color: var(--ink-900); }
+  .pv-sub { display: block; font-size: var(--fs-sm); color: var(--text-meta); margin-top: 2px; }
+  .pv-dot { width: var(--pv-dot-size); height: var(--pv-dot-size); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--white); box-sizing: border-box; border: 2px solid var(--white); }
+  .pv-dot svg { width: 60%; height: 60%; }
+  .pv-track { margin-top: var(--gr-val-room); margin-left: calc(var(--pv-dot-size) / 2); margin-right: calc(var(--pv-dot-size) / 2); height: var(--pv-dot-size); }
+  .pv-link { position: absolute; top: 50%; height: 2px; transform: translateY(-50%); background: var(--pv-link); }
+  .pv-mk { position: absolute; top: 50%; transform: translate(-50%, -50%); display: flex; }
+  .pv-val { position: absolute; bottom: calc(50% + var(--pv-dot-size) / 2 + 3px); transform: translateX(-50%); font-size: var(--fs-xs); font-weight: 700; color: var(--ink-900); white-space: nowrap; opacity: 0; transition: opacity .15s; pointer-events: none; }
+  .pv-row.small { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: 1px solid var(--line-200); border-radius: 0; }
+  .pv-row.small:first-child { border-top: 0; }
+  .pv-row.small:hover { border-radius: var(--radius-md); }
+  .pv-main { min-width: 0; }
+  .pv-nums { display: block; max-height: 0; overflow: hidden; opacity: 0; font-size: var(--fs-xs); font-weight: 600; color: var(--text-meta); transition: max-height .15s, opacity .15s, margin .15s; }
+  .pv-pair { flex: none; display: inline-flex; align-items: center; gap: 4px; }
+  .pv-pair .pv-dot { width: var(--pv-dot-sm); height: var(--pv-dot-sm); }
+  .pv-ne { font-size: var(--fs-sm); font-weight: 700; color: var(--text-faint); }
+  .pv-agree { flex: none; font-size: var(--fs-xs); font-weight: 700; color: var(--pv-ok); background: var(--pv-ok-bg); border-radius: var(--radius-sm); padding: 3px 8px; white-space: nowrap; }
+  .pv-folded { display: none; }
+  .pv-more { display: block; margin: 8px auto 0; }
+  .pv-key .pv-dot { width: var(--pv-dot-sm); height: var(--pv-dot-sm); }
+  /* Numbers only when wanted: hover (mouse), keyboard focus, or a first tap on touch (.show-nums). */
+  @media (hover: hover) { .pv-row:hover .pv-val, .pv-row:hover .pv-nums { opacity: 1; } .pv-row:hover .pv-nums { max-height: 20px; margin-top: 2px; } }
+  .pv-row:focus-visible .pv-val, .pv-row.show-nums .pv-val, .pv-row:focus-visible .pv-nums, .pv-row.show-nums .pv-nums { opacity: 1; }
+  .pv-row:focus-visible .pv-nums, .pv-row.show-nums .pv-nums { max-height: 20px; margin-top: 2px; }
+
+  /* Insights → Growth over time: band dumbbells (Nov 13). Dots: ○ first window · ◐ middle · ● latest. */
+  :root { --gr-dot: #2A78D6; --gr-dot-size: 14px; --gr-min-gap: var(--gr-dot-size); --gr-dot-ring: 2px; --gr-link-h: 3px; --gr-track-h: 8px; --gr-seg-gap: 4px; --gr-row-gap: 16px; --gr-row-pad-x: 8px; --gr-group-w: 200px; --gr-val-gap: 4px; --gr-val-pad: 1px; --gr-val-room: 16px; --gr-row-pad-y: 6px; --gr-row-hover: var(--surface-100);
+    --gr-seg-1: var(--lvl-1-wash); --gr-seg-2: var(--lvl-2-wash); --gr-seg-3: var(--lvl-3-wash); }
+  .gr-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .gr-head .gr-group { width: auto; min-width: var(--gr-group-w); flex: none; }   /* compact skill-group dropdown beside the title (.select is 100% wide by default) */
+  .gr-bands { display: flex; gap: var(--gr-seg-gap); margin: 16px calc(var(--gr-dot-size) / 2) 10px; }   /* same thirds as .gr-track: each level chip centred over its segment */
+  .gr-bands > span { flex: 1; display: flex; justify-content: center; min-width: 0; }
+  .gr-rows { display: flex; flex-direction: column; gap: calc(var(--gr-row-gap) - 2 * var(--gr-row-pad-y)); margin: 0 calc(-1 * var(--gr-row-pad-x)); }
+  .gr-row { all: unset; box-sizing: border-box; display: block; cursor: pointer; padding: var(--gr-row-pad-y) var(--gr-row-pad-x); border-radius: var(--radius-md); transition: background .15s; }
+  .gr-row:hover { background: var(--gr-row-hover); }
+  .gr-row:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; }
+  /* Scores above the dots (Nov 13, shown on hover / tap): .lo hangs left of its dot, .hi right, .c centred; the latest score is darker. */
+  .gr-val { position: absolute; bottom: calc(50% + var(--gr-dot-size) / 2 + var(--gr-val-gap)); font-size: var(--fs-xs); font-weight: 700; line-height: 1; color: var(--text-meta); white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .15s; }
+  /* Hidden until wanted: hover (mouse), keyboard focus, or a first tap on touch (.show-nums, set in wire). Space stays reserved so rows don't jump. */
+  @media (hover: hover) { .gr-row:hover .gr-val { opacity: 1; } }
+  .gr-row:focus-visible .gr-val, .gr-row.show-nums .gr-val { opacity: 1; }
+  .gr-val.c { transform: translateX(-50%); }
+  .gr-val.lo { transform: translateX(calc(-100% - var(--gr-val-pad))); }   /* ends at its dot's centre … */
+  .gr-val.hi { transform: translateX(var(--gr-val-pad)); }                  /* … starts at its dot's centre: always a gap */
+  .gr-val.now { color: var(--ink-900); }
+  .gr-rh { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+  .gr-name { display: block; font-weight: 700; font-size: var(--fs-md); color: var(--ink-900); min-width: 0; }
+  .gr-d { flex: none; font-weight: 700; font-size: var(--fs-md); color: var(--text-meta); }
+  .gr-d.up { color: var(--green-700); }
+  .gr-d.down { color: var(--danger-700); }
+  .gr-track { position: relative; display: flex; align-items: center; gap: var(--gr-seg-gap); height: var(--gr-dot-size); margin: var(--gr-val-room) calc(var(--gr-dot-size) / 2) 0; }
+  .gr-seg { flex: 1; height: var(--gr-track-h); border-radius: var(--radius-pill); }
+  .gr-seg.b1 { background: var(--gr-seg-1); } .gr-seg.b2 { background: var(--gr-seg-2); } .gr-seg.b3 { background: var(--gr-seg-3); }
+  .gr-link { position: absolute; top: 50%; height: var(--gr-link-h); transform: translateY(-50%); background: var(--gr-dot); }
+  .gr-dot { position: absolute; top: 50%; width: var(--gr-dot-size); height: var(--gr-dot-size); box-sizing: border-box; border-radius: 50%; transform: translate(-50%, -50%);
+    border: var(--gr-dot-ring) solid var(--gr-dot); background: var(--white); }
+  .gr-dot.now { background: var(--gr-dot); }
+  .gr-dot.mid { background: linear-gradient(90deg, var(--gr-dot) 50%, var(--white) 50%); }
+  .gr-key { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; font-size: var(--fs-sm); color: var(--text-meta); }
+  .gr-key span { display: inline-flex; align-items: center; gap: 6px; }
+  .gr-key .gr-dot { position: static; transform: none; flex: none; }
 
   /* Insights → Class Skill Overview (level tokens: 1 Beginner · 2 Learner · 3 Advanced) */
   .cso-h { font-family: var(--font-heading); font-weight: 700; font-size: var(--fs-xl); color: var(--ink-900); }
@@ -5202,15 +5180,32 @@
   .info-row { font-size: var(--fs-sm); font-weight: 700; color: var(--text-meta); margin-bottom: 12px; }
   .cso-note { font-weight: 700; color: var(--ink-600); }
   .cso-bh i { width: var(--dot-md); height: var(--dot-md); border-radius: 50%; }
-  .cso-list { border-top: 1px solid var(--line-200); }
-  .cso-row + .cso-row { border-top: 1px solid var(--line-200); }
-  .cso-rowbtn { width: 100%; display: grid; grid-template-columns: minmax(150px, 220px) 1fr 84px 16px; gap: 16px; align-items: center; background: none; border: none; cursor: pointer; padding: 12px 8px; font-family: var(--font-body); text-align: left; border-radius: var(--radius-sm); }
-  .cso-rowbtn:hover { background: var(--surface-100); }
-  .cso-name { font-weight: 700; font-size: var(--fs-md); color: var(--ink-900); }
-  .cso-status { justify-self: end; }   /* .ui-bandword; bar = .ui-bandbar */
-  .cso-chev { color: var(--text-faint); font-size: var(--fs-lg); line-height: 1; transition: transform .15s; }
-  .cso-row.open .cso-chev { transform: rotate(90deg); }
-  .cso-row.open { background: var(--surface-100); border-radius: var(--radius-md); }
+  /* Skill cards (Nov 13): wash fill + icon disc in the tag colour; the open card spans the row. */
+  :root { --cso-card-min: 220px; --cso-gap: 10px; --cso-pad-x: 12px; --cso-pad: 10px var(--cso-pad-x); --cso-ic-size: 36px; --cso-ic-glyph: 20px; --cso-border-mix: 35%; }
+  @media (max-width: 560px) { :root { --cso-card-min: 100%; } }   /* phones: one card per row so long skill names don't squeeze */
+  .cso-grid { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--cso-card-min), 1fr)); gap: var(--cso-gap); }
+  .cso-card { --c: var(--lvl-2); --cw: var(--lvl-2-wash); --ci: var(--lvl-2-ink);
+    background: var(--cw); border: 1px solid color-mix(in srgb, var(--c) var(--cso-border-mix), transparent); border-radius: var(--radius-md); min-width: 0; }
+  .cso-card.lvl-1 { --c: var(--lvl-1); --cw: var(--lvl-1-wash); --ci: var(--lvl-1-ink); }
+  .cso-card.lvl-3 { --c: var(--lvl-3); --cw: var(--lvl-3-wash); --ci: var(--lvl-3-ink); }
+  .cso-card.open { grid-column: 1 / -1; }
+  .cso-more { display: none; margin: 12px auto 0; }
+  @media (max-width: 640px) { .cso-more { display: block; } .cso-card.cso-extra { display: none; } }   /* phones: top 3 + Show all; desktop: every skill */
+  .cso-cardbtn { width: 100%; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; padding: var(--cso-pad); font-family: var(--font-body); text-align: left; border-radius: inherit; transition: transform .15s; }
+  .cso-card:not(.open) .cso-cardbtn:hover { transform: translateY(-2px); }
+  .cso-ic { flex: none; width: var(--cso-ic-size); height: var(--cso-ic-size); border-radius: 50%; background: var(--white); color: var(--c); display: flex; align-items: center; justify-content: center; }
+  .cso-ic svg { width: var(--cso-ic-glyph); height: var(--cso-ic-glyph); }
+  .cso-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .cso-name { font-weight: 700; font-size: var(--fs-md); color: var(--ci); line-height: 1.25; }
+  .cso-hint { font-size: var(--fs-xs); font-weight: 600; color: var(--ci); opacity: .8; }
+  .cso-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .cso-chev { color: var(--ci); opacity: .55; font-size: var(--fs-lg); line-height: 1; transition: transform .15s; }
+  .cso-card.open .cso-chev { transform: rotate(90deg); }
+  .cso-detail { padding: 0 var(--cso-pad-x) 6px; }
+  .cso-dh { margin: 2px 0 8px; }
+  .cso-dbar { margin-bottom: 14px; }
+  .cso-dbar > .cso-seg { display: flex; align-items: center; justify-content: center; font-size: var(--fs-xs); font-weight: 700; color: var(--white); overflow: hidden; }
+  .cso-detail .cso-break { padding: 0 0 6px; }
   .cso-break { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 2px 8px 12px; }
   .cso-bcol { display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
   .cso-bh { flex-basis: 100%; }
@@ -5221,8 +5216,6 @@
   .cso-bfoot { grid-column: 1 / -1; }
   @media (max-width: 760px) {
     .cso-break { grid-template-columns: 1fr; }
-    .cso-rowbtn { grid-template-columns: 1fr auto 16px; gap: 8px 10px; }
-    .cso-rowbtn .ui-bandbar { grid-column: 1 / -1; grid-row: 2; }
   }
 
   .pf-edit { cursor: default; }
@@ -5329,9 +5322,7 @@
     .ask-panel { top: 12%; left: 0; right: 0; bottom: 0; width: auto; max-width: none; height: auto; border-radius: var(--radius-card) var(--radius-card) 0 0; transform-origin: bottom center; }
     .ask-scrim { display: block; background: var(--scrim-soft); }
     /* Insights: reflow every multi-column grid to a single readable column. */
-    .sb-grid, .pv-grid { grid-template-columns: 1fr; }
     .cmp2-row { grid-template-columns: 96px 1fr; gap: 10px; }
-    .pv-card { flex-direction: column; align-items: flex-start; gap: 8px; }
   }`;
 
   window.TilliDashboard = { mount };

@@ -55,11 +55,11 @@
       logo: 'PARENT REPORT', hello: 'Hello, {fam} 👋', fam: '{n}’s family', teacher: 'Teacher: {t}', teacherFallback: 'your class teacher', term: 'Term One',
       intro: 'This report brings together what we’ve seen across three different lenses — your survey as a parent, {n}’s direct assessment, and their teacher’s observations — to give you a full picture of how {n} is growing.',
       s1: 'How we look at your child’s development 🌸', s1p: 'We look at your child through three different lenses. Each one tells us something the others can’t — and together they give us the fullest picture.',
-      lens: [['🏠 Parent Survey', 'What you observe at home — your child’s behaviour, emotions, and relationships in everyday life.'], ['📝 Student Assessment', 'Direct tasks completed by your child that measure skills like attention, memory, and reasoning.'], ['🍎 Teacher Survey', 'What the teacher observes in the classroom — focus, self-regulation, and social behaviour.']],
+      lens: [['Parent Survey', 'What you observe at home — your child’s behaviour, emotions, and relationships in everyday life.'], ['Student Assessment', 'Direct tasks completed by your child that measure skills like attention, memory, and reasoning.'], ['Teacher Survey', 'What the teacher observes in the classroom — focus, self-regulation, and social behaviour.']],
       lvP: 'These three perspectives are combined to give each skill a level. Here’s what each level means:',
       lv: { Beginner: 'This skill is emerging. Consistent practice and support will help it grow.', Learner: 'Developing well. Showing this skill in many situations — keep building!', Advanced: 'Strong and consistent — really shining in this area!' },
       s2: 'The 12 skills we look at 🌿', s2p: 'These skills shape how children learn, relate to others, and navigate the world. Research shows they matter just as much as academic ability for long-term wellbeing and happiness.',
-      sel: '💜 Social-Emotional Learning', cog: '🧠 Cognitive Skills', thSkill: 'Skill', thWhy: 'Why it matters', thLevel: 'Level',
+      sel: 'Social-Emotional Learning', cog: 'Cognitive Skills', thSkill: 'Skill', thWhy: 'Why it matters', thLevel: 'Level',
       s3: '{n}’s skill levels 💜', s3wait: '{n}’s first assessment is still in progress. Their skill levels will appear here once Baseline is complete.',
       s3p: 'Here’s where {n} is right now across all 12 skills, based on the combined view from you, their teacher, and their own assessment.',
       s4: 'Snapshot summary ✨', sumWait: '✨ Once {n}’s Baseline is complete, this summary will highlight their biggest strength and where they’ll grow the most with a little extra support.',
@@ -111,8 +111,8 @@
         inhibition_distraction: ['Create a focus spot', '📚', 'Choose one quiet spot for homework or reading, away from the TV and toys. A predictable space makes it easier for {n} to tune out distractions.'],
         inhibition_response: ['Celebrate the pause', '🌿', 'When {n} stops before reacting — even for a second — notice it. "I saw you take a breath there. That was really thoughtful." Small moments build big habits.'],
       },
-      ui: { selBtn: '☑ Parent reports', selTitle: 'Select students and download a PDF report for each, ready to share with parents', selAll: 'Select all', nSel: '{k} selected', cancel: 'Cancel',
-        preview: '👁 Preview', previewTitle: 'See the report on screen before making the PDFs', dl1: '⬇ Download PDF', dlN: '⬇ Download PDFs', loading: 'Loading…', preparing: 'Preparing {i} of {n}…',
+      ui: { selBtn: 'Parent reports', selTitle: 'Select students and download a PDF report for each, ready to share with parents', selAll: 'Select all', nSel: '{k} selected', cancel: 'Cancel',
+        preview: 'Preview', previewTitle: 'See the report on screen before making the PDFs', dl1: '⬇ Download PDF', dlN: '⬇ Download PDFs', loading: 'Loading…', preparing: 'Preparing {i} of {n}…',
         err: 'Couldn’t create the PDFs — check your connection and try again.', pvAria: 'Parent report preview', pvTitle: 'Parent report · {name}', pvOf: '{i} of {n} · ', pvSub: 'What this child’s family will receive',
         prev: '‹ Previous', next: 'Next ›', close: 'Close preview', file: 'Tilli-report' },
     },
@@ -120,11 +120,11 @@
       logo: 'INFORME PARA FAMILIAS', hello: 'Hola, {fam} 👋', fam: 'familia de {n}', teacher: 'Docente: {t}', teacherFallback: 'su tutor o tutora', term: 'Primer trimestre',
       intro: 'Este informe reúne lo que hemos visto desde tres miradas distintas —tu encuesta como familia, la evaluación directa de {n} y las observaciones de su docente— para darte una imagen completa de cómo está creciendo {n}.',
       s1: 'Cómo miramos el desarrollo de tu peque 🌸', s1p: 'Miramos a tu peque desde tres miradas distintas. Cada una nos cuenta algo que las otras no pueden y, juntas, nos dan la imagen más completa.',
-      lens: [['🏠 Encuesta a la familia', 'Lo que ves en casa: el comportamiento, las emociones y las relaciones de tu peque en el día a día.'], ['📝 Evaluación del alumno', 'Tareas que hace tu peque y que miden habilidades como la atención, la memoria y el razonamiento.'], ['🍎 Encuesta al docente', 'Lo que observa su docente en clase: la concentración, la autorregulación y el comportamiento social.']],
+      lens: [['Encuesta a la familia', 'Lo que ves en casa: el comportamiento, las emociones y las relaciones de tu peque en el día a día.'], ['Evaluación del alumno', 'Tareas que hace tu peque y que miden habilidades como la atención, la memoria y el razonamiento.'], ['Encuesta al docente', 'Lo que observa su docente en clase: la concentración, la autorregulación y el comportamiento social.']],
       lvP: 'Estas tres miradas se combinan para dar un nivel a cada habilidad. Esto es lo que significa cada nivel:',
       lv: { Beginner: 'Esta habilidad está empezando a aparecer. Con práctica y apoyo constantes, crecerá.', Learner: 'Se está desarrollando bien. Aparece en muchas situaciones: ¡a seguir!', Advanced: 'Sólida y constante: ¡está brillando en esta área!' },
       s2: 'Las 12 habilidades que miramos 🌿', s2p: 'Estas habilidades influyen en cómo aprenden los niños, cómo se relacionan con los demás y cómo se mueven por el mundo. La investigación muestra que importan tanto como el rendimiento académico para el bienestar y la felicidad a largo plazo.',
-      sel: '💜 Aprendizaje socioemocional', cog: '🧠 Habilidades cognitivas', thSkill: 'Habilidad', thWhy: 'Por qué importa', thLevel: 'Nivel',
+      sel: 'Aprendizaje socioemocional', cog: 'Habilidades cognitivas', thSkill: 'Habilidad', thWhy: 'Por qué importa', thLevel: 'Nivel',
       s3: 'Niveles de {n} en cada habilidad 💜', s3wait: 'La primera evaluación de {n} todavía está en marcha. Sus niveles aparecerán aquí cuando termine la evaluación inicial.',
       s3p: 'Así está {n} ahora mismo en las 12 habilidades, según lo que ves tú, lo que ve su docente y su propia evaluación.',
       s4: 'Resumen ✨', sumWait: '✨ Cuando termine la evaluación inicial de {n}, este resumen mostrará su mayor fortaleza y dónde más crecerá con un poco de apoyo extra.',
@@ -176,8 +176,8 @@
         inhibition_distraction: ['Un rincón para concentrarse', '📚', 'Elige un sitio tranquilo para los deberes o la lectura, lejos de la tele y los juguetes. Un espacio previsible le facilita a {n} desconectar de las distracciones.'],
         inhibition_response: ['Celebra la pausa', '🌿', 'Cuando {n} se pare antes de reaccionar, aunque sea un segundo, díselo: «He visto que has respirado antes de contestar. ¡Muy bien pensado!». Los pequeños momentos crean grandes hábitos.'],
       },
-      ui: { selBtn: '☑ Informes para familias', selTitle: 'Elige alumnos y descarga un informe en PDF de cada uno, listo para compartir con las familias', selAll: 'Seleccionar todos', nSel: '{k} seleccionados', cancel: 'Cancelar',
-        preview: '👁 Vista previa', previewTitle: 'Mira el informe en pantalla antes de crear los PDF', dl1: '⬇ Descargar PDF', dlN: '⬇ Descargar PDF', loading: 'Cargando…', preparing: 'Preparando {i} de {n}…',
+      ui: { selBtn: 'Informes para familias', selTitle: 'Elige alumnos y descarga un informe en PDF de cada uno, listo para compartir con las familias', selAll: 'Seleccionar todos', nSel: '{k} seleccionados', cancel: 'Cancelar',
+        preview: 'Vista previa', previewTitle: 'Mira el informe en pantalla antes de crear los PDF', dl1: '⬇ Descargar PDF', dlN: '⬇ Descargar PDF', loading: 'Cargando…', preparing: 'Preparando {i} de {n}…',
         err: 'No se han podido crear los PDF. Revisa la conexión y vuelve a intentarlo.', pvAria: 'Vista previa del informe', pvTitle: 'Informe para la familia · {name}', pvOf: '{i} de {n} · ', pvSub: 'Lo que recibirá su familia',
         prev: '‹ Anterior', next: 'Siguiente ›', close: 'Cerrar vista previa', file: 'informe-Tilli' },
     },
@@ -185,11 +185,11 @@
       logo: 'अभिभावक रिपोर्ट', hello: '{fam}, नमस्ते 👋', fam: '{n} के परिवारजन', teacher: 'शिक्षक: {t}', teacherFallback: 'कक्षा शिक्षक', term: 'पहला सत्र',
       intro: 'यह रिपोर्ट तीन अलग-अलग नज़रियों से देखी गई बातों को एक साथ लाती है — अभिभावक के रूप में आपका सर्वे, {n} का सीधा आकलन, और शिक्षक के अवलोकन — ताकि आपको {n} के विकास की पूरी तस्वीर मिले।',
       s1: 'हम आपके बच्चे के विकास को कैसे देखते हैं 🌸', s1p: 'हम आपके बच्चे को तीन अलग-अलग नज़रियों से देखते हैं। हर नज़रिया कुछ ऐसा बताता है जो बाकी नहीं बता सकते — और साथ मिलकर ये सबसे पूरी तस्वीर देते हैं।',
-      lens: [['🏠 अभिभावक सर्वे', 'आप घर पर जो देखते हैं — रोज़मर्रा की ज़िंदगी में बच्चे का व्यवहार, भावनाएँ और रिश्ते।'], ['📝 विद्यार्थी आकलन', 'बच्चे के किए सीधे काम, जो ध्यान, याददाश्त और तर्क जैसे कौशल मापते हैं।'], ['🍎 शिक्षक सर्वे', 'शिक्षक कक्षा में जो देखते हैं — एकाग्रता, आत्म-नियंत्रण और सामाजिक व्यवहार।']],
+      lens: [['अभिभावक सर्वे', 'आप घर पर जो देखते हैं — रोज़मर्रा की ज़िंदगी में बच्चे का व्यवहार, भावनाएँ और रिश्ते।'], ['विद्यार्थी आकलन', 'बच्चे के किए सीधे काम, जो ध्यान, याददाश्त और तर्क जैसे कौशल मापते हैं।'], ['शिक्षक सर्वे', 'शिक्षक कक्षा में जो देखते हैं — एकाग्रता, आत्म-नियंत्रण और सामाजिक व्यवहार।']],
       lvP: 'इन तीनों नज़रियों को मिलाकर हर कौशल को एक स्तर दिया जाता है। हर स्तर का मतलब:',
       lv: { Beginner: 'यह कौशल अभी उभर रहा है। नियमित अभ्यास और सहारे से यह बढ़ेगा।', Learner: 'अच्छी तरह विकसित हो रहा है। कई स्थितियों में यह कौशल दिखता है — इसे बढ़ाते रहें!', Advanced: 'मज़बूत और लगातार — इस क्षेत्र में सच में चमक रहा है!' },
       s2: '12 कौशल जिन्हें हम देखते हैं 🌿', s2p: 'ये कौशल तय करते हैं कि बच्चे कैसे सीखते हैं, दूसरों से कैसे जुड़ते हैं और दुनिया में कैसे आगे बढ़ते हैं। शोध बताता है कि लंबे समय की खुशहाली के लिए ये पढ़ाई जितने ही ज़रूरी हैं।',
-      sel: '💜 सामाजिक-भावनात्मक सीख', cog: '🧠 संज्ञानात्मक कौशल', thSkill: 'कौशल', thWhy: 'यह क्यों ज़रूरी है', thLevel: 'स्तर',
+      sel: 'सामाजिक-भावनात्मक सीख', cog: 'संज्ञानात्मक कौशल', thSkill: 'कौशल', thWhy: 'यह क्यों ज़रूरी है', thLevel: 'स्तर',
       s3: 'हर कौशल में {n} का स्तर 💜', s3wait: '{n} का पहला आकलन अभी चल रहा है। शुरुआती आकलन पूरा होने पर स्तर यहाँ दिखेंगे।',
       s3p: 'आपके, शिक्षक के और बच्चे के अपने आकलन को मिलाकर, सभी 12 कौशलों में {n} की अभी की स्थिति:',
       s4: 'सारांश ✨', sumWait: '✨ {n} का शुरुआती आकलन पूरा होने पर यह सारांश सबसे बड़ी ताक़त दिखाएगा, और वह क्षेत्र भी जहाँ थोड़े अतिरिक्त सहारे से सबसे ज़्यादा बढ़त होगी।',
@@ -241,8 +241,8 @@
         inhibition_distraction: ['ध्यान लगाने की एक जगह बनाएँ', '📚', 'होमवर्क या पढ़ने के लिए टीवी और खिलौनों से दूर एक शांत जगह चुनें। तय जगह होने से {n} के लिए भटकाव से बचना आसान होता है।'],
         inhibition_response: ['रुकने की तारीफ़ करें', '🌿', 'जब {n} प्रतिक्रिया देने से पहले रुके — एक पल के लिए भी — तो उस पर ध्यान दें: "मैंने देखा, तुमने पहले एक साँस ली। यह बहुत समझदारी की बात थी।" छोटे पल बड़ी आदतें बनाते हैं।'],
       },
-      ui: { selBtn: '☑ अभिभावक रिपोर्ट', selTitle: 'विद्यार्थी चुनें और हर एक की PDF रिपोर्ट डाउनलोड करें, अभिभावकों को भेजने के लिए तैयार', selAll: 'सभी चुनें', nSel: '{k} चुने गए', cancel: 'रद्द करें',
-        preview: '👁 पूर्वावलोकन', previewTitle: 'PDF बनाने से पहले रिपोर्ट स्क्रीन पर देखें', dl1: '⬇ PDF डाउनलोड करें', dlN: '⬇ PDF डाउनलोड करें', loading: 'लोड हो रहा है…', preparing: '{n} में से {i} तैयार हो रही है…',
+      ui: { selBtn: 'अभिभावक रिपोर्ट', selTitle: 'विद्यार्थी चुनें और हर एक की PDF रिपोर्ट डाउनलोड करें, अभिभावकों को भेजने के लिए तैयार', selAll: 'सभी चुनें', nSel: '{k} चुने गए', cancel: 'रद्द करें',
+        preview: 'पूर्वावलोकन', previewTitle: 'PDF बनाने से पहले रिपोर्ट स्क्रीन पर देखें', dl1: '⬇ PDF डाउनलोड करें', dlN: '⬇ PDF डाउनलोड करें', loading: 'लोड हो रहा है…', preparing: '{n} में से {i} तैयार हो रही है…',
         err: 'PDF नहीं बन सकीं — कनेक्शन जाँचकर फिर कोशिश करें।', pvAria: 'रिपोर्ट का पूर्वावलोकन', pvTitle: 'अभिभावक रिपोर्ट · {name}', pvOf: '{n} में से {i} · ', pvSub: 'इस बच्चे के परिवार को यही मिलेगा',
         prev: '‹ पिछला', next: 'अगला ›', close: 'पूर्वावलोकन बंद करें', file: 'Tilli-रिपोर्ट' },
     },
@@ -268,6 +268,7 @@
       mins: '{m} min', actHow: 'How to run it', actGo: 'Continue', actUp: 'Upload', markDone: 'Mark done', markUndo: 'Mark not done',
       mxUrgent: 'Urgent', mxWait: 'Can wait', mxImp: 'Important', mxLess: 'Less important',
       q: { 1: 'Do first', 2: 'Plan it', 3: 'Quick win', 4: 'Later' }, q4empty: 'Nothing here',
+      upNext: 'Up next', boxDone: '{d} of {n} done', boxCount: 'tasks: {n}', back: 'Back',
       lEyebrow: 'Developmentally on track by 10', lTitle: 'Welcome to Tilli Measures', lSub: 'Every skill a seed. Watch the whole child grow.',
       lStat1: 'foundational skills, measured from three angles', lStat2: 'a year · 20 minutes a week', lEnter: 'Enter the dashboard',
       continueAs: 'Continue as {name}', welcome: 'Welcome to the Tilli teacher dashboard',
@@ -297,10 +298,14 @@
         { name: 'Word problems', score: '6/10', marks: [1, 1, 1, 0, 1, 0, 1, 0, 1, 0], noticed: 'Every one-step problem is right. All four misses are 3-step problems: {n} does the first step correctly, then stops or repeats it.', skill: 'working_memory', next: 'Break each problem into numbered steps with a picture card for each. Fade the cards over two weeks.' },
         { name: 'Subtraction with regrouping', score: '7/10', marks: [1, 1, 0, 1, 1, 0, 1, 1, 0, 1], noticed: 'Three misses, all the same slip: {n} subtracts the smaller digit from the bigger one instead of regrouping (52 − 17 = 45).', skill: 'attention', next: 'Have {n} circle any column where the top digit is smaller before starting. One check, every time.' },
         { name: 'Place value', score: '8/10', marks: [1, 1, 1, 1, 0, 1, 1, 0, 1, 1], noticed: 'Strong with tens and ones. Both misses are three-digit numbers with a zero (writes 407 as 47).', skill: 'critical_thinking', next: 'Use place-value cards for numbers with zeros, and say each number aloud while building it.' },
+        { name: 'Word problems (photo)', score: '5/5', marks: [1, 1, 1, 1, 1], noticed: 'All five are right (Tilli also marked 4 and 5, which weren’t ticked yet). On 2 and 4, {n} wrote a first answer, spotted it was wrong and fixed it: on 2 they first added (6 + 4) instead of multiplying. That’s real self-checking, and a sign that choosing the operation isn’t automatic yet.', skill: 'metacognition', next: 'Before writing, {n} says the operation and why (“more, less, or groups of?”). Keep the self-checking going: praise it out loud when you see it.' },
       ],
       // ask
       askEmpty: 'Tap a question below. I’ll answer from your class data and what I remember.',
       askDone: 'That’s all the questions for this demo. Explore the other tabs, or open a child’s memory layer.',
+      askThinking: 'Thinking…', askThought: 'How I got there ({k} steps)', askStart: 'Start here, or type your own question',
+      askPh: 'Ask or tell Tilli…', askSend: 'Send',
+      thinkData: 'Looking at {c}’s latest results', thinkPick: 'Picking what matters most this week',
       qFocus: 'What should I focus on this week?', qCheck: 'Who needs a check-in today, and why?', qWhy: 'Why is {n}’s word-problem score low?', qAct: 'Give me a 10-minute working-memory activity',
       sRemember: 'What do you remember about {n}?', sTry: 'What should I try with {n} this week?', sParent: 'What can I tell {n}’s parents?',
       aFocus: 'This week, focus on **{skill}**. {k} of your {N} children are still at Beginner level in it, and it sits behind most of the maths mistakes I’ve seen.\n\nThree things that fit a normal week:\n• Start the day with a 3-step instruction game (2 min)\n• Picture cards for word problems\n• Finish your Midline observations: {left} children left',
@@ -330,6 +335,7 @@
       mins: '{m} min', actHow: 'Cómo hacerla', actGo: 'Continuar', actUp: 'Subir', markDone: 'Marcar como hecho', markUndo: 'Marcar como pendiente',
       mxUrgent: 'Urgente', mxWait: 'Puede esperar', mxImp: 'Importante', mxLess: 'Menos importante',
       q: { 1: 'Primero', 2: 'Planifícalo', 3: 'Rápido', 4: 'Más tarde' }, q4empty: 'Nada aquí',
+      upNext: 'A continuación', boxDone: '{d} de {n} hechas', boxCount: 'tareas: {n}', back: 'Volver',
       lEyebrow: 'Desarrollo en buen camino a los 10', lTitle: 'Te damos la bienvenida a Tilli Measures', lSub: 'Cada habilidad, una semilla. Mira crecer a cada niño por completo.',
       lStat1: 'habilidades fundamentales, medidas desde tres miradas', lStat2: 'al año · 20 minutos a la semana', lEnter: 'Entrar al panel',
       continueAs: 'Continuar como {name}', welcome: 'Bienvenida al panel de Tilli para docentes',
@@ -358,9 +364,13 @@
         { name: 'Problemas', score: '6/10', marks: [1, 1, 1, 0, 1, 0, 1, 0, 1, 0], noticed: 'Todos los problemas de un paso están bien. Los cuatro fallos son problemas de 3 pasos: {n} hace bien el primer paso y luego se para o lo repite.', skill: 'working_memory', next: 'Divide cada problema en pasos numerados con una tarjeta para cada uno. Retira las tarjetas poco a poco en dos semanas.' },
         { name: 'Restas llevando', score: '7/10', marks: [1, 1, 0, 1, 1, 0, 1, 1, 0, 1], noticed: 'Tres fallos, siempre el mismo: {n} resta la cifra pequeña de la grande en vez de llevar (52 − 17 = 45).', skill: 'attention', next: 'Antes de empezar, que {n} rodee las columnas donde la cifra de arriba es más pequeña. Una comprobación, siempre.' },
         { name: 'Valor posicional', score: '8/10', marks: [1, 1, 1, 1, 0, 1, 1, 0, 1, 1], noticed: 'Domina decenas y unidades. Los dos fallos son números de tres cifras con un cero (escribe 407 como 47).', skill: 'critical_thinking', next: 'Usa tarjetas de valor posicional con números que llevan cero y que diga el número en voz alta mientras lo forma.' },
+        { name: 'Problemas (foto)', score: '5/5', marks: [1, 1, 1, 1, 1], noticed: 'Los cinco están bien (Tilli también corrigió el 4 y el 5, que aún no tenían tic). En el 2 y el 4, {n} se equivocó al calcular (18 + 14 = 22, 45 − 17 = 38), se dio cuenta y lo corrigió solo: revisa su propio trabajo, aunque la suma y la resta con llevada aún no son automáticas.', skill: 'metacognition', next: 'Que {n} compruebe cada resultado con la operación inversa (28 + 17 = 45) antes de pasar al siguiente, y elógiale en voz alta cuando se autocorrija.' },
       ],
       askEmpty: 'Toca una pregunta. Respondo con los datos de tu clase y lo que recuerdo.',
       askDone: 'Esas son todas las preguntas de la demo. Explora las otras pestañas o abre la capa de memoria de un alumno.',
+      askThinking: 'Pensando…', askThought: 'Cómo he llegado aquí ({k} pasos)', askStart: 'Empieza aquí o escribe tu propia pregunta',
+      askPh: 'Pregunta o cuéntale a Tilli…', askSend: 'Enviar',
+      thinkData: 'Mirando los últimos resultados de {c}', thinkPick: 'Eligiendo lo más importante esta semana',
       qFocus: '¿En qué me centro esta semana?', qCheck: '¿Con quién hablo hoy y por qué?', qWhy: '¿Por qué {n} saca poca nota en problemas?', qAct: 'Dame una actividad de 10 minutos para la memoria de trabajo',
       sRemember: '¿Qué recuerdas de {n}?', sTry: '¿Qué pruebo con {n} esta semana?', sParent: '¿Qué le cuento a la familia de {n}?',
       aFocus: 'Esta semana, céntrate en **{skill}**. {k} de tus {N} alumnos siguen en el nivel «Principiante», y está detrás de la mayoría de los errores de matemáticas que he visto.\n\nTres cosas que caben en una semana normal:\n• Empieza el día con un juego de instrucciones de 3 pasos (2 min)\n• Tarjetas con dibujos para los problemas\n• Termina tus observaciones intermedias: faltan {left} alumnos',
@@ -390,6 +400,7 @@
       mins: '{m} मिनट', actHow: 'कैसे कराएँ', actGo: 'जारी रखें', actUp: 'अपलोड', markDone: 'पूरा हुआ', markUndo: 'पूरा नहीं हुआ',
       mxUrgent: 'अभी ज़रूरी', mxWait: 'रुक सकता है', mxImp: 'अहम', mxLess: 'कम अहम',
       q: { 1: 'पहले करें', 2: 'योजना बनाएँ', 3: 'झटपट', 4: 'बाद में' }, q4empty: 'यहाँ कुछ नहीं',
+      upNext: 'अगला काम', boxDone: '{n} में से {d} पूरे', boxCount: 'काम: {n}', back: 'वापस',
       lEyebrow: '10 साल की उम्र तक सही विकास', lTitle: 'Tilli Measures में आपका स्वागत है', lSub: 'हर कौशल एक बीज। पूरे बच्चे को बढ़ते देखें।',
       lStat1: 'बुनियादी कौशल, तीन नज़रियों से मापे गए', lStat2: 'साल में · हफ़्ते में 20 मिनट', lEnter: 'डैशबोर्ड में जाएँ',
       continueAs: '{name} के रूप में आगे बढ़ें', welcome: 'Tilli शिक्षक डैशबोर्ड में आपका स्वागत है',
@@ -418,9 +429,13 @@
         { name: 'शाब्दिक प्रश्न', score: '6/10', marks: [1, 1, 1, 0, 1, 0, 1, 0, 1, 0], noticed: 'एक कदम वाले सभी प्रश्न सही हैं। चारों गलतियाँ 3 कदम वाले प्रश्नों में हैं: {n} पहला कदम सही करते हैं, फिर रुक जाते हैं या उसे दोहराते हैं।', skill: 'working_memory', next: 'हर प्रश्न को क्रमांकित कदमों में बाँटें, हर कदम के लिए एक चित्र कार्ड। दो हफ़्तों में कार्ड धीरे-धीरे हटाएँ।' },
         { name: 'हासिल वाला घटाव', score: '7/10', marks: [1, 1, 0, 1, 1, 0, 1, 1, 0, 1], noticed: 'तीन गलतियाँ, तीनों एक जैसी: {n} हासिल लेने के बजाय बड़े अंक में से छोटा अंक घटा देते हैं (52 − 17 = 45)।', skill: 'attention', next: 'शुरू करने से पहले {n} उन कॉलम पर गोला लगाएँ जहाँ ऊपर का अंक छोटा है। हर बार एक जाँच।' },
         { name: 'स्थानीय मान', score: '8/10', marks: [1, 1, 1, 1, 0, 1, 1, 0, 1, 1], noticed: 'दहाई और इकाई में मज़बूत। दोनों गलतियाँ शून्य वाली तीन अंकों की संख्याओं में हैं (407 को 47 लिखते हैं)।', skill: 'critical_thinking', next: 'शून्य वाली संख्याओं के लिए स्थानीय मान कार्ड इस्तेमाल करें, और संख्या बनाते समय उसे ज़ोर से बोलने को कहें।' },
+        { name: 'शाब्दिक प्रश्न (फ़ोटो)', score: '5/5', marks: [1, 1, 1, 1, 1], noticed: 'पाँचों उत्तर सही हैं (Tilli ने 4 और 5 भी जाँचे, जिन पर अभी टिक नहीं था)। 2 और 4 में {n} ने पहला उत्तर लिखा, गलती पहचानी और खुद सुधारा: 2 में पहले गुणा की जगह जोड़ा (6 + 4)। यह खुद की जाँच है, और संकेत है कि सही संक्रिया चुनना अभी अपने-आप नहीं होता।', skill: 'metacognition', next: 'लिखने से पहले {n} बताए कि कौन-सी संक्रिया और क्यों (“ज़्यादा, कम, या समूह?”)। खुद की जाँच की आदत बनाए रखें: दिखे तो ज़ोर से तारीफ़ करें।' },
       ],
       askEmpty: 'नीचे कोई सवाल चुनें। मैं आपकी कक्षा के डेटा और अपनी याद के आधार पर जवाब दूँगा।',
       askDone: 'इस डेमो के सारे सवाल हो गए। दूसरे टैब देखें या किसी बच्चे की मेमोरी लेयर खोलें।',
+      askThinking: 'सोच रहा हूँ…', askThought: 'मैं यहाँ कैसे पहुँचा ({k} कदम)', askStart: 'यहाँ से शुरू करें',
+      askPh: 'Tilli से पूछें…', askSend: 'भेजें',
+      thinkData: '{c} के ताज़ा नतीजे देख रहा हूँ', thinkPick: 'इस हफ़्ते सबसे ज़रूरी बात चुन रहा हूँ',
       qFocus: 'इस हफ़्ते मैं किस पर ध्यान दूँ?', qCheck: 'आज मुझे किससे बात करनी चाहिए, और क्यों?', qWhy: '{n} के शाब्दिक प्रश्नों में अंक कम क्यों हैं?', qAct: 'कार्यशील स्मृति के लिए 10 मिनट की गतिविधि बताइए',
       sRemember: 'आपको {n} के बारे में क्या याद है?', sTry: 'इस हफ़्ते {n} के साथ क्या आज़माऊँ?', sParent: '{n} के माता-पिता को क्या बताऊँ?',
       aFocus: 'इस हफ़्ते **{skill}** पर ध्यान दें। आपके {N} में से {k} बच्चे इसमें अभी “शुरुआती” स्तर पर हैं, और गणित की ज़्यादातर गलतियों के पीछे यही है।\n\nसामान्य हफ़्ते में ये तीन चीज़ें आसानी से हो सकती हैं:\n• दिन की शुरुआत 3 कदम वाले निर्देश के खेल से (2 मिनट)\n• शाब्दिक प्रश्नों के लिए चित्र कार्ड\n• अपने मध्य आकलन पूरे करें: {left} बच्चे बाकी',
@@ -439,7 +454,7 @@
     en: {
       fromTilli: 'Ask Tilli noticed', memSrcTilli: 'Ask Tilli', cls: 'Grade 3 A',
       micLabel: 'Speak your note', micStop: 'Stop listening', micListening: 'Listening… speak now', micBlocked: 'Microphone not available. You can type instead.', micDemo: 'Voice typing isn’t available here, so here’s an example.', micSample: '{n} settled much better after break today.',
-      noteTitle: 'Tell Tilli something to remember', notePh: 'e.g. {n} found it hard to focus after lunch today', noteFor: 'About', noteSave: 'Save note',
+      noteTitle: 'Tell Tilli something to remember', notePrimePh: 'Tell Tilli something to remember about a child. Start with their name…', noteWho: 'Who is this about? Tap their name, or type it.', notePh: 'e.g. {n} found it hard to focus after lunch today', noteFor: 'About', noteSave: 'Save note',
       notePrivate: 'Only you can see your notes. Families, coordinators and next year’s teacher can’t.', noteNow: 'Just now', privateTag: 'Private',
       noteAck: 'Got it. I’ll remember that about {n} and bring it up when it matters.', noteSaved: 'Saved to {n}’s memory layer',
       sOkay: 'Is {n} doing okay overall?',
@@ -476,7 +491,7 @@
     es: {
       fromTilli: 'Lo detectó Tilli', memSrcTilli: 'Pregunta a Tilli', cls: '3.º A',
       micLabel: 'Dicta tu nota', micStop: 'Dejar de escuchar', micListening: 'Escuchando… habla ahora', micBlocked: 'El micrófono no está disponible. Puedes escribirla.', micDemo: 'El dictado no está disponible aquí; este es un ejemplo.', micSample: 'Hoy {n} se ha calmado mucho mejor después del recreo.',
-      noteTitle: 'Cuéntale a Tilli algo para recordar', notePh: 'p. ej.: hoy a {n} le ha costado concentrarse después de comer', noteFor: 'Sobre', noteSave: 'Guardar nota',
+      noteTitle: 'Cuéntale a Tilli algo para recordar', notePrimePh: 'Cuéntale a Tilli algo para recordar sobre un alumno. Empieza por su nombre…', noteWho: '¿Sobre quién es? Toca su nombre o escríbelo.', notePh: 'p. ej.: hoy a {n} le ha costado concentrarse después de comer', noteFor: 'Sobre', noteSave: 'Guardar nota',
       notePrivate: 'Solo tú ves tus notas. Ni las familias, ni la coordinación, ni el docente del curso que viene.', noteNow: 'Ahora', privateTag: 'Privada',
       noteAck: 'Entendido. Lo recordaré sobre {n} y te lo diré cuando importe.', noteSaved: 'Guardado en la capa de memoria de {n}',
       sOkay: '¿{n} va bien en general?',
@@ -612,9 +627,9 @@
       rParts: { teacher: 'Your observations', parent: 'Parent surveys', student: 'Student assessments', acad: 'Academic marks' }, rOf: '{a} of {b}',
       rAcad: 'Academic', rEmo: 'Social-emotional',
       rNew: 'New assessment', rName: 'Name', rNamePh: 'Fractions quiz', rMax: 'Maximum score', rCreate: 'Create', acMore: 'More options', acEdit: 'Edit', acDel: 'Delete', acDate: 'Date given', acSave: 'Save', acDateErr: 'Pick the date it was given.', acDelQ: 'Delete “{name}”? Its marks and papers are removed too. This can’t be undone.', rNameErr: 'Give the assessment a name.', rMaxErr: 'Enter a maximum score above 0.',
-      rLeft: '{k} not completed', rAllMarked: 'Marked', rAvg: 'average {p}%', rAvgCol: 'avg {p}%', rAvgLbl: 'class average',
+      rLeft: '{k} left', rAllMarked: 'All {b} marked', rDoneS: '{a} of {b} done', rAvg: 'average {p}%', rAvgCol: 'avg {p}%', rAvgLbl: 'class average',
       rGoPart: { teacher: 'Open: who still needs an observation', parent: 'Open: parents still to finish', student: 'Open: student assessments still to do', acad: 'Open: academic marks' }, rUpClass: 'Upload class PDF', rUpOne: 'One child',
-      rGiven: 'given {d}', rDoneN: '{a} of {b} completed', rFAll: 'All {k}', rFNot: 'Not completed {k}', rTagDone: 'Completed {d}', rTagNot: 'Not completed', rMissing: 'Missing',
+      rDoneN: '{a} of {b} completed', rFAll: 'All {k}', rFNot: 'Not completed {k}', rTagDone: 'Completed {d}', rTagNot: 'Not completed', rMissing: 'Missing', rSwipe: 'Swipe sideways to see every assessment',
       rCol: { stu: 'Student', status: 'Status', score: 'Score', paper: 'Paper' }, rViewA: 'By assessment', rViewK: 'By child', rScoreOf: '{s} / {m}',
       rUpTitle: 'Upload · {name}', rModeClass: 'Whole class · one PDF', rModeOne: 'One child',
       rClassHelp: 'Scan every child’s paper into one PDF, or add photos. Tilli finds each child’s pages and reads the score.',
@@ -635,9 +650,9 @@
       rParts: { teacher: 'Tus observaciones', parent: 'Encuestas de las familias', student: 'Evaluaciones del alumnado', acad: 'Notas académicas' }, rOf: '{a} de {b}',
       rAcad: 'Académicas', rEmo: 'Socioemocionales',
       rNew: 'Nueva evaluación', rName: 'Nombre', rNamePh: 'Prueba de fracciones', rMax: 'Puntuación máxima', rCreate: 'Crear', acMore: 'Más opciones', acEdit: 'Editar', acDel: 'Eliminar', acDate: 'Fecha', acSave: 'Guardar', acDateErr: 'Elige la fecha en que se hizo.', acDelQ: '¿Eliminar «{name}»? También se borran sus notas y trabajos. No se puede deshacer.', rNameErr: 'Ponle un nombre a la evaluación.', rMaxErr: 'Escribe una puntuación máxima mayor que 0.',
-      rLeft: '{k} sin completar', rAllMarked: 'Corregida', rAvg: 'media {p} %', rAvgCol: 'media {p} %', rAvgLbl: 'media de la clase',
+      rLeft: '{k} pendientes', rAllMarked: 'Las {b} corregidas', rDoneS: '{a} de {b} hechas', rAvg: 'media {p} %', rAvgCol: 'media {p} %', rAvgLbl: 'media de la clase',
       rGoPart: { teacher: 'Abrir: a quién te falta observar', parent: 'Abrir: familias que faltan', student: 'Abrir: evaluaciones del alumnado pendientes', acad: 'Abrir: notas académicas' }, rUpClass: 'Subir PDF de la clase', rUpOne: 'Un alumno',
-      rGiven: 'hecha el {d}', rDoneN: '{a} de {b} completadas', rFAll: 'Todos ({k})', rFNot: 'Sin completar ({k})', rTagDone: 'Completada el {d}', rTagNot: 'Sin completar', rMissing: 'Falta',
+      rDoneN: '{a} de {b} completadas', rFAll: 'Todos ({k})', rFNot: 'Sin completar ({k})', rTagDone: 'Completada el {d}', rTagNot: 'Sin completar', rMissing: 'Falta', rSwipe: 'Desliza hacia el lado para ver todas las evaluaciones',
       rCol: { stu: 'Alumno', status: 'Estado', score: 'Nota', paper: 'Hoja' }, rViewA: 'Por evaluación', rViewK: 'Por alumno', rScoreOf: '{s} / {m}',
       rUpTitle: 'Subir · {name}', rModeClass: 'Toda la clase · un PDF', rModeOne: 'Un alumno',
       rClassHelp: 'Escanea las hojas de todos en un solo PDF o añade fotos. Tilli encuentra las páginas de cada alumno y lee la nota.',
@@ -658,9 +673,9 @@
       rParts: { teacher: 'आपके अवलोकन', parent: 'अभिभावक सर्वे', student: 'विद्यार्थी आकलन', acad: 'पढ़ाई के अंक' }, rOf: '{b} में से {a}',
       rAcad: 'पढ़ाई', rEmo: 'सामाजिक-भावनात्मक',
       rNew: 'नया आकलन', rName: 'नाम', rNamePh: 'भिन्न क्विज़', rMax: 'पूरे अंक', rCreate: 'बनाएँ', acMore: 'और विकल्प', acEdit: 'बदलें', acDel: 'हटाएँ', acDate: 'दी गई तारीख़', acSave: 'सेव करें', acDateErr: 'वह तारीख़ चुनें जब यह दिया गया।', acDelQ: '“{name}” हटाएँ? इसके अंक और पेपर भी हट जाएँगे। यह वापस नहीं होगा।', rNameErr: 'आकलन का नाम लिखें।', rMaxErr: '0 से ज़्यादा पूरे अंक लिखें।',
-      rLeft: '{k} अधूरे', rAllMarked: 'जाँच पूरी', rAvg: 'औसत {p}%', rAvgCol: 'औसत {p}%', rAvgLbl: 'कक्षा का औसत',
+      rLeft: '{k} बाकी', rAllMarked: 'सभी {b} जाँचे गए', rDoneS: '{b} में से {a} पूरे', rAvg: 'औसत {p}%', rAvgCol: 'औसत {p}%', rAvgLbl: 'कक्षा का औसत',
       rGoPart: { teacher: 'खोलें: किनका अवलोकन बाकी है', parent: 'खोलें: कौन से अभिभावक बाकी हैं', student: 'खोलें: बाकी विद्यार्थी आकलन', acad: 'खोलें: पढ़ाई के अंक' }, rUpClass: 'कक्षा की PDF अपलोड करें', rUpOne: 'एक बच्चा',
-      rGiven: '{d} को दिया', rDoneN: '{b} में से {a} पूरे', rFAll: 'सभी {k}', rFNot: 'अधूरे {k}', rTagDone: '{d} को पूरा', rTagNot: 'अधूरा', rMissing: 'बाकी',
+      rDoneN: '{b} में से {a} पूरे', rFAll: 'सभी {k}', rFNot: 'अधूरे {k}', rTagDone: '{d} को पूरा', rTagNot: 'अधूरा', rMissing: 'बाकी', rSwipe: 'सारे आकलन देखने के लिए बगल में स्वाइप करें',
       rCol: { stu: 'विद्यार्थी', status: 'स्थिति', score: 'अंक', paper: 'शीट' }, rViewA: 'आकलन के हिसाब से', rViewK: 'बच्चे के हिसाब से', rScoreOf: '{s} / {m}',
       rUpTitle: 'अपलोड · {name}', rModeClass: 'पूरी कक्षा · एक PDF', rModeOne: 'एक बच्चा',
       rClassHelp: 'सभी बच्चों की शीट एक PDF में स्कैन करें या फ़ोटो जोड़ें। Tilli हर बच्चे के पन्ने ढूँढकर अंक पढ़ता है।',
@@ -697,7 +712,7 @@
     return { top: sk[0], low: sk[sk.length - 1], low2: sk[sk.length - 2], grew: grew };
   }
   // Maths marks this term (sample): seeded per child; the "math" child has the word-problem story.
-  var SHEET_TOPIC = ['words', 'addsub', 'number'];   // sample sheets 1–3: Word problems · Subtraction with regrouping · Place value
+  var SHEET_TOPIC = ['words', 'addsub', 'number', 'words'];   // 4th = a teacher's own maths photo (demo kit worksheet)   // sample sheets 1–3: Word problems · Subtraction with regrouping · Place value
   function mathMarks(s) {
     var c = cast(), base = clamp(Math.round((s.overallPct || 55) * 0.5 + 38), 40, 95);
     var out = {};
@@ -723,7 +738,7 @@
   function prevTeacher(s) { var n = D.names.teachers; return pick(n, s.id + 't') + ' ' + pick(D.names.last, s.id + 'tl'); }
 
   // ---------- demo state (lives until refresh) ----------
-  var ST = { uploads: {}, asked: {}, lastChips: {}, done: {}, deck: null, day: 0, notes: {}, noteFlash: null, files: {}, attToday: {}, attTaken: false, attDraft: {}, dataQ: '', dataOpen: null, dup: null, attDay: null, acad: null, acadOpen: null, acadForm: null };
+  var ST = { uploads: {}, asked: {}, lastChips: {}, done: {}, box: null, day: 0, notes: {}, noteFlash: null, files: {}, attToday: {}, attTaken: false, attDraft: {}, dataQ: '', dataOpen: null, dup: null, attDay: null, acad: null, acadOpen: null, acadForm: null };
   // Ticks and notes survive a refresh in this tab (sessionStorage; gone when the tab closes, cleared by Reset demo).
   var WORK_KEY = 'tilliDemo.work';
   try { var W0 = JSON.parse(sessionStorage.getItem(WORK_KEY) || 'null'); if (W0) { ST.done = W0.done || {}; ST.notes = W0.notes || {}; } } catch (e) {}
@@ -738,12 +753,65 @@
     bulb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3Z"/></svg>',
     up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>',
     mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v4M8 21h8"/></svg>',
+    trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1l1-13M9 7V4h6v3"/></svg>',
+    // line icons used in place of emoji across the dashboard (Nov 13, user); teacher-dashboard.js reads them via window.TIcon
+    pencil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+    file: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>',
+    camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h2l2-2h4l2 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+    image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5L5 20"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
+    paperclip: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m20 11-8.5 8.5a5 5 0 0 1-7-7L13 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L14 7"/></svg>',
+    shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8.5 7 10 4-1.5 7-5.5 7-10V6Z"/></svg>',
+    eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
+    cap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5Z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/></svg>',
+    download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg>',   // arrow into a tray
+    book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2Z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></svg>',
+    globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+    palette: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A4.7 4.7 0 0 0 22 10c0-3.9-4.5-7-10-7Z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7.5" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>',
+    triangle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 3 20h18Z"/></svg>',
+    tree: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 6 11h3l-4 6h14l-4-6h3Z"/><path d="M12 17v4"/></svg>',
+    sprout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21v-9"/><path d="M12 12c0-4-3-6-7-6 0 4 3 6 7 6Z"/><path d="M12 10c0-3.5 2.5-6 7-6 0 4-3 6-7 6Z"/></svg>',
+    leaf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-9 5-14 15-15-1 10-6 15-15 15Z"/><path d="M5 19l7-7"/></svg>',
+    flower: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 16.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 1 1 12 7.5a4.5 4.5 0 1 1 4.5 4.5 4.5 4.5 0 1 1-4.5 4.5"/></svg>',
+    hourglass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12M6 21h12"/><path d="M7 3c0 5 10 5 10 9s-10 4-10 9"/><path d="M17 3c0 5-10 5-10 9s10 4 10 9"/></svg>',
+    alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20Z"/><path d="M12 10v4M12 17h.01"/></svg>',
+    mirror: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="9" rx="6" ry="7"/><path d="M12 16v5M9 21h6M9.5 6.5A3 3 0 0 1 12 5"/></svg>',
+    teacher: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="11" y="3" width="10" height="8" rx="1"/><circle cx="7" cy="9" r="3"/><path d="M2 21v-1a5 5 0 0 1 10 0v1M12 13l3-2"/></svg>',
+    student: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3.5"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>',
+    heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10Z"/></svg>',
+    keyboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>',
+    checksq: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/></svg>',
+    // box icons (phone tiles): Do first · Plan it · Quick win · Later
+    q1: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg>',
+    q2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>',
+    q3: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7Z"/></svg>',
+    q4: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>',
   };
+  // Skill icons for the Class Skill Overview cards (Nov 13, user): TIcon('sk-' + skill key).
+  Object.assign(ICON, {
+    'sk-working_memory': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 4 8l8 4 8-4-8-4Z"/><path d="m4 12 8 4 8-4"/><path d="m4 16 8 4 8-4"/></svg>',   // stacked layers
+    'sk-emotion_regulation': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/></svg>',   // calm wave
+    'sk-planning': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 1.5 1.5L8 5M4 12l1.5 1.5L8 11M4 18l1.5 1.5L8 17M12 6h8M12 12h8M12 18h8"/></svg>',   // checklist
+    'sk-attention': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M12 12h.01"/></svg>',   // target
+    'sk-critical_thinking': ICON.bulb,   // lightbulb
+    'sk-inhibition_distraction': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15Z"/><path d="M10 21h4M4 4l16 16"/></svg>',   // muted bell
+    'sk-empathy': ICON.heart,   // heart
+    'sk-metacognition': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a8 7 0 0 0-5 12.5V20l3.5-2A8 7 0 1 0 12 3Z"/><path d="M10 9a2 2 0 1 1 3 1.7c-.6.4-1 .8-1 1.3M12 15h.01"/></svg>',   // thought bubble
+    'sk-inhibition_response': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11.5V4a1.5 1.5 0 0 1 3 0v8M14 11.5V5.5a1.5 1.5 0 0 1 3 0V12M17 12V8.5a1.5 1.5 0 0 1 3 0V15a7 7 0 0 1-7 7h-1a7 7 0 0 1-5.6-2.8L3.7 15a1.6 1.6 0 0 1 2.6-1.9L8 15"/></svg>',   // stop hand
+    'sk-emotion_awareness': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9.5 15a3.5 3.5 0 0 0 5 0"/></svg>',   // smile
+    'sk-cognitive_flexibility': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>',   // shuffle
+    'sk-relationship_skills': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M16 3.1a4 4 0 0 1 0 7.8M21 21v-2a4 4 0 0 0-3-3.9"/></svg>',   // people
+  });
+  // One icon as inline SVG (class .ti sizes it to the text). Unknown name → ''.
+  window.TIcon = function (k) { return ICON[k] ? ICON[k].replace('<svg ', '<svg class="ti" ') : ''; };
 
   // "Today, in order": the day's tasks sorted into an urgent × important grid (Eisenhower).
   // Each card keeps its school-day number (people first, paperwork later).
-  // Desktop: full cards inside the four boxes. Phone: a small grid of numbers + a swipe deck.
+  // Desktop: full cards inside the four boxes. Phone: four box tiles (one circle per task) + one "Up next" card;
+  // tapping a tile opens only that box's checklist.
   function midDaysLeft() {
     try {
       var d = (window.TilliAPI.getDeployments(D.school.id) || []).find(function (x) { return x.phase === 'Midline' && x.end; });
@@ -793,18 +861,16 @@
     });
     return h;
   }
-  function shortText(r) { var v = Object.assign({}, r.vars || {}); Object.keys(r.names || {}).forEach(function (k) { v[k] = nm(r.names[k]); }); return t(r.short, v); }
 
   function mondayCard() {
     var rows = dayRows(ST.day); if (!rows.length) return '';
     var open = rows.filter(function (r) { return !isDone(r); });
     var next = open[0];
-    if (ST.deck == null || ST.deck >= rows.length) ST.deck = Math.max(0, rows.indexOf(next));
     var SRC = { note: [ICON.note, t('fromNote')], parent: [ICON.home, t('fromParent')], tilli: [ICON.spark, t('fromTilli')] };
-    // One task card. Desktop: inside its matrix box. Phone: one card of the swipe deck.
-    var card = function (r, i, extra) {
+    // One task card. Desktop: inside its matrix box. Phone: the "Up next" card, or a row of an opened box.
+    var card = function (r, i, extra, attrs) {
       var done = isDone(r);
-      return '<div class="dt-card q' + r.q + (done ? ' done' : '') + (extra || '') + '" data-i="' + i + '">' +
+      return '<div class="dt-card q' + r.q + (done ? ' done' : '') + (extra || '') + '" data-i="' + i + '"' + (attrs || '') + '>' +
         '<button class="dt-tick focus" data-demo-done="' + r.key + '" aria-pressed="' + done + '" aria-label="' + esc(done ? t('markUndo') : t('markDone')) + '"' + (r.auto ? ' disabled' : '') + '>' +
           (done ? ICON.check : '') + '</button>' +
         '<div class="dt-body">' +
@@ -821,32 +887,41 @@
       return '<div class="dt-cell q' + q + '"><b>' + esc(C.q[q]) + '</b>' +
         (mine.length ? '<div class="dt-cards">' + mine.map(function (x) { return card(x.r, x.i); }).join('') + '</div>' : '<em>' + esc(t('q4empty')) + '</em>') + '</div>';
     };
-    // Phone box: numbered chips; tapping one brings that card to the front of the deck.
-    var mini = function (q) {
+    var matrix = '<div class="dt-matrix dt-big" role="group" aria-label="' + esc(t('todayTitle')) + '">' +
+      '<span></span><span class="dt-ax">' + esc(t('mxUrgent')) + '</span><span class="dt-ax">' + esc(t('mxWait')) + '</span>' +
+      '<span class="dt-ax dt-axy">' + esc(t('mxImp')) + '</span>' + box(1) + box(2) +
+      '<span class="dt-ax dt-axy">' + esc(t('mxLess')) + '</span>' + box(3) + box(4) + '</div>';
+    // Phone: one circle per task on each tile (filled = done).
+    var rings = function (mine) {
+      return mine.length ? '<span class="dt-rings" aria-hidden="true">' + mine.map(function (x) { return '<i' + (isDone(x.r) ? ' class="done"' : '') + '></i>'; }).join('') + '</span>'
+        : '<em>' + esc(t('q4empty')) + '</em>';
+    };
+    var tile = function (q) {
       var mine = inQ(q);
-      return '<div class="dt-cell q' + q + '"><b>' + esc(C.q[q]) + '</b><div class="dt-nums">' +
-        (mine.length ? mine.map(function (x) {
-          return '<button class="dt-num focus' + (isDone(x.r) ? ' done' : '') + (x.i === ST.deck ? ' on' : '') + '" data-demo-deck="' + x.i + '" aria-label="' + esc(shortText(x.r)) + '" title="' + esc(shortText(x.r)) + '"></button>';
-        }).join('') : '<em>' + esc(t('q4empty')) + '</em>') + '</div></div>';
+      return '<button class="dt-tile q' + q + ' focus" data-demo-box="' + q + '" aria-label="' + esc(C.q[q] + ' · ' + t('boxCount', { n: mine.length })) + '">' +
+        '<span class="dt-qi">' + ICON['q' + q] + '</span><span class="dt-tlbl"><b>' + esc(C.q[q]) + '</b>' + rings(mine) + '</span></button>';
     };
-    var matrix = function (cls, cell) {
-      return '<div class="dt-matrix ' + cls + '" role="group" aria-label="' + esc(t('todayTitle')) + '">' +
-        '<span></span><span class="dt-ax">' + esc(t('mxUrgent')) + '</span><span class="dt-ax">' + esc(t('mxWait')) + '</span>' +
-        '<span class="dt-ax dt-axy">' + esc(t('mxImp')) + '</span>' + cell(1) + cell(2) +
-        '<span class="dt-ax dt-axy">' + esc(t('mxLess')) + '</span>' + cell(3) + cell(4) + '</div>';
-    };
-    var i0 = ST.deck;
-    var deck = rows.map(function (r, i) { return card(r, i, i === i0 ? ' cur' : i === i0 + 1 ? ' under' : ''); }).join('');
+    var phone;
+    if (ST.box) {
+      var q = ST.box, mine = inQ(q), d = mine.filter(function (x) { return isDone(x.r); }).length;
+      phone = '<div class="dt-open q' + q + '">' +
+        '<div class="dt-openhead"><button class="dt-back focus" data-demo-box="0" aria-label="' + esc(t('back')) + '">‹</button>' +
+          '<span class="dt-qi">' + ICON['q' + q] + '</span><div class="dt-openttl"><b>' + esc(C.q[q]) + '</b>' +
+          (mine.length ? '<span>' + esc(t('boxDone', { d: d, n: mine.length })) + '</span><span class="dt-bar"><i style="width:' + Math.round(d / mine.length * 100) + '%"></i></span>' : '') +
+        '</div></div>' +
+        (mine.length ? '<div class="dt-cards">' + mine.map(function (x) { return card(x.r, x.i); }).join('') + '</div>' : '<em class="dt-none">' + esc(t('q4empty')) + '</em>') + '</div>';
+    } else {
+      // Up next: the first unfinished task, Do first before the other boxes, then school-day order.
+      var up = rows.map(function (r, i) { return { r: r, i: i }; }).filter(function (x) { return !isDone(x.r); })
+        .sort(function (a, b) { return a.r.q - b.r.q || a.i - b.i; })[0];
+      phone = '<div class="dt-tiles" role="group" aria-label="' + esc(t('todayTitle')) + '">' + [1, 2, 3, 4].map(tile).join('') + '</div>' +
+        (up ? '<div class="dt-nexthead"><b>' + esc(t('upNext')) + '</b><span>' + esc(t('boxDone', { d: rows.length - open.length, n: rows.length })) + '</span></div>' +
+          card(up.r, up.i, ' dt-next', ' data-demo-box="' + up.r.q + '"') : '');
+    }
     return '<section class="ui-card dm-monday dt" data-demo>' +
       '<div class="dt-head"><h2 class="dm-sr">' + esc(t('todayTitle')) + '</h2>' + dayStrip() +
         (next ? '' : '<p class="dt-help"><b>' + esc(t('allDone')) + '</b></p>') + '</div>' +
-      matrix('dt-big', box) +
-      '<div class="dt-phone">' + matrix('dt-mini', mini) +
-        '<div class="dt-deck" aria-roledescription="carousel">' + deck + '</div>' +
-        '<div class="dt-nav"><button class="dt-arrow focus" data-demo-deckgo="-1" aria-label="‹"' + (i0 === 0 ? ' disabled' : '') + '>‹</button>' +
-          '<span class="dt-count" aria-live="polite">' + (i0 + 1) + ' / ' + rows.length + '</span>' +
-          '<button class="dt-arrow focus" data-demo-deckgo="1" aria-label="›"' + (i0 === rows.length - 1 ? ' disabled' : '') + '>›</button></div>' +
-      '</div></section>';
+      matrix + '<div class="dt-phone">' + phone + '</div></section>';
   }
   // Today + the next two school days are open; the rest of the week is shown but locked.
   function dayStrip() {
@@ -857,72 +932,11 @@
         '<b>' + esc(w) + '</b><span>' + esc(i === 0 ? t('dayToday') : t('dayTasks', { k: left })) + '</span></button>';
     }).join('') + '</div></div>';
   }
-  // Phone deck: swipe moves between cards only (left = next, right = back). Done is the tick, never a swipe.
-  function deckShow(i) {
-    var deck = document.querySelector('.dt-deck'); if (!deck) return;
-    var cards = deck.children, n = cards.length;
-    i = Math.max(0, Math.min(n - 1, i)); ST.deck = i;
-    var h0 = deck.offsetHeight;
-    for (var k = 0; k < n; k++) {
-      var c = cards[k];
-      c.classList.toggle('cur', k === i); c.classList.toggle('under', k === i + 1); c.style.transform = '';
-      c.inert = k !== i; c.setAttribute('aria-hidden', k !== i);
-    }
-    // The deck takes the new front card's height; ease it there instead of jumping.
-    var h1 = deck.offsetHeight;
-    if (h0 !== h1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      clearTimeout(deck._ht);
-      deck.style.height = h0 + 'px'; void deck.offsetHeight;
-      deck.style.transition = 'height .22s ease'; deck.style.height = h1 + 'px';
-      deck._ht = setTimeout(function () { deck.style.height = ''; deck.style.transition = ''; }, 240);
-    }
-    var sec = deck.closest('.dt');
-    sec.querySelector('.dt-count').textContent = (i + 1) + ' / ' + n;
-    sec.querySelectorAll('[data-demo-deckgo]').forEach(function (b) { b.disabled = +b.dataset.demoDeckgo < 0 ? i === 0 : i === n - 1; });
-    sec.querySelectorAll('.dt-mini [data-demo-deck]').forEach(function (b) { b.classList.toggle('on', +b.dataset.demoDeck === i); });
-  }
-  var SW = null, swNoClickUntil = 0;
-  function swipeMin() { return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--dt-swipe'), 10) || 60; }
-  document.addEventListener('pointerdown', function (e) {
-    var c = e.target.closest && e.target.closest('.dt-deck > .dt-card.cur');
-    if (!c || (e.pointerType === 'mouse' && e.button !== 0)) return;
-    SW = { card: c, deck: c.parentNode, id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, to: null, on: false };
-  });
-  document.addEventListener('pointermove', function (e) {
-    if (!SW || e.pointerId !== SW.id) return;
-    var dx = e.clientX - SW.x, dy = e.clientY - SW.y;
-    if (!SW.on) {   // decide: sideways swipe, or let the page scroll
-      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
-      if (Math.abs(dy) >= Math.abs(dx)) { SW = null; return; }
-      SW.on = true; SW.deck.classList.add('dragging');
-      try { SW.card.setPointerCapture(e.pointerId); } catch (x) {}
-    }
-    var i = ST.deck, n = SW.deck.children.length, to = dx < 0 ? i + 1 : i - 1;
-    if (to < 0 || to >= n) { to = null; dx *= .3; }   // first / last card: resist
-    SW.dx = dx; SW.to = to;
-    var under = to == null ? i + 1 : to;
-    for (var k = 0; k < n; k++) if (k !== i) SW.deck.children[k].classList.toggle('under', k === under);
-    SW.card.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx / 22) + 'deg)';
-  });
-  function swEnd(e) {
-    if (!SW || e.pointerId !== SW.id) return;
-    var s = SW; SW = null; if (!s.on) return;
-    s.deck.classList.remove('dragging'); swNoClickUntil = Date.now() + 350;
-    if (s.to != null && Math.abs(s.dx) >= swipeMin()) {
-      var dir = s.dx < 0 ? -1 : 1;
-      s.card.style.transform = 'translateX(' + (dir * 120) + '%) rotate(' + (dir * 12) + 'deg)';
-      setTimeout(function () { deckShow(s.to); }, 220);
-    } else deckShow(ST.deck);
-  }
-  document.addEventListener('pointerup', swEnd);
-  document.addEventListener('pointercancel', swEnd);
-  // A drag that ends over a button (name, tick, action) must not also click it.
-  document.addEventListener('click', function (e) { if (Date.now() < swNoClickUntil && e.target.closest && e.target.closest('.dt-deck')) { e.stopPropagation(); e.preventDefault(); } }, true);
 
   // ---------- Child: learning passport ----------
   function memoryItems(s) {
     var c = cast() || {}, tl = topLow(s), items = [];
-    (ST.notes[s.id] || []).forEach(function (x) { items.push({ src: 'note', when: C.noteNow, text: x.text, priv: true }); });
+    (ST.notes[s.id] || []).forEach(function (x) { items.push({ src: 'note', when: C.noteNow, text: x.text + (x.skills && x.skills.length ? ' · ' + x.skills.map(function (k) { return SKILL[k]; }).join(', ') : ''), priv: true }); });   // typed to Ask Tilli: the skill(s) it was sorted into
     var up = ST.uploads[s.id];
     if (up) { var sh = C.sheets[up.sheet]; items.push({ src: 'upload', when: C.when.today, text: sh.name + ' · ' + sh.score + '. ' + fill(sh.noticed, { n: nm(s) }) }); }
     if (s === c.calm) { items.push({ src: 'note', when: C.when.thu, text: C.memCalm1, priv: true }); items.push({ src: 'tilli', when: C.when.lastweek, text: C.memCalm2 }); }
@@ -951,7 +965,7 @@
       '<div class="dm-notefield"><textarea class="dm-notein" rows="2" placeholder="' + esc(t('notePh', { n: nm(who) })) + '" aria-label="' + esc(t('noteTitle')) + '"></textarea>' +
         '<button type="button" class="dm-mic focus" data-demo-mic aria-pressed="false" aria-label="' + esc(t('micLabel')) + '" title="' + esc(t('micLabel')) + '">' + ICON.mic + '</button></div>' +
       '<p class="dm-micstat" aria-live="polite" hidden></p>' +
-      '<div class="dm-noteacts"><span class="dm-priv">🔒 ' + esc(t('notePrivate')) + '</span>' + flash +
+      '<div class="dm-noteacts"><span class="dm-priv">' + window.TIcon('lock') + ' ' + esc(t('notePrivate')) + '</span>' + flash +
       '<button class="btn btn-primary sm focus" data-demo-notesave>' + esc(t('noteSave')) + '</button></div></div>';
   }
   // Mic: the browser's own speech-to-text (Chrome, Edge, Safari), in the page language.
@@ -959,25 +973,28 @@
   var MIC = null;   // { rec, btn, box } while listening
   function micStop() { if (MIC) { try { MIC.rec && MIC.rec.stop(); } catch (e) {} micUi(MIC.box, false); MIC = null; } }
   function micUi(box, on, msg) {
-    var b = box.querySelector('[data-demo-mic]'), st = box.querySelector('.dm-micstat');
+    var b = box.querySelector('[data-demo-mic]'), nx = box.nextElementSibling;
+    var st = box.querySelector('.dm-micstat') || (nx && nx.classList.contains('dm-micstat') ? nx : null);   // Ask composer: the status line sits just under it
     b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); b.setAttribute('aria-label', on ? t('micStop') : t('micLabel'));
     if (st) { st.hidden = !msg; st.textContent = msg || ''; }
   }
   function micToggle(box) {
     if (MIC && MIC.box === box) { micStop(); return; }
     micStop();
-    var inp = box.querySelector('.dm-notein'), SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var inp = box.querySelector('.dm-notein, .ask-input'), SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     var sel = box.querySelector('.dm-notefor'), id = sel ? sel.value : box.getAttribute('data-stu');
-    var who = allKids().find(function (x) { return x.id === id; }) || allKids()[0] || {};
+    var who = allKids().find(function (x) { return x.id === id; }) || CONVO.child || currentStudent() || allKids()[0] || {};
+    // The Ask composer keeps its text in TD state and grows with it: let its own input listener see each change.
+    var put = function (v) { inp.value = v; if (inp.classList.contains('ask-input')) inp.dispatchEvent(new Event('input', { bubbles: true })); };
     if (!SR) {   // no speech engine: type the sample, letter by letter
       var text = t('micSample', { n: nm(who) }), i = 0, base = inp.value ? inp.value.replace(/\s*$/, ' ') : '';
       micUi(box, true, t('micDemo'));
-      var timer = setInterval(function () { if (!box.isConnected) { clearInterval(timer); return; } inp.value = base + text.slice(0, ++i); if (i >= text.length) { clearInterval(timer); micUi(box, false, t('micDemo')); } }, 35);
+      var timer = setInterval(function () { if (!box.isConnected) { clearInterval(timer); return; } put(base + text.slice(0, ++i)); if (i >= text.length) { clearInterval(timer); micUi(box, false, t('micDemo')); } }, 35);
       return;
     }
     var rec = new SR(), base0 = inp.value ? inp.value.replace(/\s*$/, ' ') : '';
     rec.lang = D.locale; rec.interimResults = true; rec.continuous = false;
-    rec.onresult = function (e) { var said = ''; for (var k = 0; k < e.results.length; k++) said += e.results[k][0].transcript; inp.value = base0 + said; };
+    rec.onresult = function (e) { var said = ''; for (var k = 0; k < e.results.length; k++) said += e.results[k][0].transcript; put(base0 + said); };
     rec.onerror = function (e) { var msg = e.error === 'no-speech' ? '' : t('micBlocked'); micUi(box, false, msg); MIC = null; };
     rec.onend = function () { if (MIC && MIC.rec === rec) { micUi(box, false); MIC = null; inp.focus(); } };
     MIC = { rec: rec, box: box };
@@ -993,7 +1010,7 @@
     saveWork();
     var TD = window.TD;
     if (box.closest('.ask-panel, .askx')) {   // said to Ask Tilli: show it in the chat
-      TD.S.ask.thread = TD.S.ask.thread.concat([{ role: 'user', text: '📝 ' + nm(s) + ': ' + text }, { role: 'tilli', text: t('noteAck', { n: nm(s) }) }]);
+      TD.S.ask.thread = TD.S.ask.thread.concat([{ role: 'user', text: nm(s) + ': ' + text }, { role: 'tilli', text: t('noteAck', { n: nm(s) }) }]);
     } else ST.noteFlash = id;
     TD.render();
   }
@@ -1055,17 +1072,17 @@
     };
     // header
     var head = '<div class="pp-head"><span class="pp-dots"><i></i><i></i><i></i></span><div class="pp-ttl"><span>' + esc(t('ppEyebrow')) + '</span><h1>' + esc(t('ppTitle', { n: n })) + '</h1></div>' +
-      '<span class="pp-owned">🔒 ' + esc(t('ppOwned', { n: n })) + '</span><span class="pp-av">' + esc(Array.from(n)[0] || '') + '</span></div>';
+      '<span class="pp-owned">' + window.TIcon('lock') + ' ' + esc(t('ppOwned', { n: n })) + '</span><span class="pp-av">' + esc(Array.from(n)[0] || '') + '</span></div>';
     // left: plan · maths insight · attendance + next check-in · ownership
     var left = '<div class="pp-plan"><div class="pp-planh"><b>' + esc(t('fortnight')) + ' · ' + esc(SKILL[low.key]) + '</b><span>' + esc(t('planDay', { d: d })) + '</span></div>' +
         '<div class="pp-bar"><i style="width:' + Math.round(d / 14 * 100) + '%"></i></div>' +
         '<p><b>' + esc(t('planTonight')) + '</b><br>' + esc(C.tipHome[low.key]) + ' ' + esc(t('planStreak', { k: Math.max(2, d - 4) })) + '.</p></div>' +
-      '<div class="pp-card pp-alert pp-insight"><span class="pp-ic">💡</span><div><h3>' + esc(t('ppDip', { topic: MATH[lowTopic], n: n })) + '</h3>' +
+      '<div class="pp-card pp-alert pp-insight"><span class="pp-ic">' + window.TIcon('bulb') + '</span><div><h3>' + esc(t('ppDip', { topic: MATH[lowTopic], n: n })) + '</h3>' +
         '<p>' + esc(t('mathWhy', { pct: mm[lowTopic], topic: lc(MATH[lowTopic]), n: n, skill: lc(SKILL[lowSk]), band: BAND[linked.band] })) + '</p></div></div>' +
       '<div class="pp-tiles"><div class="pp-card pp-tile"><span>' + esc(t('att')) + ' ↻</span><b>' + att.pct + '%</b></div>' +
         '<div class="pp-card pp-tile"><span>' + esc(t('ppNext')) + '</span><b>' + esc(short(end)) + '</b></div></div>' +
-      '<div class="pp-card pp-own"><h3><span class="pp-shield">🛡️</span>' + esc(t('ppOwnT', { n: n })) + '</h3><p>' + esc(t('ppOwnBody', { n: n })) + '</p>' +
-        C.ownItems.map(function (x, i) { return '<div class="pp-ownrow"><span>' + ['🎓', '⬇️', '✨'][i] + '</span><b>' + esc(x) + '</b></div>'; }).join('') + '</div>';
+      '<div class="pp-card pp-own"><h3><span class="pp-shield">' + window.TIcon('shield') + '</span>' + esc(t('ppOwnT', { n: n })) + '</h3><p>' + esc(t('ppOwnBody', { n: n })) + '</p>' +
+        C.ownItems.map(function (x, i) { return '<div class="pp-ownrow"><span>' + window.TIcon(['cap', 'download', 'spark'][i]) + '</span><b>' + esc(x) + '</b></div>'; }).join('') + '</div>';
     // middle: the three skills that tell the story, with evidence; then a short list of the rest
     var feat = [low, tl.top, tl.grew, tl.low2].filter(function (x, i, a) { return x && a.indexOf(x) === i; }).slice(0, 3);
     var rest = (s.skills || []).filter(function (k) { return feat.indexOf(k) < 0; }).sort(function (a, b) { return b.pct - a.pct; });
@@ -1073,7 +1090,7 @@
       feat.map(function (k) {
         return '<div class="pp-card pp-skill"><div class="pp-skh"><h3>' + esc(SKILL[k.key]) + '</h3>' + chip(k.band) + '</div>' +
           '<span class="pp-src">' + esc(t('ppSrc', { game: C.game[k.key] })) + '</span><p>' + esc(lowLine(k)) + '</p>' +
-          '<div class="pp-try"><b>🏠 ' + esc(t('ppTryHome')) + '</b> ' + esc(C.tipHome[k.key]) + '</div></div>';
+          '<div class="pp-try"><b>' + window.TIcon('home') + ' ' + esc(t('ppTryHome')) + '</b> ' + esc(C.tipHome[k.key]) + '</div></div>';
       }).join('') +
       '<div class="pp-card pp-list">' + rest.slice(0, 4).map(function (k) { return '<div class="pp-lrow"><span>' + esc(SKILL[k.key]) + '</span>' + chip(k.band) + '</div>'; }).join('') +
         (rest.length > 4 ? '<p class="pp-more">' + esc(t('ppMoreSk', { k: rest.length - 4, n: n })) + '</p>' : '') + '</div>';
@@ -1083,11 +1100,11 @@
       return '<div class="pp-mbar"><span>' + esc(MATH[k]) + '</span><i><em class="' + c + '" style="width:' + v + '%"></em></i><b' + (k === lowTopic ? ' class="low"' : '') + '>' + v + '%</b></div>';
     }).join('');
     var right = '<div class="pp-colh"><h2>' + esc(t('subjects')) + ' · ' + esc(SJ.maths) + '</h2><span class="pp-pill soft">↻ ' + esc(t('ppSynced')) + '</span></div>' +
-      '<div class="pp-card"><h3>' + esc(t('ppOverall', { s: SJ.maths, g: letter(avg) })) + '</h3><p class="pp-meta">📄 ' + esc(t('ppMathSrc')) + '</p>' + bars + '</div>' +
+      '<div class="pp-card"><h3>' + esc(t('ppOverall', { s: SJ.maths, g: letter(avg) })) + '</h3><p class="pp-meta">' + window.TIcon('file') + ' ' + esc(t('ppMathSrc')) + '</p>' + bars + '</div>' +
       '<div class="pp-card pp-alert"><h3>' + esc(MATH[lowTopic]) + ' · ' + mm[lowTopic] + '%</h3>' +
         '<p>' + esc(t('ppLowBody', { n: n, skill: lc(SKILL[lowSk]), band: BAND[linked.band] })) + '</p>' +
-        '<div class="pp-try"><b>🏠 ' + esc(t('ppTryHome')) + '</b> ' + esc(C.tipHome[lowSk]) + '</div>' +
-        '<div class="pp-link">🔗 ' + esc(t('ppLinked', { n: n, skill: lc(SKILL[lowSk]) })) + '</div></div>' +
+        '<div class="pp-try"><b>' + window.TIcon('home') + ' ' + esc(t('ppTryHome')) + '</b> ' + esc(C.tipHome[lowSk]) + '</div>' +
+        '<div class="pp-link">' + window.TIcon('link') + ' ' + esc(t('ppLinked', { n: n, skill: lc(SKILL[lowSk]) })) + '</div></div>' +
       '<div class="pp-card pp-subj"><div class="pp-srow"><b>' + esc(SJ.english) + ' · ' + esc(letter(meanOf(sc.eng))) + '</b><span>' + esc(SJ.reading + ' ' + sc.eng[0] + ' · ' + SJ.writing + ' ' + sc.eng[1] + ' · ' + SJ.comp + ' ' + sc.eng[2]) + '</span></div>' +
         '<div class="pp-srow"><b>' + esc(SJ.science) + ' · ' + esc(letter(meanOf(sc.sci))) + '</b><span>' + esc(SJ.living + ' ' + sc.sci[0] + ' · ' + SJ.materials + ' ' + sc.sci[1]) + '</span></div></div>';
     return head + '<div class="pp-grid"><div class="pp-col">' + left + '</div><div class="pp-col">' + mid + '</div><div class="pp-col">' + right + '</div></div>' +
@@ -1106,7 +1123,7 @@
     items.splice(at < 0 ? items.length : at, 0, { src: 'beh', when: C.thisweek, text: C.beh[bi] }, { src: 'beh', when: C.when.lastweek, text: C.beh[(bi + 3) % C.beh.length] });
     mem = items.map(function (m) {
       return '<li class="dm-mem dm-src-' + m.src + '"><span class="dm-memsrc">' + esc(C.memSrc[m.src]) + ' · ' + esc(m.when) +
-        (m.priv ? ' <span class="dm-privtag">🔒 ' + esc(t('privateTag')) + '</span>' : '') + '</span><p>' + esc(m.text) + '</p></li>';
+        (m.priv ? ' <span class="dm-privtag">' + window.TIcon('lock') + ' ' + esc(t('privateTag')) + '</span>' : '') + '</span><p>' + esc(m.text) + '</p></li>';
     }).join('');
     var lowTopic = Object.keys(mm).sort(function (a, b) { return mm[a] - mm[b]; })[0];
     var linked = skillOf(s, MATH_SKILL[lowTopic]);
@@ -1129,13 +1146,13 @@
         (ST.uploads[s.id] ? '' : '<button class="btn-line sm focus dm-upbtn" data-demo-upload="' + esc(s.id) + '">' + ICON.up + ' ' + esc(t('upGo')) + '</button>') + '</details>' +
       '<div class="dm-subj">' + subjRow(SJ.science, mean(sci), SJ.living + ' ' + sci[0] + ' · ' + SJ.materials + ' ' + sci[1]) + '</div></div>';
     var weekly = '<div class="ui-card dm-card"><h3>' + esc(t('weekly')) + '</h3>' + assessOf(s).map(function (a) { return '<div class="dm-bar"><span class="dm-barl">' + esc(a.name) + ' <small>' + esc(a.when) + '</small></span><span class="dm-bart"><i style="width:' + a.score + '%"></i></span><b>' + a.score + '%</b></div>'; }).join('') + '</div>';
-    var ICONS = ['📖', '🌍', '🎨', '🔺', '✏️', '🌳'], pi = hash(s.id + 'port') % C.port.length;
+    var ICONS = ['book', 'globe', 'palette', 'triangle', 'pencil', 'tree'].map(window.TIcon), pi = hash(s.id + 'port') % C.port.length;
     var files = '<div class="ui-card dm-card"><h3>' + esc(C.dFiles) + '</h3><div class="dd-files">' + filesOf(s).map(function (x, i) { return fileTile(s, x, i); }).join('') +
       '<button class="dd-file dd-add focus" data-demo-dup="' + esc(s.id) + '"><span>＋</span>' + esc(C.dAddFile) + '</button></div></div>';
     var portfolio = '<div class="ui-card dm-card"><h3>' + esc(t('portfolio')) + '</h3><ul class="dm-port">' + [0, 2, 4].map(function (k) { var i = (pi + k) % C.port.length; return '<li><span>' + ICONS[i] + '</span>' + esc(C.port[i]) + '</li>'; }).join('') + '</ul></div>';
     // quiet footer: where school data comes from + who owns the record (opens on tap)
     var foot = '<div class="dm-ppfoot"><span class="dm-sync">↻ ' + esc(t('sdSync')) + '</span>' +
-      '<details class="dm-own"><summary class="focus">🛡️ ' + esc(t('ownTitle', { n: n })) + '</summary><p>' + esc(t('ownBody', { n: n })) + '</p>' +
+      '<details class="dm-own"><summary class="focus">' + window.TIcon('shield') + ' ' + esc(t('ownTitle', { n: n })) + '</summary><p>' + esc(t('ownBody', { n: n })) + '</p>' +
       '<ul>' + C.ownItems.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul><p class="dm-meta">' + esc(t('ownBy')) + '</p></details></div>';
     // Order: This year (notes | school record) → Earlier years (TD html) → Record changes (TD, folded) → footer.
     // TD-built html stays outside [data-demo] so the DOM translator covers it.
@@ -1259,7 +1276,7 @@
       col.cells[wd - 1] = x;
     });
     var wdName = function (k) { return new Date(2024, 0, 1 + k).toLocaleDateString(D.locale, { weekday: 'short' }); };   // 1 Jan 2024 = Monday
-    return '<div class="rc-heat"><div class="rc-hcol rc-hdays"><span class="rc-hmon"></span>' + [0, 1, 2, 3, 4].map(function (k) { return '<span class="rc-hday">' + (k % 2 ? '' : esc(wdName(k))) + '</span>'; }).join('') + '</div>' +
+    return '<div class="rc-heat" style="--rc-cols:' + cols.length + '"><div class="rc-hcol rc-hdays"><span class="rc-hmon"></span>' + [0, 1, 2, 3, 4].map(function (k) { return '<span class="rc-hday">' + (k % 2 ? '' : esc(wdName(k))) + '</span>'; }).join('') + '</div>' +
       cols.map(function (c) {
         return '<div class="rc-hcol"><span class="rc-hmon">' + esc(c.month) + '</span>' + c.cells.map(function (x) {
           if (!x) return '<i class="rc-c rc-cx"></i>';
@@ -1293,7 +1310,7 @@
     var head = '<div class="rc-sechead"><div><h2>' + esc(C.rAtt) + '</h2><p>' + esc((sum ? fill(C.dPresent, { p: sum.p, n: sum.n }) + (sum.late ? ' · ' + fill(C.dLate, { k: sum.late }) : '') + ' · ' : '') + fill(C.rClassAvg, { p: avg })) + '</p></div>' +
       '<div class="rc-headacts"><button class="btn-line sm focus" data-demo-attall>' + esc(C.rAllKids) + '</button>' +
       '<details class="rc-attmenu"><summary class="btn btn-primary sm focus">' + esc(sum ? C.dEdit : C.dTake) + ' <span aria-hidden="true">▾</span></summary>' +
-        '<div class="rc-attpop" role="menu"><button class="rc-attopt focus" role="menuitem" data-demo-att>✎ ' + esc(C.dAttManual) + '</button>' +
+        '<div class="rc-attpop" role="menu"><button class="rc-attopt focus" role="menuitem" data-demo-att>' + window.TIcon('pencil') + '' + esc(C.dAttManual) + '</button>' +
         '<button class="rc-attopt focus" role="menuitem" data-demo-attup>' + ICON.up + ' ' + esc(C.dAttUpload) + '</button></div></details></div></div>';
     var picked = ST.attDay != null && days.some(function (x) { return x.i === ST.attDay; }) ? ST.attDay : null;
     var grid = heatGrid(function (x) {
@@ -1372,32 +1389,24 @@
             return '<li class="rc-kid' + (v != null ? '' : ' no') + '"><b class="rc-kname">' + esc(s.name) + '</b>' +
               '<strong class="rc-kscore">' + (v != null ? esc(fill(C.rScoreOf, { s: v, m: a.max })) : '—') + '</strong>' +
               (v != null ? '<em class="rc-tag ok">' + esc(fill(C.rTagDone, { d: shortDate(dates[s.id]) })) + '</em>' : '<em class="rc-tag no">' + esc(C.rTagNot) + '</em>') +
-              (fi >= 0 ? '<button class="rc-file focus" data-demo-file="' + esc(s.id) + ':' + fi + '">📎 ' + esc(C.rPaper) + '</button>' : '') + '</li>';
+              (fi >= 0 ? '<button class="rc-file focus" data-demo-file="' + esc(s.id) + ':' + fi + '">' + window.TIcon('paperclip') + ' ' + esc(C.rPaper) + '</button>' : '') + '</li>';
           }).join('') + '</ul></div>';
       }
       // Each assessment is a card: name · when, the class average large, a marking bar, then status.
       var pct = ks.length ? Math.round(marked.length / ks.length * 100) : 0;
       // ⋯ menu (Edit · Delete); Edit swaps the header for a form, Delete asks first (Nov 12, user).
       var menu = '<details class="rc-amenu"><summary class="rc-amore focus" aria-label="' + esc(C.acMore) + '">⋯</summary><div class="rc-attpop rc-apop">' +
-        '<button class="rc-attopt focus" data-demo-acedit="' + a.id + '">✎ ' + esc(C.acEdit) + '</button><button class="rc-attopt rc-optdel focus" data-demo-acdel="' + a.id + '">🗑 ' + esc(C.acDel) + '</button></div></details>';
-      if (ST.acEdit === a.id) {
-        var ef = ST.acEditForm || {};
-        return '<li class="rc-acard editing" id="rc-a-' + a.id + '"><div class="rc-aedit">' +
-          '<label class="dm-lbl">' + esc(C.rName) + '<input class="dd-search rc-in" id="rc-ename" value="' + esc(ef.name != null ? ef.name : a.name) + '"></label>' +
-          '<label class="dm-lbl">' + esc(C.rMax) + '<input class="dd-search rc-in rc-max" id="rc-emax" type="number" min="1" inputmode="numeric" value="' + esc(ef.max != null ? ef.max : a.max) + '"></label>' +
-          '<label class="dm-lbl">' + esc(C.acDate) + '<input class="dd-search rc-in" id="rc-edate" type="date" max="' + isoDay(new Date()) + '" value="' + esc(ef.date != null ? ef.date : isoDay(a.given)) + '"></label>' +
-          '<div class="rc-newacts"><button class="btn btn-ghost focus" data-demo-acedit="0">' + esc(C.dCancel) + '</button><button class="btn btn-primary sm focus" data-demo-acsave="' + a.id + '">' + esc(C.acSave) + '</button></div>' +
-          (ef.err ? '<p class="rc-err" role="alert">' + esc(ef.err) + '</p>' : '') + '</div></li>';
-      }
+        '<button class="rc-attopt focus" data-demo-acedit="' + a.id + '">' + ICON.note + esc(C.acEdit) + '</button><button class="rc-attopt rc-optdel focus" data-demo-acdel="' + a.id + '">' + ICON.trash + esc(C.acDel) + '</button></div></details>';
       var delAsk = ST.acDel === a.id ? '<div class="rc-adel" role="alert"><p>' + esc(fill(C.acDelQ, { name: a.name })) + '</p><div class="rc-newacts">' +
         '<button class="btn btn-ghost focus" data-demo-acdel="0">' + esc(C.dCancel) + '</button><button class="btn btn-danger sm focus" data-demo-acdelyes="' + a.id + '">' + esc(C.acDel) + '</button></div></div>' : '';
       return '<li class="rc-acard' + (open ? ' open' : '') + '" id="rc-a-' + a.id + '">' + menu + delAsk + '<button class="rc-ahd focus" data-demo-acopen="' + a.id + '" aria-expanded="' + open + '">' +
         '<span class="rc-atop"><b class="rc-aname">' + esc(a.name) + '</b><span class="dd-chev" aria-hidden="true">' + (open ? '▴' : '▾') + '</span></span>' +
-        '<span class="rc-awhen">' + esc(a.when + (a.given ? ' · ' + fill(C.rGiven, { d: shortDate(a.given) }) : '')) + '</span>' +
+        '<span class="rc-awhen">' + esc(a.when + (a.given ? ' · ' + shortDate(a.given) : '')) + '</span>' +
         '<span class="rc-abig"><b>' + (avg != null ? avg + '%' : '—') + '</b><small>' + esc(C.rAvgLbl) + '</small></span>' +
         '<span class="rc-aprog' + (left ? '' : ' full') + '"><i style="width:' + pct + '%"></i></span>' +
-        '<span class="rc-afoot"><span>' + esc(fill(C.rDoneN, { a: marked.length, b: ks.length })) + '</span>' +
-        (left ? '<b class="rc-mk' + (pct < DONE_LOW ? ' low' : '') + '">' + esc(fill(C.rLeft, { k: left })) + '</b>' : '<b class="rc-mk full">✓ ' + esc(C.rAllMarked) + '</b>') + '</span>' +
+        // Footer says it once: "9 of 14 done · 5 left", or just "✓ All 14 marked" (Nov 13, user: less text).
+        '<span class="rc-afoot">' + (left ? '<span>' + esc(fill(C.rDoneS, { a: marked.length, b: ks.length })) + '</span><b class="rc-mk' + (pct < DONE_LOW ? ' low' : '') + '">' + esc(fill(C.rLeft, { k: left })) + '</b>'
+          : '<b class="rc-mk full">✓ ' + esc(fill(C.rAllMarked, { b: ks.length })) + '</b>') + '</span>' +
         '</button>' + body + '</li>';
     }).join('');
     return form + '<ul class="rc-agrid">' + list + '</ul>';
@@ -1405,6 +1414,20 @@
   function shortDate(d) { return d ? d.toLocaleDateString(D.locale, { day: 'numeric', month: 'short' }) : ''; }
   function closeAcMenus() { Array.prototype.forEach.call(document.querySelectorAll('.rc-amenu[open]'), function (d) { d.removeAttribute('open'); }); }
   function isoDay(d) { if (!d) return ''; var p = function (x) { return (x < 10 ? '0' : '') + x; }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
+  // ⋯ → Edit opens a pop-up (Nov 13, user): name · maximum score · date given. Keeps typed values and shows the error on a failed save.
+  function acEditRender() {
+    var a = acadList().find(function (x) { return x.id === ST.acEdit; }); if (!a) return;
+    var ef = ST.acEditForm || {};
+    overlay('dm-aceditov', '<div class="dm-uphead"><h3>' + esc(C.acEdit) + ' · ' + esc(a.name) + '</h3><button class="dialog-close dm-x focus" data-demo-acedit="0" aria-label="' + esc(C.dClose) + '">×</button></div>' +
+      '<div class="rc-aedit rc-aedit-pop">' +
+        '<label class="dm-lbl">' + esc(C.rName) + '<input class="dd-search rc-in" id="rc-ename" value="' + esc(ef.name != null ? ef.name : a.name) + '"></label>' +
+        '<label class="dm-lbl">' + esc(C.rMax) + '<input class="dd-search rc-in rc-max" id="rc-emax" type="number" min="1" inputmode="numeric" value="' + esc(ef.max != null ? ef.max : a.max) + '"></label>' +
+        '<label class="dm-lbl">' + esc(C.acDate) + '<input class="dd-search rc-in" id="rc-edate" type="date" max="' + isoDay(new Date()) + '" value="' + esc(ef.date != null ? ef.date : isoDay(a.given)) + '"></label>' +
+        (ef.err ? '<p class="rc-err" role="alert">' + esc(ef.err) + '</p>' : '') +
+        '<div class="rc-newacts"><button class="btn btn-ghost focus" data-demo-acedit="0">' + esc(C.dCancel) + '</button><button class="btn btn-primary sm focus" data-demo-acsave="' + a.id + '">' + esc(C.acSave) + '</button></div>' +
+      '</div>');
+  }
+  function acEditClose() { ST.acEdit = null; ST.acEditForm = null; var x = document.getElementById('dm-aceditov'); if (x) x.remove(); }
   // Save an edited assessment: name, total marks (children keep their percentage), date given.
   function acadSave(id) {
     var a = acadList().find(function (x) { return x.id === id; }); if (!a) return;
@@ -1412,10 +1435,10 @@
     var name = g('rc-ename').trim(), max = parseInt(g('rc-emax'), 10), date = g('rc-edate');
     ST.acEditForm = { name: g('rc-ename'), max: g('rc-emax'), date: date };
     var err = !name ? C.rNameErr : !(max > 0) ? C.rMaxErr : !/^\d{4}-\d{2}-\d{2}$/.test(date) ? C.acDateErr : '';
-    if (err) { ST.acEditForm.err = err; window.TD.render(); return; }
+    if (err) { ST.acEditForm.err = err; acEditRender(); var fe = document.getElementById(!name ? 'rc-ename' : !(max > 0) ? 'rc-emax' : 'rc-edate'); if (fe) fe.focus(); return; }
     if (max !== a.max) Object.keys(a.scores).forEach(function (k) { a.scores[k] = Math.round(a.scores[k] / a.max * max); });
     a.name = name; a.max = max; a.given = new Date(date + 'T12:00:00');
-    ST.acEdit = null; ST.acEditForm = null; window.TD.render();
+    acEditClose(); window.TD.render();
   }
   // View 2: every child × every assessment. A score means completed; only gaps get a tag. Children with the most gaps first.
   function acadMatrix() {
@@ -1430,7 +1453,7 @@
         var v = a.scores[s.id]; return '<td>' + (v != null ? esc(fill(C.rScoreOf, { s: v, m: a.max })) : '<em class="rc-tag no">' + esc(C.rMissing) + '</em>') + '</td>';
       }).join('') + '</tr>';
     }).join('');
-    return '<div class="rc-mxwrap"><table class="rc-mx"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
+    return '<p class="rc-mxhint"><span aria-hidden="true">⇆</span>' + esc(C.rSwipe) + '</p><div class="rc-mxwrap"><table class="rc-mx"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
   }
   // Records tab: Done so far (passed in from teacher-dashboard.js, translated there), class files.
   function recordsPage(doneSoFar) {
@@ -1507,8 +1530,8 @@
       body = modes + (AU.mode === 'class' ? '<p class="dm-meta">' + esc(C.rClassHelp) + '</p>' : '') + kid + sample +
         '<div class="dm-lbl mt-3">' + esc(C.rOwnMany) + '</div><label class="btn-line sm dd-own focus">' + ICON.up + ' ' + esc(C.dUpOwnBtn) +
         '<input type="file" accept="image/*,application/pdf"' + (AU.mode === 'class' ? ' multiple' : '') + ' data-demo-aufile hidden></label>' +
-        (AU.own ? '<p class="dd-chosen">' + (AU.own.kind === 'img' ? '<img src="' + esc(AU.own.thumb) + '" alt="">' : '📄 ') + esc(fill(C.rOwnChosen, { f: AU.own.name })) + '</p>' : '') +
-        '<p class="dm-meta mt-3">🔒 ' + esc(C.dUpLocal) + '</p>' +
+        (AU.own ? '<p class="dd-chosen">' + (AU.own.kind === 'img' ? '<img src="' + esc(AU.own.thumb) + '" alt="">' : window.TIcon('file') + ' ') + esc(fill(C.rOwnChosen, { f: AU.own.name })) + '</p>' : '') +
+        '<p class="dm-meta mt-3">' + window.TIcon('lock') + ' ' + esc(C.dUpLocal) + '</p>' +
         '<div class="dm-upacts"><button class="btn btn-ghost focus" data-demo-ovclose>' + esc(C.dCancel) + '</button><button class="btn btn-primary md focus" data-demo-auread>' + esc(AU.mode === 'class' ? C.rRead : C.rReadOne) + ' →</button></div>';
     } else if (AU.step === 'read') {
       body = '<div class="dm-scan"><img src="' + esc(thumb) + '" alt=""><i class="dm-scanline"></i></div><p class="dm-scanmsg" aria-live="polite">' + esc(C.rSteps[0]) + '</p>';
@@ -1556,7 +1579,7 @@
     el.innerHTML = '<div class="ui-scrim dm-upscrim" data-demo-ovclose></div><div class="dm-upcard" role="dialog" aria-modal="true">' + inner + '</div>';
     return el;
   }
-  function closeOverlays() { AU = null; ST.attUp = null; ['dm-attov', 'dm-dupov', 'dm-view', 'dm-acov', 'dm-attlist', 'dm-fileslist'].forEach(function (id) { var x = document.getElementById(id); if (x) x.remove(); }); if (ST.dup && ST.dup.url && !ST.dup.saved) URL.revokeObjectURL(ST.dup.url); ST.dup = null; }
+  function closeOverlays() { AU = null; ST.attUp = null; ST.acEdit = null; ST.acEditForm = null; ['dm-attov', 'dm-dupov', 'dm-view', 'dm-acov', 'dm-attlist', 'dm-fileslist', 'dm-aceditov'].forEach(function (id) { var x = document.getElementById(id); if (x) x.remove(); }); if (ST.dup && ST.dup.url && !ST.dup.saved) URL.revokeObjectURL(ST.dup.url); ST.dup = null; }
   function attOpen() {
     ST.attDraft = {}; ST.attFrom = null; allKids().forEach(function (k) { ST.attDraft[k.id] = ST.attToday[k.id] || 'P'; });
     attRender();
@@ -1575,8 +1598,8 @@
       '<div class="dm-sheets rc-pack"><button class="dm-sheet focus' + (u.own ? '' : ' on') + '" data-demo-attupsample aria-pressed="' + !u.own + '"><img src="' + REG_THUMB + '" alt=""><span>' + esc(C.dAttUpSample) + '</span></button></div>' +
       '<div class="dm-lbl mt-3">' + esc(C.dAttUpOwn) + '</div><label class="btn-line sm dd-own focus">' + ICON.up + ' ' + esc(C.dAttUpBtn) +
       '<input type="file" accept=".csv,text/csv,application/pdf,.pdf" data-demo-attupfile hidden></label>' +
-      (u.own ? '<p class="dd-chosen">📄 ' + esc(fill(C.dUpChosen, { f: u.own })) + '</p>' : '') +
-      '<p class="dm-meta mt-3">🔒 ' + esc(C.dUpLocal) + '</p>' +
+      (u.own ? '<p class="dd-chosen">' + window.TIcon('file') + ' ' + esc(fill(C.dUpChosen, { f: u.own })) + '</p>' : '') +
+      '<p class="dm-meta mt-3">' + window.TIcon('lock') + ' ' + esc(C.dUpLocal) + '</p>' +
       '<div class="dm-upacts"><button class="btn btn-ghost focus" data-demo-ovclose>' + esc(C.dCancel) + '</button><button class="btn btn-primary md focus" data-demo-attupread>' + esc(C.dAttRead) + ' →</button></div>';
     overlay('dm-attov', head + body);
   }
@@ -1619,8 +1642,8 @@
       (samples.length ? '<div class="dm-lbl">' + esc(C.dUpPick) + '</div>' + tiles : tiles) +
       '<div class="dm-lbl mt-3">' + esc(C.dUpOwn) + '</div>' +
       '<label class="btn-line sm dd-own focus">' + ICON.up + ' ' + esc(C.dUpOwnBtn) + '<input type="file" accept="image/*,application/pdf" data-demo-dupfile hidden></label>' +
-      (d.own ? '<p class="dd-chosen">' + (d.own.kind === 'img' ? '<img src="' + esc(d.own.thumb) + '" alt="">' : '📄 ') + esc(fill(C.dUpChosen, { f: d.own.name })) + '</p>' : '') +
-      '<p class="dm-meta mt-3">🔒 ' + esc(C.dUpLocal) + '</p>' +
+      (d.own ? '<p class="dd-chosen">' + (d.own.kind === 'img' ? '<img src="' + esc(d.own.thumb) + '" alt="">' : window.TIcon('file') + ' ') + esc(fill(C.dUpChosen, { f: d.own.name })) + '</p>' : '') +
+      '<p class="dm-meta mt-3">' + window.TIcon('lock') + ' ' + esc(C.dUpLocal) + '</p>' +
       '<div class="dm-upacts"><button class="btn btn-ghost focus" data-demo-ovclose>' + esc(C.dCancel) + '</button>' +
       '<button class="btn btn-primary md focus" data-demo-dupsave' + (!d.own && !samples.length ? ' disabled' : '') + '>' + esc(fill(C.dUpSave, { n: nm(s) })) + '</button></div>');
   }
@@ -1628,6 +1651,8 @@
   function dupFile(file) {
     if (!file) return;
     var d = ST.dup, isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+    // DEMO: the demo-kit worksheet photo has a name written on it; Tilli "reads" it and picks that child.
+    if (/worksheet-word-problems/i.test(file.name) && D.sheetKid && allKids().some(function (k) { return k.id === D.sheetKid; })) d.stu = D.sheetKid;
     if (isPdf) { var url = URL.createObjectURL(file); d.own = { name: file.name, kind: 'pdf', src: url, thumb: 'assets/samples/reading-record-thumb.svg' }; d.url = url; dupRender(); return; }
     var img = new Image(), raw = URL.createObjectURL(file);
     img.onload = function () {
@@ -1647,6 +1672,10 @@
     if (d.type === 'maths' && !d.own) {   // Tilli "reads" the sample maths sheet → score + memory, like the Today upload
       var sh = C.sheets[d.sample]; f.title = sh.name; f.score = Math.round(parseInt(sh.score, 10) / 10 * 100); ST.uploads[s.id] = { sheet: d.sample };
       read = fill(C.dUpRead, { score: sh.score, n: nm(s) });
+    }
+    if (d.type === 'maths' && d.own) {   // DEMO (Nov 13): a teacher's own maths photo or PDF is "read" too: scripted result for the demo-kit worksheet
+      var own = d.own; closeOverlays(); ST.dataOpen = s.id; window.TD.render();
+      UP = { stu: s.id, sheet: 3, own: own }; upRead(); return;
     }
     (ST.files[s.id] = ST.files[s.id] || []).unshift(f);
     d.saved = true; closeOverlays(); ST.dataOpen = s.id; window.TD.render();
@@ -1682,6 +1711,12 @@
     return [['qFocus'], ['qCheck'], ['qWhy'], ['qAct']].map(function (x) { return { key: x[0], q: t(x[0], { n: nm(c.math) }), gen: x[0] }; });
   }
   function chipsHTML() {
+    var started = false; try { started = window.TD.S.ask.thread.length > 0; } catch (e) {}
+    // en/es: the link primes the normal chat box for a note; Hindi (no typed chat) keeps the note box.
+    var noteDet = BANK && BL
+      ? '<div class="dm-askn"><button type="button" class="dm-noteprime focus' + (NOTE.primed ? ' on' : '') + '" data-demo-noteprime aria-pressed="' + NOTE.primed + '">' + window.TIcon('note') + ' ' + esc(t('noteTitle')) + '</button></div>'
+      : '<details class="dm-askn"><summary>' + window.TIcon('note') + ' ' + esc(t('noteTitle')) + '</summary>' + noteBox(currentStudent(), true) + '</details>';
+    if (started && BANK && BL) return '<div class="dm-chips" data-demo>' + noteDet + '</div>';   // typed chat: follow-ups sit under each answer
     var set = chipSet().filter(function (x) { return !ST.asked[x.key]; });
     ST.lastChips = {}; chipSet().forEach(function (x) { ST.lastChips[x.q] = x; });
     var thinking = false; try { thinking = window.TD.S.ask.thinking; } catch (e) {}
@@ -1689,11 +1724,21 @@
       return '<button class="dm-chip focus" data-demo-q="' + esc(x.q) + '"' + (thinking ? ' disabled' : '') + '>' + esc(x.q) + '</button>';
     }).join('');
     // Tap a question, or tell Tilli something to remember (saved as a private note on that child).
-    return '<div class="dm-chips" data-demo>' + chips + '<details class="dm-askn"><summary>📝 ' + esc(t('noteTitle')) + '</summary>' + noteBox(currentStudent(), true) + '</details></div>';
+    var start = BANK && BL && set.length ? '<p class="dm-askstart">' + esc(t('askStart')) + '</p>' : '';
+    return '<div class="dm-chips" data-demo>' + start + chips + noteDet + '</div>';
   }
   function answer(q) {
-    var x = ST.lastChips[q]; if (!x) return null;
+    micStop();
+    var x = ST.lastChips[q];
+    if (x) { NOTE.primed = false; NOTE.pending = null; }   // a tapped starter chip is a question, not the note
+    if (!x) return BANK && BL ? bankReply(q) : null;
     ST.asked[x.key] = true;
+    var txt = chipAnswer(x), cs = currentStudent() || x.stu;
+    if (x.stu) CONVO.child = x.stu;
+    var nx = BANK && BL ? (BANK.chipNext[x.gen] || []) : [];
+    return { text: txt, think: [t('thinkData', { c: x.stu ? nm(x.stu) : clsLabel() }), t('thinkPick')], next: nextQs(nx, cs) };
+  }
+  function chipAnswer(x) {
     var c = cast(), N = allKids().length, ks = kids();
     if (x.stu) {
       var s = x.stu, tl = topLow(s);
@@ -1714,11 +1759,205 @@
     if (x && !ST.asked[x.key]) { ST.lastChips[x.q] = x; TD.sendAsk(x.q); }
   }
 
+  // ---------- Ask Tilli: typed questions (assets/ask-bank.js) ----------
+  // ~100 scripted questions a Grade 3 teacher might ask (en + es), matched by
+  // keywords like the website's Ask Tilli (js/ask-tilli-demo.js). Every answer
+  // is computed from this demo's own data, so it stays true after uploads and
+  // saves. A message that names a child and describes how they are is a note:
+  // Tilli sorts it into skills, shows its steps and saves it. Hindi keeps the chips.
+  var BANK = window.TilliAskBank || null, BL = L === 'en' || L === 'es' ? L : null;
+  var CONVO = { child: null };   // who the chat is about, for "he / she" and follow-up chips
+  // "Tell Tilli something to remember" link: the next message is a note (primed); one sent
+  // without a child's name waits (pending) while Tilli asks who it is about.
+  var NOTE = { primed: false, pending: null };
+  function composerPh() { return t(NOTE.primed ? 'notePrimePh' : 'askPh'); }
+  function composerMic() { return '<button type="button" class="dm-mic ask-mic focus" data-demo-mic aria-pressed="false" aria-label="' + esc(t('micLabel')) + '" title="' + esc(t('micLabel')) + '">' + ICON.mic + '</button>'; }
+  function normQ(x) { return String(x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[’']s\b/g, '').replace(/[’']/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim(); }
+  var RX = {};
+  function hasW(tq, alt) {   // whole word(s); a word ending in * = any word starting with it
+    var rx = RX[alt] || (RX[alt] = new RegExp('(^| )' + alt.split(' ').map(function (w) { return w.slice(-1) === '*' ? w.slice(0, -1) + '[a-z0-9]*' : w; }).join(' ') + '( |$)'));
+    return rx.test(tq);
+  }
+  function clsLabel() {
+    var g = (D.myClass || ['Grade 3', 'A']), m = String(g[0]).match(/\d+/), n = m ? m[0] : '';
+    return L === 'es' ? n + '.º ' + g[1] : L === 'hi' ? 'कक्षा ' + n + ' ' + g[1] : g[0] + ' ' + g[1];
+  }
+  function kidsIn(tq) { return allKids().filter(function (s) { var k = normQ(nm(s)); return k && hasW(tq, k); }); }
+  function pronoun(tq) { return (BANK.pron[BL] || []).some(function (w) { return hasW(tq, w); }); }
+  function skillIn(tq) {
+    var best = null;
+    Object.keys(BANK.skillWords[BL]).forEach(function (k) {
+      BANK.skillWords[BL][k].forEach(function (w) { if (hasW(tq, w) && (!best || w.length > best.len)) best = { key: k, len: w.length }; });
+    });
+    return best ? best.key : null;
+  }
+  function namesList(arr, max) {
+    var a = arr.map(function (s) { return typeof s === 'string' ? s : nm(s); }), extra = 0;
+    if (max && a.length > max) { extra = a.length - max; a = a.slice(0, max); }
+    var and = L === 'es' ? ' y ' : ' and ';
+    var out = a.length < 2 ? (a[0] || '') : a.slice(0, -1).join(', ') + and + a[a.length - 1];
+    return extra ? out + (L === 'es' ? ' (y ' + extra + ' más)' : ' (+' + extra + ' more)') : out;
+  }
+  function skillStats(ks) {
+    return SK_KEYS.map(function (k) {
+      var rows = ks.map(function (s) { return skillOf(s, k); }), n = rows.length || 1;
+      var avg = function (f) { return Math.round(rows.reduce(function (a, r) { return a + (r[f] || 0); }, 0) / n); };
+      var o = { key: k, name: SKILL[k], lname: lc(SKILL[k]), beg: 0, lea: 0, adv: 0, avg: avg('pct'), pre: avg('pre'), mid: avg('mid'), t: avg('teacher'), p: avg('parent'), s: avg('student') };
+      rows.forEach(function (r) { if (r.band === 'Beginner') o.beg++; else if (r.band === 'Advanced') o.adv++; else o.lea++; });
+      o.grow = o.avg - o.pre; o.gap = Math.max(o.t, o.p, o.s) - Math.min(o.t, o.p, o.s);
+      var vs = [['teacher', o.t], ['parent', o.p], ['student', o.s]].sort(function (x, y) { return x[1] - y[1]; });
+      o.lo = vs[0][0]; o.hi = vs[2][0];
+      return o;
+    });
+  }
+  function childInfo(s) {
+    var tl = topLow(s), fs = focusSkill(s), mm = mathMarks(s), mk = Object.keys(mm).sort(function (a, b) { return mm[a] - mm[b]; });
+    var pg = (s.skills || []).slice().sort(function (a, b) { return (b.gap || 0) - (a.gap || 0); })[0] || {};
+    var vs = pg.key ? [['teacher', pg.teacher], ['parent', pg.parent], ['student', pg.student]].sort(function (x, y) { return x[1] - y[1]; }) : [];
+    return { s: s, n: nm(s), full: s.name, band: BAND[s.band] || s.band, bandKey: s.band, pct: s.overallPct, growth: (s.overallPct || 0) - (s.overallPre || 0),
+      top: SKILL[tl.top.key], topKey: tl.top.key, topBand: BAND[tl.top.band], low: SKILL[tl.low.key], lowKey: tl.low.key, lowBand: BAND[tl.low.band],
+      grew: SKILL[tl.grew.key], grewKey: tl.grew.key, g: Math.max(1, tl.grew.pct - tl.grew.pre),
+      focus: SKILL[fs.key], focusKey: fs.key, focusBand: BAND[fs.band], day: planDay(s), prev: prevTeacher(s),
+      att: attOf(s), marks: mm, weak: MATH[mk[0]], weakKey: mk[0], weakPct: mm[mk[0]], strong: MATH[mk[mk.length - 1]], strongPct: mm[mk[mk.length - 1]],
+      persp: pg.key ? { key: pg.key, name: SKILL[pg.key], gap: pg.gap || 0, lo: vs[0][0], hi: vs[2][0], t: pg.teacher, p: pg.parent, st: pg.student } : null,
+      notes: (ST.notes[s.id] || []).slice(), sk: function (k) { return skillOf(s, k); }, home: pick(C.memParent, s.id + 'p') };
+  }
+  function helpers(child, skill) {
+    var ks = kids(), st = skillStats(ks), c = cast() || {};
+    var by = function (f, dir) { return st.slice().sort(function (a, b) { return dir * (b[f] - a[f]); }); };
+    var all = allKids(), sum = attSummary();
+    var attRows = all.map(function (s) { return { s: s, a: attOf(s) }; });
+    var list = acadList(), last = list[0], marked = all.filter(function (s) { return last && last.scores[s.id] != null; });
+    var pctOf = function (s) { return Math.round(last.scores[s.id] / last.max * 100); };
+    var lead = {}; st.filter(function (x) { return x.gap >= 12; }).forEach(function (x) { lead[x.lo] = (lead[x.lo] || 0) + 1; });
+    var leanLow = Object.keys(lead).sort(function (a, b) { return lead[b] - lead[a]; })[0] || null;
+    return {
+      L: L, cls: clsLabel(), N: ks.length, all: all.length, kids: ks, cast: c, child: child || null, ci: child ? childInfo(child) : null,
+      skill: skill || null, skillName: skill ? SKILL[skill] : null, lskill: skill ? lc(SKILL[skill]) : null,
+      sk: function (k) { return SKILL[k]; }, lsk: function (k) { return lc(SKILL[k]); }, band: function (b) { return BAND[b] || b; }, n: nm,
+      list: namesList, st: st, stat: function (k) { return st.find(function (x) { return x.key === k; }); },
+      gap: by('beg', 1)[0], gap2: by('beg', 1)[1], strong: by('adv', 1)[0], strong2: by('adv', 1)[1], grew: by('grow', 1)[0], slow: by('grow', -1)[0],
+      sel: Math.round(st.slice(0, 6).reduce(function (a, x) { return a + x.avg; }, 0) / 6), cog: Math.round(st.slice(6).reduce(function (a, x) { return a + x.avg; }, 0) / 6),
+      beg: function (k) { return ks.filter(function (s) { return skillOf(s, k).band === 'Beginner'; }); },
+      lowest: function (k, n) { return ks.slice().sort(function (a, b) { return skillOf(a, k).pct - skillOf(b, k).pct; }).slice(0, n || 3); },
+      highest: function (k, n) { return ks.slice().sort(function (a, b) { return skillOf(b, k).pct - skillOf(a, k).pct; }).slice(0, n || 3); },
+      bands: { Beginner: ks.filter(function (s) { return s.band === 'Beginner'; }), Learner: ks.filter(function (s) { return s.band === 'Learner'; }), Advanced: ks.filter(function (s) { return s.band === 'Advanced'; }) },
+      tending: ks.slice().sort(function (a, b) { return a.overallPct - b.overallPct; }).slice(0, 3),
+      quiet: ks.filter(function (s) { return s.band !== 'Beginner' && (s.overallPct - (s.overallPre || 0)) <= 2; }).slice(0, 3),
+      att: { taken: !!sum, present: sum ? sum.p : null, n: all.length,
+        absent: all.filter(function (s) { return ST.attToday[s.id] === 'A'; }), late: all.filter(function (s) { return ST.attToday[s.id] === 'L'; }),
+        avg: Math.round(attRows.reduce(function (a, r) { return a + r.a.pct; }, 0) / (attRows.length || 1)),
+        low: attRows.slice().sort(function (a, b) { return a.a.pct - b.a.pct; }).slice(0, 3),
+        lates: attRows.filter(function (r) { return r.a.late >= 2; }).sort(function (a, b) { return b.a.late - a.a.late; }).slice(0, 3) },
+      acad: last ? { name: last.name, max: last.max, marked: marked.length, total: all.length,
+        missing: all.filter(function (s) { return last.scores[s.id] == null; }),
+        avg: marked.length ? Math.round(marked.reduce(function (a, s) { return a + pctOf(s); }, 0) / marked.length) : 0,
+        low: marked.slice().sort(function (a, b) { return pctOf(a) - pctOf(b); }).slice(0, 3), high: marked.slice().sort(function (a, b) { return pctOf(b) - pctOf(a); }).slice(0, 3),
+        pct: pctOf, count: list.length } : null,
+      math: function (s) { return mathMarks(s); }, MATH: MATH,
+      mathClass: (function () { var o = {}; Object.keys(MATH).forEach(function (k) { o[k] = Math.round(ks.reduce(function (a, s) { return a + mathMarks(s)[k]; }, 0) / (ks.length || 1)); }); return o; })(),
+      persp: { gapN: st.filter(function (x) { return x.gap >= 12; }).length, top: by('gap', 1)[0], leanLow: leanLow, leanN: leanLow ? lead[leanLow] : 0 },
+      midLeft: midLeft(), midClose: midClose(), notes: function (s) { return ST.notes[s.id] || []; },
+      teacher: (D.teacher && D.teacher.name) || '', school: (D.school && D.school.name) || '',
+    };
+  }
+  function gapSkill() { var st = skillStats(kids()).sort(function (a, b) { return b.beg - a.beg; }); return st[0] ? st[0].key : 'working_memory'; }
+  function nextQs(ids, child) {
+    if (!BANK || !BL) return [];
+    var who = child || CONVO.child || (cast() || {}).math, sk = CONVO.skill || gapSkill();
+    var v = { child: nm(who), skill: L === 'es' ? lc(SKILL[sk]) : SKILL[sk] };
+    return (ids || []).map(function (id) { var e = BANK.byId[id]; return e ? fill(e.q[BL], v) : null; }).filter(Boolean).slice(0, 3);
+  }
+  // Insights "Ask Tilli …" buttons → one bank question in the page language (teacher-dashboard.js data-ask / data-ask-ins).
+  function askFor(kind, skill) {
+    if (!BANK || !BL || kind === 'cmp') return null;
+    var key = null; try { var f = window.TD.S.data.skills.find(function (x) { return x.key === skill || x.name === skill; }); key = f ? f.key : null; } catch (e) {}
+    var id = { grow: 'c2', persp: key ? 'v1' : 'v1', build: 's1', activity: 's3' }[kind] || (key ? 's3' : null);
+    var e = id && BANK.byId[id]; if (!e) return null;
+    if (key) CONVO.skill = key;
+    var sk = key || gapSkill(), name = L === 'es' ? lc(SKILL[sk]) : SKILL[sk];
+    return { q: fill(e.q[BL], { skill: name }), context: clsLabel() + (key ? ' · ' + SKILL[key] : '') };
+  }
+  function bankMatch(tq) {
+    var best = null, named = kidsIn(tq), ctx = CONVO.child || currentStudent();
+    var hasChild = named.length > 0 || (ctx && pronoun(tq));
+    BANK.entries.forEach(function (e) {
+      var rules = (e.m && e.m[BL]) || [], not = (e.not && e.not[BL]) || [];
+      if (not.some(function (w) { return hasW(tq, w); })) return;
+      rules.forEach(function (rule) {
+        var sc = 0, ok = rule.split(' + ').every(function (g) {
+          if (g === '@child') { if (hasChild) { sc += 1000; return true; } return false; }
+          if (g === '@skill') { if (skillIn(tq)) { sc += 1000; return true; } return false; }
+          var hit = g.split('|').filter(function (w) { return hasW(tq, w); }).sort(function (a, b) { return b.length - a.length; })[0];
+          if (!hit) return false; sc += 1000 + hit.length; return true;
+        });
+        if (ok) { sc += (e.w || 0) + (e.child && named.length ? 1500 : 0); if (!best || sc > best.sc) best = { e: e, sc: sc }; }   // a named child pulls toward that child's answers
+      });
+    });
+    return best;
+  }
+  // A note: names a child, isn't a question, and has a cue word or a feeling / behaviour word.
+  function noteFor(text, tq) {
+    var ks = kidsIn(tq); if (!ks.length) return null;
+    var q = /\?\s*$/.test(text) || (BANK.qStart[BL] || []).some(function (w) { return tq.indexOf(w + ' ') === 0; }) || (BANK.askCue[BL] || []).some(function (w) { return hasW(tq, w); });
+    var cue = (BANK.noteCue[BL] || []).some(function (w) { return hasW(tq, w); });
+    if (q && !(BANK.noteCue[BL] || []).some(function (w) { return tq.indexOf(w + ' ') === 0; })) return null;   // a question stays a question unless it opens with "note / remember…" 
+    if (!cue && !noteSkills(tq).length) return null;
+    return ks[0];
+  }
+  function noteSkills(tq) {
+    var W = BANK.noteWords[BL], out = [];
+    Object.keys(W).forEach(function (k) { var hits = W[k].filter(function (w) { return hasW(tq, w); }); if (hits.length) out.push({ key: k, hits: hits }); });
+    return out.sort(function (a, b) { return b.hits.length - a.hits.length; }).slice(0, 2);
+  }
+  function keepNote(who, text) {
+    var tq = normQ(text), sks = noteSkills(tq), up = (BANK.upWords[BL] || []).some(function (w) { return hasW(tq, w); });
+    var down = (BANK.downWords[BL] || []).some(function (w) { return hasW(tq, w); });
+    (ST.notes[who.id] = ST.notes[who.id] || []).unshift({ text: text.trim(), at: Date.now(), skills: sks.map(function (x) { return x.key; }) });
+    saveWork(); CONVO.child = who;
+    var r = BANK.note[BL](helpers(who), { skills: sks, up: up && !down, text: text.trim() });
+    return { text: r.text, think: r.think, next: nextQs(['k1', 'k4', 'k10'], who) };
+  }
+  var NOTE_WHO_WORDS = 4;   // a reply to "Who is this about?" longer than this is a new message, not just the name
+  function bankReply(text) {
+    var tq = normQ(text); if (!tq) return null;
+    if (NOTE.primed) {   // sent from the primed box: always a note
+      NOTE.primed = false;
+      var ks = kidsIn(tq); if (ks.length) return keepNote(ks[0], text);
+      NOTE.pending = text.trim();
+      return { text: t('noteWho'), think: [], next: allKids().map(nm) };   // every child's name as a chip
+    }
+    if (NOTE.pending) {
+      var pend = NOTE.pending, kp = kidsIn(tq); NOTE.pending = null;
+      if (kp.length && tq.split(' ').length <= NOTE_WHO_WORDS) return keepNote(kp[0], pend);
+    }
+    var who = noteFor(text, tq);
+    if (who) return keepNote(who, text);
+    var named = kidsIn(tq), m = bankMatch(tq);
+    if (named.length >= 2 && (!m || (m.e.w || 0) < 2500)) {
+      var cr = BANK.compare[BL](helpers(named[0]), named.slice(0, 4).map(childInfo));
+      CONVO.child = named[0];
+      return { text: cr.text, think: cr.think, next: nextQs(['k3', 'c15'], named[0]) };
+    }
+    if (!m) {
+      var fb = BANK.fallback[BL](helpers(null));
+      return { text: fb, think: [], next: nextQs(BANK.starters, null) };
+    }
+    var e = m.e, child = null;
+    if (e.child) { child = named[0] || CONVO.child || currentStudent() || null; if (child) CONVO.child = child; }
+    var skq = skillIn(tq); if (skq) CONVO.skill = skq;
+    var H = helpers(child, skq || (e.cat === 'skill' ? CONVO.skill : null));
+    if (e.child && !child) return { text: BANK.whichChild[BL](H), think: [], next: [] };
+    var think = typeof e.th === 'function' ? e.th(H) : (e.th && e.th[BL] ? (typeof e.th[BL] === 'function' ? e.th[BL](H) : e.th[BL]) : []);
+    return { text: e.a[BL](H), think: (think || []).map(function (x) { return fill(x, { cls: H.cls, child: child ? nm(child) : '' }); }), next: nextQs(e.next, child), id: e.id };
+  }
+
   // ---------- upload overlay ----------
   var SHEETS = ['assets/sheets/sheet-1.svg', 'assets/sheets/sheet-2.svg', 'assets/sheets/sheet-3.svg'];
   var UP = null;   // { stu, sheet, step: 'pick'|'read'|'result', readStep }
   function upOpen(stuId) { UP = { stu: stuId, sheet: 0, step: 'pick' }; upRender(); }
   function upClose() { UP = null; var el = document.getElementById('dm-up'); if (el) el.remove(); }
+  function upImg() { return UP.own ? (UP.own.kind === 'img' ? UP.own.src : UP.own.thumb) : SHEETS[UP.sheet]; }
   function upRender() {
     var el = document.getElementById('dm-up');
     if (!UP) { if (el) el.remove(); return; }
@@ -1732,11 +1971,11 @@
         }).join('') + '</div>' +
         '<div class="dm-upacts"><button class="btn btn-ghost focus" data-demo-upclose>' + esc(t('upCancel')) + '</button><button class="btn btn-primary md focus" data-demo-upread>' + esc(t('upRead')) + ' →</button></div>';
     } else if (UP.step === 'read') {
-      body = '<div class="dm-scan"><img src="' + SHEETS[UP.sheet] + '" alt=""><i class="dm-scanline"></i></div><p class="dm-scanmsg" aria-live="polite">' + esc(C.upSteps[UP.readStep || 0]) + '</p>';
+      body = '<div class="dm-scan"><img src="' + esc(upImg()) + '" alt=""><i class="dm-scanline"></i></div><p class="dm-scanmsg" aria-live="polite">' + esc(C.upSteps[UP.readStep || 0]) + '</p>';
     } else {
       var sh = C.sheets[UP.sheet], saved = !!ST.uploads[s.id] && ST.uploads[s.id].sheet === UP.sheet;
       var marks = sh.marks.map(function (m, i) { return '<span class="dm-q ' + (m ? 'ok' : 'no') + '">' + (i + 1) + '</span>'; }).join('');
-      body = '<div class="dm-res"><div class="dm-resimg"><img src="' + SHEETS[UP.sheet] + '" alt=""></div><div class="dm-resbody">' +
+      body = '<div class="dm-res"><div class="dm-resimg"><img src="' + esc(upImg()) + '" alt=""></div><div class="dm-resbody">' +
         '<div class="dm-score"><span>' + esc(t('upScore')) + '</span><b>' + esc(sh.score) + '</b><em>' + esc(sh.name) + ' · ' + esc(s.name) + '</em></div>' +
         '<div class="dm-qs">' + marks + '</div>' +
         '<h4>' + esc(t('upNoticed')) + '</h4><p>' + esc(fill(sh.noticed, { n: n })) + '</p>' +
@@ -1807,9 +2046,9 @@
 
   // ---------- one delegated click handler for everything above ----------
   document.addEventListener('click', function (e) {
-    // Attendance dropdown: close on an outside click or once an option is picked.
-    Array.prototype.forEach.call(document.querySelectorAll('.rc-attmenu[open], .rc-amenu[open]'), function (d) { if (!d.contains(e.target) || e.target.closest('.rc-attopt')) d.removeAttribute('open'); });
-    var b = e.target.closest('[data-demo-acview],[data-demo-acfilter],[data-demo-acopenx],[data-demo-fall],[data-demo-fpop],[data-demo-attstu],[data-demo-attday],[data-demo-attall],[data-demo-acopen],[data-demo-acadform],[data-demo-acadcreate],[data-demo-acedit],[data-demo-acsave],[data-demo-acdel],[data-demo-acdelyes],[data-demo-acup],[data-demo-aumode],[data-demo-aupack],[data-demo-auread],[data-demo-ausave],[data-demo-att],[data-demo-attup],[data-demo-attupsample],[data-demo-attupread],[data-demo-attset],[data-demo-attsave],[data-demo-dup],[data-demo-dupsample],[data-demo-dupsave],[data-demo-file],[data-demo-ovclose],[data-demo-mic],[data-demo-notesave],[data-demo-noteopen],[data-demo-done],[data-demo-day],[data-demo-deck],[data-demo-deckgo],[data-demo-enter],[data-demo-wclose],[data-demo-continue],[data-demo-stu],[data-demo-assess],[data-demo-askq],[data-demo-askstu],[data-demo-upload],[data-demo-sheet],[data-demo-upread],[data-demo-upsave],[data-demo-upclose],[data-demo-q],[data-demo-reset]');
+    // Attendance + Students Sort / ⋮ dropdowns: close on an outside click or once an option is picked.
+    Array.prototype.forEach.call(document.querySelectorAll('.rc-attmenu[open], .rc-amenu[open], .roster-sortmenu[open], .roster-kebab[open]'), function (d) { if (!d.contains(e.target) || e.target.closest('.rc-attopt, .roster-sortopt, .roster-kebabopt')) d.removeAttribute('open'); });
+    var b = e.target.closest('[data-demo-acview],[data-demo-acfilter],[data-demo-acopenx],[data-demo-fall],[data-demo-fpop],[data-demo-attstu],[data-demo-attday],[data-demo-attall],[data-demo-acopen],[data-demo-acadform],[data-demo-acadcreate],[data-demo-acedit],[data-demo-acsave],[data-demo-acdel],[data-demo-acdelyes],[data-demo-acup],[data-demo-aumode],[data-demo-aupack],[data-demo-auread],[data-demo-ausave],[data-demo-att],[data-demo-attup],[data-demo-attupsample],[data-demo-attupread],[data-demo-attset],[data-demo-attsave],[data-demo-dup],[data-demo-dupsample],[data-demo-dupsave],[data-demo-file],[data-demo-ovclose],[data-demo-mic],[data-demo-noteprime],[data-demo-notesave],[data-demo-noteopen],[data-demo-done],[data-demo-day],[data-demo-box],[data-demo-enter],[data-demo-wclose],[data-demo-continue],[data-demo-stu],[data-demo-assess],[data-demo-askq],[data-demo-askstu],[data-demo-upload],[data-demo-sheet],[data-demo-upread],[data-demo-upsave],[data-demo-upclose],[data-demo-q],[data-demo-reset]');
     if (!b) return;
     var TD = window.TD, ds = b.dataset;
     if ('demoEnter' in ds) { welcome(); var go = document.querySelector('[data-demo-continue]'); if (go) go.focus(); return; }
@@ -1833,8 +2072,10 @@
     if ('demoAcadform' in ds) { ST.acadForm = ds.demoAcadform === '1' ? { open: true } : null; TD.render(); if (ST.acadForm) { var ni = document.getElementById('rc-name'); if (ni) ni.focus(); } return; }
     if ('demoAcadcreate' in ds) { acadCreate(); return; }
     if ('demoAcedit' in ds) {   // ⋯ → Edit (or Cancel with "0")
-      closeAcMenus(); ST.acDel = null; ST.acEditForm = null; ST.acEdit = ds.demoAcedit === '0' ? null : ds.demoAcedit; TD.render();
-      if (ST.acEdit) { var en = document.getElementById('rc-ename'); if (en) en.focus(); }
+      closeAcMenus(); ST.acDel = null; ST.acEditForm = null;
+      if (ds.demoAcedit === '0') { acEditClose(); return; }
+      ST.acEdit = ds.demoAcedit; acEditRender();
+      var en = document.getElementById('rc-ename'); if (en) { en.focus(); en.select(); }
       return;
     }
     if ('demoAcsave' in ds) { acadSave(ds.demoAcsave); return; }
@@ -1862,13 +2103,18 @@
     if ('demoFpop' in ds) { filesPop(); return; }
     if ('demoFile' in ds) { var fp = ds.demoFile.split(':'); viewFile(fp[0], +fp[1]); return; }
     if ('demoOvclose' in ds) { if (e.target === b || !b.classList.contains('dm-upscrim')) closeOverlays(); return; }
-    if ('demoMic' in ds) { micToggle(b.closest('.dm-note')); return; }
+    if ('demoMic' in ds) { micToggle(b.closest('.dm-note, .ask-compose')); return; }
+    if ('demoNoteprime' in ds) { NOTE.primed = !NOTE.primed; NOTE.pending = null; TD.render(); var ai = document.querySelector('.ask-input'); if (ai) ai.focus(); return; }
     if ('demoNotesave' in ds) { saveNote(b.closest('.dm-note')); return; }
     if ('demoNoteopen' in ds) { (ST.noteOpen = ST.noteOpen || {})[ds.demoNoteopen] = true; TD.render(); var ni = document.querySelector('.dm-pp .dm-notein'); if (ni) ni.focus(); return; }
     if ('demoDone' in ds) { ST.done[ds.demoDone] = !ST.done[ds.demoDone]; saveWork(); TD.render(); return; }
-    if ('demoDay' in ds) { ST.day = +ds.demoDay; ST.deck = null; TD.render(); return; }
-    if ('demoDeck' in ds) { deckShow(+ds.demoDeck); return; }
-    if ('demoDeckgo' in ds) { if (!b.disabled) deckShow(ST.deck + +ds.demoDeckgo); return; }
+    if ('demoDay' in ds) { ST.day = +ds.demoDay; ST.box = null; TD.render(); return; }
+    // Phone: open one box's checklist (0 = back to the tiles), then put focus where the eye is.
+    if ('demoBox' in ds) {
+      var was = ST.box; ST.box = +ds.demoBox || null; TD.render();
+      var f = document.querySelector(ST.box ? '.dt-back' : '.dt-tile[data-demo-box="' + was + '"]'); if (f) f.focus();
+      return;
+    }
     if ('demoAssess' in ds) { TD.goAssess('pending'); return; }   // straight to who's still to observe
     if ('demoAskq' in ds) { askNow(ds.demoAskq); return; }
     if ('demoAskstu' in ds) { TD.openAsk('', ''); return; }   // on the child's page, so the chips are about them
@@ -1876,7 +2122,8 @@
     if ('demoSheet' in ds) { UP.sheet = +ds.demoSheet; upRender(); return; }
     if ('demoUpread' in ds) { upRead(); return; }
     if ('demoUpsave' in ds) { var s = allKids().find(function (x) { return x.id === UP.stu; }); ST.uploads[UP.stu] = { sheet: UP.sheet };
-      var sf = sampleFile('maths', UP.sheet, C.dTodayW); sf.title = C.sheets[UP.sheet].name; sf.score = Math.round(parseInt(C.sheets[UP.sheet].score, 10) * 10); (ST.files[UP.stu] = ST.files[UP.stu] || []).unshift(sf); upRender(); TD.render(); return; }
+      var shx = C.sheets[UP.sheet], sf = UP.own ? { type: 'maths', title: C.types.maths, when: C.dTodayW, src: UP.own.src, thumb: UP.own.thumb, kind: UP.own.kind, sample: false } : sampleFile('maths', UP.sheet, C.dTodayW);
+      sf.title = shx.name; sf.score = Math.round(parseInt(shx.score, 10) / parseInt(shx.score.split('/')[1], 10) * 100); (ST.files[UP.stu] = ST.files[UP.stu] || []).unshift(sf); upRender(); TD.render(); return; }
     if ('demoUpclose' in ds) { if (e.target === b || !b.classList.contains('dm-upscrim')) upClose(); return; }
     if ('demoQ' in ds) { if (!b.disabled) TD.sendAsk(ds.demoQ); return; }
     if ('demoReset' in ds) { forgetView(); location.reload(); return; }
@@ -1900,7 +2147,7 @@
     var none = document.querySelector('.dd-none'); if (none) none.hidden = any;
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('rc-in')) { e.preventDefault(); if (e.target.closest('.rc-aedit') && ST.acEdit) acadSave(ST.acEdit); else acadCreate(); return; } });
-  document.addEventListener('keydown', function (e) { if (e.key !== 'Escape') return; var om = document.querySelector('.rc-attmenu[open], .rc-amenu[open]'); if (om) { om.removeAttribute('open'); return; } if (document.querySelector('.dm-ov')) closeOverlays(); else if (UP) upClose(); else if (document.getElementById('dm-welcome')) closeWelcome(); });
+  document.addEventListener('keydown', function (e) { if (e.key !== 'Escape') return; var om = document.querySelector('.rc-attmenu[open], .rc-amenu[open], .roster-sortmenu[open], .roster-kebab[open]'); if (om) { om.removeAttribute('open'); return; } if (document.querySelector('.dm-ov')) closeOverlays(); else if (UP) upClose(); else if (document.getElementById('dm-welcome')) closeWelcome(); });
 
   // ---------- refresh keeps your place ----------
   // Remembered in sessionStorage: this tab only, gone when the tab closes, so every new phone still starts
@@ -1933,5 +2180,5 @@
   }
   function forgetView() { noSave = true; try { sessionStorage.removeItem(VIEW_KEY); sessionStorage.removeItem(WORK_KEY); } catch (e) {} }
 
-  window.DemoUI = { t: t, mondayCard: mondayCard, passport: passport, passportDoc: passportDoc, passportFile: passportFile, sumStrip: sumStrip, planCard: planCard, attCard: attCardOf, chipsHTML: chipsHTML, answer: answer, profileExtras: profileExtras, welcome: welcome, landing: landing, restore: restore, report: REPORT, askBtn: askBtn, recordsPage: recordsPage, gardenAttendance: gardenAttendance, assessPage: assessPage, assessTabs: assessTabs, SKILL: SKILL, BAND: BAND };
+  window.DemoUI = { askFor: askFor, composerPh: composerPh, composerMic: composerMic, bankReply: function (q) { return BANK && BL ? bankReply(q) : null; }, hasBank: function () { return !!(BANK && BL); }, t: t, mondayCard: mondayCard, passport: passport, passportDoc: passportDoc, passportFile: passportFile, sumStrip: sumStrip, planCard: planCard, attCard: attCardOf, chipsHTML: chipsHTML, answer: answer, profileExtras: profileExtras, welcome: welcome, landing: landing, restore: restore, report: REPORT, askBtn: askBtn, recordsPage: recordsPage, gardenAttendance: gardenAttendance, assessPage: assessPage, assessTabs: assessTabs, SKILL: SKILL, BAND: BAND };
 })();
