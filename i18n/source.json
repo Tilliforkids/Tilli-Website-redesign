@@ -7,7 +7,7 @@
  },
  "pages": {
   "index.html": [
-   "Tilli — Developmentally on track by age 10",
+   "Tilli · Developmentally on track by age 10",
    "SCROLL",
    "HELLO SCHOOL LEADERS",
    "Figure out which children are quietly <1>falling behind</1>.",
@@ -154,6 +154,7 @@
    "<1>LinkedIn</1> <2>Instagram</2> <3>X</3> <4>YouTube</4> <5>Facebook</5>",
    "© <1>2026</1> Tilli Kids Inc. · www.tillikids.com <2></2>",
    "Tilli helps schools measure 12 foundational skills for every child — from teachers, parents, and the child — then ask Tilli what to do next. Developmentally on track by age 10.",
+   "Tilli — Developmentally on track by age 10",
    "Schools measure 12 foundational skills for every child — from teachers, parents, and the child themselves — then ask Tilli what to do next.",
    "Schools measure 12 foundational skills for every child, then ask Tilli what to do next.",
    "Section navigation",
@@ -203,7 +204,7 @@
    "tilli"
   ],
   "faq.html": [
-   "FAQs — Tilli",
+   "FAQs · Tilli",
    "FAQs",
    "Questions, answered",
    "Everything schools and families ask us most often.",
@@ -251,11 +252,12 @@
    "Between them, that's enough to answer the first round of questions a committee asks without you needing us in the room.",
    "Can't find what you need? <1>Drop Kavi a message on LinkedIn</1>.",
    "Answers to common questions about Tilli: what it measures, who it's for, how it works in schools, and how student data is handled.",
+   "FAQs — Tilli",
    "Show the question again",
    "Close"
   ],
   "jobs.html": [
-   "Jobs @ Tilli — Tilli",
+   "Jobs @ Tilli · Tilli",
    "Join our mission!",
    "At Tilli, we’re on a mission to make children safer, smarter, and happier through innovative social-emotional learning solutions. We’re passionate about transforming education and creating joyful, impactful learning experiences for kids everywhere.",
    "We’re always on the lookout for talented individuals who share our vision and want to build engaging, play-based learning tools that truly make a difference.",
@@ -264,10 +266,11 @@
    "Role(s) you can join us for:",
    "<1>Operations Associate</1>",
    "Tilli is seeking an Operations Associate. The successful candidate will play a crucial role in ensuring the efficient and smooth operation of our organization. You will work closely with various teams to support the production, logistics, and customer success aspects. You will also be required to occasionally travel.",
-   "Join Tilli's mission to make children safer, smarter, and happier. See open roles and how to apply."
+   "Join Tilli's mission to make children safer, smarter, and happier. See open roles and how to apply.",
+   "Jobs @ Tilli — Tilli"
   ],
   "opensource.html": [
-   "Open Source — Tilli",
+   "Open Source · Tilli",
    "Tilli's Safety Toolbox!",
    "We’re currently working with the UNICEF Innovation Fund to create Tilli's Safety Toolbox. It is a three module, play-based learning experience on Social-Emotional Learning for Child Online Safety. The focus of this project is to help parents and caregivers have meaningful conversations with their children and teachers, educators and social workers deliver powerful learning to their students!",
    "Ownership: The content, frameworks, graphics and trademark is owned by Tilli Kids Inc, as an open source tool, our parameters for fair use is outlined within the project charter.<1/> © 2021 Tilli Kids Inc. All Rights Reserved.",
@@ -303,6 +306,7 @@
    "This guide is intended for software developers who are familiar with how web applications are built.",
    "<1>Go to Github</1>",
    "Tilli's Safety Toolbox, built with the UNICEF Innovation Fund: open-source SEL modules for child online safety, the Tilli IDE, and Tilli x Godot.",
+   "Open Source — Tilli",
    "Tilli × UNICEF Innovation",
    "How the pieces fit: Tilli's Safety Toolbox (3 modules) runs on the Tilli web app, the end-user application. Creators build content in the Tilli IDE (content management system); developers use Tilli x Godot (game development tool). Documentation is for all; the front/backend uses react.js, Scala and Redis.",
    "Module 1, Feelings and Emotions, being played on a phone",
@@ -311,7 +315,7 @@
    "A Godot-built Tilli module playing on a phone"
   ],
   "privacy-policy.html": [
-   "Privacy Policy — Tilli",
+   "Privacy Policy · Tilli",
    "Legal",
    "Privacy Policy",
    "What we collect, how we use it, and the choices you have. Questions? <1>info@tillikids.com</1>.",
@@ -416,7 +420,8 @@
    "If we make material changes to this Privacy Policy, we may notify you more prominently. If we change the way we handle personal information collected from children users (if applicable), we will first notify and obtain verifiable consent of a parent or legal guardian.",
    "23. Contact Us",
    "If you have any remaining questions about how we treat your privacy, just let us know. You can contact us by email at <1>info@tillikids.com</1>.",
-   "How Tilli collects, uses, and protects your information, including our Children's Privacy Policy and your individual rights."
+   "How Tilli collects, uses, and protects your information, including our Children's Privacy Policy and your individual rights.",
+   "Privacy Policy — Tilli"
   ],
   "research.html": [
    "Tilli for Research",
@@ -500,7 +505,7 @@
    "Children in a Tilli partner classroom"
   ],
   "success.html": [
-   "Success Stories — Tilli",
+   "Success Stories · Tilli",
    "Schools that measure the whole child",
    "From a three-year partnership reshaping thousands of childhoods to a research-practice collaboration built on measurement.",
    "What schools get",
@@ -553,6 +558,7 @@
    "Book a 30-minute call",
    "kavindya@tillikids.com",
    "How schools partner with Tilli: Hippocampus Learning Centres, Nita Mukesh Ambani Junior School, and Musaeus College.",
+   "Success Stories — Tilli",
    "Partner schools and trainings",
    "Teachers raising hands during a Tilli training session",
    "School leader and Tilli team member reviewing Feelings Time",
@@ -570,7 +576,7 @@
    "Tilli character waving"
   ],
   "team.html": [
-   "Our team — Tilli",
+   "Our team · Tilli",
    "Our team is part research lab, part imagination studio, and part giggle factory!",
    "We're the friendly grown-ups who turn big ideas about empathy and regulation into playful tools kids actually love using—wherever they are.",
    "The Grown-Ups Who Dream Big",
@@ -606,6 +612,7 @@
    "Want to join our team?",
    "<1>Drop an email</1>",
    "Meet the people behind Tilli: part research lab, part imagination studio, and part giggle factory.",
+   "Our team — Tilli",
    "Kavindya on LinkedIn",
    "Dr. Aki on LinkedIn",
    "Piumi on LinkedIn",
@@ -617,7 +624,7 @@
    "Aritha Wickramasinghe on LinkedIn"
   ],
   "terms.html": [
-   "Terms of Service — Tilli",
+   "Terms of Service · Tilli",
    "Terms of Service",
    "The legal terms for using Tilli. Questions? <1>info@tillikids.com</1>.",
    "<1>© Tilli Kids Inc.</1>",
@@ -774,7 +781,8 @@
    "221 N. Broad Street, Suite 3A, Middletown DE 19709 in New Castle County",
    "Sri Lanka",
    "<1>info@tillikids.com</1>",
-   "The legal terms for using Tilli's app, website and services, including intellectual property, user contributions and dispute resolution."
+   "The legal terms for using Tilli's app, website and services, including intellectual property, user contributions and dispute resolution.",
+   "Terms of Service — Tilli"
   ],
   "m/index.html": [
    "Hello school leaders",
