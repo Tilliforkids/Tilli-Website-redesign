@@ -618,6 +618,7 @@
     // Phone: the bottom nav's raised centre button already is Ask Tilli.
     if (window.TilliFloat) {
       TilliFloat.hideAsk(isPhone || S.nav === 'ask');
+      if (TilliFloat.hideWa) TilliFloat.hideWa(S.nav === 'ask');   // DEMO: WhatsApp bubble everywhere but the full Ask Tilli screen (phones too)
       TilliFloat.setAskOpen(S.ask.open && !isPhone && S.nav !== 'ask');
       // #dash-root is position:fixed (its own stacking context), so the stack must
       // live inside it to sit *under* the Ask panel / modals rather than over them.

@@ -65,6 +65,25 @@ html[lang="hi"] .pr { --font-body: 'Noto Sans Devanagari', sans-serif; --report-
 
 /* Hidden in the demo: the Need-help bubble and the phone header "?" (they email the Tilli team) */
 .tf-stack .tf-row:has(.tf-help), .tf-pop, .ui-tophelp { display: none !important; }
+/* WhatsApp bubble above Ask Tilli (float-help.js waRow): website colours, plain white icon (no amber halo) */
+:root {
+  --tf-wa-size: 52px;          /* WhatsApp bubble diameter (Ask Tilli is 60px) */
+  --tf-wa-bg: #25D366;         /* WhatsApp green, same as the website's --tl-whatsapp */
+  --tf-wa-icon: 26px;          /* WhatsApp logo size inside the bubble */
+  --tf-wa-phone-right: 16px;   /* phones: gap between the bubble and the right edge */
+  --tf-wa-phone-lift: 14px;    /* phones: extra gap above the bottom bar */
+}
+.tf-wa { width: var(--tf-wa-size); height: var(--tf-wa-size); background: var(--tf-wa-bg); color: var(--white); text-decoration: none;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--tf-wa-bg) 42%, transparent); }
+.tf-wa:hover { background: color-mix(in srgb, var(--tf-wa-bg) 88%, black); color: var(--white); }
+.tf-wa svg { width: var(--tf-wa-icon); height: var(--tf-wa-icon); filter: none; }
+.tf-row-wa { margin-right: calc((var(--tf-ask-size) - var(--tf-wa-size)) / 2); }   /* centred over the Ask bubble */
+.tf-stack.tf-left .tf-row-wa { margin-right: 0; margin-left: calc((var(--tf-ask-size) - var(--tf-wa-size)) / 2); }
+/* Phones: tilli.css collapses the stack (Ask lives in the bottom bar); keep just the WhatsApp bubble, bottom right above the bar */
+@media (max-width: 767px) {
+  body .tf-stack { right: var(--tf-wa-phone-right); bottom: calc(var(--tf-bottom) + var(--tf-wa-phone-lift) + env(safe-area-inset-bottom)); width: auto; height: auto; }
+  body .tf-stack .tf-row-wa:not([hidden]) { display: flex; margin: 0; }
+}
 .ask-ctx { display: none; }
 
 /* ---------- "Continue as" welcome ---------- */
