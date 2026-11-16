@@ -104,7 +104,11 @@
      cross-fades. `.step`s are sub-panels inside a stage that fade
      between each other within that scene's scroll slice. ───────── */
   .content { position: relative; z-index: 2; }
-  .scene { position: relative; }
+  /* Scenes are only scroll spacers: their boxes must not take taps. A short scene (Dashboard is
+     ~1 screen on phones) lets the NEXT scene's box slide over the bottom of the screen while its
+     own fixed stage is still showing, and that box swallowed taps on "Experience the dashboard".
+     Steps turn pointer-events back on while they're showing (main.js); the footer sets its own. */
+  .scene { position: relative; pointer-events: none; }
   .stage { position: fixed; inset: 0; overflow: hidden; opacity: 0; visibility: hidden; pointer-events: none; }
   .step { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 6vh 20px; opacity: 0; pointer-events: none; transition: padding-bottom .35s cubic-bezier(.4,0,.2,1); }
   /* while the bottom nav is showing, lift centered content clear of it */
